@@ -1,0 +1,112 @@
+# Ritham Weekly Timetable — Under-18 & 65+ Movement + Food Design
+
+This document extends [`docs/health-screening.md`](./health-screening.md): it does not add new condition tags, new gates, or new adjustment logic. Every row below is either (a) a direct restatement of an existing row from the Workout Adjustment Rule Table (§2) or Nutrition Adjustment Rule Table (§3) of that document, arranged into a 7-day layout, or (b) general population-level guideline content grounded in the research provided for this feature. Where the research didn't cover something, that gap is stated explicitly rather than filled in.
+
+---
+
+## 1. Why a Timetable, and the Framing Constraint
+
+A "timetable" here means a **weekly rhythm template** — a default, editable starting arrangement of which days carry which kind of movement and what a balanced plate/meal pattern looks like that day — not a rigid, doctor-issued prescription and not a daily compliance checklist. Every cell is a suggestion the user can move, swap, delete, or turn off entirely, exactly like every other condition-adjusted suggestion in Ritham (§4.4–4.7 of `health-screening.md`).
+
+Because a timetable is still just a *layout* of the same suggestions the existing rule tables already govern, it inherits their constraints without exception: no cell for an **Under 18 (Minor)** user shows a calorie target, macro target, portion-restriction number, or weight-loss goal, regardless of what other condition is also present; no cell for a domain gated **required-blocking** shows a personalized quantity or intensity — it shows the referral message instead (§4.6); and no minute count, meal count, or nutrient amount appears anywhere in a timetable cell unless it traces to a specific citation in the research below or in `health-screening.md`'s own tables.
+
+---
+
+## 2. Under-18 Weekly Timetable
+
+### 2.1 Baseline — no condition tag (Under 18 (Minor) only)
+
+Per the Workout Adjustment Rule Table, **Under 18 (Minor)** carries no exercise-specific restriction and gate `none` — full activity-guideline content applies. Per the Nutrition Adjustment Rule Table, **Under 18 (Minor)** is gate `required-blocking`, but *specifically* for weight-management/calorie/macro/portion features — general food-variety education is unrestricted and shown normally.
+
+**Movement target this template is built around:** 60 minutes or more of moderate-to-vigorous activity every day (HHS *Physical Activity Guidelines for Americans*, 2nd ed., pp. 8, 48; CDC.gov — daily, not averaged). Within that, HHS specifies vigorous-intensity aerobic activity, muscle-strengthening activity, and bone-strengthening activity **each** on at least 3 days a week, as part of (not additional to) the daily 60 minutes. There is **no minimum bout length** — "any episode of moderate- or vigorous-intensity physical activity, however brief, counts" (HHS).
+
+| Day | Movement | Food / Meal-Pattern Note |
+|---|---|---|
+| Monday | 60+ min moderate-to-vigorous activity (PE, active commute, outdoor play, a sport). Today is a **vigorous** day. Fit in a **bone-strengthening** activity within the 60 minutes (jumping rope, running, basketball) [HHS]. | Half the plate = fruits + vegetables; the other half split between whole grains and a protein source [MyPlate, as reproduced by pediatric-hospital/AAP sources]. Today's vegetable pick: dark-green (spinach, broccoli). |
+| Tuesday | 60+ min moderate-to-vigorous activity. Fit in a **muscle-strengthening** activity within the 60 minutes (bodyweight exercises, resistance bands, climbing) [HHS]. | Same half-plate structure. Today's vegetable pick: red/orange (carrots, peppers). Swap in a whole grain at one meal — MyPlate's "at least half your grains whole" guidance. |
+| Wednesday | 60+ min moderate-to-vigorous activity — another **vigorous** day, plus a **bone-strengthening** activity [HHS]. | Half-plate structure. Vegetable pick: beans/peas subgroup. Rotate the protein source (eggs, beans, fish, poultry) — AAP's own framing: "rice, beans, eggs, milk, peanut butter all have protein," i.e., variety across sources. |
+| Thursday | 60+ min moderate-to-vigorous activity, with a **muscle-strengthening** activity worked in [HHS]. | Half-plate structure. Vegetable pick: starchy (corn, peas, potatoes). Family meal tonight — AAP encourages "family dinners at least once or twice a week" for preteens/teens. |
+| Friday | 60+ min moderate-to-vigorous activity — third **vigorous** day [HHS]. | Half-plate structure. Vegetable pick: "other" subgroup (tomatoes, mushrooms, onions). Water instead of sugary drinks — standing MyPlate message, every day. |
+| Saturday | 60+ min or more — weekends suit a longer unstructured block (hiking, swimming, a family outing, sports). Muscle- and/or bone-strengthening activity can land here too; HHS allows these to overlap with the same day's aerobic activity. | Grocery/meal-prep day: restock variety across the fruit/vegetable subgroups for the coming week — MyPlate's "vary across the week" message. Family meal. |
+| Sunday | 60 min of activity, any intensity or format — since no minimum bout length applies, this can be a lighter, flexible day (a walk, casual play) [HHS]. | Regular meals plus a snack or two; Ritham does not specify an exact count (e.g., "3 meals + 2 snacks") because no AAP/USDA primary source confirms a specific numeric convention — snacking itself is normal (AAP: most children eat at least one snack a day), but the count is left open. |
+
+**Weekly totals this arrangement hits:** vigorous activity on 3 days (Mon/Wed/Fri), muscle-strengthening on 3 days (Tue/Thu/Sat), bone-strengthening on 3 days (Mon/Wed/Sat) — meeting HHS's "at least 3 days/week" floor for each. *(Design inference, flagged: HHS requires the weekly floor per category and explicitly states there's no official day-by-day prescribed schedule — this Mon/Wed/Fri/Tue/Thu/Sat arrangement is Ritham's own illustrative default, loosely modeled on the flexibility shown in HHS's own non-prescriptive 11-year-old/16-year-old sample weeks, not an official recommendation. It's also worth surfacing to the user that WHO frames the 60 min/day target as a weekly *average*, not a strict daily minimum — so a lighter Sunday is not a "shortfall" under that framing.)*
+
+**Optional weekly anchor (behavior-based, not weight-based):** AAP's "5-2-1-0" framework — 5 servings of fruit/vegetables, 2 hours or less of recreational screen time, 1 hour of physical activity, 0 sugary drinks — pairs well with this template because it has no calorie or weight component. *(Flag: the research located this via AAP's healthychildren.org hub listing but could not load the linked article directly to confirm exact wording — the four numbers are reported via secondary summary, not a directly-read primary source.)*
+
+### 2.2 Worked example — Under 18 (Minor) + Type 1 Diabetes (On Insulin)
+
+This applies two existing rows on top of the baseline:
+- **Workout Table, "Diabetes (Type 1 or Type 2) — On Insulin or Hypoglycemia-Risk Medication"** (gate `recommended`): standard aerobic + resistance targets, paired with a reminder to check blood glucose before exercising, keep fast-acting carbohydrate available, and recheck after exercise (delayed post-exercise low blood sugar risk). Avoid: starting exercise during symptoms of low blood sugar without checking/treating first.
+- **Nutrition Table, "Diabetes (Type 1 or Type 2) — any medication status"** (gate `recommended`): the ADA Diabetes Plate Method (½ plate non-starchy vegetables, ¼ protein, ¼ carbohydrate foods, plus water) as a "no-math" framework; general carb-consistency (steady carb intake meal-to-meal); added-sugar awareness.
+
+Combined with the **Under 18 (Minor)** row, whose ban on calorie/macro/portion numbers applies "independent of any condition otherwise reported" (`health-screening.md` §3): the Plate Method's *proportions* are kept, because they're the same kind of structural/visual guidance as the half-plate MyPlate rule already permitted for minors — a proportion, not a gram, calorie, or percentage. The ADA's optional **~45–60 g carbohydrate-per-meal** starting figure and the **<10%-of-calories** added-sugar reference — both numeric, and both things the Diabetes row only offers as *optional* adult-facing education — are **withheld** here for exactly that reason.
+
+| Day | Movement (adjusted) | Food / Meal Pattern (adjusted) |
+|---|---|---|
+| Monday | Same 60+ min vigorous + bone-strengthening target. **Added:** check blood glucose before starting; keep fast-acting carbohydrate on hand; recheck after the session. | Same half-plate structure, reframed as the Diabetes Plate Method: ½ plate non-starchy vegetables, ¼ protein, ¼ carbohydrate foods, plus water. |
+| Tuesday | Baseline muscle-strengthening target + the same glucose-check / fast-acting-carb / recheck routine. | Plate Method structure; carbohydrate foods kept roughly steady from meal to meal rather than concentrated in one sitting — no specific gram target shown. |
+| Wednesday | Baseline vigorous + bone-strengthening target + glucose-check routine. | Plate Method structure; protein-source rotation continues from baseline. |
+| Thursday | Baseline muscle-strengthening target + glucose-check routine. | Plate Method structure; family meal night retained from baseline. |
+| Friday | Baseline vigorous target + glucose-check routine. | Plate Method structure; water over sugary drinks. |
+| Saturday | Baseline weekend block + glucose-check routine — worth calling out specifically since a longer/less predictable session raises the same delayed-low-blood-sugar consideration. | Plate Method structure carries into weekend/family meals. |
+| Sunday | Baseline flexible/lighter day; the glucose-check routine applies to any structured activity, not to pure rest. | Regular meals/snacks, same loose structure as baseline — still no specified meal count. |
+
+**Persistent tag shown under this table:** *Adjusted for **Type 1 Diabetes — On Insulin** · General guidance, not medical advice · Edit in Settings* (§4.4 format, reused verbatim). Never shown: an insulin-dosing or medication-adjustment suggestion — that's a standing, tag-independent prohibition (`health-screening.md` §5, "always-on rules").
+
+---
+
+## 3. 65+ Weekly Timetable
+
+### 3.1 Baseline — no condition tag (65+ / Deconditioned / Returning After Inactivity only)
+
+Per the Workout Table, this tag keeps the same aerobic/strength targets as any adult, plus a third component — multicomponent balance + functional-strength work — prioritized ahead of aerobic work if very deconditioned; intensity is set relative to the individual (RPE or the talk test), progressed gradually; gate `none` (the adjustment is progression pace, not a block). Per the Nutrition Table, this tag has no nutrition-specific rule of its own — the "None of the Above / Baseline" row's full personalization applies, gate `none`.
+
+**Movement targets this template is built around:** the standard adult floor — 150–300 min/week moderate or 75–150 min/week vigorous aerobic activity, "spread throughout the week" (HHS), plus resistance training on 2+ days/week covering major muscle groups (HHS; NHS) — **plus** the 65+-specific multicomponent requirement: aerobic, strength, *and* balance combined, not just more of the same (`health-screening.md`, 65+ Workout row).
+
+| Day | Movement | Food / Meal Pattern |
+|---|---|---|
+| Monday | Moderate-intensity aerobic activity (brisk walk, cycling) — use the talk test (can talk but not sing) or RPE to set intensity, not a fixed benchmark. 5–10 min warm-up and cool-down. | Spread protein across today's meals (roughly 25–30 g at each of breakfast/lunch/dinner — e.g., eggs + dairy, fish or legumes, poultry or tofu) rather than concentrating it at dinner, to support muscle maintenance [Paddon-Jones & Rasmussen 2009; NIA]. |
+| Tuesday | Resistance/functional-strength training — major muscle groups, RPE-guided load, progressing gradually. Add a brief standing-balance drill during warm-up (part of the multicomponent element). | Protein spread continues; include a vitamin-D source (fatty fish, fortified milk/dairy) — reference intake 20 mcg (800 IU)/day for age 71+, 15 mcg (600 IU)/day for ages 51–70, not more than 100 mcg (4,000 IU)/day either way [NIA]. Drink a glass of water before today's workout [NIA]. |
+| Wednesday | Moderate-intensity aerobic activity + a dedicated balance/multicomponent session (tai chi, standing balance exercises) — the third component alongside aerobic and strength. | Whole-grain focus at each meal (at least half of grains whole — oats, brown rice, whole wheat) [NIA]. Fiber-rich vegetables/fruit at each meal to support digestion — no specific gram target shown, since NIA doesn't publish one for this age group [flag]. |
+| Thursday | Rest or light active-recovery movement (gentle stretching, a short leisure walk) — any duration counts. | If appetite is reduced, frequent smaller meals rather than three large ones [NIA]. Good day to plan next week's groceries/meals ahead of time [NIA meal-planning tip]. |
+| Friday | Second resistance/functional-strength session of the week — 2+ days/week covers all major muscle groups. | Protein spread across meals again; potassium-rich fruit/vegetables (oranges, potatoes, spinach) — reference intake 3,400 mg/day (men 51+), 2,600 mg/day (women 51+) [NIA]; helps offset sodium. |
+| Saturday | Longer/social aerobic session (group walk, dancing, swimming) — moderate intensity, talk-test guided. | Rotate toward one of USDA's other Food-Pattern styles for variety this week (e.g., a Mediterranean-style meal — more fish, less dairy) [NIA]. Social/family meal. |
+| Sunday | Light balance + flexibility day (tai chi, gentle yoga, mobility work), or full rest — flexible, low-stakes. | Calcium-rich food at a meal (dairy or a fortified alternative) — reference intake 1,200 mg/day (women 51+, men 71+), 1,000 mg/day (men 51–70), not more than 2,000 mg/day [NIA]. Hydration reminder — don't wait until thirsty. |
+
+**Weekly totals:** aerobic activity on 3–4 days (Mon/Wed/Sat, plus light movement Thu), meeting "spread across most of the week"; resistance training on 2 days (Tue/Fri), meeting the 2+/week floor; balance/multicomponent work touches Tue/Wed/Sun, satisfying the 65+-specific third component.
+
+**General reference band shown alongside the table, not computed per user** (same treatment as the sodium/saturated-fat reference figures elsewhere in Ritham's nutrition rules — population-level education, editable, never an individually calculated number):
+- Calorie range by self-reported activity level, ages 60+ [NIA/Dietary Guidelines]: Women — 1,600 (not active) / 1,800 (moderately active) / 2,000–2,200 (active). Men — 2,000–2,200 / 2,200–2,400 / 2,400–2,600.
+- Sodium: ≤2,300 mg/day generally for ages 51+ [NIA].
+- No specific fiber gram target or daily fluid-volume target is shown — the research did not surface an age-specific number for either from NIA's own pages [flag].
+
+### 3.2 Worked example — 65+ / Deconditioned / Returning After Inactivity + Hypertension — Managed
+
+This applies two existing rows on top of the baseline:
+- **Workout Table, "Hypertension — Managed"** (gate `recommended`): aerobic and/or resistance training most days, treated as roughly equivalent for blood-pressure benefit; progress duration first, then frequency/intensity; cue exhaling through the exertion phase of a lift. Avoid, flagged specifically for this tag: holding the breath during heavy lifts (Valsalva maneuver).
+- **Nutrition Table, "Hypertension — Managed"** (gate `recommended`): DASH-style eating-pattern awareness (more vegetables, fruit, whole grains, low-fat dairy, lean protein); general sodium-awareness education, optionally citing the published 2,300 mg (standard) and 1,500 mg (further-reduction) reference ranges as population-level education. Avoid: calculating or displaying a personalized sodium mg/day target; implying a specific BP outcome.
+
+| Day | Movement (adjusted) | Food / Meal Pattern (adjusted) |
+|---|---|---|
+| Monday | Same aerobic walk. Progression order follows the Hypertension row specifically: build duration before frequency or intensity. | DASH-style framing: today's protein-spread meals lean toward lean protein + low-fat dairy specifically. |
+| Tuesday | Same resistance session. **Flagged specifically for this tag:** exhale through the exertion phase of every lift; never hold the breath (Valsalva maneuver) during heavier sets. | Sodium-awareness callout: general population reference is ≤2,300 mg/day, or ≤1,500 mg/day for further reduction — shown as general education text, not a number Ritham calculates for this user. |
+| Wednesday | Same aerobic + balance day; the breath cue applies to any resistance-flavored balance drill too. | Whole-grain + fiber-rich produce focus, framed as part of the DASH pattern. |
+| Thursday | Same light/rest day. | Frequent-smaller-meals guidance continues if applicable; low-fat dairy choice reinforced (DASH). |
+| Friday | Second resistance session; same breath-cue flag. | Potassium-rich produce reinforced — DASH and the general 65+ row agree here (more fruit/veg lowers sodium-heavy substitutions while raising potassium). |
+| Saturday | Same longer/social aerobic session. | Social/rotated-pattern meal, sodium-aware version (herbs/spices instead of salt). |
+| Sunday | Same light balance/rest day. | Calcium-rich, low-fat dairy meal; hydration reminder unchanged. |
+
+**Persistent tag shown under this table:** *Adjusted for **Hypertension — Managed** · General guidance, not medical advice · Edit in Settings.* The general calorie-range reference band from §3.1 still applies (the Hypertension row doesn't prohibit it) — only the sodium figure carries the explicit "general education, not a personalized target" caveat, because that's what the Nutrition Table's own "What Ritham Should NOT Do" column for this row specifically forbids computing.
+
+---
+
+## 4. Design Rules for the Timetable Feature
+
+1. **Required-blocking renders as the referral message, in place of the suggestion, inside the cell.** A timetable slot for a domain gated `required-blocking` (e.g., either domain for **Kidney Disease / Dialysis**, or nutrition for **Currently Pregnant**) never shows a quantity or intensity — it shows the exact §4.6 message ("We're holding off on personalized suggestions here...") scoped to that cell, keeps the compact/expandable disclaimer pattern (§4.4–4.5), and still allows manual logging and generic non-personalized information in that slot, per the governing principle that a required-blocking gate blocks personalization in a domain, not app access.
+2. **The timetable shell is always editable, independent of any gate.** A user can drag, swap, delete, or relabel any day regardless of what's gated — being blocked from a *personalized suggestion* never means being blocked from *rearranging the template*. An Under-18 user's food column staying non-numeric doesn't prevent them from moving PE to a different day; a required-blocking nutrition cell can still be moved, hidden, or replaced with "log manually" as a display choice.
+3. **The timetable is a suggestion layer, decoupled from Momentum's counting logic.** Completing or skipping a timetable slot never itself triggers streak gain, streak loss, or "missed" styling — only an actual qualifying session (a GPS-tracked run/walk of 10+ minutes, or a lift with 3+ working sets across 2+ exercises) counts toward the weekly Momentum target, exactly as already specified. A timetable cell has no separate "complete/incomplete" indicator that could compete with or contradict Momentum's own non-punishing framing; an unused suggestion slot is just unused, never shown as a red X or a missed day. Any row already marked "should never break the user's streak" in the existing rule tables (recent cardiac event, not-yet-cleared injury, complicated pregnancy/postpartum, active ED symptoms) carries that same protection into its timetable rendering — a held or blocked day in those rows must never visually resemble a broken streak.
+4. **Under-18 tier is school-schedule aware.** The user (or a parent, where applicable) marks which days are school days vs. weekends/breaks; structured session slots can compress, shift, or drop to a lighter "micro-break" mode around exam periods without any streak penalty — this mirrors the existing Recovery-Week guardrail rather than inventing a new mechanic. This follows directly from the research: adolescent circadian phase genuinely delays during puberty, and chronic academic stress is documented as a primary driver of declining teen activity, so a fixed, unyielding daily grid is a worse fit for this tier than one built to flex.
+5. **65+ tier is routine-consistency aware.** The default posture is a low-maintenance template set once and rarely reconfigured, rather than a grid demanding weekly rebuilding — the research shows schedule *consistency* (not novelty or density) is what tracks with better sleep and health outcomes in older adults, while the same population reports disliking apps that require ongoing structured planning. In practice: favor "same time each day" defaults, let a slot read as "your usual walk time" rather than assigning a new session type, and keep editing available but never prompted for unless the user initiates it.
+6. **Multiple condition tags on the same cell merge adjustments but never soften the gate.** When two tags modify the same slot (e.g., a 65+ user with both Hypertension — Managed and Osteoarthritis), both rows' adjustment content appears together in that cell (breath-cueing from one, low-impact mode selection from the other), while the gate itself follows the existing most-restrictive-wins rule (§5 of `health-screening.md`) — never averaged or blended down to something more permissive than either tag alone would produce.
+7. **No number appears in a timetable cell without a citation trail.** Every minute count, day-count, gram, milligram, or IU figure in this document traces to a named guideline (HHS, WHO, NIA, PROT-AGE, ADA, an existing Ritham rule row). Where the research explicitly flagged a figure as unconfirmed (e.g., a specific meal-count convention, a 65+ fiber gram target, a daily fluid-volume number), that gap is stated in the relevant cell or footnote rather than filled with a plausible-sounding default — matching the sourcing discipline already established in `health-screening.md` §"A note on sourcing discipline."
