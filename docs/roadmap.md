@@ -8,10 +8,12 @@ Published as an interactive artifact: https://claude.ai/code/artifact/48e77539-1
 
 ## 1. Core Features (Table Stakes)
 
-### Run/Walk Tracking
+### Cardio & Activity Tracking
 
 | Element | Ritham's approach | Why |
 |---|---|---|
+| Activity type selector | A tab/picker shown before or during a session: Run, Walk, Cycle, and other common cardio types (Hike, Swim, Elliptical), with the list extensible over time. | The Momentum streak (see §4) was always designed around "any qualifying cardio session," not just running and walking specifically — scoping the UI to only two activity types would undersell that design. Users also think in terms of "what am I doing right now," not just a run/walk binary. |
+| Manual stopwatch | A start/pause/stop timer available for any activity type, most useful for indoor or non-GPS sessions (treadmill, stationary bike, indoor rowing). | GPS isn't available or meaningful indoors. The stopwatch is how a manually-tracked session gets its duration — and manually-entered sessions already count toward Momentum, per the "manually-entered sessions still count, labeled distinctly from sensor-verified ones" rule in §4. |
 | GPS pace/distance/elevation/splits, grade-adjusted pace, full training history | Free at launch, permanently | Strava moved Year in Sport and API access behind paywalls in 2025–2026; Runkeeper gates its Goal Coach and training plans. The single most-repeated complaint across the cardio dossier is monetization creep on previously-free basics — Ritham doesn't create that resentment in the first place. |
 | Data storage model | Local-first, with background cloud sync as backup, not source of truth | Nike Run Club (forced sign-outs, lost watch→phone syncs), Runkeeper (post-update history loss), and Jefit (bogus 70+ hour sessions from failed cloud sync) all lose user data at the sync layer. Local-first means a bad network day can't erase a workout. |
 | Distance/pace calculation | One consistent, smoothed GPS algorithm with a visible accuracy indicator (e.g., "high confidence" vs. "signal was weak") rather than a silently varying number | Adidas Running shows up to 0.4-mile variance on identical routes; Nike Run Club has reported 15–20% overcounting after updates. Surfacing confidence instead of hiding variance turns a trust problem into a transparent one. |
@@ -89,7 +91,7 @@ Concrete implementation:
 
 - **Cadence:** weekly, not daily. Default target is 3 qualifying sessions per week (user-adjustable, 2–5), because the research is explicit that daily cadence is only defensible for actions completable on a bad day — exercise, especially anything carrying injury risk, should not be.
 - **Qualifying session (published, transparent, not hidden fraud-detection):**
-  - Run/Walk: continuous GPS-tracked movement, minimum 10 minutes.
+  - Cardio (any activity type — run, walk, cycle, and others as they're added): continuous tracked movement, minimum 10 minutes, whether tracked by GPS or by the manual stopwatch (see §1).
   - Lift: a completed session logging at least 3 working sets across 2 or more exercises.
   - Manually-entered sessions (no GPS/sensor data) still count, but are labeled distinctly from sensor-verified ones in the history view — this preserves trust and transparency without turning the app into a surveillance layer that cross-checks the user, which would directly contradict the privacy-first stance in Section 3.
 - **Shields (earned, never purchased):** one shield accrues automatically for every 4 consecutive successful weeks, stacking up to 3. A shield auto-applies the moment a week is about to be missed — no purchase, no currency, no subscription gate. This is a direct fix for the tension the research flags in Duolingo's own system, where the strongest anti-anxiety mechanic is partly monetized.
