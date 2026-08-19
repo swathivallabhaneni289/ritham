@@ -1,0 +1,23 @@
+{
+  "source_path": "/Users/swathivallabhaneni/code/ritham/docs/health-screening.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Ritham Health-Intake Questionnaire & Condition-Based Recommendation Rules",
+  "summary": "Defines the health screening questionnaire flow, condition tags, and rule tables governing workout/nutrition personalization gating and disclaimers.",
+  "scope": [
+    "health intake questionnaire",
+    "condition checklist",
+    "clearance gates",
+    "workout adjustment rules",
+    "nutrition adjustment rules",
+    "PAR-Q+ style screening",
+    "SCOFF eating-disorder screen",
+    "disclaimers and legal framing",
+    "red-flag escalation logic"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Ambiguous between PRD and SPEC: document has strong feature/requirement language (user-facing questionnaire flow, UX copy, disclaimers) typical of a PRD, but is dominated by precise rule tables, gate legends, condition-tag data model, and explicit trigger/threshold logic (Sections 2, 3, 5) that function as implementation contracts, which is more SPEC-like. Classified as SPEC per precedence (SPEC > PRD) given the rule-table/data-model density, but synthesizer should treat requirement-like sections (1.0-1.6, Section 4 UX copy) as PRD-equivalent content if needed."
+}

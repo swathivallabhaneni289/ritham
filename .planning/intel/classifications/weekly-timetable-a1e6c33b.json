@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/swathivallabhaneni/code/ritham/docs/weekly-timetable.md",
+  "type": "DOC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Ritham Weekly Timetable — Under-18 & 65+ Movement + Food Design",
+  "summary": "Weekly movement/nutrition timetable templates for Under-18 and 65+ user tiers, derived from health-screening.md's rule tables plus design rules.",
+  "scope": ["weekly timetable feature", "Under-18 (Minor) tier", "65+ / Deconditioned tier", "Workout Adjustment Rule Table", "Nutrition Adjustment Rule Table", "Momentum streak logic", "health screening gates"],
+  "cross_refs": ["./health-screening.md", "docs/health-screening.md"],
+  "locked": false,
+  "precedence": null,
+  "notes": "Prose-heavy, restates/derives from health-screening.md rather than introducing new decisions or requirements. However, Section 4 ('Design Rules for the Timetable Feature') contains numbered feature-behavior rules resembling requirements (e.g., required-blocking rendering, editability, streak decoupling) — borderline PRD/SPEC signal. Classified DOC because the document explicitly frames itself as a restatement/layout of an existing document's rules plus research-grounded illustrative content, not a standalone requirements or decision source; no status/frontmatter, no user-story format, no accepted decision markers."
+}

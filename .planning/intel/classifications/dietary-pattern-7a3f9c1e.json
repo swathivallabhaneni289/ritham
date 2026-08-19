@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/swathivallabhaneni/code/ritham/docs/dietary-pattern.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Ritham \"Dietary Pattern\" Preference — Design Addendum",
+  "summary": "Defines a non-gating dietary-pattern preference field, its intake question, food-swap rules, and education content layered on existing nutrition logic.",
+  "scope": ["dietary_pattern field", "intake question flow", "Nutrition Adjustment Rule Table", "Clearance Gate", "food/protein swap table", "nutrient education blocks", "health-screening.md"],
+  "cross_refs": ["docs/health-screening.md", "./health-screening.md"],
+  "locked": false,
+  "precedence": null,
+  "notes": "No ADR/PRD frontmatter or status field present. Classified as SPEC due to explicit data model (dietary_pattern: none|vegetarian|vegan), engineer-facing implementation rules ('Rule, stated plainly for engineers implementing this'), gate-resolution logic, and swap/lookup tables — these are implementation contracts rather than user-facing requirements or a locked architectural decision. Document also contains PRD-like elements (intake question/UX copy) and DOC-like elements (nutrient education prose), but the dominant, load-bearing content is the technical rule/table specification, so SPEC was chosen per the ADR>SPEC>PRD>DOC precedence tie-break."
+}

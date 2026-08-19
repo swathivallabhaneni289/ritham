@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/swathivallabhaneni/code/ritham/docs/cycle-recovery.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Ritham — Cycle Tracking & Recovery-Aware Momentum: Design Document",
+  "summary": "Design doc specifying two opt-in adaptive-suggestion features: cycle tracking and sleep-based Recovery-aware Momentum adjustments.",
+  "scope": ["cycle tracking", "menstrual phase estimation", "Recovery-aware Momentum", "sleep input", "condition-tag/clearance-gate system", "Momentum streak mechanics", "wearable HRV/sleep-stage fusion", "disclaimers"],
+  "cross_refs": ["./dietary-pattern.md", "docs/dietary-pattern.md"],
+  "locked": false,
+  "precedence": null,
+  "notes": "Titled 'Design Document' with Status: Design draft, which leans DOC/context-only; however it specifies concrete feature behavior, opt-in rules, and an explicit invariants list (Section 3.3) functioning as acceptance criteria, which is stronger PRD signal (requirements/scope for product behavior) than pure prose documentation. Not ADR (no Decision/Consequences/Accepted status) and not SPEC (no API/schema contracts). Classified PRD at medium confidence due to this ambiguity with DOC."
+}

@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/swathivallabhaneni/code/ritham/docs/group-events.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Group Goal-Events — Design Document",
+  "summary": "Design document specifying friend/group formation, non-competitive goal-events, privacy-safe photo/location logging, feed, and certificates for Ritham.",
+  "scope": ["friends", "groups", "goal-events", "completion logging", "photo/location privacy", "shared feed", "digital finisher certificate", "EXIF stripping", "Privacy Zone", "export flow"],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter or ADR-style Context/Decision/Consequences sections, and no user-story/acceptance-criteria PRD structure. Classified SPEC over DOC/PRD because it contains concrete data-model specifications (certificate fields, feed card contents, copy table, upload/export flow steps) that read as implementation contracts rather than pure narrative or user-story requirements; per ambiguity rule (ADR > SPEC > PRD > DOC), SPEC was chosen as the higher-precedence competing signal over DOC/PRD."
+}

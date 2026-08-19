@@ -1,0 +1,23 @@
+{
+  "source_path": "/Users/swathivallabhaneni/code/ritham/docs/roadmap.md",
+  "type": "PRD",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "Ritham Feature Roadmap",
+  "summary": "Product roadmap defining core features, novel differentiators, cross-generational design strategy, streak system design, and MVP/v2/moonshot prioritization for Ritham.",
+  "scope": [
+    "cardio and activity tracking",
+    "strength tracking",
+    "streak/consistency system (Momentum)",
+    "monetization boundary",
+    "cross-generational design",
+    "household accounts",
+    "wearable fusion",
+    "onboarding",
+    "prioritization (MVP, v2, moonshot)"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Structured as feature tables, user-facing rationale, goals, and prioritization tiers (MVP/v2/moonshot) rather than a single locked architectural decision or an implementation contract — strongest signals align with PRD (feature requirements, scope, prioritization, user-facing framing). No ADR-style Decision/Consequences sections or SPEC-style API/schema definitions present."
+}
