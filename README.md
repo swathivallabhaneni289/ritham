@@ -12,6 +12,11 @@ This repo is currently pre-code: the project is in the feature-research and desi
 - [`docs/dietary-pattern.md`](docs/dietary-pattern.md) — the vegan/vegetarian dietary-preference layer: a non-gating food-preference tag that swaps protein/food examples inside the existing nutrition rules without ever touching a clearance gate.
 - [`docs/cycle-recovery.md`](docs/cycle-recovery.md) — opt-in menstrual cycle tracking (symptom-triggered, not phase-prescriptive — deliberately conservative given how contested "cycle syncing" claims are) and recovery-aware Momentum (sleep-informed intensity suggestions that never change what counts toward the streak).
 - [`docs/group-events.md`](docs/group-events.md) — friends, closed groups, shared non-competitive goal-events (group 5K/hike/swim), privacy-first photo + location logging (built around the 2018 Strava heatmap lesson), a group-only feed, and a Ritham-branded finisher certificate with leak-safe external sharing.
+- [`docs/mascot.md`](docs/mascot.md) — Momo, the activity-mirroring Live Activity mascot: character concept, pose set, and an iOS ActivityKit-grounded technical design for the Lock Screen and Dynamic Island.
+
+## Planning
+
+This project is now managed with [GSD](https://github.com/opengsd/gsd-core) — see `.planning/ROADMAP.md` for the phase breakdown and `.planning/PROJECT.md`/`.planning/REQUIREMENTS.md` for the canonical scope. The design docs above are the source research; GSD's `.planning/` tree is the source of truth for what's actually being built and in what order.
 
 ## Status
 
@@ -21,4 +26,6 @@ This repo is currently pre-code: the project is in the feature-research and desi
 - [x] Vegan/vegetarian dietary-preference layer (draft — same legal/clinical review caveat applies, see `docs/dietary-pattern.md`)
 - [x] Cycle tracking + recovery-aware Momentum design (draft — same legal/clinical review caveat applies, see `docs/cycle-recovery.md`)
 - [x] Group Goal-Events social feature design (draft — needs privacy/legal review, e.g. GDPR/CCPA obligations for photo and location data, see `docs/group-events.md`)
+- [x] Momo mascot + Live Activity design (draft — needs a name-recognition/trademark check on "Momo" before shipping, see `docs/mascot.md`)
+- [x] GSD planning bootstrapped (`.planning/`) — 5-phase roadmap, 39 v1 requirements mapped
 - [ ] App implementation
