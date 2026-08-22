@@ -81,9 +81,10 @@ Decimal phases appear between their surrounding integers in numeric order.
      population-level reference figures (never an individually calculated number), matched to
      their dietary pattern when the underlying gate allows it, and a required-blocking nutrition
      tag shows zero personalized quantity of any kind for that domain.
-  6. In Settings, a visible "always free" list confirms that GPS/HR tracking, full history,
-     plate/1RM calculators, supersets, and movement-pattern tagging are never paywalled — matching
-     what's actually gated (or not) elsewhere in the app.
+  6. In Settings, a visible "always free" list confirms that GPS/manual-stopwatch tracking
+     (heart-rate display when a device is paired, never required), full history, plate/1RM
+     calculators, supersets, and movement-pattern tagging are never paywalled — matching what's
+     actually gated (or not) elsewhere in the app.
 **Plans**: TBD
 **UI hint**: yes
 

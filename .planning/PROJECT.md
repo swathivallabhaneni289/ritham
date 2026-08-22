@@ -18,9 +18,10 @@ ranking.
 
 - **Customer**: Individual and household fitness trackers spanning teens through older adults, via
   public App Store release.
-- **Revenue model**: Freemium. Core tracking (GPS/HR, full history, plate/1RM calculators,
-  supersets, movement-pattern tagging) and all streak-forgiveness mechanics (shields, comeback
-  repair, injury guardrail) are permanently free. Future paid tiers — AI-adaptive programming,
+- **Revenue model**: Freemium. Core tracking (GPS/manual-stopwatch, with heart-rate display when
+  a device is paired — never required, since the app is fully functional phone-only — full
+  history, plate/1RM calculators, supersets, movement-pattern tagging) and all streak-forgiveness
+  mechanics (shields, comeback repair, injury guardrail) are permanently free. Future paid tiers — AI-adaptive programming,
   multi-wearable fusion dashboards, human-coach marketplace, advanced data exports — are v2+,
   not in v1 scope.
 - **Success metric**: Public App Store launch readiness — all v1 requirements shipped, and
@@ -112,10 +113,12 @@ ranking.
   indefinitely (tracked as LAUNCH-01 through LAUNCH-05).
 - **Data collection discipline**: The screening questionnaire must remain fixed-choice only —
   never free text, never live AI-generated advice — per `docs/health-screening.md` §1.
-- **Monetization boundary**: Core GPS/HR tracking, full training history, plate/1RM calculators,
-  supersets, movement-pattern tagging, and all streak-forgiveness mechanics (shields, comeback
-  repair, injury guardrail) are permanently free — never paywalled, and stated visibly in-app
-  (Settings), not just as internal policy.
+- **Monetization boundary**: Core GPS/manual-stopwatch tracking, full training history,
+  plate/1RM calculators, supersets, movement-pattern tagging, and all streak-forgiveness
+  mechanics (shields, comeback repair, injury guardrail) are permanently free — never paywalled,
+  and stated visibly in-app (Settings), not just as internal policy. Heart-rate display is shown
+  whenever a Bluetooth strap or wearable is paired but is never required — v1 has no continuous
+  HR sensing without a paired device, so the app must be fully functional and accurate phone-only.
 - **Red-flag precedence**: When 2+ condition tags apply to the same guidance, the single most
   restrictive gate always wins — never averaged, never blended, never softened.
 
@@ -134,4 +137,5 @@ ranking.
 
 ---
 *Last updated: 2026-08-22 — added a tiered Under-18 parental-consent requirement and a COPPA
-compliance review.*
+compliance review, and corrected the GPS/HR monetization wording to reflect phone-only v1 (no
+continuous heart rate without a paired device).*

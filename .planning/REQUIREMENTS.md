@@ -123,10 +123,11 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Monetization Boundary
 
-- [ ] **MONETIZE-01**: The "always free" feature list (core GPS/HR tracking, full training
-  history, plate/1RM calculators, superset support, movement-pattern tagging, all streak-
-  forgiveness mechanics) is stated visibly in-app (e.g., Settings), not just as internal policy,
-  and matches what is actually never paywalled elsewhere in the app.
+- [ ] **MONETIZE-01**: The "always free" feature list (core GPS/manual-stopwatch tracking, with
+  heart-rate display when a device is paired but never required, full training history, plate/1RM
+  calculators, superset support, movement-pattern tagging, all streak-forgiveness mechanics) is
+  stated visibly in-app (e.g., Settings), not just as internal policy, and matches what is
+  actually never paywalled elsewhere in the app.
 
 ### Momentum (Streak System)
 
