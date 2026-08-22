@@ -41,6 +41,9 @@ ranking.
 - [ ] Cross-generational onboarding with a real walk-or-light-lift calibration session, a
       user-chosen dual-register explanation layer, and fixed-choice safety screening
       (PAR-Q-style gates + SCOFF), never a "senior mode" or age-gated fork
+- [ ] A tiered parental-consent gate for users under 18: under 13 blocks the entire app pending
+      verifiable parental consent; 13-17 only gates the sensitive screening (condition checklist,
+      SCOFF) behind parent approval, never the calibration session or basic tracking
 - [ ] Free-forever cardio tracking (GPS + manual stopwatch, with a visible confidence indicator)
       and strength tracking (plate calculator, supersets, movement-pattern tagging) with full
       retroactive editing
@@ -103,9 +106,10 @@ ranking.
 
 - **Tech stack**: iOS native, Swift/SwiftUI — user-specified target runtime.
 - **Compliance**: Public App Store launch requires PAR-Q+ gate-question wording counsel review,
-  SCOFF wording/scoring clinician confirmation, protein-swap-table dietitian sign-off, and a
-  GDPR/CCPA privacy review covering intake health data — before public submission, not deferred
-  indefinitely (tracked as LAUNCH-01 through LAUNCH-04).
+  SCOFF wording/scoring clinician confirmation, protein-swap-table dietitian sign-off, a
+  GDPR/CCPA privacy review covering intake health data, and a COPPA compliance review of the
+  Under-13 verifiable-parental-consent method — before public submission, not deferred
+  indefinitely (tracked as LAUNCH-01 through LAUNCH-05).
 - **Data collection discipline**: The screening questionnaire must remain fixed-choice only —
   never free text, never live AI-generated advice — per `docs/health-screening.md` §1.
 - **Monetization boundary**: Core GPS/HR tracking, full training history, plate/1RM calculators,
@@ -129,4 +133,5 @@ ranking.
 | `dietary_pattern` is strictly downstream of the Clearance Gate, never part of gate-resolution logic | Prevents a dietary preference from ever loosening a safety gate (e.g., a vegan tag never overriding a kidney-disease block) | — Pending |
 
 ---
-*Last updated: 2026-08-19 after initial roadmap creation (document ingest)*
+*Last updated: 2026-08-22 — added a tiered Under-18 parental-consent requirement and a COPPA
+compliance review.*

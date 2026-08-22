@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### Phase 1: Onboarding & Safety Intake
 **Goal**: Every new user, regardless of age or health background, completes a real calibration session and a safety screening that will safely gate personalized guidance later — without ever being funneled into a separate "senior" or "kid" experience.
 **Depends on**: Nothing (first phase)
-**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, DIET-01, CROSSGEN-03, CROSSGEN-05
+**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, MINOR-02, DIET-01, CROSSGEN-03, CROSSGEN-05
 **Success Criteria** (what must be TRUE):
   1. A new user's first session is a guided walk-or-light-lift calibration (never a self-reported
      fitness-level dropdown), and the result sets their starting baseline.
@@ -46,9 +46,14 @@ Decimal phases appear between their surrounding integers in numeric order.
      re-screen at expiry.
   4. No user ever sees a "senior mode," a separate under-18 app mode, or an age-based navigation
      fork — age only ever adjusts content within shared screens.
-  5. A user sets a dietary pattern (none/vegetarian/vegan) right after entering age, can edit it
+  5. A user under 13 cannot use the app at all until a parent/guardian completes a verifiable
+     consent step; a user aged 13–17 completes calibration, the explanation-register choice, and
+     dietary pattern with zero parental involvement, and only the rest of the screening (gate
+     questions, condition checklist, SCOFF) waits on a parent's approval — never the app as a
+     whole. A user 18 or older is never gated.
+  6. A user sets a dietary pattern (none/vegetarian/vegan) right after entering age, can edit it
      anytime in Settings, and it never changes a clearance-gate outcome.
-  6. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
+  7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
 **Plans**: TBD
 **UI hint**: yes
@@ -134,7 +139,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### Phase 5: Launch Readiness (Legal & Clinical Review)
 **Goal**: Ritham is cleared to submit publicly to the App Store — every piece of clinical/legal-sensitive content has been reviewed by the right professional, and the privacy review is complete.
 **Depends on**: Phase 4
-**Requirements**: LAUNCH-01, LAUNCH-02, LAUNCH-03, LAUNCH-04
+**Requirements**: LAUNCH-01, LAUNCH-02, LAUNCH-03, LAUNCH-04, LAUNCH-05
 **Success Criteria** (what must be TRUE):
   1. Counsel has reviewed the PAR-Q+-style gate-question wording before "PAR-Q+" is referenced by
      name anywhere in-product (or the app ships without the branded name until cleared).
@@ -145,6 +150,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. A completed GDPR/CCPA privacy review covers all sensitive health data collected during
      intake (condition tags, SCOFF responses), and the app has the disclosures/consent flows
      required for public submission.
+  5. A completed COPPA compliance review confirms the Under-13 verifiable-parental-consent method
+     meets FTC-approved standards, with required parental disclosures in place, before public
+     submission.
 **Plans**: TBD
 
 ## Progress

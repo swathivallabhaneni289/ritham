@@ -67,7 +67,7 @@ Each entry below passed a specific test: does an existing app in the research al
 
 ## 3. Cross-Generational Design Strategy
 
-**Stated principle:** one data model, one set of screens, one app — appeal across Gen Z through Boomers comes from **progressive disclosure**, not mode-switching into four different experiences. Defaults are tuned for the least tech-confident user in the room; power features are *additive* on top of that default, never hidden behind a separate "advanced" app. Accessibility (text scaling, contrast, labeled icons, screen-reader support) is the base layer everyone gets, not an accommodation toggled on. There is no age gating anywhere in the product and no screen is ever labeled "senior mode" — users self-select complexity, generation never selects it for them.
+**Stated principle:** one data model, one set of screens, one app — appeal across Gen Z through Boomers comes from **progressive disclosure**, not mode-switching into four different experiences. Defaults are tuned for the least tech-confident user in the room; power features are *additive* on top of that default, never hidden behind a separate "advanced" app. Accessibility (text scaling, contrast, labeled icons, screen-reader support) is the base layer everyone gets, not an accommodation toggled on. There is no age gating anywhere in the product and no screen is ever labeled "senior mode" — users self-select complexity, generation never selects it for them. (One narrow exception, added after the initial research pass: a legally-driven parental-consent gate for users under 18 — see `docs/health-screening.md` §1.1. That's a one-time consent step, not a UX fork; it never produces a separate "kid mode" screen or navigation path.)
 
 Concrete implementation:
 

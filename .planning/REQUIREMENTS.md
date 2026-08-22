@@ -54,6 +54,22 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   stays available). Ritham never generates insulin-dosing or medication-adjustment suggestions,
   for any user, under any tag/combination, no exception via clearance toggle.
 
+### Minor Consent
+
+- [ ] **MINOR-01**: Age (Q0) resolves a tiered parental-consent gate, evaluated immediately after
+  Q0 and before any further onboarding step. Under 13: onboarding halts after Q0 — a parent/
+  guardian completes a verifiable consent step before the account is usable at all (calibration
+  session, tracking, and health screening all wait on this). 13–17: onboarding continues with zero
+  parental involvement through the calibration session, the explanation-register choice, and
+  DIET-01; a parent-approval step gates only the rest of HEALTH-01 (the gate section, condition
+  checklist, and SCOFF eating-disorder screen), so a teen can track workouts and build Momentum
+  fully before or without a parent ever approving anything. 18+: no gate. The gate is a consent
+  step, never a UX fork — it never produces a distinct "kid mode" screen, consistent with
+  CROSSGEN-05.
+- [ ] **MINOR-02**: The consent step never requires a minor to hold or enter a parent/guardian's
+  credentials on the minor's behalf; Ritham collects no more parent-identifying information than
+  the consent method strictly requires.
+
 ### Dietary Pattern
 
 - [ ] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) as Q0b
@@ -172,6 +188,9 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **LAUNCH-04**: A completed GDPR/CCPA privacy review covers all sensitive health data
   collected during intake (condition tags, SCOFF responses, and any other screening data), with
   the disclosures/consent flows it requires in place, before public App Store submission.
+- [ ] **LAUNCH-05**: A completed COPPA compliance review confirms the Under-13 verifiable-
+  parental-consent method (MINOR-01/02) meets FTC-approved standards and that required parental
+  disclosures are in place, before public App Store submission.
 
 ## v2 Requirements
 
@@ -290,6 +309,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EXPLAIN-01 | Phase 1 | Pending |
 | HEALTH-01 | Phase 1 | Pending |
 | HEALTH-02 | Phase 1 | Pending |
+| MINOR-01 | Phase 1 | Pending |
+| MINOR-02 | Phase 1 | Pending |
 | HEALTH-05 | Phase 1 | Pending |
 | HEALTH-06 | Phase 1 | Pending |
 | DIET-01 | Phase 1 | Pending |
@@ -325,12 +346,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LAUNCH-02 | Phase 5 | Pending |
 | LAUNCH-03 | Phase 5 | Pending |
 | LAUNCH-04 | Phase 5 | Pending |
+| LAUNCH-05 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 39 total
-- Mapped to phases: 39
+- v1 requirements: 42 total
+- Mapped to phases: 42
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-08-19*
-*Last updated: 2026-08-19 after initial roadmap creation (document ingest)*
+*Last updated: 2026-08-22 — added MINOR-01/02 (tiered parental-consent gate) and LAUNCH-05 (COPPA
+review) after identifying no consent flow existed for Under-18 users despite HEALTH-01 already
+collecting sensitive data (SCOFF, condition tags) from minors.*
