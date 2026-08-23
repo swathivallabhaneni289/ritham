@@ -1,0 +1,25 @@
+/* Quiet Confidence — near-colorless, Apple-native ground. Warmth comes
+   almost entirely from rounded numerals; amber appears only as a single
+   sparing accent dot/line, never as a scene or gradient. Momo is reduced to
+   a small glyph, present in corners only, never a backdrop character. */
+.theme-quiet-confidence {
+  --bg-grad-start: #f7f7f5;
+  --bg-grad-end: #f7f7f5;
+  --surface: #ffffff;
+  --surface-flat: #f7f7f5;
+  --ink: #1c1c1e;
+  --ink-muted: #6e6e73;
+  --ember: #e2892e;
+  --ember-soft: #f6d9ab;
+  --ember-line: #e5e5ea;
+  --cta: #1c1c1e;
+  --cta-hover: #000000;
+  --cta-ink: #ffffff;
+  --border: #e5e5ea;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --font-sans: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}

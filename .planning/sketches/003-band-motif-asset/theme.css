@@ -1,0 +1,21 @@
+/* Themeable override layer for background.svg.
+   The SVG ships plain hex in its fill/stroke presentation attributes as a
+   working default (so it renders correctly even with no stylesheet
+   attached). These class rules sit at normal CSS specificity, which beats
+   presentation attributes, so they take over once this stylesheet is
+   loaded. Each rule drives both fill and stroke off the same custom
+   property; shapes that must stay unfilled (arcs, the ring outline) guard
+   themselves with an inline style="fill:none" that no external class rule
+   can out-specificity. */
+
+:root {
+  --band-ink:   #0E100D; /* charcoal base */
+  --band-hot:   #FF5C39; /* coral */
+  --band-volt:  #C6F24E; /* acid lime */
+  --band-paper: #F5F3EC; /* off-white */
+}
+
+.band-ink   { fill: var(--band-ink,   #0E100D); stroke: var(--band-ink,   #0E100D); }
+.band-hot   { fill: var(--band-hot,   #FF5C39); stroke: var(--band-hot,   #FF5C39); }
+.band-volt  { fill: var(--band-volt,  #C6F24E); stroke: var(--band-volt,  #C6F24E); }
+.band-paper { fill: var(--band-paper, #F5F3EC); stroke: var(--band-paper, #F5F3EC); }

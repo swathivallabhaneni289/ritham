@@ -17,3 +17,6 @@ out/
 .env
 .env.*
 !.env.example
+
+# GSD research tool cache (ephemeral API responses, not source content)
+.planning/research/.cache/

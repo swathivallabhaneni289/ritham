@@ -1,0 +1,25 @@
+/* Ember Horizon — soft cream→apricot daylight gradient, amber reserved for
+   Momentum/live-session accents only (never a button, never a ring), primary
+   CTA in a separate muted pine-teal. Class-scoped (not :root) so this theme
+   coexists on the same page with the other two variant themes. */
+.theme-ember-horizon {
+  --bg-grad-start: #fbf3ea;
+  --bg-grad-end: #f5dfc2;
+  --surface: #ffffff;
+  --surface-flat: #fbf3ea;
+  --ink: #2d2a26;
+  --ink-muted: #6b6258;
+  --ember: #e2892e;
+  --ember-soft: #f2c48f;
+  --ember-line: #f6d9ab;
+  --cta: #2f6f62;
+  --cta-hover: #285f54;
+  --cta-ink: #ffffff;
+  --border: #e9dcc8;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --font-sans: -apple-system, "SF Pro Text", ui-rounded, system-ui, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+  --shadow: 0 10px 30px rgba(120, 82, 30, 0.14);
+}

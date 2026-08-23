@@ -1,0 +1,19 @@
+/* Afterburn — near-black instrument-panel premium (WHOOP/Peloton family).
+   Amber is a signal (CTA, live data, progress fill), never a surface wash.
+   Flat opaque content; glass reserved for chrome only. No rounded fonts. */
+.theme-afterburn {
+  --ground: #0c0e11;
+  --surface: #15181c;
+  --surface-elevated: #1d2126;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --ink: #f5f3ef;
+  --ink-muted: #9aa0a6;
+  --accent: #ff8c38;
+  --accent-ink: #14100a;
+  --radius-lg: 14px;
+  --radius-md: 8px;
+  --radius-sm: 4px;
+  --font-sans: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-display: -apple-system, "SF Pro Display", system-ui, sans-serif;
+  --shadow: none;
+}

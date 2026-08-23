@@ -1,0 +1,27 @@
+/* Stone & Sage — earthy, tactile field (cream + sage + forest), a subtle
+   organic surface texture instead of a flat fill, amber spent sparingly as
+   the one saturated accent gated strictly to "live right now" states.
+   Momentum grows as a bloom rather than a bar or ring. */
+.theme-stone-sage {
+  --bg-grad-start: #f6f5e8;
+  --bg-grad-end: #e3e6c9;
+  --surface: #ffffff;
+  --surface-flat: #f6f5e8;
+  --ink: #2e2b22;
+  --ink-muted: #6b6852;
+  --sage: #c2cc9d;
+  --forest: #4a5d3a;
+  --ember: #e2892e;
+  --ember-soft: #eccf9c;
+  --ember-line: #dfe0c8;
+  --cta: #4a5d3a;
+  --cta-hover: #3c4c2f;
+  --cta-ink: #ffffff;
+  --border: #dfe0c8;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --font-sans: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+  --shadow: 0 10px 26px rgba(74, 93, 58, 0.16);
+}

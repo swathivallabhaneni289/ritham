@@ -1,0 +1,19 @@
+/* Full Stride — editorial/photographic premium (Nike family). Full-bleed
+   imagery with a bottom scrim carries identity; amber is solid hard-edged
+   shapes placed on top of photography, never a tint/filter over it. */
+.theme-full-stride {
+  --ground: #1c1712;
+  --surface: #24201a;
+  --surface-elevated: #2c2620;
+  --hairline: rgba(255, 255, 255, 0.12);
+  --ink: #f7f4ef;
+  --ink-muted: #b8afa0;
+  --accent: #ff8c38;
+  --accent-ink: #14100a;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 999px;
+  --font-sans: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-display: "Archivo Condensed", -apple-system, system-ui, sans-serif;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}

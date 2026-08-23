@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Charcoal background with three steep coral, lime, and off-white diagonal motion bands running from bottom-left to top-right, a halftone dot cluster in the top-right corner, concentric arcs bleeding off the right edge, and a small ring-and-dot motif.">
+
+  <defs>
+    <clipPath id="canvasClip">
+      <rect x="0" y="0" width="1440" height="720"/>
+    </clipPath>
+
+    <pattern id="halftone" width="15" height="15" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1.6" class="band-hot" fill="#FF5C39" fill-opacity="0.55"/>
+    </pattern>
+  </defs>
+
+  <g clip-path="url(#canvasClip)">
+
+    <!-- Base charcoal field -->
+    <rect class="band-ink" x="0" y="0" width="1440" height="720" fill="#0E100D"/>
+
+    <!-- Concentric arcs bleeding off the right edge (paper tone, low opacity) -->
+    <g fill="none" style="fill:none">
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="70"  stroke-width="1.5" stroke-opacity="0.22"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="150" stroke-width="1.5" stroke-opacity="0.20"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="230" stroke-width="1.5" stroke-opacity="0.18"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="310" stroke-width="1.5" stroke-opacity="0.16"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="390" stroke-width="1.5" stroke-opacity="0.14"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="470" stroke-width="1.5" stroke-opacity="0.12"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="550" stroke-width="1.5" stroke-opacity="0.10"/>
+    </g>
+
+    <!-- Halftone dot cluster, top-right corner (stays clear of the left/right safe zones) -->
+    <rect x="1180" y="18" width="230" height="210" fill="url(#halftone)"/>
+
+    <!-- Three steep diagonal bands, bottom-left to top-right, ~57deg from horizontal.
+         Left ~25% (x<360) and right ~20% (x>1152) stay flat charcoal at every visible y. -->
+    <polygon class="band-hot"   fill="#FF5C39" points="401,728 480,780 1030,-60 951,-112"/>
+    <polygon class="band-volt"  fill="#C6F24E" points="480,780 539,818 1089,-22 1030,-60"/>
+    <polygon class="band-paper" fill="#F5F3EC" points="539,818 560,832 1110,-8 1089,-22"/>
+
+    <!-- Ring-and-dot motif, sitting in the flat right-hand safe zone -->
+    <circle class="band-volt" stroke="#C6F24E" style="fill:none" fill="none" cx="1225" cy="360" r="30" stroke-width="2.5"/>
+    <circle class="band-volt" fill="#C6F24E" cx="1225" cy="360" r="7"/>
+
+  </g>
+</svg>

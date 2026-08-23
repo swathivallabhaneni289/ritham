@@ -1,0 +1,19 @@
+/* Hard Court — bold graphic light mode (scoreboard family). Near-white
+   ground, hard-edged solid amber color-blocks, tabular scoreboard numerals.
+   The real, equally-finished light mode — not a dark-mode afterthought. */
+.theme-hard-court {
+  --ground: #fafaf8;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --hairline: #e4e1da;
+  --ink: #0a0a0a;
+  --ink-muted: #55524c;
+  --accent: #cc5500;
+  --accent-ink: #0a0a0a;
+  --radius-lg: 10px;
+  --radius-md: 6px;
+  --radius-sm: 2px;
+  --font-sans: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-display: "Archivo", -apple-system, system-ui, sans-serif;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}

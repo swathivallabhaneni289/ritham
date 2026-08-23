@@ -1,0 +1,144 @@
+<title>Ritham Band Motif Asset — Sketch 003</title>
+<style>
+  /* ---- theme.css, inlined for self-contained artifact publishing ---- */
+  :root {
+    --band-ink:   #0E100D;
+    --band-hot:   #FF5C39;
+    --band-volt:  #C6F24E;
+    --band-paper: #F5F3EC;
+  }
+  .band-ink   { fill: var(--band-ink,   #0E100D); stroke: var(--band-ink,   #0E100D); }
+  .band-hot   { fill: var(--band-hot,   #FF5C39); stroke: var(--band-hot,   #FF5C39); }
+  .band-volt  { fill: var(--band-volt,  #C6F24E); stroke: var(--band-volt,  #C6F24E); }
+  .band-paper { fill: var(--band-paper, #F5F3EC); stroke: var(--band-paper, #F5F3EC); }
+</style>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0e0d0c; color: #f1ece2; font-family: -apple-system, system-ui, sans-serif; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  p.lead { color: #a89f92; font-size: 14px; max-width: 680px; line-height: 1.6; margin: 0 0 28px; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.05em; color: #a89f92; margin: 40px 0 12px; }
+
+  .landscape-frame { border-radius: 14px; overflow: hidden; border: 1px solid #2a2723; }
+  .landscape-frame svg { display: block; width: 100%; height: auto; }
+
+  .row { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+
+  .phone-frame { width: 300px; height: 620px; border-radius: 38px; border: 9px solid #000; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5); flex-shrink: 0; }
+  .phone-frame svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .phone-frame .safe-overlay { position: absolute; inset: 0; pointer-events: none; }
+  .phone-caption { font-size: 11.5px; color: #a89f92; margin-top: 10px; max-width: 300px; line-height: 1.5; }
+
+  .swatches { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .swatch-btn { display: flex; align-items: center; gap: 8px; background: #171613; border: 1px solid #2a2723; border-radius: 999px; padding: 8px 14px; color: #f1ece2; font-size: 12.5px; cursor: pointer; font-family: inherit; }
+  .swatch-btn:hover { border-color: #4C8DFF; }
+  .swatch-dots { display: flex; gap: 3px; }
+  .swatch-dots i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  details { margin-top: 14px; }
+  summary { cursor: pointer; color: #a89f92; font-size: 12.5px; }
+  pre { background: #171613; border: 1px solid #2a2723; border-radius: 10px; padding: 14px; overflow-x: auto; font-size: 11.5px; line-height: 1.5; color: #d8d2c6; }
+
+  .checklist { font-size: 13px; color: #cfc8ba; line-height: 1.9; }
+  .checklist b { color: #f1ece2; }
+</style>
+
+<div class="wrap">
+  <h1>Band motif background asset</h1>
+  <p class="lead">One inline SVG — charcoal base, coral/lime/off-white diagonal bands, halftone corner, concentric arcs off the right edge, ring-and-dot motif. Left ~25% and right ~20% stay flat for logo/headline placement. Themed entirely through four CSS classes (<code>band-ink / band-hot / band-volt / band-paper</code>) driven by custom properties — try the palette switcher below.</p>
+
+  <h2>Live re-theme (proves the class + CSS-variable override works)</h2>
+  <p class="lead" style="margin-bottom:14px;">★ Default confirmed as Ritham's direction — Cobalt/Crimson below are unvetted demo variants only, kept to prove the theming mechanism, not real alternatives.</p>
+  <div class="swatches">
+    <button class="swatch-btn" data-theme="default" style="border-color:#C6F24E;">
+      <span class="swatch-dots"><i style="background:#0E100D"></i><i style="background:#FF5C39"></i><i style="background:#C6F24E"></i><i style="background:#F5F3EC"></i></span>
+      ★ Default
+    </button>
+    <button class="swatch-btn" data-theme="cobalt">
+      <span class="swatch-dots"><i style="background:#0A0C14"></i><i style="background:#4C8DFF"></i><i style="background:#7CF2C0"></i><i style="background:#F0F3FA"></i></span>
+      Cobalt test
+    </button>
+    <button class="swatch-btn" data-theme="crimson">
+      <span class="swatch-dots"><i style="background:#120A0A"></i><i style="background:#E23B3B"></i><i style="background:#FFC24B"></i><i style="background:#FBF0E8"></i></span>
+      Crimson test
+    </button>
+  </div>
+
+  <h2>Landscape (native aspect, 1440&times;720)</h2>
+  <div class="landscape-frame" id="landscape-mount"></div>
+
+  <h2>Cropped into an iPhone frame (preserveAspectRatio="xMidYMid slice")</h2>
+  <div class="row">
+    <div>
+      <div class="phone-frame" id="phone-mount"></div>
+      <p class="phone-caption">Same SVG, same viewBox — only the container aspect changes. Slice scales to cover the frame's height and center-crops the width, so this shows the vertical center strip of the landscape artwork.</p>
+    </div>
+    <div style="flex:1; min-width:260px;">
+      <h2 style="margin-top:0;">Technical requirements checklist</h2>
+      <div class="checklist">
+        <b>&#10003;</b> Plain hex in fill/stroke presentation attributes, no var() inside the SVG itself<br>
+        <b>&#10003;</b> Four themeable classes (band-ink / band-hot / band-volt / band-paper) + external CSS rule block (theme.css)<br>
+        <b>&#10003;</b> preserveAspectRatio="xMidYMid slice" on the root &lt;svg&gt;<br>
+        <b>&#10003;</b> role="img" + aria-label on the root &lt;svg&gt;<br>
+        <b>&#10003;</b> Content wrapped in a clipPath — bands overshoot the canvas by design, cropped cleanly<br>
+        <b>&#10003;</b> No external references, no embedded fonts, no raster images — pure inline vector<br>
+        <b>&#10003;</b> Left ~25% / right ~20% verified flat at every visible row (computed, not eyeballed — see README)
+      </div>
+      <details>
+        <summary>View raw SVG source</summary>
+        <pre id="svg-source"></pre>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+const SVG_MARKUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Charcoal background with three steep coral, lime, and off-white diagonal motion bands running from bottom-left to top-right, a halftone dot cluster in the top-right corner, concentric arcs bleeding off the right edge, and a small ring-and-dot motif.">
+  <defs>
+    <clipPath id="canvasClip">
+      <rect x="0" y="0" width="1440" height="720"/>
+    </clipPath>
+    <pattern id="halftone" width="15" height="15" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1.6" class="band-hot" fill="#FF5C39" fill-opacity="0.55"/>
+    </pattern>
+  </defs>
+  <g clip-path="url(#canvasClip)">
+    <rect class="band-ink" x="0" y="0" width="1440" height="720" fill="#0E100D"/>
+    <g fill="none" style="fill:none">
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="70"  stroke-width="1.5" stroke-opacity="0.22"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="150" stroke-width="1.5" stroke-opacity="0.20"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="230" stroke-width="1.5" stroke-opacity="0.18"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="310" stroke-width="1.5" stroke-opacity="0.16"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="390" stroke-width="1.5" stroke-opacity="0.14"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="470" stroke-width="1.5" stroke-opacity="0.12"/>
+      <circle class="band-paper" stroke="#F5F3EC" style="fill:none" cx="1440" cy="420" r="550" stroke-width="1.5" stroke-opacity="0.10"/>
+    </g>
+    <rect x="1180" y="18" width="230" height="210" fill="url(#halftone)"/>
+    <polygon class="band-hot"   fill="#FF5C39" points="401,728 480,780 1030,-60 951,-112"/>
+    <polygon class="band-volt"  fill="#C6F24E" points="480,780 539,818 1089,-22 1030,-60"/>
+    <polygon class="band-paper" fill="#F5F3EC" points="539,818 560,832 1110,-8 1089,-22"/>
+    <circle class="band-volt" stroke="#C6F24E" style="fill:none" fill="none" cx="1225" cy="360" r="30" stroke-width="2.5"/>
+    <circle class="band-volt" fill="#C6F24E" cx="1225" cy="360" r="7"/>
+  </g>
+</svg>`;
+
+document.getElementById('landscape-mount').innerHTML = SVG_MARKUP;
+document.getElementById('phone-mount').innerHTML = SVG_MARKUP;
+document.getElementById('svg-source').textContent = SVG_MARKUP.trim();
+
+const THEMES = {
+  default: { ink: '#0E100D', hot: '#FF5C39', volt: '#C6F24E', paper: '#F5F3EC' },
+  cobalt:  { ink: '#0A0C14', hot: '#4C8DFF', volt: '#7CF2C0', paper: '#F0F3FA' },
+  crimson: { ink: '#120A0A', hot: '#E23B3B', volt: '#FFC24B', paper: '#FBF0E8' },
+};
+document.querySelectorAll('.swatch-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = THEMES[btn.dataset.theme];
+    document.documentElement.style.setProperty('--band-ink', t.ink);
+    document.documentElement.style.setProperty('--band-hot', t.hot);
+    document.documentElement.style.setProperty('--band-volt', t.volt);
+    document.documentElement.style.setProperty('--band-paper', t.paper);
+  });
+});
+</script>
