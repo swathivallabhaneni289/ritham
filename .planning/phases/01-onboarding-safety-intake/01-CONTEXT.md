@@ -51,6 +51,14 @@ explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
   running the iOS app. Open legal question not resolved here (flag for LAUNCH-05 review, does not
   block Phase 1 build): whether using a third-party email vendor under a data-processing agreement
   counts as third-party disclosure under email-plus's internal-use-only limitation.
+- **D-13:** The backend service is written in **Go**, per direct user instruction — this overrides
+  01-RESEARCH.md's TypeScript/Supabase-Edge-Functions suggestion (that was Claude's recommendation,
+  not a locked decision, and the research's `resend`/`@supabase/supabase-js` package references
+  were npm examples for that now-superseded suggestion). The service still does the same job:
+  generate a single-use expiring consent token, send the initial and delayed second confirmation
+  emails, verify the click, hand off to the app via Universal Link. Hosting/framework choice
+  (Vapor-adjacent Go equivalent, e.g. a plain `net/http` service or a minimal router like `chi`) is
+  Claude's Discretion during planning — not discussed in depth with the user.
 - **D-06:** While awaiting parent confirmation (any state before `confirmed`), the under-13 account
   is fully locked — no preview access, no partial functionality. This differs from the 13–17 flow,
   which already allows calibration/tracking/Momentum before parental approval per
