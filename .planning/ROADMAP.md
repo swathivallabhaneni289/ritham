@@ -55,7 +55,27 @@ Decimal phases appear between their surrounding integers in numeric order.
      anytime in Settings, and it never changes a clearance-gate outcome.
   7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
-**Plans**: TBD
+**Plans**: 18 plans across 9 waves
+
+Plans:
+- [ ] 01-01-PLAN.md — RithamCore package, toolchain-adaptive test harness, and the single-source copy catalog
+- [ ] 01-02-PLAN.md — Go consent service: crypto tokens, four-state consent machine, pluggable email sender
+- [ ] 01-03-PLAN.md — Screening domain: condition tags, orderable clearance gates, fixed-choice answers, tag validity
+- [ ] 01-04-PLAN.md — Consent domain: age-to-tier resolution, consent state machine, capability matrix
+- [ ] 01-05-PLAN.md — Calibration domain: completion thresholds and baseline derivation
+- [ ] 01-06-PLAN.md — Gate resolution: tag derivation plus the sixteen red-flag escalation rules
+- [ ] 01-07-PLAN.md — Onboarding routing core and its no-age-fork guarantee
+- [ ] 01-08-PLAN.md — Consent HTTP API, delayed second confirmation email, Apple association file
+- [ ] 01-09-PLAN.md — Xcode install checkpoint, iOS app target, single shared navigation container
+- [ ] 01-10-PLAN.md — Design system: palette, type scale, spacing, computed band motif geometry
+- [ ] 01-11-PLAN.md — SwiftData persistence with file protection and the data-layer consent gate
+- [ ] 01-12-PLAN.md — Shared UI components and the tap-to-expand glossary
+- [ ] 01-13-PLAN.md — Welcome, explanation register, age, dietary pattern, privacy explainer
+- [ ] 01-14-PLAN.md — Consent screens and the consent service client
+- [ ] 01-15-PLAN.md — Calibration screens with pedometer and stopwatch sources
+- [ ] 01-16-PLAN.md — The screening questionnaire: disclaimer, gate section, interstitials, checklist, follow-ups
+- [ ] 01-17-PLAN.md — Disclaimer surfaces, health profile, Settings and re-screen
+- [ ] 01-18-PLAN.md — Universal links, phase coverage assertions, end-to-end human verification
 **UI hint**: yes
 
 ### Phase 2: Core Tracking & Adjusted Guidance
@@ -163,7 +183,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Onboarding & Safety Intake | 0/0 | Not started | - |
+| 1. Onboarding & Safety Intake | 0/18 | Planned | - |
 | 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
