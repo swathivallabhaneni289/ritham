@@ -19,11 +19,12 @@ explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
 ## Implementation Decisions
 
 ### Calibration session mechanics
-- **D-01:** The walk counts as complete at 10+ continuous minutes. The light-lift equivalent is
-  inferred as 2+ sets across 1+ exercise, mirroring the Momentum qualifying-session bar
-  (MOMENTUM-01) so the app has one consistent definition of "a real session" from day one — not
-  separately re-confirmed with the user, flag for planner/researcher to verify against
-  MOMENTUM-01's exact wording.
+- **D-01 (corrected post-research 2026-08-23):** The walk counts as complete at 10+ continuous
+  minutes. The light-lift equivalent is **3+ working sets across 2+ exercises** — this now matches
+  MOMENTUM-01's actual wording verbatim (`.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`),
+  correcting an earlier inference of "2+ sets across 1+ exercise" that 01-RESEARCH.md's Conflict 1
+  found didn't match. One consistent "real session" bar across calibration and Momentum, confirmed
+  by the user.
 - **D-02:** Measured via GPS/motion sensors when the user grants location access; falls back to a
   manual stopwatch when they don't. No blocking GPS permission prompt required to proceed — the
   fallback must work standalone.
@@ -35,13 +36,25 @@ explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
   as a score, grade, or fitness-level label.
 
 ### Parental consent verification (MINOR-01/02)
-- **D-05:** Verification mechanism is an email link: the under-13 user enters a parent/guardian
-  email address, the parent receives an email containing a confirmation link, clicking it is the
-  approval. No SMS/phone, no account-linking mechanism in Phase 1.
-- **D-06:** While awaiting parent confirmation, the under-13 account is fully locked — no preview
-  access, no partial functionality. This differs from the 13–17 flow, which already allows
-  calibration/tracking/Momentum before parental approval per `docs/health-screening.md` §1.1 — that
-  distinction is preserved, not changed by this decision.
+- **D-05 (corrected post-research 2026-08-23):** A single email-link click does not meet the FTC
+  COPPA "email plus" bar for verifiable parental consent (01-RESEARCH.md Conflict 2 — confirmed
+  MEDIUM confidence, cross-referenced legal-industry sourcing; amended COPPA Rule, in force as of
+  April 22, 2026, retains this requirement). Building the full compliant flow now, not a
+  placeholder: consent is modeled as a **state machine**, not a boolean —
+  `pending → email_sent → link_clicked → confirmed`. Email 1 contains the confirmation link; on
+  click, after a short delay (a few hours), a second confirmation email is sent asking the parent
+  to confirm again — that delayed second email is the "plus" factor, chosen because it requires no
+  additional parent-identifying data beyond the email address already collected (satisfies
+  MINOR-02). No SMS/phone/account-linking mechanism in Phase 1. Backend: a minimal server
+  (send/verify the email tokens) plus a Universal Link back into the app — this is the one
+  capability in this phase that cannot be client-only, since the parent's email client isn't
+  running the iOS app. Open legal question not resolved here (flag for LAUNCH-05 review, does not
+  block Phase 1 build): whether using a third-party email vendor under a data-processing agreement
+  counts as third-party disclosure under email-plus's internal-use-only limitation.
+- **D-06:** While awaiting parent confirmation (any state before `confirmed`), the under-13 account
+  is fully locked — no preview access, no partial functionality. This differs from the 13–17 flow,
+  which already allows calibration/tracking/Momentum before parental approval per
+  `docs/health-screening.md` §1.1 — that distinction is preserved, not changed by this decision.
 
 ### Condition-tag re-screen experience
 - **D-07:** At 12-month tag expiry, the app shows a non-blocking reminder/banner — never blocks
