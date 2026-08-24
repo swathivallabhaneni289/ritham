@@ -1,8 +1,9 @@
 # Phase 1: Onboarding & Safety Intake - Pattern Map
 
 **Mapped:** 2026-08-23
-**Files analyzed:** 19 (create) — see File Classification
-**Analogs found in codebase:** 0 / 19 — **this is the first code in a greenfield native iOS project**
+**Files analyzed:** 14 (create) — see File Classification. (Originally 19; 5 consent/Universal-Link
+rows removed 2026-08-23 — see note below the table.)
+**Analogs found in codebase:** 0 / 14 — **this is the first code in a greenfield native iOS project**
 
 ## Codebase Search Confirmation
 
@@ -23,7 +24,6 @@ file category, and flags every other file as "no analog — first occurrence in 
 | New File (from RESEARCH.md's Recommended Project Structure) | Role | Data Flow | Closest Analog | Match Quality |
 |---|---|---|---|---|
 | `App/RithamApp.swift` | config/entry-point | request-response (app lifecycle) | none | no analog — greenfield |
-| `App/UniversalLinkHandler.swift` | event-driven handler | event-driven | none | no analog — greenfield |
 | `Onboarding/OnboardingFlowState.swift` | store (`@Observable` state) | CRUD (in-memory, wizard answers) | RESEARCH.md Pattern 1 (worked example) | seed-pattern (research-sourced) |
 | `Onboarding/Navigation/*.swift` | route/navigation | request-response | RESEARCH.md Pattern 1 (worked example) | seed-pattern (research-sourced) |
 | `Onboarding/Steps/*.swift` (Welcome, Register, Age, Diet, Privacy, Calibration, ...) | component (SwiftUI View) | request-response | RESEARCH.md Pattern 1 (worked example, `WelcomeStepView`/`step.view(flow:)` shape) | seed-pattern (research-sourced) |
@@ -33,14 +33,16 @@ file category, and flags every other file as "no analog — first occurrence in 
 | `Calibration/PedometerSession.swift` | service (sensor wrapper) | streaming (CMPedometer live updates) | RESEARCH.md Pattern 3 (worked example) | seed-pattern (research-sourced) |
 | `Calibration/StopwatchSession.swift` | service | event-driven (manual start/stop) | none — RESEARCH.md flags as fallback path, no worked example given | no analog — greenfield |
 | `Calibration/Views/*.swift` | component | request-response | RESEARCH.md Pattern 1 (wizard step shape) | seed-pattern (research-sourced) |
-| `Consent/ConsentState.swift` | model (state machine enum) | event-driven (state transitions) | none — RESEARCH.md Conflict 2 explicitly specifies the enum shape (`pending → email_sent → link_clicked → confirmed`), no code sample given | no analog — greenfield; spec-defined shape |
-| `Consent/Views/*.swift` (under-13 halt, 13-17 partial-gate notice) | component | request-response | RESEARCH.md Pattern 1 (wizard step shape) | seed-pattern (research-sourced) |
 | `Persistence/SwiftDataModels/*.swift` (UserProfile, ConditionTagRecord, CalibrationBaseline, DietaryPattern) | model (`@Model`) | CRUD | none — RESEARCH.md "Don't Hand-Roll" table specifies `@Model` + computed `isExpired` against stored `expiresAt`, no full code sample given | no analog — greenfield; spec-defined shape |
 | `DesignSystem/RithamColor.swift` | config/theme | transform | 01-UI-SPEC.md (theme-object requirement, not yet read in full — planner should pull exact token names from there) | no analog — greenfield |
 | `DesignSystem/BandMotif.swift` | component (custom `Shape`) | transform (geometry) | RESEARCH.md Pattern 2 (worked example) | seed-pattern (research-sourced) |
 | `Tests/GateResolutionTests/*.swift` | test | transform | RESEARCH.md Validation Architecture (Phase Requirements → Test Map table gives exact test names/behaviors) | seed-pattern (research-sourced) |
-| Backend: parent-consent email service (token gen, send, verify) | service (server-side) | request-response + event-driven | none — separate runtime/language from iOS target, not in this repo yet | no analog — greenfield; infra to be provisioned in Wave 0 |
-| Backend: Universal Link / `apple-app-site-association` hosting | config | request-response | none | no analog — greenfield; infra to be provisioned in Wave 0 |
+
+> **2026-08-23 update:** Rows for `App/UniversalLinkHandler.swift`, `Consent/ConsentState.swift`,
+> `Consent/Views/*.swift` (under-13 halt, 13-17 partial-gate notice), the backend parent-consent
+> email service, and Universal Link/`apple-app-site-association` hosting were removed from this
+> table — Ritham now has a permanent 13+ age floor with no consent flow of any kind, so this
+> infrastructure is genuinely dead, not just superseded. See `01-CONTEXT.md` D-14/D-15.
 
 ## Pattern Assignments (Seed Patterns from RESEARCH.md)
 
@@ -49,7 +51,7 @@ verbatim from `01-RESEARCH.md`. The planner should cite these as the canonical s
 category, and every subsequent phase's pattern-mapper will be able to point back at the *actual*
 files these produce as real analogs going forward.
 
-### Wizard step files (`Onboarding/Steps/*.swift`, `Screening/Views/*.swift`, `Calibration/Views/*.swift`, `Consent/Views/*.swift`)
+### Wizard step files (`Onboarding/Steps/*.swift`, `Screening/Views/*.swift`, `Calibration/Views/*.swift`)
 
 **Seed source:** `01-RESEARCH.md` Pattern 1, "Wizard flow via `NavigationStack` + shared `@Observable` flow-state"
 
@@ -59,7 +61,6 @@ final class OnboardingFlowState {
     var register: ExplanationRegister?
     var age: Int?
     var dietaryPattern: DietaryPattern?
-    var consentTier: ConsentTier?          // computed from age once known
     var conditionTags: Set<ConditionTag> = []
     var scoffAnswers: SCOFFResponses?
     // ...
@@ -91,8 +92,8 @@ struct OnboardingRootView: View {
 fork, only content differs within shared screens") achievable — `nextStep(after:)` is the single
 place branching logic lives, never scattered per-View `if age < 13` checks.
 
-**Apply to:** `Onboarding/Steps/*.swift`, `Screening/Views/*.swift`, `Calibration/Views/*.swift`,
-`Consent/Views/*.swift` — every wizard-step View in this phase.
+**Apply to:** `Onboarding/Steps/*.swift`, `Screening/Views/*.swift`, `Calibration/Views/*.swift` —
+every wizard-step View in this phase.
 
 ---
 
@@ -197,20 +198,11 @@ must turn into the actual pattern:
 
 ---
 
-### `Consent/ConsentState.swift`
-
-**No code sample in RESEARCH.md** — only a required shape, specified in Conflict 2's
-recommendation and restated in the Recommended Project Structure comment:
-
-> Model parental consent as a state machine with a pluggable verification step
-> (`pending → email_sent → link_clicked → confirmed` rather than `pending → confirmed` in one hop)
-
-**Explicit anti-pattern** (RESEARCH.md Anti-Patterns, Pitfall 2): never use a `Bool` field for
-consent status anywhere in the schema — "parent clicked the link" and "consent is legally valid"
-must be distinguishable states, not conflated.
-
-**Apply to:** `Consent/ConsentState.swift`, and the consent-record shape mirrored client-side in
-`Persistence/SwiftDataModels/*.swift`.
+> **2026-08-23 update:** This section previously specified `Consent/ConsentState.swift` — a
+> state-machine model (`pending → email_sent → link_clicked → confirmed`) for parental consent,
+> with an explicit anti-pattern against using a `Bool` field for consent status. That entire file
+> and pattern are removed here, not just superseded — Ritham has a permanent 13+ age floor with no
+> consent flow of any kind, so there is no consent state to model. See `01-CONTEXT.md` D-14/D-15.
 
 ---
 
@@ -238,21 +230,23 @@ Security Domain section:
 
 ### Wizard branching — single source of truth
 **Source:** RESEARCH.md Pattern 1 (`OnboardingFlowState.nextStep(after:)`)
-**Apply to:** every step View across `Onboarding/`, `Screening/`, `Calibration/`, `Consent/` —
-no View computes its own next-step/branch logic locally.
+**Apply to:** every step View across `Onboarding/`, `Screening/`, `Calibration/` — no View computes
+its own next-step/branch logic locally.
 
 ### No boolean flags for multi-state concepts
-**Source:** RESEARCH.md Anti-Patterns / Pitfall 2 (consent), extended by analogy to condition-tag
-expiry (state: active / expired-but-still-applied / re-screened, not a simple `Bool`)
-**Apply to:** `Consent/ConsentState.swift`, `Persistence/SwiftDataModels/ConditionTagRecord.swift`
+**Source:** originally RESEARCH.md Anti-Patterns / Pitfall 2, drawn from the now-removed parental-
+consent state machine (see `01-CONTEXT.md` D-14/D-15) — the underlying rule survives by analogy to
+condition-tag expiry (state: active / expired-but-still-applied / re-screened, not a simple `Bool`)
+**Apply to:** `Persistence/SwiftDataModels/ConditionTagRecord.swift`
 
 ### Gate enforcement at the data layer, not just navigation
 **Source:** RESEARCH.md Security Domain, V4 Access Control row — "recommend gating at the
 data-query layer (e.g., a computed `canAccessScreening` check consulted everywhere screening data
 is read/written), not just at the UI navigation layer, so a bug in one screen's navigation logic
 can't bypass the gate"
-**Apply to:** `Persistence/SwiftDataModels/*.swift` (query-time guard), `Consent/ConsentState.swift`
-(gate source of truth), any View reading screening/condition data.
+**Apply to:** `Persistence/SwiftDataModels/*.swift` (query-time guard), any View reading
+screening/condition data. (Originally also named `Consent/ConsentState.swift` as a gate source of
+truth — removed along with the rest of the consent flow; see `01-CONTEXT.md` D-14/D-15.)
 
 ### Custom `Shape` geometry always derived from `rect`, never hardcoded coordinates
 **Source:** RESEARCH.md Pattern 2 + Pitfall 1
@@ -268,14 +262,15 @@ planner treats them as needing an explicit implementation decision, not a copy-p
 | File | Role | Data Flow | Reason |
 |------|------|-----------|--------|
 | `App/RithamApp.swift` | config | request-response | Standard `@main` + `ModelContainer` boilerplate; RESEARCH.md names the responsibility but gives no sample — trivial, low-risk to originate |
-| `App/UniversalLinkHandler.swift` | event-driven | event-driven | `.onOpenURL` handler for consent confirm links; only the AASA/QA1916 testing method is specified, not the handler code itself |
 | `Screening/Models/*.swift` | model | transform | `ConditionTag`, `ClearanceGate`, `SCOFFResult` — plain enums/structs, shape implied by `docs/health-screening.md` §1-§5 but no Swift sample given |
 | `Calibration/StopwatchSession.swift` | service | event-driven | RESEARCH.md explicitly calls this the fallback path with no worked example; must independently satisfy the same completion contract as `PedometerSession` |
-| `Consent/ConsentState.swift` | model | event-driven | State-machine shape given in prose (Conflict 2), no code sample |
 | `Persistence/SwiftDataModels/*.swift` | model | CRUD | `@Model` requirement + `isExpired`/file-protection constraints given, no full sample |
 | `DesignSystem/RithamColor.swift` | config | transform | Referenced as "per UI-SPEC's theme-object requirement" — planner must pull exact token values from `01-UI-SPEC.md` directly, not from this document |
-| Backend parent-consent service (all files) | service | request-response/event-driven | Entirely new infrastructure (language/runtime not yet chosen beyond "Supabase + Resend, tentative" — flagged `SUS`/false-positive in RESEARCH.md, needs `checkpoint:human-verify`); not part of the iOS target's codebase at all |
-| Universal Link / AASA hosting config | config | request-response | Infra provisioning task, not application code |
+
+> **2026-08-23 update:** Rows for `App/UniversalLinkHandler.swift`, `Consent/ConsentState.swift`,
+> the backend parent-consent service, and Universal Link/AASA hosting config were removed from this
+> table — genuinely dead infrastructure now that Ritham has a permanent 13+ age floor with no
+> consent flow. See `01-CONTEXT.md` D-14/D-15.
 
 ## Metadata
 

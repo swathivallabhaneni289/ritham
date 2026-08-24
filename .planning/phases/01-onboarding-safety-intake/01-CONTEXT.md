@@ -6,12 +6,13 @@
 <domain>
 ## Phase Boundary
 
-Every new user, regardless of age or health background, completes a real calibration session and
-a fixed-choice safety screening that safely gates personalized guidance later — without ever being
-funneled into a separate "senior" or "kid" experience. Covers: the calibration walk/light-lift,
-explanation-register choice, age/dietary-pattern intake, parental consent for minors, the
+Every new user 13 or older, regardless of health background, completes a real calibration session
+and a fixed-choice safety screening that safely gates personalized guidance later — without ever
+being funneled into a separate "senior" or "kid" experience. Covers: the calibration walk/
+light-lift, explanation-register choice, age/dietary-pattern intake, the 13+ age floor, the
 PAR-Q-style gate section, condition checklist, SCOFF eating-disorder follow-up, and the privacy
-explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
+explainer. Ritham has no under-13 tier of any kind (see D-14) — there is no parental-consent flow
+anywhere in this phase. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
 
 </domain>
 
@@ -35,34 +36,35 @@ explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
   starting weight (strength) — used only to set safe initial targets. Never displayed to the user
   as a score, grade, or fitness-level label.
 
-### Parental consent verification (MINOR-01/02)
-- **D-05 (corrected post-research 2026-08-23):** A single email-link click does not meet the FTC
-  COPPA "email plus" bar for verifiable parental consent (01-RESEARCH.md Conflict 2 — confirmed
-  MEDIUM confidence, cross-referenced legal-industry sourcing; amended COPPA Rule, in force as of
-  April 22, 2026, retains this requirement). Building the full compliant flow now, not a
-  placeholder: consent is modeled as a **state machine**, not a boolean —
-  `pending → email_sent → link_clicked → confirmed`. Email 1 contains the confirmation link; on
-  click, after a short delay (a few hours), a second confirmation email is sent asking the parent
-  to confirm again — that delayed second email is the "plus" factor, chosen because it requires no
-  additional parent-identifying data beyond the email address already collected (satisfies
-  MINOR-02). No SMS/phone/account-linking mechanism in Phase 1. Backend: a minimal server
-  (send/verify the email tokens) plus a Universal Link back into the app — this is the one
-  capability in this phase that cannot be client-only, since the parent's email client isn't
-  running the iOS app. Open legal question not resolved here (flag for LAUNCH-05 review, does not
-  block Phase 1 build): whether using a third-party email vendor under a data-processing agreement
-  counts as third-party disclosure under email-plus's internal-use-only limitation.
-- **D-13:** The backend service is written in **Go**, per direct user instruction — this overrides
-  01-RESEARCH.md's TypeScript/Supabase-Edge-Functions suggestion (that was Claude's recommendation,
-  not a locked decision, and the research's `resend`/`@supabase/supabase-js` package references
-  were npm examples for that now-superseded suggestion). The service still does the same job:
-  generate a single-use expiring consent token, send the initial and delayed second confirmation
-  emails, verify the click, hand off to the app via Universal Link. Hosting/framework choice
-  (Vapor-adjacent Go equivalent, e.g. a plain `net/http` service or a minimal router like `chi`) is
-  Claude's Discretion during planning — not discussed in depth with the user.
-- **D-06:** While awaiting parent confirmation (any state before `confirmed`), the under-13 account
-  is fully locked — no preview access, no partial functionality. This differs from the 13–17 flow,
-  which already allows calibration/tracking/Momentum before parental approval per
-  `docs/health-screening.md` §1.1 — that distinction is preserved, not changed by this decision.
+### Age floor (supersedes the 2026-08-22/23 parental-consent design)
+- **D-14 (2026-08-23, supersedes D-05/D-06/D-13):** Ritham has a permanent 13+ age floor instead
+  of tiered parental consent. There is no under-13 tier of any kind — not a reduced-functionality
+  one, not a gated one. Age under 13 shows a plain blocking message ("Ritham is for ages 13+") and
+  lets the user back out and re-enter a different age; nothing is saved for the rejected attempt,
+  matching Strava/MyFitnessPal's own age-floor pattern. A confirmed user who later edits their age
+  down below 13 (e.g. in Settings) has that edit rejected, keeping the previous age. Age is
+  self-attested with no verification beyond entry — matching every researched competitor (Strava,
+  Nike, Peloton, MyFitnessPal); no age-verification service, ID check, or OS-level parental-control
+  signal is required for Phase 1. A 13–17-year-old gets full, identical access to an 18+ user from
+  the moment they enter their age — the full screening (gate section, condition checklist, SCOFF)
+  included, with zero parental involvement at any point (see D-15 for why SCOFF stays included).
+  Reason for the reversal: GitHub issue #1 asked for real accounts so parental-consent state could
+  survive a device change; tracing that request back showed the tiered-consent design it depended
+  on cost far more (a full Go backend, COPPA "email plus" compliance, Universal Links, LAUNCH-05
+  legal review) than the problem it solved was worth, and no researched competitor fitness app
+  builds real under-13 support at all — they all set a hard floor instead. Dropping the tier
+  removes the problem GitHub issue #1 was trying to solve, not just the sign-up mechanism.
+- **D-15 (2026-08-23):** SCOFF and the rest of the sensitive screening (gate section, condition
+  checklist) are NOT restricted to 18+ — they run for every 13+ user identically. The screening
+  exists to make guidance safer (a positive SCOFF screen pauses weight-loss/calorie features and
+  shows a supportive referral, never a diagnosis or label), so excluding teens from it would leave
+  them with less-adjusted, not safer, guidance — and MyFitnessPal's own 18+ floor is specifically
+  because calorie-focused apps carry elevated eating-disorder risk for teens, which is exactly the
+  population this screening's protective behavior is aimed at.
+- **D-05, D-06, D-13 (2026-08-22/23, SUPERSEDED by D-14):** The original tiered-consent design —
+  a state-machine-modeled COPPA "email plus" parental-consent flow for under-13, a Go backend
+  service to run it, and a full lock on under-13 accounts pending parent confirmation. Kept here
+  for history; no longer authoritative. See D-14.
 
 ### Condition-tag re-screen experience
 - **D-07:** At 12-month tag expiry, the app shows a non-blocking reminder/banner — never blocks
@@ -86,9 +88,6 @@ explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
   conditions, not just the one currently governing the restriction.
 
 ### Claude's Discretion
-- Exact resend/edit-email UX for the parental-consent flow (if the parent's email was mistyped or
-  the link expires) — standard pattern, not discussed in depth; planner/executor should implement
-  a reasonable resend/edit affordance without a fixed-height layout constraint.
 - Precise light-lift qualifying threshold (D-01's "2+ sets across 1+ exercise" is inferred from
   Momentum's bar, not independently re-confirmed with the user) — verify against MOMENTUM-01
   wording during planning; flag if it diverges.
@@ -116,7 +115,7 @@ explainer. Visual/copy contract is locked separately in `01-UI-SPEC.md`.
   sketch-003 background asset.
 
 ### Project-level requirements and roadmap
-- `.planning/REQUIREMENTS.md` — MINOR-01/02 (parental consent), HEALTH-01/02/05/06 (screening
+- `.planning/REQUIREMENTS.md` — MINOR-01 (13+ age floor), HEALTH-01/02/05/06 (screening
   discipline, red-flag escalation), DIET-01, EXPLAIN-01, CROSSGEN-03/05, ONBOARD-01.
 - `.planning/ROADMAP.md` — Phase 1 success criteria and dependency on nothing (first phase);
   Phase 3's MOMENTUM-01 qualifying-session definition, referenced by D-01's inference.

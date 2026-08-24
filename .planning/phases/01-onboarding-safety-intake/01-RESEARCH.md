@@ -4,6 +4,19 @@
 **Domain:** Native iOS (SwiftUI/SwiftData) onboarding wizard + fixed-choice health screening + COPPA-gated parental consent + custom decorative Shape geometry
 **Confidence:** MEDIUM — core SwiftUI/SwiftData patterns are well-established (MEDIUM, WebSearch cross-referenced against Apple docs); the parental-consent legal mechanism has a confirmed conflict with the locked CONTEXT.md decision (see Conflicts block below); calibration-session sensor mechanics (CMPedometer) are newly researched this session and unverified on real hardware.
 
+> **⚠️ SUPERSEDED, 2026-08-23 — read before using this document.** Everything below concerning
+> parental consent, COPPA "email plus," the under-13/13-17/18+ tiered-access model, consent tokens,
+> Universal Links, and the parent-consent backend service (Conflict 2, the MINOR-01/02 rows, the
+> consent architecture/data-flow sections, the Don't Hand-Roll and threat-model entries about
+> consent tokens, and every other consent-related passage) describes a design that has since been
+> **reversed and is no longer authoritative**. Ritham now has a permanent 13+ age floor with no
+> under-13 tier of any kind and no parental-consent flow at any age — see `01-CONTEXT.md` D-14/D-15
+> for the reversal and its reasoning. This research is kept in place as historical record of why the
+> original tiered-consent design looked the way it did; it is not deleted, but it must not be used
+> as input to planning or implementation. The remaining content of this document — calibration
+> mechanics, gate-resolution/SCOFF/condition-tag architecture, the wizard-flow and custom-`Shape`
+> patterns, testing/security guidance unrelated to consent — is unaffected and still current.
+
 <user_constraints>
 ## User Constraints (from CONTEXT.md)
 
@@ -33,6 +46,10 @@
   access, no partial functionality. This differs from the 13–17 flow, which already allows
   calibration/tracking/Momentum before parental approval per `docs/health-screening.md` §1.1 — that
   distinction is preserved, not changed by this decision.
+
+> **Superseded 2026-08-23:** D-05/D-06 (and the MINOR-01/02 tiered-consent reading they research)
+> are replaced by `01-CONTEXT.md` D-14 — a permanent 13+ age floor, no under-13 tier, no parental
+> consent at any age. Kept here for historical record only.
 
 **Condition-tag re-screen experience**
 - **D-07:** At 12-month tag expiry, the app shows a non-blocking reminder/banner — never blocks
@@ -138,6 +155,15 @@ silently implement D-01 or D-05 as literally written — route these back throug
   Open Questions below. Flag for LAUNCH-05 counsel review, don't assume a service-provider
   relationship is automatically exempt.
 
+> **Superseded 2026-08-23:** This entire conflict is moot — `01-CONTEXT.md` D-14 replaces the
+> tiered-consent design with a permanent 13+ age floor, so there is no parental-consent mechanism
+> left to satisfy FTC's "email plus" bar, no consent state machine to build, and LAUNCH-05 (the
+> COPPA compliance review this conflict was blocking) no longer exists as a requirement. This
+> analysis remains valuable as the record of *why* the original design changed — the cost/rigor
+> this conflict surfaced (a real backend, a multi-step verification flow, an ongoing legal-review
+> dependency) is a direct input to D-14's cost/benefit reversal — but it is not an open item to
+> resolve going forward.
+
 ---
 
 ## Summary
@@ -177,6 +203,14 @@ proceed straight to planning.
 | CROSSGEN-03 | Privacy explained on one screen before any opt-in; nothing shared by default | Copy already drafted in 01-UI-SPEC.md; no technical research needed beyond standard SwiftUI screen |
 | CROSSGEN-05 | No age-gated fork anywhere — age only adjusts content within shared screens | Directly informs the wizard pattern: age/consent state must gate *which step is next* in one shared `NavigationStack`, never route to a structurally different view hierarchy |
 </phase_requirements>
+
+> **Superseded 2026-08-23:** The MINOR-01 and MINOR-02 rows above describe the old tiered-consent
+> reading of those requirement IDs. MINOR-01 has since been rewritten (see `.planning/REQUIREMENTS.md`)
+> to a permanent 13+ age floor with self-attested age and no consent step; MINOR-02 no longer exists
+> as a requirement — there is no consent step left to require anything of. See `01-CONTEXT.md`
+> D-14/D-15. The CROSSGEN-05 row's "age/consent state must gate which step is next" phrasing should
+> now be read as "age" only — CROSSGEN-05 itself is unaffected and, per D-14, is now easier to
+> satisfy since there is no consent-driven branch to avoid creating.
 
 ## Architectural Responsibility Map
 
@@ -702,6 +736,13 @@ pass, A3/A4 specifically before Phase 5, A1/A2/A5 before or during Phase 1 plann
 | SwiftData store readable by another app or extracted from an unencrypted backup on a jailbroken/compromised device | Information Disclosure | Explicit file protection class (`NSFileProtectionComplete` or at minimum `NSFileProtectionCompleteUntilFirstUserAuthentication`) on the SwiftData store, given condition tags and SCOFF-derived data are named explicitly as sensitive in LAUNCH-04's GDPR/CCPA review scope `[CITED: WebSearch, cross-referenced against Apple's Data Protection documentation]` |
 | Raw SCOFF answers (the 5 individual booleans) persisted and later exposed via a data export, debug log, or future feature | Information Disclosure | docs/health-screening.md §1.5 states individual SCOFF answers are "never shown to us as a score or a label" — this research recommends treating that as a storage decision too: consider persisting only the derived tag (`positiveScreen: Bool` or the resulting condition tag), not the 5 raw ED-1..ED-5 booleans, unless a product reason requires keeping them (e.g., allowing edit-in-place). Flagging this for the planner to decide explicitly rather than defaulting silently either way. |
 | Universal Link token leaking via email client link-preview/prefetching (some email clients "click" links automatically to generate previews, which could consume a single-use token before the real parent clicks) | Information Disclosure / Denial of Service | A known general email-link pitfall — recommend the token remain valid for a short grace window and support at least one re-send/regenerate action (already Claude's Discretion per CONTEXT.md) so a prefetch-consumed token doesn't permanently strand the parent |
+
+> **Superseded 2026-08-23:** The first, second, and fourth rows above (consent-token guessability,
+> gate-bypass-via-navigation for an under-13/13-17 account, and Universal Link token
+> prefetch/leakage) are all threat entries for the now-removed parental-consent flow — there is no
+> consent token, no consent gate, and no Universal Link left to threat-model. See `01-CONTEXT.md`
+> D-14/D-15. The third row (SwiftData file protection on the store) and the SCOFF-answer-persistence
+> row are unaffected and still apply.
 
 ## Sources
 

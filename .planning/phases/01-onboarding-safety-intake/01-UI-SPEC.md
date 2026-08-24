@@ -146,9 +146,8 @@ Locked decision #3 (screening screen stays "flat/restrained/no-illustration") is
 | Welcome / hero | Yes | Yes (corner) | Yes | Yes | Yes (hero art) |
 | Explanation-register picker | Yes (bounded header only) | No | No | Optional (small, corner) | No |
 | Age (Q0) / dietary pattern (Q0b) | No — flat charcoal only | No | No | No | No |
+| Age blocking (under 13) | No — flat charcoal + off-white card only | No | No | No | No |
 | Privacy explainer | Yes (bounded header only) | No | No | Optional | No |
-| Under-13 halt / parent-consent step | No — flat charcoal only | No | No | No | No |
-| 13–17 partial-gate notice | No — flat charcoal only | No | No | No | No |
 | Calibration start / complete | Yes | No | No | Yes | Yes (functional glyph or hero, per §Momo below) |
 | Gate section (G1–G7) | No — flat charcoal only | No | No | No | No |
 | Routine / urgent clearance interstitial | No — flat charcoal + off-white card only | No | No | No | No |
@@ -156,7 +155,14 @@ Locked decision #3 (screening screen stays "flat/restrained/no-illustration") is
 | SCOFF follow-up (ED-1–ED-5) | No — flat charcoal only | No | No | No | No |
 | Required-blocking message | No — flat charcoal + off-white card only | No | No | No | No |
 
-**Rule:** any screen that collects, confirms, or blocks on health/consent data stays flat charcoal — no bands, no halftone, no arcs, no Momo. Decorative surface is reserved for welcome, explanation/register choice, privacy explainer, and the calibration flow, matching locked decision #3's intent applied consistently across the whole motif system, not just the mascot.
+**Rule:** any screen that collects, confirms, or blocks on health or age data stays flat charcoal — no bands, no halftone, no arcs, no Momo. Decorative surface is reserved for welcome, explanation/register choice, privacy explainer, and the calibration flow, matching locked decision #3's intent applied consistently across the whole motif system, not just the mascot.
+
+> **2026-08-23 update:** The "Under-13 halt / parent-consent step" and "13–17 partial-gate notice"
+> rows previously here are removed — Ritham has a permanent 13+ age floor with no consent flow of
+> any kind (see `01-CONTEXT.md` D-14/D-15). In their place, a single "Age blocking (under 13)" row
+> covers the new plain blocking message, following the same flat-charcoal-plus-off-white-card
+> treatment already established by the Required-blocking message row below, since both are the same
+> kind of screen: a plain blocking message with no decorative surface.
 
 ---
 
@@ -214,13 +220,9 @@ Summary:
 | Dietary pattern (Q0b) | Headline | "Any dietary pattern we should know?" | DIET-01 | Original app copy |
 | Dietary pattern (Q0b) | Options | "None" / "Vegetarian" / "Vegan" | DIET-01 | Original app copy |
 | Dietary pattern (Q0b) | Helper | "This only affects example foods later — never your health screening." | DIET-01 | Original app copy |
-| Under-13 halt | Headline | "Let's get a parent or guardian." | MINOR-01, MINOR-02 | Original app copy |
-| Under-13 halt | Body | "Ritham needs a parent or guardian to complete a quick verification step before you can start using the app. This keeps things safe and follows children's privacy law." | MINOR-01, MINOR-02 | Original app copy |
-| Under-13 halt | CTA | "Start parent verification" | MINOR-01 | Original app copy |
-| Under-13 halt | Waiting state | "Waiting on parent verification. We've sent your parent/guardian what they need — once they finish, you can start." | MINOR-01 | Original app copy |
-| 13–17 partial-gate notice | Headline | "One more step — with a parent this time." | MINOR-01 | Original app copy |
-| 13–17 partial-gate notice | Body | "You can already track workouts and build your streak right now. The health questions ahead need a parent or guardian's OK first. We'll let you know the moment that's done." | MINOR-01 | Original app copy |
-| 13–17 partial-gate notice | CTA (primary/secondary) | "Ask a parent/guardian" / "Skip for now — I'll ask later" | MINOR-01 | Original app copy |
+| Age blocking (under 13) | Headline | "Ritham is for ages 13+." | MINOR-01 | Original app copy |
+| Age blocking (under 13) | Body | "You'll need to be 13 or older to use Ritham. Go back and double-check the age you entered — nothing you entered is saved." | MINOR-01 | Original app copy |
+| Age blocking (under 13) | CTA | "Go back" | MINOR-01 | Original app copy |
 | Privacy explainer | Headline | "Your privacy, in plain terms." | CROSSGEN-03 | Original app copy |
 | Privacy explainer | Body (bullets) | "Nothing is shared or synced with anyone by default." / "Your health answers stay private — only used to adjust suggestions for you." / "You choose if and when to share with household members, later." | CROSSGEN-03 | Original app copy |
 | Privacy explainer | CTA | "Got it — continue" | CROSSGEN-03 | Original app copy |

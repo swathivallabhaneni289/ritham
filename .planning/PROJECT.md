@@ -10,7 +10,7 @@ and nothing about a user's pace, weight, or streak length is ever exposed to com
 
 ## Core Value
 
-Every user — any age, any health background — can safely track real training and keep a fair,
+Every user 13 or older, any health background — can safely track real training and keep a fair,
 forgiving consistency streak, with core tracking always free and never subject to comparison or
 ranking.
 
@@ -42,9 +42,10 @@ ranking.
 - [ ] Cross-generational onboarding with a real walk-or-light-lift calibration session, a
       user-chosen dual-register explanation layer, and fixed-choice safety screening
       (PAR-Q-style gates + SCOFF), never a "senior mode" or age-gated fork
-- [ ] A tiered parental-consent gate for users under 18: under 13 blocks the entire app pending
-      verifiable parental consent; 13-17 only gates the sensitive screening (condition checklist,
-      SCOFF) behind parent approval, never the calibration session or basic tracking
+- [ ] A 13+ age floor: age is self-attested at onboarding with no verification beyond entry;
+      entering an age under 13 shows a plain blocking message and allows re-entry with a
+      different age; no minor consent flow or parental gate anywhere in the product, and a
+      13-17-year-old gets identical access to a 65-year-old from the moment they enter their age
 - [ ] Free-forever cardio tracking (GPS + manual stopwatch, with a visible confidence indicator)
       and strength tracking (plate calculator, supersets, movement-pattern tagging) with full
       retroactive editing
@@ -107,10 +108,11 @@ ranking.
 
 - **Tech stack**: iOS native, Swift/SwiftUI — user-specified target runtime.
 - **Compliance**: Public App Store launch requires PAR-Q+ gate-question wording counsel review,
-  SCOFF wording/scoring clinician confirmation, protein-swap-table dietitian sign-off, a
-  GDPR/CCPA privacy review covering intake health data, and a COPPA compliance review of the
-  Under-13 verifiable-parental-consent method — before public submission, not deferred
-  indefinitely (tracked as LAUNCH-01 through LAUNCH-05).
+  SCOFF wording/scoring clinician confirmation, protein-swap-table dietitian sign-off, and a
+  GDPR/CCPA privacy review covering intake health data — before public submission, not deferred
+  indefinitely (tracked as LAUNCH-01 through LAUNCH-04). No COPPA review is required: Ritham has
+  a permanent 13+ age floor and collects no personal information from anyone who identifies as
+  under 13.
 - **Data collection discipline**: The screening questionnaire must remain fixed-choice only —
   never free text, never live AI-generated advice — per `docs/health-screening.md` §1.
 - **Monetization boundary**: Core GPS/manual-stopwatch tracking, full training history,
@@ -134,8 +136,9 @@ ranking.
 | Server-side EXIF stripping is unconditional and never relies on client-side stripping alone | Photo-metadata location/identity leaks are a hard privacy failure mode; a server-side guarantee closes gaps a client bug could open | — Pending |
 | Forgiveness mechanics (shields, comeback repair, injury guardrail) are never monetized, permanently | Keeps the Momentum streak's fairness promise credible — a purchasable shield would undermine "earned, never sold" | — Pending |
 | `dietary_pattern` is strictly downstream of the Clearance Gate, never part of gate-resolution logic | Prevents a dietary preference from ever loosening a safety gate (e.g., a vegan tag never overriding a kidney-disease block) | — Pending |
+| Ritham has a permanent 13+ age floor; under-13 users are never supported in any form (not even a reduced-functionality tier), and there is no minor-consent flow of any kind for any age | Reverses the 2026-08-22 tiered-consent design (D-05/D-06/D-13 in `01-CONTEXT.md`) after GitHub issue #1's device-continuity request traced back to that design's COPPA/App-Store cost; matches actual industry practice — Strava, Nike, Peloton, and MyFitnessPal all set a hard age floor (13 or 18) with self-attested age and no parental-consent machinery, rather than building real under-13 support | Decided |
 
 ---
-*Last updated: 2026-08-22 — added a tiered Under-18 parental-consent requirement and a COPPA
-compliance review, and corrected the GPS/HR monetization wording to reflect phone-only v1 (no
-continuous heart rate without a paired device).*
+*Last updated: 2026-08-23 — reversed the 2026-08-22 tiered Under-18 parental-consent requirement:
+Ritham now has a permanent 13+ age floor, no under-13 support in any form, and no COPPA review
+requirement. See Key Decisions and `01-CONTEXT.md` for the full reasoning (GitHub issue #1).*

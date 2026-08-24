@@ -23,8 +23,11 @@ created: 2026-08-23
 | **Full suite command — core** | `cd RithamCore && ./Scripts/test-core.sh` |
 | **Quick run command — app** | `./Scripts/build-app.sh test -only-testing:RithamTests/<Suite>` |
 | **Full suite command — app** | `./Scripts/build-app.sh test` |
-| **Full suite command — service** | `cd consent-service && go test ./... -count=1` |
-| **Estimated runtime** | core suite ~2-5s (no simulator boot); app suite ~30-60s (simulator boot dominates); service suite ~2s |
+| **Estimated runtime** | core suite ~2-5s (no simulator boot); app suite ~30-60s (simulator boot dominates) |
+
+> **2026-08-23 update:** The "Full suite command — service" row (`cd consent-service && go test
+> ./... -count=1`) is removed — the Go consent-service backend no longer exists. Ritham has a
+> permanent 13+ age floor with no parental-consent flow of any kind; see `01-CONTEXT.md` D-14/D-15.
 
 ### Toolchain Note (planner, 2026-08-23)
 
@@ -51,8 +54,8 @@ The **behaviours** asserted below are unchanged from the original draft; only th
 ## Sampling Rate
 
 - **After every task commit:** Run the targeted subset for the module just touched — `./Scripts/test-core.sh --filter <Suite>`, `go test ./internal/<pkg>/...`, or `./Scripts/build-app.sh test -only-testing:RithamTests/<Suite>`
-- **After every plan wave:** Run the full core suite (`cd RithamCore && ./Scripts/test-core.sh`) — the safety-critical gate resolution, consent, calibration, and routing logic all live there
-- **Before `/gsd-verify-work`:** All three suites green — core, service, and app
+- **After every plan wave:** Run the full core suite (`cd RithamCore && ./Scripts/test-core.sh`) — the safety-critical gate resolution, age-floor, calibration, and routing logic all live there
+- **Before `/gsd-verify-work`:** Both suites green — core and app
 - **Max feedback latency:** 60 seconds (core suite is ~2-5s, so most feedback is far faster)
 
 ---
@@ -65,13 +68,12 @@ The **behaviours** asserted below are unchanged from the original draft; only th
 | 01-06-T2 | 01-06 | 3 | HEALTH-06 | T-01-26 | "Not sure" always resolves to the more cautious branch (docs/health-screening.md §5) | unit | `cd RithamCore && ./Scripts/test-core.sh --filter GateResolutionTests` (test `testNotSureResolvesCautious`) | ❌ W1 | ⬜ pending |
 | 01-06-T2 | 01-06 | 3 | HEALTH-06 | T-01-25 | 2+ red-flag tags → single most restrictive gate wins, never averaged | unit | `cd RithamCore && ./Scripts/test-core.sh --filter GateResolutionTests` (test `testMultiTagMostRestrictiveWins`) | ❌ W1 | ⬜ pending |
 | 01-06-T2 | 01-06 | 3 | HEALTH-01 | T-01-28 | SCOFF fires only when the Eating Disorder History checkbox is checked; score ≥2 → positive screen, never shown as a label/score | unit | `cd RithamCore && ./Scripts/test-core.sh --filter GateResolutionTests` (test `testSCOFFTrigger`) | ❌ W1 | ⬜ pending |
-| 01-04-T1 | 01-04 | 2 | MINOR-01 | T-01-16 | Age routes correctly to under-13 / 13-17 / 18+ consent tiers | unit | `cd RithamCore && ./Scripts/test-core.sh --filter ConsentTierTests` | ❌ W1 | ⬜ pending |
-| 01-04-T2 | 01-04 | 2 | MINOR-01/02 | T-01-04 | Consent state machine only reaches `confirmed` after both the link click AND the delayed second-email confirmation — a single click alone stays at `link_clicked`, never `confirmed` | unit | `cd RithamCore && ./Scripts/test-core.sh --filter ConsentStateMachineTests` | ❌ W1 | ⬜ pending |
-| 01-02-T2 | 01-02 | 1 | MINOR-01/02 | T-01-04 | Server-side mirror of the same rule: no event sequence reaches `confirmed` without the second confirmation | unit | `cd consent-service && go test ./internal/consent/... -count=1` | ❌ W1 | ⬜ pending |
+| 01-07-T3a | 01-07 | 3 | MINOR-01 | T-01-32 | Age under 13 (at onboarding Q0, self-attested) routes to the age-ineligible block step and never advances past it while the age stays under 13; correcting the age to 13+ routes forward exactly like any other user | unit | `cd RithamCore && ./Scripts/test-core.sh --filter OnboardingFlowStateTests` | ❌ W1 | ⬜ pending |
+| 01-13-T2 | 01-13 | 7 | MINOR-01 | T-01-73B | An under-13 age is never written to `HealthDataStore` on initial entry — the persist call is gated on the value being 13 or greater, so a rejected attempt has nothing saved for it client-side, before the profile even exists | unit | `./Scripts/build-app.sh test -only-testing:RithamTests/AgeValidationTests` | ❌ W4 | ⬜ pending |
 | 01-03-T3 | 01-03 | 2 | HEALTH-02 | T-01-12 | Condition tag validity computes correctly at the 12-month boundary; expired-but-unconfirmed tags still apply their restriction (D-08) | unit | `cd RithamCore && ./Scripts/test-core.sh --filter ConditionTagExpiryTests` | ❌ W1 | ⬜ pending |
 | 01-05-T1 | 01-05 | 2 | ONBOARD-01 | T-01-20 | Calibration completes at 10+ continuous minutes (walk) or 3+ working sets across 2+ exercises (lift) — matches MOMENTUM-01's bar exactly (D-01, corrected) | unit | `cd RithamCore && ./Scripts/test-core.sh --filter CalibrationThresholdTests` | ❌ W1 | ⬜ pending |
-| 01-07-T3 | 01-07 | 3 | CROSSGEN-05 | T-01-34 | No age value ever routes to a structurally distinct view hierarchy — only content/step differs within one shared NavigationStack | unit | `cd RithamCore && ./Scripts/test-core.sh --filter OnboardingFlowStateTests` | ❌ W1 | ⬜ pending |
-| 01-11-T3 | 01-11 | 5 | MINOR-01 | T-01-58 | The consent gate is enforced at the data layer, so a navigation defect alone cannot read or write a minor's screening data | unit | `./Scripts/build-app.sh test -only-testing:RithamTests/HealthDataStoreGateTests` | ❌ W4 | ⬜ pending |
+| 01-07-T3 | 01-07 | 3 | CROSSGEN-05 | T-01-34 | No age value ever routes to a structurally distinct view hierarchy — only content/step differs within one shared NavigationStack; ages 15, 40, and 70 traverse an identical sequence | unit | `cd RithamCore && ./Scripts/test-core.sh --filter OnboardingFlowStateTests` | ❌ W1 | ⬜ pending |
+| 01-11-T3 | 01-11 | 5 | MINOR-01 | T-01-66 | The 13+ age floor is enforced at the data layer, not just the edit-screen UI — a Settings edit that lowers a confirmed user's age below 13 throws `ageBelowFloor`, is rejected wholesale, and leaves the previous age (and every other stored field) unchanged, so a navigation/UI bypass alone cannot silently save it | unit | `./Scripts/build-app.sh test -only-testing:RithamTests/HealthDataStoreTests` | ❌ W4 | ⬜ pending |
 | 01-18-T2 | 01-18 | 9 | HEALTH-01 | T-01-114 | Every onboarding step resolves to a real screen — no step ships on the unimplemented fallback | unit | `./Scripts/build-app.sh test -only-testing:RithamTests/PhaseCoverageTests` | ❌ W4 | ⬜ pending |
 
 *"File Exists" records the wave that creates the test file: W1 = the `RithamCore` package (buildable
@@ -79,6 +81,25 @@ today, no Xcode), W4 = the app target (needs the Xcode install checkpoint in pla
 
 *The bottom two rows were added by the planner: the data-layer gate and the step-coverage assertion are
 both load-bearing safety properties that the original draft did not have a row for.*
+
+> **2026-08-23 update:** Ritham now has a permanent 13+ age floor with no consent flow of any kind
+> (see `01-CONTEXT.md` D-14/D-15). Plan 01-04 (age-to-tier resolution, consent state machine,
+> capability matrix) and plan 01-14 (consent screens/client) no longer exist — deleted, not just
+> trimmed — so every row that pointed at them is either removed or reassigned to the plan that
+> actually now owns the behavior. Two rows previously here — `01-04-T2` (`ConsentStateMachineTests`,
+> asserting a consent state machine only reaches `confirmed` after a link click plus a delayed
+> second-email confirmation) and `01-02-T2` (the server-side `go test` mirror of the same rule) — are
+> removed outright; the Go consent-service backend they tested no longer exists. The old `01-04-T1`
+> row ("age routes to under-13/13-17/18+ consent tiers", `ConsentTierTests`) is split across two real
+> test suites rather than one invented "AgeFloorTests" file: `01-07-T3a` (routing-level: under-13
+> blocked at `OnboardingFlowStateTests`, plan 01-07) and `01-13-T2` (client persist-gating on initial
+> entry, `AgeValidationTests`, plan 01-13). The `01-11-T3` row is rewritten from "the consent gate is
+> enforced at the data layer" to the surviving analogous property — data-layer enforcement of the
+> reject-edit-below-13 rule via the new `ageBelowFloor` error (T-01-66) — since there is no longer a
+> consent gate for a navigation bug to bypass, but a Settings edit to below 13 still needs to be
+> rejected below the UI layer, not just in it; its command is updated from the old
+> `HealthDataStoreGateTests` name to the actual `HealthDataStoreTests` (renamed when the consent gate
+> was removed from that file).
 
 ---
 
@@ -91,13 +112,12 @@ Foundation-only, so a SwiftUI or SwiftData import in the gate-resolution logic w
 
 - [ ] `RithamCore/Package.swift` + `RithamCore/Scripts/test-core.sh` + a green harness probe — plan 01-01, wave 1
 - [ ] `RithamCoreTests/GateResolutionTests.swift` — covers HEALTH-01, HEALTH-06 — plan 01-06, wave 3
-- [ ] `RithamCoreTests/ConsentTierTests.swift` — covers MINOR-01 — plan 01-04, wave 2
-- [ ] `RithamCoreTests/ConsentStateMachineTests.swift` — covers MINOR-01/02's corrected D-05 (`pending → email_sent → link_clicked → confirmed`) — plan 01-04, wave 2
-- [ ] `consent-service/internal/consent/state_test.go` — the server-side mirror of the same rule — plan 01-02, wave 1
 - [ ] `RithamCoreTests/ConditionTagExpiryTests.swift` — covers HEALTH-02 — plan 01-03, wave 2
 - [ ] `RithamCoreTests/CalibrationThresholdTests.swift` — covers ONBOARD-01 (threshold settled per corrected D-01: 10+ min walk / 3+ sets across 2+ exercises) — plan 01-05, wave 2
-- [ ] `RithamCoreTests/OnboardingFlowStateTests.swift` — covers CROSSGEN-05's no-fork guarantee at the routing-logic level — plan 01-07, wave 3
+- [ ] `RithamCoreTests/OnboardingFlowStateTests.swift` — covers CROSSGEN-05's no-fork guarantee and MINOR-01's 13+ floor at the routing-logic level (under-13 blocked at `.ageIneligible`; every eligible age traverses identically) — plan 01-07, wave 3
 - [ ] Xcode project + `RithamTests` app test target — plan 01-09, wave 4, gated on the Xcode install checkpoint
+- [ ] `RithamTests/AgeValidationTests.swift` — covers MINOR-01's client-side persist-gating (an under-13 value is never written to `HealthDataStore` on initial entry) alongside the 1-120 numeric bound — plan 01-13, wave 7
+- [ ] `RithamTests/HealthDataStoreTests.swift` — covers MINOR-01's data-layer floor enforcement (`ageBelowFloor` rejects a Settings edit below 13, previous age kept) — plan 01-11, wave 5
 
 ---
 
@@ -106,11 +126,15 @@ Foundation-only, so a SwiftUI or SwiftData import in the gate-resolution logic w
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
 | Band-motif header renders correctly and reflows at AX1–AX5 without compositing text over the band/halftone texture | Visual (01-UI-SPEC.md Typography Reflow rule) | Visual/accessibility-size rendering correctness isn't meaningfully assertable via unit test | Plan 01-18 Task 3, group A. Run the app in Simulator at each Dynamic Type accessibility size (Settings → Accessibility → Display & Text Size), confirm header compresses/drops and no text overlaps the band motif |
-| Parental consent email delivery and Universal Link deep-link-back-into-app | MINOR-01/02 | Requires a real email send/receive round-trip and a real device/simulator Universal Link handoff — not mockable in a pure unit test without losing the thing being verified | Plan 01-18 Task 3, group B. Trigger consent flow with a real test email address, click the link on a physical device, confirm the app opens with the account still locked, then repeat for the delayed second confirmation email and confirm it unlocks |
 | CMPedometer step/distance accuracy during a real walk | ONBOARD-01 (D-02) | CoreMotion sensor output can't be meaningfully simulated in the iOS Simulator | Plan 01-18 Task 3, group C. Walk with a physical device for 10+ minutes, confirm the session completes with location declined, and that the resulting pace-zone baseline looks reasonable |
 
 *The computational half of the band-motif check is automated separately: `BandGeometryTests` (plan 01-10)
 asserts non-zero flat margins at three real portrait header sizes, so only the rendering itself is manual.*
+
+*2026-08-23 update: the "Parental consent email delivery and Universal Link deep-link-back-into-app"
+row (group B) previously here is removed — no consent flow exists to verify. Self-attested age entry
+needs no email/device round-trip, so it stays fully covered by `AgeFloorTests` above with no manual
+verification required. See `01-CONTEXT.md` D-14/D-15.*
 
 ---
 

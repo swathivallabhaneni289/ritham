@@ -1,7 +1,7 @@
 # Requirements: Ritham
 
 **Defined:** 2026-08-19
-**Core Value:** Every user — any age, any health background — can safely track real training and
+**Core Value:** Every user 13 or older, any health background — can safely track real training and
 keep a fair, forgiving consistency streak, with core tracking always free and never subject to
 comparison or ranking.
 
@@ -54,21 +54,16 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   stays available). Ritham never generates insulin-dosing or medication-adjustment suggestions,
   for any user, under any tag/combination, no exception via clearance toggle.
 
-### Minor Consent
+### Age Floor
 
-- [ ] **MINOR-01**: Age (Q0) resolves a tiered parental-consent gate, evaluated immediately after
-  Q0 and before any further onboarding step. Under 13: onboarding halts after Q0 — a parent/
-  guardian completes a verifiable consent step before the account is usable at all (calibration
-  session, tracking, and health screening all wait on this). 13–17: onboarding continues with zero
-  parental involvement through the calibration session, the explanation-register choice, and
-  DIET-01; a parent-approval step gates only the rest of HEALTH-01 (the gate section, condition
-  checklist, and SCOFF eating-disorder screen), so a teen can track workouts and build Momentum
-  fully before or without a parent ever approving anything. 18+: no gate. The gate is a consent
-  step, never a UX fork — it never produces a distinct "kid mode" screen, consistent with
-  CROSSGEN-05.
-- [ ] **MINOR-02**: The consent step never requires a minor to hold or enter a parent/guardian's
-  credentials on the minor's behalf; Ritham collects no more parent-identifying information than
-  the consent method strictly requires.
+- [ ] **MINOR-01**: Ritham requires users to be 13 or older, permanently — there is no under-13
+  tier of any kind, reduced-functionality or otherwise. Age (Q0) is self-attested with no
+  verification beyond entry; an age under 13 shows a plain blocking message and lets the user back
+  out and re-enter a different age, with nothing saved for the rejected attempt. A 13–17-year-old
+  gets identical access to an 18+ user from the moment they enter their age — no parental consent
+  step, no partial gate, no age-based fork anywhere in the product, consistent with CROSSGEN-05.
+  If a confirmed user later edits their age down below 13 (e.g. in Settings), the edit is rejected
+  and the previous age is kept — never silently saved, never a retroactive lockout.
 
 ### Dietary Pattern
 
@@ -189,9 +184,6 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **LAUNCH-04**: A completed GDPR/CCPA privacy review covers all sensitive health data
   collected during intake (condition tags, SCOFF responses, and any other screening data), with
   the disclosures/consent flows it requires in place, before public App Store submission.
-- [ ] **LAUNCH-05**: A completed COPPA compliance review confirms the Under-13 verifiable-
-  parental-consent method (MINOR-01/02) meets FTC-approved standards and that required parental
-  disclosures are in place, before public App Store submission.
 
 ## v2 Requirements
 
@@ -311,7 +303,6 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HEALTH-01 | Phase 1 | Pending |
 | HEALTH-02 | Phase 1 | Pending |
 | MINOR-01 | Phase 1 | Pending |
-| MINOR-02 | Phase 1 | Pending |
 | HEALTH-05 | Phase 1 | Pending |
 | HEALTH-06 | Phase 1 | Pending |
 | DIET-01 | Phase 1 | Pending |
@@ -347,15 +338,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LAUNCH-02 | Phase 5 | Pending |
 | LAUNCH-03 | Phase 5 | Pending |
 | LAUNCH-04 | Phase 5 | Pending |
-| LAUNCH-05 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 42 total
-- Mapped to phases: 42
+- v1 requirements: 40 total
+- Mapped to phases: 40
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-08-19*
-*Last updated: 2026-08-22 — added MINOR-01/02 (tiered parental-consent gate) and LAUNCH-05 (COPPA
-review) after identifying no consent flow existed for Under-18 users despite HEALTH-01 already
-collecting sensitive data (SCOFF, condition tags) from minors.*
+*Last updated: 2026-08-23 — reversed the 2026-08-22 tiered parental-consent gate: removed MINOR-02
+and LAUNCH-05 (COPPA review) entirely, and rewrote MINOR-01 as a permanent 13+ age floor with no
+minor-consent flow of any kind. See PROJECT.md Key Decisions and `01-CONTEXT.md` for the full
+reasoning (GitHub issue #1).*

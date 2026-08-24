@@ -70,3 +70,22 @@
 ## Deferred Ideas
 
 None — discussion stayed within phase scope. Whether Momo (the mascot) ships at all remains an open, separately-tracked decision (see CONTEXT.md `<specifics>`), not a scope-creep deferral to a future phase.
+
+---
+
+**Date:** 2026-08-23 (later same day)
+**Phase:** 01-onboarding-safety-intake
+**Areas discussed:** Reversal of the tiered parental-consent design — permanent 13+ age floor
+
+---
+
+## Age floor reversal — permanent 13+ instead of tiered parental consent
+
+| Question | Options considered | Selected |
+|---|---|---|
+| Should Ritham keep the tiered consent design (under-13 fully locked pending verifiable parental consent; 13-17 partially gated behind parent approval for sensitive screening) discussed earlier the same day? | Keep tiered consent as designed / Replace with a permanent 13+ age floor and drop under-13 entirely | Permanent 13+ age floor ✓ |
+| Should SCOFF and the rest of sensitive screening be narrowed to 18+ once the under-13 tier is gone? | Narrow to 18+ (matching MyFitnessPal's own floor) / Keep full screening identical for every 13+ user | Full screening for every 13+ user, identical ✓ |
+
+**User's choices:** Ritham has no under-13 tier of any kind, permanently — not reduced-functionality, not gated. Age under 13 shows a plain blocking message; the user can back out and re-enter a different age, with nothing saved for the rejected attempt. A confirmed user who later edits their age down below 13 (e.g. in Settings) has that edit rejected, keeping the previous age. A 13-17-year-old gets full, identical access to an 18+ user from the moment they enter their age — calibration, tracking, Momentum, dietary pattern, and the complete safety screening (gate section, condition checklist, and SCOFF) all run identically, with zero parental involvement at any point. SCOFF stays included for teens rather than being restricted to 18+, because the screening is protective (a positive screen pauses risky features and shows a supportive referral, never a diagnosis) — excluding teens from it would leave them with less-safe guidance, not more, and teens are exactly the population MyFitnessPal's own 18+ floor was worried about.
+
+**Notes:** This reverses the tiered-consent design captured earlier the same day in this log's "Parental consent verification" section above (kept there, not deleted, as historical record — see D-05/D-06/D-13 in `01-CONTEXT.md`, now marked SUPERSEDED). The reversal traces back to GitHub issue #1, which asked for real accounts so parental-consent state could survive a device change. Tracing that request back through a cost/benefit reassessment showed the tiered-consent design it depended on cost far more — a full Go consent-service backend (crypto tokens, a four-state consent machine, an HTTP API, a delayed second confirmation email for COPPA "email plus"), Universal Links, and an Apple association file, plus a COPPA legal review (LAUNCH-05) — than the problem was worth. Competitor research across Strava, Nike, Peloton, and MyFitnessPal found that none of them build real under-13 support of any kind; they all set a hard age floor instead. Dropping the tier removes the problem GitHub issue #1 was trying to solve, not just the sign-up mechanism it asked for. Full decision record: `01-CONTEXT.md` D-14 (the reversal itself) and D-15 (why SCOFF stays included for teens); D-05/D-06/D-13 remain in that file marked SUPERSEDED for history. Requirements/roadmap updated accordingly: MINOR-01 rewritten to the permanent-floor wording, MINOR-02 removed (nothing left to require once there's no consent step), LAUNCH-05 removed (no under-13 support means no COPPA review is needed).

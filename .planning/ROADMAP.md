@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### Phase 1: Onboarding & Safety Intake
 **Goal**: Every new user, regardless of age or health background, completes a real calibration session and a safety screening that will safely gate personalized guidance later — without ever being funneled into a separate "senior" or "kid" experience.
 **Depends on**: Nothing (first phase)
-**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, MINOR-02, DIET-01, CROSSGEN-03, CROSSGEN-05
+**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, DIET-01, CROSSGEN-03, CROSSGEN-05
 **Success Criteria** (what must be TRUE):
   1. A new user's first session is a guided walk-or-light-lift calibration (never a self-reported
      fitness-level dropdown), and the result sets their starting baseline.
@@ -46,36 +46,37 @@ Decimal phases appear between their surrounding integers in numeric order.
      re-screen at expiry.
   4. No user ever sees a "senior mode," a separate under-18 app mode, or an age-based navigation
      fork — age only ever adjusts content within shared screens.
-  5. A user under 13 cannot use the app at all until a parent/guardian completes a verifiable
-     consent step; a user aged 13–17 completes calibration, the explanation-register choice, and
-     dietary pattern with zero parental involvement, and only the rest of the screening (gate
-     questions, condition checklist, SCOFF) waits on a parent's approval — never the app as a
-     whole. A user 18 or older is never gated.
+  5. A user under 13 sees a plain blocking message and cannot proceed — Ritham has no under-13
+     tier of any kind, permanently. Anyone 13 or older gets full, identical access from the moment
+     they enter their age: calibration, tracking, Momentum, and the complete safety screening
+     (gate questions, condition checklist, SCOFF) — no parental consent step, no partial gate, at
+     any age from 13 up.
   6. A user sets a dietary pattern (none/vegetarian/vegan) right after entering age, can edit it
      anytime in Settings, and it never changes a clearance-gate outcome.
   7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
-**Plans**: 18 plans across 9 waves
+**Plans**: 14 plans across 9 waves
 
 Plans:
 - [ ] 01-01-PLAN.md — RithamCore package, toolchain-adaptive test harness, and the single-source copy catalog
-- [ ] 01-02-PLAN.md — Go consent service: crypto tokens, four-state consent machine, pluggable email sender
 - [ ] 01-03-PLAN.md — Screening domain: condition tags, orderable clearance gates, fixed-choice answers, tag validity
-- [ ] 01-04-PLAN.md — Consent domain: age-to-tier resolution, consent state machine, capability matrix
 - [ ] 01-05-PLAN.md — Calibration domain: completion thresholds and baseline derivation
 - [ ] 01-06-PLAN.md — Gate resolution: tag derivation plus the sixteen red-flag escalation rules
-- [ ] 01-07-PLAN.md — Onboarding routing core and its no-age-fork guarantee
-- [ ] 01-08-PLAN.md — Consent HTTP API, delayed second confirmation email, Apple association file
+- [ ] 01-07-PLAN.md — Onboarding routing core, the permanent 13+ age floor, and its no-age-fork guarantee
 - [ ] 01-09-PLAN.md — Xcode install checkpoint, iOS app target, single shared navigation container
 - [ ] 01-10-PLAN.md — Design system: palette, type scale, spacing, computed band motif geometry
-- [ ] 01-11-PLAN.md — SwiftData persistence with file protection and the data-layer consent gate
+- [ ] 01-11-PLAN.md — SwiftData persistence with file protection (no consent gate — see D-14)
 - [ ] 01-12-PLAN.md — Shared UI components and the tap-to-expand glossary
-- [ ] 01-13-PLAN.md — Welcome, explanation register, age, dietary pattern, privacy explainer
-- [ ] 01-14-PLAN.md — Consent screens and the consent service client
+- [ ] 01-13-PLAN.md — Welcome, explanation register, age, age-ineligible block, dietary pattern, privacy explainer
 - [ ] 01-15-PLAN.md — Calibration screens with pedometer and stopwatch sources
 - [ ] 01-16-PLAN.md — The screening questionnaire: disclaimer, gate section, interstitials, checklist, follow-ups
 - [ ] 01-17-PLAN.md — Disclaimer surfaces, health profile, Settings and re-screen
-- [ ] 01-18-PLAN.md — Universal links, phase coverage assertions, end-to-end human verification
+- [ ] 01-18-PLAN.md — Step bootstrap, phase coverage assertions, end-to-end human verification
+
+*2026-08-23: four plans removed entirely (01-02 Go consent service, 01-04 consent domain, 01-08*
+*consent HTTP API, 01-14 consent screens/client) after D-14 replaced tiered parental consent with a*
+*permanent 13+ age floor — see `01-CONTEXT.md` D-14/D-15 and `01-DISCUSSION-LOG.md`. Original count*
+*was 18 plans across 9 waves; no wave was fully emptied, so the wave count is unchanged.*
 **UI hint**: yes
 
 ### Phase 2: Core Tracking & Adjusted Guidance
@@ -160,7 +161,7 @@ Plans:
 ### Phase 5: Launch Readiness (Legal & Clinical Review)
 **Goal**: Ritham is cleared to submit publicly to the App Store — every piece of clinical/legal-sensitive content has been reviewed by the right professional, and the privacy review is complete.
 **Depends on**: Phase 4
-**Requirements**: LAUNCH-01, LAUNCH-02, LAUNCH-03, LAUNCH-04, LAUNCH-05
+**Requirements**: LAUNCH-01, LAUNCH-02, LAUNCH-03, LAUNCH-04
 **Success Criteria** (what must be TRUE):
   1. Counsel has reviewed the PAR-Q+-style gate-question wording before "PAR-Q+" is referenced by
      name anywhere in-product (or the app ships without the branded name until cleared).
@@ -171,9 +172,6 @@ Plans:
   4. A completed GDPR/CCPA privacy review covers all sensitive health data collected during
      intake (condition tags, SCOFF responses), and the app has the disclosures/consent flows
      required for public submission.
-  5. A completed COPPA compliance review confirms the Under-13 verifiable-parental-consent method
-     meets FTC-approved standards, with required parental disclosures in place, before public
-     submission.
 **Plans**: TBD
 
 ## Progress
@@ -183,7 +181,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Onboarding & Safety Intake | 0/18 | Planned | - |
+| 1. Onboarding & Safety Intake | 0/14 | Planned | - |
 | 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
