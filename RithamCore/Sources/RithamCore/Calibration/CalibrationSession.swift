@@ -39,21 +39,30 @@ public enum CalibrationThreshold {
 /// accumulating toward the bar. Callers reset `continuousDuration` on interruption via
 /// `recordInterruption()` rather than this type inferring interruption from elapsed wall-clock
 /// time — the sensor or stopwatch adapter is the one that knows when movement stopped.
+///
+/// `distanceMeters` is optional measurement, defaulted to 0: a manual stopwatch source with no
+/// distance sensor completes a session with duration alone, while a pedometer-backed source can
+/// also report distance so `CalibrationBaseline.derive` can compute a real average pace rather
+/// than reusing the conservative provisional pace zone.
 public struct WalkProgress: Sendable, Equatable {
     public private(set) var continuousDuration: TimeInterval
+    public private(set) var distanceMeters: Double
     public private(set) var wasInterrupted: Bool
 
-    public init(continuousDuration: TimeInterval = 0, wasInterrupted: Bool = false) {
+    public init(continuousDuration: TimeInterval = 0, distanceMeters: Double = 0, wasInterrupted: Bool = false) {
         self.continuousDuration = continuousDuration
+        self.distanceMeters = distanceMeters
         self.wasInterrupted = wasInterrupted
     }
 
-    /// Zeroes the accumulated continuous duration and records that an interruption occurred.
+    /// Zeroes the accumulated continuous duration and distance, and records that an
+    /// interruption occurred.
     ///
     /// The `wasInterrupted` flag is retained (not cleared on subsequent progress) so the
     /// completion screen can explain a restart rather than appearing to silently lose progress.
     public mutating func recordInterruption() {
         continuousDuration = 0
+        distanceMeters = 0
         wasInterrupted = true
     }
 }
@@ -62,17 +71,31 @@ public struct WalkProgress: Sendable, Equatable {
 ///
 /// Only working sets count toward the bar — warm-up sets are not recorded through this path,
 /// so a caller should filter warm-ups before calling `recordWorkingSet`.
+///
+/// `loadKg` is an optional per-set measurement: a caller that knows the load used (e.g. a
+/// dumbbell or plate entry) can pass it so `CalibrationBaseline.derive` can seed a safe starting
+/// weight from what was actually lifted; a caller with no load entry (bodyweight-only session)
+/// omits it and `derive` falls back to the conservative provisional starting weight.
 public struct LiftProgress: Sendable, Equatable {
     public private(set) var workingSetsPerExercise: [String: Int]
+    public private(set) var totalLoadKg: Double
+    public private(set) var loadedSetCount: Int
 
-    public init(workingSetsPerExercise: [String: Int] = [:]) {
+    public init(workingSetsPerExercise: [String: Int] = [:], totalLoadKg: Double = 0, loadedSetCount: Int = 0) {
         self.workingSetsPerExercise = workingSetsPerExercise
+        self.totalLoadKg = totalLoadKg
+        self.loadedSetCount = loadedSetCount
     }
 
-    /// Records one working set for the given exercise identifier. Warm-up sets must not be
-    /// passed to this method — they do not count toward `CalibrationThreshold.qualifyingWorkingSets`.
-    public mutating func recordWorkingSet(exercise: String) {
+    /// Records one working set for the given exercise identifier, with an optional load in
+    /// kilograms. Warm-up sets must not be passed to this method — they do not count toward
+    /// `CalibrationThreshold.qualifyingWorkingSets`.
+    public mutating func recordWorkingSet(exercise: String, loadKg: Double? = nil) {
         workingSetsPerExercise[exercise, default: 0] += 1
+        if let loadKg {
+            totalLoadKg += loadKg
+            loadedSetCount += 1
+        }
     }
 
     /// Total working sets recorded across every exercise.
@@ -83,6 +106,12 @@ public struct LiftProgress: Sendable, Equatable {
     /// Number of distinct exercises with at least one recorded working set.
     public var distinctExercises: Int {
         workingSetsPerExercise.filter { $0.value > 0 }.count
+    }
+
+    /// Average recorded load per working set, in kilograms, across only the sets that recorded
+    /// a load. `nil` when no set recorded a load.
+    public var averageWorkingSetLoadKg: Double? {
+        loadedSetCount > 0 ? totalLoadKg / Double(loadedSetCount) : nil
     }
 }
 
