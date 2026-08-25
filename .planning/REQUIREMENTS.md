@@ -11,7 +11,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Onboarding
 
-- [ ] **ONBOARD-01**: User's first session is a short, guided walk-or-light-lift calibration
+- [x] **ONBOARD-01**: User's first session is a short, guided walk-or-light-lift calibration
   (never a self-reported fitness-level dropdown) that sets their actual starting baseline.
 
 ### Explanation Layer
@@ -331,7 +331,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ONBOARD-01 | Phase 1 | Pending |
+| ONBOARD-01 | Phase 1 | Complete |
 | EXPLAIN-01 | Phase 1 | Pending |
 | HEALTH-01 | Phase 1 | Complete |
 | HEALTH-02 | Phase 1 | Complete |
