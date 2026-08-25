@@ -6,14 +6,14 @@ current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-08-25T16:54:35.566Z"
+last_updated: "2026-08-25T17:06:46.516Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 2 of 14
+Plan: 3 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20min | 3 tasks | 9 files |
+| Phase 01 P03 | 20min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
   Key Decisions and `01-CONTEXT.md` D-14/D-15.
 
 - [Phase ?]: Extracted CTA label text without brackets for routineClearanceCTA/urgentClearanceCTA per the plan's literal instruction
+- [Phase ?]: 01-03: expiry(from:calendar:) derived from a private months constant instead of a TimeInterval validityWindow, to avoid leap-year/DST drift (Rule 1 deviation)
+- [Phase ?]: 01-03: ConditionTag.under18Minor has no producer yet; tracked as an open gap for plan 01-06/01-07/01-11
 
 ### Pending Todos
 
@@ -107,7 +110,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-25T16:53:27.280Z
+Last session: 2026-08-25T17:05:54.534Z
 Stopped at: Phase 1's 14 surviving plans updated for the permanent 13+ age floor (D-14/D-15).
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.

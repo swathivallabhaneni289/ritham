@@ -64,12 +64,12 @@ Decimal phases appear between their surrounding integers in numeric order.
 
   7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
-**Plans**: 1/14 plans executed
+**Plans**: 2/14 plans executed
 
 Plans:
 
 - [x] 01-01-PLAN.md — RithamCore package, toolchain-adaptive test harness, and the single-source copy catalog
-- [ ] 01-03-PLAN.md — Screening domain: condition tags, orderable clearance gates, fixed-choice answers, tag validity
+- [x] 01-03-PLAN.md — Screening domain: condition tags, orderable clearance gates, fixed-choice answers, tag validity
 - [ ] 01-05-PLAN.md — Calibration domain: completion thresholds and baseline derivation
 - [ ] 01-06-PLAN.md — Gate resolution: tag derivation plus the sixteen red-flag escalation rules
 - [ ] 01-07-PLAN.md — Onboarding routing core, the permanent 13+ age floor, and its no-age-fork guarantee
@@ -213,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Onboarding & Safety Intake | 1/14 | In Progress|  |
+| 1. Onboarding & Safety Intake | 2/14 | In Progress|  |
 | 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |

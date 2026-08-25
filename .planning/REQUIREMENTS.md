@@ -23,14 +23,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Health Screening
 
-- [ ] **HEALTH-01**: User completes a fixed-choice screening questionnaire (never free text,
+- [x] **HEALTH-01**: User completes a fixed-choice screening questionnaire (never free text,
   never live AI-generated advice): Q0 (age, sets Under-18/65+ tags) → gate section G1–G7
   (PAR-Q-style; any "Yes" triggers a clearance interstitial, urgent variant if G2/G3) → condition
   checklist (9 categories, incl. "None of the above") → severity/context follow-ups per selected
   category (including the SCOFF eating-disorder screen ED-1–ED-5) → universal follow-up
   (65+/deconditioned/returning-after-inactivity tag).
 
-- [ ] **HEALTH-02**: Condition tags and the "cleared by professional" toggle persist and stay
+- [x] **HEALTH-02**: Condition tags and the "cleared by professional" toggle persist and stay
   valid up to 12 months or until the user edits an answer; a re-screen is prompted at the
   12-month mark; the professional-clearance toggle re-prompts rather than persisting forever.
 
@@ -72,7 +72,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Dietary Pattern
 
-- [ ] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) as Q0b
+- [x] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) as Q0b
   directly after age in the "About You" section — unconditional, before the gate section and
   condition checklist. Editable anytime in Settings, no expiry/re-screen. Never changes a
   Clearance Gate value, never triggers `required-blocking`, never blocks/unlocks/softens a
@@ -333,12 +333,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | ONBOARD-01 | Phase 1 | Pending |
 | EXPLAIN-01 | Phase 1 | Pending |
-| HEALTH-01 | Phase 1 | Pending |
-| HEALTH-02 | Phase 1 | Pending |
+| HEALTH-01 | Phase 1 | Complete |
+| HEALTH-02 | Phase 1 | Complete |
 | MINOR-01 | Phase 1 | Complete |
 | HEALTH-05 | Phase 1 | Complete |
 | HEALTH-06 | Phase 1 | Pending |
-| DIET-01 | Phase 1 | Pending |
+| DIET-01 | Phase 1 | Complete |
 | CROSSGEN-03 | Phase 1 | Pending |
 | CROSSGEN-05 | Phase 1 | Pending |
 | CARDIO-01 | Phase 2 | Pending |
