@@ -504,9 +504,23 @@ struct GateResolutionTests {
     func resolveBlocksPersonalizationPerDomainOnly() {
         let answers = ScreeningAnswers(checklist: selection(.priorInjuryOrSurgery), msk2SurgicalClearance: .stillInRecoveryNotCleared)
         let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        // Pin the actual per-domain values (§5's third governing principle, T-01-27): the
+        // affected-area workout block does not spill into nutrition.
+        #expect(result.gates.workout == .requiredBlocking)
+        #expect(result.gates.nutrition == .none)
         #expect(result.blocksPersonalization(in: .workout) == true)
-        #expect(result.blocksPersonalization(in: .nutrition) == (result.gates.nutrition == .requiredBlocking))
+        #expect(result.blocksPersonalization(in: .nutrition) == false)
         #expect(result.blocksAppAccess == false)
+    }
+
+    @Test("age under 18 alone resolves to nutrition required-blocking, workout none — the under18Minor gap closed end-to-end")
+    func resolveUnder18MinorEndToEnd() {
+        let result = GateResolution.resolve(answers: ScreeningAnswers(age: 15), ageDerivedTags: [])
+        #expect(result.matchedTags.contains(.under18Minor))
+        #expect(result.gates.nutrition == .requiredBlocking)
+        #expect(result.gates.workout == .none)
+        #expect(result.blocksPersonalization(in: .nutrition) == true)
+        #expect(result.blocksPersonalization(in: .workout) == false)
     }
 
     @Test("blocksAppAccess is false even when a domain gate is required-blocking")
@@ -535,9 +549,14 @@ struct GateResolutionTests {
     @Test("disclaimerConditionNames is stable across repeated calls")
     func resolveDisclaimerNamesStable() {
         let answers = ScreeningAnswers(checklist: selection(.heartDisease, .kidneyDiseaseCKD), cv1RecentCardiacEvent: .no)
-        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
-        #expect(result.disclaimerConditionNames == result.disclaimerConditionNames)
-        #expect(result.disclaimerConditionNames == result.disclaimerConditionNames.sorted())
+        let expected = [
+            ConditionTag.heartDiseaseStable.displayName,
+            ConditionTag.kidneyDiseaseOrDialysis.displayName,
+        ]
+        let first = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        let second = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(first.disclaimerConditionNames == expected)
+        #expect(second.disclaimerConditionNames == expected)
     }
 
     @Test("resolve is deterministic: identical answers produce equal results across repeated calls")
