@@ -448,4 +448,106 @@ struct GateResolutionTests {
         #expect(arrhythmiaStable.workout == .recommended)
         #expect(arrhythmiaStable.nutrition == .none)
     }
+
+    // MARK: - Task 3: GateResolution.resolve and interstitial branching (§1.2)
+
+    @Test("all-No gate answers yield the none interstitial")
+    func resolveAllNoYieldsNoInterstitial() {
+        let answers = ScreeningAnswers(
+            g1HeartConditionOrHighBP: .no,
+            g2ChestPainOrBreathlessness: .no,
+            g3DizzinessOrLossOfConsciousness: .no,
+            g4OtherOngoingCondition: .no,
+            g5MedicationOrPrescribedDiet: .no,
+            g6BoneJointSoftTissueProblem: .no,
+            g7MedicallySupervisedOnly: .no,
+            checklist: selection(.noneOfTheAbove)
+        )
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.interstitial == .none)
+    }
+
+    @Test("G1 yes alone yields the routine interstitial")
+    func resolveG1YesYieldsRoutine() {
+        let answers = ScreeningAnswers(g1HeartConditionOrHighBP: .yes)
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.interstitial == .routine)
+    }
+
+    @Test("G2 yes yields the urgent interstitial")
+    func resolveG2YesYieldsUrgent() {
+        let answers = ScreeningAnswers(g2ChestPainOrBreathlessness: .yes)
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.interstitial == .urgent)
+    }
+
+    @Test("G3 yes yields the urgent interstitial")
+    func resolveG3YesYieldsUrgent() {
+        let answers = ScreeningAnswers(g3DizzinessOrLossOfConsciousness: .yes)
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.interstitial == .urgent)
+    }
+
+    @Test("G2 yes combined with several other yeses still yields urgent, not routine")
+    func resolveG2WithOthersStillUrgent() {
+        let answers = ScreeningAnswers(
+            g1HeartConditionOrHighBP: .yes,
+            g2ChestPainOrBreathlessness: .yes,
+            g4OtherOngoingCondition: .yes,
+            g6BoneJointSoftTissueProblem: .yes
+        )
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.interstitial == .urgent)
+    }
+
+    @Test("a required-blocking workout gate blocks workout personalization, respects nutrition independently, and never blocks app access")
+    func resolveBlocksPersonalizationPerDomainOnly() {
+        let answers = ScreeningAnswers(checklist: selection(.priorInjuryOrSurgery), msk2SurgicalClearance: .stillInRecoveryNotCleared)
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.blocksPersonalization(in: .workout) == true)
+        #expect(result.blocksPersonalization(in: .nutrition) == (result.gates.nutrition == .requiredBlocking))
+        #expect(result.blocksAppAccess == false)
+    }
+
+    @Test("blocksAppAccess is false even when a domain gate is required-blocking")
+    func resolveBlocksAppAccessAlwaysFalse() {
+        let answers = ScreeningAnswers(checklist: selection(.kidneyDiseaseCKD))
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.gates.workout == .requiredBlocking)
+        #expect(result.gates.nutrition == .requiredBlocking)
+        #expect(result.blocksAppAccess == false)
+    }
+
+    @Test("a two-tag case where only one gate governs still returns both names from disclaimerConditionNames")
+    func resolveDisclaimerListsAllMatchedTags() {
+        let answers = ScreeningAnswers(
+            checklist: selection(.heartDisease, .kidneyDiseaseCKD),
+            cv1RecentCardiacEvent: .no
+        )
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.matchedTags.contains(.heartDiseaseStable))
+        #expect(result.matchedTags.contains(.kidneyDiseaseOrDialysis))
+        // Only the kidney tag's required-blocking gate binds, but both names still appear.
+        #expect(result.disclaimerConditionNames.contains(ConditionTag.heartDiseaseStable.displayName))
+        #expect(result.disclaimerConditionNames.contains(ConditionTag.kidneyDiseaseOrDialysis.displayName))
+    }
+
+    @Test("disclaimerConditionNames is stable across repeated calls")
+    func resolveDisclaimerNamesStable() {
+        let answers = ScreeningAnswers(checklist: selection(.heartDisease, .kidneyDiseaseCKD), cv1RecentCardiacEvent: .no)
+        let result = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(result.disclaimerConditionNames == result.disclaimerConditionNames)
+        #expect(result.disclaimerConditionNames == result.disclaimerConditionNames.sorted())
+    }
+
+    @Test("resolve is deterministic: identical answers produce equal results across repeated calls")
+    func resolveIsDeterministic() {
+        let answers = ScreeningAnswers(
+            checklist: selection(.currentlyPregnant),
+            pg1PregnancyComplications: .yes
+        )
+        let first = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        let second = GateResolution.resolve(answers: answers, ageDerivedTags: [])
+        #expect(first == second)
+    }
 }
