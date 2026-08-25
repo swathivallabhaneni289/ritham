@@ -9,6 +9,12 @@
 /// sole input the workout/nutrition rule tables key off of. `displayName` is user-facing copy
 /// (D-11's persistent disclaimer tag, D-12's multi-condition listing), not a debug description.
 public enum ConditionTag: String, CaseIterable, Sendable, Hashable {
+    /// §1.1's Q0 routing sets this permanently on the profile for a user under 18 (re-confirmed
+    /// at each birthday/re-screen). No producer for this case exists yet in `RithamCore` —
+    /// `ageDerivedTags(forAge:)` deliberately does not set it, since it is scoped to the 65+
+    /// tag only. It is a separate age-derived content tag from MINOR-01's 13+ eligibility
+    /// floor, which plan 01-07 reads as a plain boolean off the raw age. Wiring this case's
+    /// producer is tracked as an open gap for plan 01-06/01-07/01-11 — see 01-03-SUMMARY.md.
     case under18Minor
     case age65PlusOrDeconditioned
     case hypertensionManaged
