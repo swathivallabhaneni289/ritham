@@ -83,6 +83,15 @@ struct OnboardingFlowStateTests {
         #expect(OnboardingRouter.nextStep(after: .ageIneligible, answers: corrected) == .dietaryPattern)
     }
 
+    @Test("an unanswered age never falls through to the screening flow")
+    func unansweredAgeNeverFallsThroughToScreening() {
+        let unanswered = OnboardingAnswers()
+
+        #expect(OnboardingRouter.nextStep(after: .age, answers: unanswered) == .age)
+        #expect(!OnboardingRouter.isReachable(.dietaryPattern, answers: unanswered))
+        #expect(!OnboardingRouter.isReachable(.gateSection, answers: unanswered))
+    }
+
     @Test("dietaryPattern immediately follows age for every eligible age")
     func dietaryPatternImmediatelyFollowsAgeForEligibleAges() {
         for age in [13, 15, 40, 70] {
@@ -156,9 +165,12 @@ struct OnboardingFlowStateTests {
 
     @Test("nextStep is deterministic: identical answers yield identical results across repeated calls")
     func nextStepIsDeterministic() {
+        // age 40, no gate-section "yes" answers -> deterministically .conditionChecklist,
+        // not merely "some repeated value" (a run of nils would satisfy a same-value-only
+        // assertion without proving anything).
         let subject = answers(age: 40)
         let results = (0..<5).map { _ in OnboardingRouter.nextStep(after: .gateSection, answers: subject) }
-        #expect(Set(results.map { $0?.rawValue ?? "nil" }).count == 1)
+        #expect(results.allSatisfy { $0 == .conditionChecklist })
     }
 
     // MARK: - isReachable

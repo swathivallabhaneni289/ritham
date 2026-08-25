@@ -26,19 +26,17 @@ public enum OnboardingRouter {
         case .explanationRegister:
             return .age
 
-        case .age:
+        case .age, .ageIneligible:
             // The one fork in the entire flow: age changes *which case comes next*, never
-            // *which hierarchy the user is in*. `isAgeEligible == false` is the only branch;
-            // every other value (`true`, or `nil` if somehow unanswered) proceeds identically.
-            return answers.isAgeEligible == false ? .ageIneligible : .dietaryPattern
-
-        case .ageIneligible:
-            // Stays on the block screen while the age answer is still under 13 — nothing
-            // advances, and nothing is persisted for the rejected attempt, until the user
-            // goes back to `.age` and enters a qualifying value. Re-evaluated from the live
-            // `answers.age` every call, never a cached flag, so a corrected age routes
-            // forward exactly like any other user's first attempt would.
-            return answers.isAgeEligible == false ? .ageIneligible : .dietaryPattern
+            // *which hierarchy the user is in*. An unanswered age (`nil`) must never fall
+            // through to the screening flow — the gate section is equivalent to being
+            // permitted to submit health data (see this plan's threat model), so "no age on
+            // file" holds at `.age` exactly like "under 13" holds at `.ageIneligible`, rather
+            // than defaulting forward. Re-evaluated from the live `answers.age` every call,
+            // never a cached flag, so a corrected age routes forward exactly like any other
+            // user's first attempt would, from either case.
+            guard let isEligible = answers.isAgeEligible else { return .age }
+            return isEligible ? .dietaryPattern : .ageIneligible
 
         case .dietaryPattern:
             // DIET-01: Q0b directly after age, unconditionally, for every user who clears
