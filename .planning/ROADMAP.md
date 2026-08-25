@@ -218,3 +218,28 @@ Originated from the 2026-08-24/25 session that also produced the permanent 13+ a
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
+
+### Phase 999.2: Optional cross-device account/sync (email login) (BACKLOG)
+
+**Goal:** [Captured for future planning] An optional email-based login letting a user see their
+own data (workout history, streaks, etc.) on a different device — not required to use the app,
+core tracking stays fully functional with zero login. This is the surviving half of GitHub issue
+#1 (closed 2026-08-24): its original motivation was parental-consent state surviving a device
+change, which no longer applies now that Ritham has a permanent 13+ age floor with no consent
+flow of any kind — but the general "does a user's training data survive a device change" question
+was never resolved and remains open for every user, any age. Tracked in GitHub issue #2.
+
+Aligns with PROJECT.md's existing (unlocked) Key Decision — "local-first data storage; cloud sync
+is backup, not source of truth" — implemented as an opt-in account rather than a mandatory one, so
+it doesn't collide with the "core tracking free forever, no account required" promise or Apple's
+App Store Guideline 5.1.1(v) (no account requirement for features that don't need one). Not in
+scope for Phase 1 — there is no trackable data to sync until Phase 2 (Core Tracking) and Phase 3
+(Momentum) ship; may extend Phase 4's existing "household accounts" concept rather than being a
+wholly new one. Open question, not yet decided: auth method (email+password, Sign in with Apple,
+or both).
+
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
