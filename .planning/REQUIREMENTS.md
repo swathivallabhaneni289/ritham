@@ -16,7 +16,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Explanation Layer
 
-- [ ] **EXPLAIN-01**: User picks an explanation register (plain-language or technical) once at
+- [x] **EXPLAIN-01**: User picks an explanation register (plain-language or technical) once at
   onboarding and can change it anytime; every technical term elsewhere (1RM, HRV, grade-adjusted
   pace, etc.) is tap-to-expand into a definition in that register. Register is user-selected, not
   inferred from age, and is never a separate "senior mode."
@@ -96,14 +96,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **CROSSGEN-02**: Passive-first capture (auto-detect walk/run from motion sensors) is
   available, alongside full manual session configuration for power users.
 
-- [ ] **CROSSGEN-03**: Privacy is explained on one screen, in plain language, before being
+- [x] **CROSSGEN-03**: Privacy is explained on one screen, in plain language, before being
   requested — nothing is shared or synced by default.
 
 - [ ] **CROSSGEN-04**: Visibility is a spectrum (not binary) per social surface. v1 delivers two
   rungs — fully private solo use, or opt-in household circle sharing; a third rung, an opt-in
   friend-only accountability circle, arrives in v2 (see HOUSEHOLD-02).
 
-- [ ] **CROSSGEN-05**: No age gating anywhere in the product; no screen is ever labeled "senior
+- [x] **CROSSGEN-05**: No age gating anywhere in the product; no screen is ever labeled "senior
   mode," and there is no separate under-18 app mode or age-based navigation fork.
 
 ### Cardio & Activity Tracking
@@ -332,15 +332,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | ONBOARD-01 | Phase 1 | Complete |
-| EXPLAIN-01 | Phase 1 | Pending |
+| EXPLAIN-01 | Phase 1 | Complete |
 | HEALTH-01 | Phase 1 | Complete |
 | HEALTH-02 | Phase 1 | Complete |
 | MINOR-01 | Phase 1 | Complete |
 | HEALTH-05 | Phase 1 | Complete |
 | HEALTH-06 | Phase 1 | Complete |
 | DIET-01 | Phase 1 | Complete |
-| CROSSGEN-03 | Phase 1 | Pending |
-| CROSSGEN-05 | Phase 1 | Pending |
+| CROSSGEN-03 | Phase 1 | Complete |
+| CROSSGEN-05 | Phase 1 | Complete |
 | CARDIO-01 | Phase 2 | Pending |
 | CARDIO-02 | Phase 2 | Pending |
 | CARDIO-03 | Phase 2 | Pending |

@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-06-PLAN.md
-last_updated: "2026-08-25T17:31:48.971Z"
+stopped_at: Completed 01-07-PLAN.md
+last_updated: "2026-08-25T17:46:33.203Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 5 of 14
+Plan: 6 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P03 | 20min | 3 tasks | 9 files |
 | Phase 01-onboarding-safety-intake P05 | 20min | 2 tasks | 4 files |
 | Phase 01-onboarding-safety-intake P06 | 35min | 3 tasks | 5 files |
+| Phase 01-onboarding-safety-intake P07 | 35min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-05: Extended WalkProgress/LiftProgress with defaulted distance/load measurement fields (Rule 3) so CalibrationBaseline.derive computes a real, direction-correct pace/weight instead of a formula invariant to or inverted relative to the measurement
 - [Phase ?]: 01-05: Corrected the provisional pace zone from a running-pace band to a genuine comfortable-walk band (660-840 s/km) to match D-03's under-loading requirement
 - [Phase ?]: Added the ConditionTag.under18Minor producer inside TagDerivation.deriveTags (age < 18), closing the gap 01-03-SUMMARY.md flagged — without it §3's Under-18 nutrition required-blocking row could never fire for any minor — Rule 2 deviation; verified end-to-end via GateResolution.resolve
+- [Phase ?]: 01-07: Added Codable conformance to ScreeningAnswers/SCOFFResponses/DietaryPattern/CalibrationBaseline and their nested types (Rule 3), since OnboardingAnswers' own required Codable conformance was structurally impossible without them
+- [Phase ?]: 01-07: OnboardingRouter.nextStep's .age/.ageIneligible branch now holds at .age when age is unanswered (nil), instead of defaulting forward — an unanswered age must never reach the health screening (Rule 2 fix, caught in advisor review before finalizing)
+- [Phase ?]: 01-07: needsSeverityFollowUps treats eating-disorder-history as a category needing follow-ups (its follow-up is SCOFF, reached via severityFollowUps -> scoffFollowUp) so an eating-disorder-only checklist selection still reaches SCOFF per D-10
 
 ### Pending Todos
 
@@ -115,8 +119,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-25T17:31:48.962Z
-Stopped at: Completed 01-06-PLAN.md
+Last session: 2026-08-25T17:46:33.194Z
+Stopped at: Completed 01-07-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
 Resume file: None
