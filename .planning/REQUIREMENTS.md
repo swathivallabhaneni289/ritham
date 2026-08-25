@@ -52,7 +52,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   interstitial, urgent clearance interstitial, persistent compact tag, expanded disclaimer,
   required-blocking message, standing footer disclaimer) appear at their defined touchpoints.
 
-- [ ] **HEALTH-06**: Red-flag escalation logic applies: any "Not sure" resolves to the more
+- [x] **HEALTH-06**: Red-flag escalation logic applies: any "Not sure" resolves to the more
   cautious branch; when 2+ red-flag tags apply, the single most restrictive gate wins across all
   applicable tags (never averaged/blended/softened); a `required-blocking` gate blocks
   personalization in that domain only, never app access as a whole (manual logging/generic info
@@ -337,7 +337,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HEALTH-02 | Phase 1 | Complete |
 | MINOR-01 | Phase 1 | Complete |
 | HEALTH-05 | Phase 1 | Complete |
-| HEALTH-06 | Phase 1 | Pending |
+| HEALTH-06 | Phase 1 | Complete |
 | DIET-01 | Phase 1 | Complete |
 | CROSSGEN-03 | Phase 1 | Pending |
 | CROSSGEN-05 | Phase 1 | Pending |

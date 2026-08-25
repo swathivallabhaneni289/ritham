@@ -179,3 +179,8 @@ None - no external service configuration required.
 ---
 *Phase: 01-onboarding-safety-intake*
 *Completed: 2026-08-25*
+
+## Self-Check: PASSED
+
+All 6 files (3 source, 2 test, this SUMMARY.md) verified present on disk; all 5 commit
+hashes (671bace, 9d6f713, 27864fe, 04aa3f7, 49a6cc1) verified in git log.

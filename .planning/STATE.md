@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Phase 1 context gathered
-last_updated: "2026-08-25T17:14:47.322Z"
+stopped_at: Completed 01-06-PLAN.md
+last_updated: "2026-08-25T17:31:48.971Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 4 of 14
+Plan: 5 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 20min | 3 tasks | 9 files |
 | Phase 01 P03 | 20min | 3 tasks | 9 files |
 | Phase 01-onboarding-safety-intake P05 | 20min | 2 tasks | 4 files |
+| Phase 01-onboarding-safety-intake P06 | 35min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,7 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-03: ConditionTag.under18Minor has no producer yet; tracked as an open gap for plan 01-06/01-07/01-11
 - [Phase ?]: 01-05: Extended WalkProgress/LiftProgress with defaulted distance/load measurement fields (Rule 3) so CalibrationBaseline.derive computes a real, direction-correct pace/weight instead of a formula invariant to or inverted relative to the measurement
 - [Phase ?]: 01-05: Corrected the provisional pace zone from a running-pace band to a genuine comfortable-walk band (660-840 s/km) to match D-03's under-loading requirement
+- [Phase ?]: Added the ConditionTag.under18Minor producer inside TagDerivation.deriveTags (age < 18), closing the gap 01-03-SUMMARY.md flagged — without it §3's Under-18 nutrition required-blocking row could never fire for any minor — Rule 2 deviation; verified end-to-end via GateResolution.resolve
 
 ### Pending Todos
 
@@ -113,8 +115,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-25T17:14:21.813Z
-Stopped at: Phase 1's 14 surviving plans updated for the permanent 13+ age floor (D-14/D-15).
+Last session: 2026-08-25T17:31:48.962Z
+Stopped at: Completed 01-06-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
-Resume file: .planning/phases/01-onboarding-safety-intake/01-CONTEXT.md
+Resume file: None
