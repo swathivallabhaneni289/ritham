@@ -12,7 +12,7 @@ import Foundation
 /// This is always an interval, never a single number — a single number reads as a performance
 /// figure, which D-04 forbids. `slowest` is always the larger seconds-per-km value (i.e. the
 /// slower pace) regardless of the order arguments are supplied in.
-public struct PaceZone: Sendable, Equatable {
+public struct PaceZone: Sendable, Equatable, Codable {
     public let slowestSecondsPerKm: Double
     public let fastestSecondsPerKm: Double
 
@@ -25,7 +25,7 @@ public struct PaceZone: Sendable, Equatable {
 }
 
 /// Where a `CalibrationBaseline`'s values came from.
-public enum BaselineSource: String, Sendable, CaseIterable {
+public enum BaselineSource: String, Sendable, CaseIterable, Codable {
     /// Derived from a completed calibration session's actual measurements.
     case measured
     /// A conservative default used when calibration was skipped.
@@ -36,7 +36,7 @@ public enum BaselineSource: String, Sendable, CaseIterable {
 ///
 /// Per D-04, this type must never expose anything that could be rendered as a score, grade,
 /// level, percentile, or rating — see the file header comment.
-public struct CalibrationBaseline: Sendable, Equatable {
+public struct CalibrationBaseline: Sendable, Equatable, Codable {
     public let paceZone: PaceZone
     public let safeStartingWeightKg: Double
     public let source: BaselineSource

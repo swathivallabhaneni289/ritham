@@ -6,14 +6,14 @@
 /// A plain yes/no answer. Used by every gate/follow-up question in §1.2/§1.4 whose option
 /// list is literally `Yes / No` (G1-G7, MED-2, CV-1, MSK-1, PP-1, KR-1, ED-1 through ED-5,
 /// OS-1, U-1).
-public enum YesNo: Sendable, CaseIterable {
+public enum YesNo: Sendable, CaseIterable, Codable {
     case yes
     case no
 }
 
 /// A yes/no/not-sure answer. Used by every follow-up whose option list is
 /// `Yes / No / Not sure` (MED-1, M-1, M-2, PG-1, KR-2, FA-1).
-public enum YesNoUnsure: Sendable, CaseIterable {
+public enum YesNoUnsure: Sendable, CaseIterable, Codable {
     case yes
     case no
     case notSure
@@ -32,28 +32,28 @@ public enum YesNoUnsure: Sendable, CaseIterable {
 }
 
 /// CV-2's blood-pressure-control answer.
-public enum BloodPressureControl: Sendable, CaseIterable {
+public enum BloodPressureControl: Sendable, CaseIterable, Codable {
     case wellControlled
     case notSureOrNotChecked
     case doctorSaysHigh
 }
 
 /// CV-2b's heart-rhythm-control answer.
-public enum RhythmControl: Sendable, CaseIterable {
+public enum RhythmControl: Sendable, CaseIterable, Codable {
     case yes
     case notSure
     case no
 }
 
 /// MSK-2's surgical/PT-clearance answer.
-public enum SurgicalClearance: Sendable, CaseIterable {
+public enum SurgicalClearance: Sendable, CaseIterable, Codable {
     case fullyCleared
     case stillInRecoveryNotCleared
     case notApplicable
 }
 
 /// PP-2's weeks-postpartum answer.
-public enum PostpartumWeeks: Sendable, CaseIterable {
+public enum PostpartumWeeks: Sendable, CaseIterable, Codable {
     case underSix
     case sixToTwelve
     case overTwelve
@@ -62,7 +62,7 @@ public enum PostpartumWeeks: Sendable, CaseIterable {
 /// The nine condition categories §1.3's checklist is organized into, plus a tenth sentinel
 /// category for `ChecklistItem.noneOfTheAbove`, which is not itself a condition category but
 /// still needs a well-defined, testable `category` value (see `ChecklistItem.category`).
-public enum ChecklistCategory: String, CaseIterable, Sendable {
+public enum ChecklistCategory: String, CaseIterable, Sendable, Codable {
     case cardiovascular
     case metabolic
     case musculoskeletalJoint
@@ -77,7 +77,7 @@ public enum ChecklistCategory: String, CaseIterable, Sendable {
 }
 
 /// One checkbox from §1.3's condition checklist, plus the `noneOfTheAbove` sentinel.
-public enum ChecklistItem: String, CaseIterable, Sendable, Hashable {
+public enum ChecklistItem: String, CaseIterable, Sendable, Hashable, Codable {
     // Cardiovascular
     case highBloodPressure
     case heartDisease
@@ -149,7 +149,7 @@ public enum ChecklistItem: String, CaseIterable, Sendable, Hashable {
 /// above" clears any other selection; that rule is enforced inside `toggle`, the type's only
 /// mutator, so no view can ever produce a contradictory selection containing both
 /// `noneOfTheAbove` and another item.
-public struct ChecklistSelection: Sendable, Equatable {
+public struct ChecklistSelection: Sendable, Equatable, Codable {
     public private(set) var items: Set<ChecklistItem>
 
     public init(items: Set<ChecklistItem> = []) {
@@ -181,7 +181,7 @@ public struct ChecklistSelection: Sendable, Equatable {
 /// The full set of answers a user has given through the screening flow. Every field is
 /// optional because the flow fills them progressively and branches skip inapplicable
 /// questions (e.g. CV-2 only exists once "High blood pressure" is checked).
-public struct ScreeningAnswers: Sendable, Equatable {
+public struct ScreeningAnswers: Sendable, Equatable, Codable {
     // §1.1
     public var age: Int?
 

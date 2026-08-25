@@ -8,7 +8,7 @@
 /// The five SCOFF questionnaire answers (ED-1 through ED-5). Deliberately has no
 /// `CustomStringConvertible` conformance and no display-name or summary property, so there
 /// is no accidental path from this type to a user-visible score or label.
-public struct SCOFFResponses: Sendable, Equatable {
+public struct SCOFFResponses: Sendable, Equatable, Codable {
     public var ed1MakesSelfSickWhenFull: YesNo
     public var ed2WorriesLostControlOverEating: YesNo
     public var ed3RecentSignificantWeightLoss: YesNo

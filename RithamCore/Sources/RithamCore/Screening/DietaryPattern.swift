@@ -7,7 +7,7 @@
 
 /// The user's dietary pattern, used only to select which food-swap guidance is shown once
 /// a gate has already resolved — never as an input to gate resolution itself.
-public enum DietaryPattern: String, CaseIterable, Sendable {
+public enum DietaryPattern: String, CaseIterable, Sendable, Codable {
     case none
     case vegetarian
     case vegan
