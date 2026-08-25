@@ -186,3 +186,35 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
+
+## Backlog
+
+### Phase 999.1: Parent-facing kid ideas (food + movement content) (BACKLOG)
+
+**Goal:** [Captured for future planning] A section within the existing adult/parent Ritham
+account offering general, non-personalized food and movement ideas suitable for their own
+under-13 child. The child never has a Ritham profile, login, or tracked data of their own — the
+parent may optionally note an approximate child age to sharpen suggestions, but nothing about a
+specific child is stored or tracked over time (no child weight, no growth curve, no session
+history). This is parent-driven personalization on the parent's own account, not a child user of
+the service, so it does not reopen Ritham's permanent 13+ age floor (see PROJECT.md Key Decisions
+and `01-CONTEXT.md` D-14/D-15) or any COPPA concern — COPPA regulates collecting information from
+a child interacting with the service, not information an adult voluntarily provides about their
+own child for their own account's content.
+
+Not in scope for Phase 1 (onboarding/safety intake) — depends on the nutrition-guidance system
+that ships in Phase 2, and likely fits alongside Phase 4's household/cross-generational features.
+Needs its own clinical review before shipping: current HEALTH-04 only covers guidance for the
+app's own 13-17 user (general food-variety education, no weight-loss framing, per AAP guidance) —
+content aimed at actual young children is a distinct, more sensitive pediatric nutrition/
+youth-movement category and would need the same dietitian/clinical sign-off discipline
+(LAUNCH-02/03) as SCOFF and the existing nutrition rule tables, not casually authored tips.
+
+Originated from the 2026-08-24/25 session that also produced the permanent 13+ age floor decision
+(GitHub issue #1, closed) and a still-open, not-yet-captured device-continuity/account-sync idea.
+
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
