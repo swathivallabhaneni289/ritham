@@ -10,6 +10,7 @@
 		013581EA2FA2E3097156C900 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */; };
 		09F2307D01EA340690519FA7 /* AboutYouStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEA0958C9AB53F8DB2BF5F /* AboutYouStepTests.swift */; };
 		0AD79E3E4D1D01D6AE872CE7 /* RegisterEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0414574D7901774F19BED0BE /* RegisterEnvironment.swift */; };
+		0EFEBA5EDD3261599A216BDA /* CalibrationSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384060D1603588777B8A5894 /* CalibrationSessionView.swift */; };
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
 		16D414401C8CBD7183123CCD /* AgeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */; };
 		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
@@ -37,6 +38,7 @@
 		9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */; };
 		96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */; };
 		9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */; };
+		A9C84BFFC26CFA89FC2B7AAE /* CalibrationIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89E4D8F0456F5D8ACD8674A /* CalibrationIntroView.swift */; };
 		B699CA6F0194F93D60914DBE /* HealthDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF1FE8182F9431C9184C34 /* HealthDataStoreTests.swift */; };
 		BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */; };
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
@@ -77,6 +79,7 @@
 		2D7D475288D596A167095155 /* ConditionTagRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionTagRecord.swift; sourceTree = "<group>"; };
 		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		33CE82EE341BE99682A4A6E6 /* Ritham.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Ritham.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		384060D1603588777B8A5894 /* CalibrationSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSessionView.swift; sourceTree = "<group>"; };
 		479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTermTests.swift; sourceTree = "<group>"; };
 		4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationRegisterStepView.swift; sourceTree = "<group>"; };
 		4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataStore.swift; sourceTree = "<group>"; };
@@ -108,6 +111,7 @@
 		C7CF1FE8182F9431C9184C34 /* HealthDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataStoreTests.swift; sourceTree = "<group>"; };
 		C99579F2588DE8ABC5FB503D /* ScreenHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenHeader.swift; sourceTree = "<group>"; };
 		DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometryTests.swift; sourceTree = "<group>"; };
+		E89E4D8F0456F5D8ACD8674A /* CalibrationIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationIntroView.swift; sourceTree = "<group>"; };
 		F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepPresenting.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +156,7 @@
 				A49AD7002CE2D97EA29E3FB4 /* LocationEnrichment.swift */,
 				56204CF43FAEB1A870F9470A /* PedometerSession.swift */,
 				899994571E54AFD8D9247EEA /* StopwatchSession.swift */,
+				6292651ED21975FCB58670C3 /* Views */,
 			);
 			path = Calibration;
 			sourceTree = "<group>";
@@ -173,6 +178,15 @@
 				DEED1484C6612F06D7635196 /* Steps */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		6292651ED21975FCB58670C3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E89E4D8F0456F5D8ACD8674A /* CalibrationIntroView.swift */,
+				384060D1603588777B8A5894 /* CalibrationSessionView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		635CF0C5274641C7FE8C5EB3 = {
@@ -357,6 +371,8 @@
 				96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */,
 				5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */,
 				D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */,
+				A9C84BFFC26CFA89FC2B7AAE /* CalibrationIntroView.swift in Sources */,
+				0EFEBA5EDD3261599A216BDA /* CalibrationSessionView.swift in Sources */,
 				3865F9CBE50B8D1EE50719A6 /* ChoiceChip.swift in Sources */,
 				F4C75D98191CB477E9CF26C2 /* ChoiceQuestionView.swift in Sources */,
 				5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */,

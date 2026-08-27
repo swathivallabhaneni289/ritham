@@ -60,6 +60,12 @@ public enum OnboardingCopy {
         public static let startCTA = "Start calibration session"
         public static let completeHeadline = "Baseline set."
         public static let completeBody = "You're calibrated — Ritham will use this as your real starting point, not a guess."
+
+        /// D-03 names this exact action "a 'Skip for now' action" -- transcribed verbatim from
+        /// that locked decision, the same way every other constant here transcribes its source
+        /// verbatim, even though 01-UI-SPEC.md's Copywriting Contract table (which enumerates
+        /// only the headline/body/CTA rows) has no dedicated row for it.
+        public static let skipCTA = "Skip for now"
     }
 
     public enum HealthProfile {

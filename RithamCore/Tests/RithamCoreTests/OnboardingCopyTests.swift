@@ -36,6 +36,7 @@ struct OnboardingCopyTests {
         OnboardingCopy.Calibration.startCTA,
         OnboardingCopy.Calibration.completeHeadline,
         OnboardingCopy.Calibration.completeBody,
+        OnboardingCopy.Calibration.skipCTA,
         OnboardingCopy.HealthProfile.emptyStateHeading,
         OnboardingCopy.HealthProfile.emptyStateBody,
         OnboardingCopy.HealthProfile.emptyStateCTA,

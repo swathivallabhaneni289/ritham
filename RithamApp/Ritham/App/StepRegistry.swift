@@ -19,6 +19,16 @@ final class OnboardingFlow {
     var answers: OnboardingAnswers
     var path: [OnboardingStep]
 
+    /// The mode chosen on `CalibrationIntroView`, read by `CalibrationSessionView` (plan
+    /// 01-15) to know which session to run. Deliberately NOT part of `OnboardingAnswers`
+    /// (RithamCore): `OnboardingRouter.nextStep` never branches on which calibration mode was
+    /// picked, only on `calibrationOutcome`, so this carries no routing consequence and does
+    /// not belong in the `Codable`, persisted, branching-relevant answers aggregate. It is
+    /// purely an in-session UI handoff between two screens this plan owns, scoped to the same
+    /// in-memory lifetime as `path`/`answers` themselves -- storing it here is data, not the
+    /// branching logic this class's own header comment forbids.
+    var calibrationMode: CalibrationMode = .walk
+
     init(answers: OnboardingAnswers = OnboardingAnswers(), path: [OnboardingStep] = []) {
         self.answers = answers
         self.path = path
