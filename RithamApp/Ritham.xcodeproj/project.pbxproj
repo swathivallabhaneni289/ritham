@@ -10,12 +10,16 @@
 		013581EA2FA2E3097156C900 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */; };
 		0AD79E3E4D1D01D6AE872CE7 /* RegisterEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0414574D7901774F19BED0BE /* RegisterEnvironment.swift */; };
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
+		16D414401C8CBD7183123CCD /* AgeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */; };
 		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
 		1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99579F2588DE8ABC5FB503D /* ScreenHeader.swift */; };
 		1D6C3E93FCDE0349CEA86EB8 /* RithamScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */; };
+		2D41B1597969D1E25E5E578D /* DietaryPatternStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */; };
+		3811764FA3F43C45AA6F4DF0 /* AgeIneligibleStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */; };
 		3865F9CBE50B8D1EE50719A6 /* ChoiceChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F8EF54A5E9759B3255AF8D /* ChoiceChip.swift */; };
 		3B38A96C15C0B2ACC05FD7C3 /* GlossaryTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = B040926DC5083605CE450DEF /* GlossaryTerm.swift */; };
 		44F1B1ED7CD062A5B03F9536 /* RithamModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */; };
+		507ED14AF0F3BDB019DE15FF /* AgeValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */; };
 		5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D89BB7A3DD06DB23570E75 /* RithamType.swift */; };
 		5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5D3C503846C096E9A8713 /* BandMotif.swift */; };
 		5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D475288D596A167095155 /* ConditionTagRecord.swift */; };
@@ -59,6 +63,7 @@
 		1024D116B21BD85232045566 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionView.swift; sourceTree = "<group>"; };
 		226CB34F3DE1E1C5B984771E /* RingAndDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingAndDot.swift; sourceTree = "<group>"; };
+		257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeValidationTests.swift; sourceTree = "<group>"; };
 		2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStepView.swift; sourceTree = "<group>"; };
 		2D7D475288D596A167095155 /* ConditionTagRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionTagRecord.swift; sourceTree = "<group>"; };
 		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,9 +78,12 @@
 		7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamScreen.swift; sourceTree = "<group>"; };
 		7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamModelContainer.swift; sourceTree = "<group>"; };
 		7ED5B376F4222B06352A10E7 /* ChoiceQuestionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionTests.swift; sourceTree = "<group>"; };
+		832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietaryPatternStepView.swift; sourceTree = "<group>"; };
+		8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeIneligibleStepView.swift; sourceTree = "<group>"; };
 		93E5D3C503846C096E9A8713 /* BandMotif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandMotif.swift; sourceTree = "<group>"; };
 		93F8EF54A5E9759B3255AF8D /* ChoiceChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceChip.swift; sourceTree = "<group>"; };
 		9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometry.swift; sourceTree = "<group>"; };
+		A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeStepView.swift; sourceTree = "<group>"; };
 		A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryCTAButton.swift; sourceTree = "<group>"; };
 		B040926DC5083605CE450DEF /* GlossaryTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTerm.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
@@ -199,6 +207,7 @@
 		BF6EB89EB83AC89ADB418625 /* RithamTests */ = {
 			isa = PBXGroup;
 			children = (
+				257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */,
 				6202A72738414384DAE6A08D /* AppShellTests.swift */,
 				DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */,
 				7ED5B376F4222B06352A10E7 /* ChoiceQuestionTests.swift */,
@@ -212,6 +221,9 @@
 		DEED1484C6612F06D7635196 /* Steps */ = {
 			isa = PBXGroup;
 			children = (
+				8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */,
+				A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */,
+				832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */,
 				4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */,
 				2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */,
 			);
@@ -307,12 +319,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3811764FA3F43C45AA6F4DF0 /* AgeIneligibleStepView.swift in Sources */,
+				16D414401C8CBD7183123CCD /* AgeStepView.swift in Sources */,
 				96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */,
 				5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */,
 				D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */,
 				3865F9CBE50B8D1EE50719A6 /* ChoiceChip.swift in Sources */,
 				F4C75D98191CB477E9CF26C2 /* ChoiceQuestionView.swift in Sources */,
 				5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */,
+				2D41B1597969D1E25E5E578D /* DietaryPatternStepView.swift in Sources */,
 				8E49823AA318A99A8192B405 /* ExplanationRegisterStepView.swift in Sources */,
 				3B38A96C15C0B2ACC05FD7C3 /* GlossaryTerm.swift in Sources */,
 				BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */,
@@ -338,6 +353,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				507ED14AF0F3BDB019DE15FF /* AgeValidationTests.swift in Sources */,
 				92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */,
 				8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */,
 				EA77E7A1C1297BA0CB56658F /* ChoiceQuestionTests.swift in Sources */,
