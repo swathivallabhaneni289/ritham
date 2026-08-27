@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-09-PLAN.md
-last_updated: "2026-08-27T09:50:29.381Z"
+stopped_at: Completed 01-10-PLAN.md
+last_updated: "2026-08-27T10:33:24.415Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 7 of 14
+Plan: 8 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-onboarding-safety-intake P06 | 35min | 3 tasks | 5 files |
 | Phase 01-onboarding-safety-intake P07 | 35min | 3 tasks | 9 files |
 | Phase 01-onboarding-safety-intake P09 | 55min | 3 tasks | 10 files |
+| Phase 01-onboarding-safety-intake P10 | 45min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-07: needsSeverityFollowUps treats eating-disorder-history as a category needing follow-ups (its follow-up is SCOFF, reached via severityFollowUps -> scoffFollowUp) so an eating-disorder-only checklist selection still reaches SCOFF per D-10
 - [Phase 01-09]: iOS app target scaffolded via xcodegen (project.yml -> Ritham.xcodeproj), iOS 17.0 deployment floor confirmed against SDK 26.5, Swift 6 strict concurrency — Reproducible/reviewable project generation instead of a hand-authored opaque .xcodeproj; iOS 17.0 required by SwiftData
 - [Phase 01-09]: OnboardingRootView holds the sole NavigationStack; OnboardingStepPresenting + StepRegistry are the only mechanism for contributing a screen (CROSSGEN-05 structural enforcement) — Prevents any age-based navigation fork from ever being introduced by a later screen plan
+- [Phase ?]: 01-10: BandGeometry's flat-margin split derives from only the fixed 57-degree angle and the render rect (span=height/tan(angle), margin=(width-span)/4 per side), producing 13-17% usable margins at real portrait header sizes rather than a knife-edge value that only barely passes a bare-positive test
+- [Phase ?]: 01-10: DecorativeSurface.flat's header comment enumerates nine flat-charcoal screens (not the plan's stated ten) to match 01-UI-SPEC.md's 2026-08-23 update removing the under-13-halt/13-17-partial-gate rows after the permanent 13+ age floor decision
 
 ### Pending Todos
 
@@ -122,8 +125,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-27T09:50:29.376Z
-Stopped at: Completed 01-09-PLAN.md
+Last session: 2026-08-27T10:33:24.410Z
+Stopped at: Completed 01-10-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
-Resume file: None
+Resume file: 
+None
