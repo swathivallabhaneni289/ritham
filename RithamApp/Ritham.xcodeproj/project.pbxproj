@@ -10,7 +10,9 @@
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
 		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
 		92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202A72738414384DAE6A08D /* AppShellTests.swift */; };
+		9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */; };
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
+		CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */; };
 		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
 /* End PBXBuildFile section */
 
@@ -29,8 +31,10 @@
 		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		33CE82EE341BE99682A4A6E6 /* Ritham.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Ritham.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6202A72738414384DAE6A08D /* AppShellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellTests.swift; sourceTree = "<group>"; };
+		63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRegistry.swift; sourceTree = "<group>"; };
 		7326799926C7C75029BF3A31 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
+		F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepPresenting.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +61,9 @@
 			isa = PBXGroup;
 			children = (
 				7326799926C7C75029BF3A31 /* OnboardingRootView.swift */,
+				F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */,
 				0B4438C355A19887EE4B879F /* RithamApp.swift */,
+				63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -187,7 +193,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */,
+				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
 				C87638F14A7A077650B52332 /* RithamApp.swift in Sources */,
+				9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,13 +363,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.RithamTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.app.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ritham.app/Ritham";
@@ -390,13 +399,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.RithamTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.app.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ritham.app/Ritham";

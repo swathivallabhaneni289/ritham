@@ -37,6 +37,10 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: RithamTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.ritham.app.tests
     dependencies:
       - target: Ritham
       - package: RithamCore
