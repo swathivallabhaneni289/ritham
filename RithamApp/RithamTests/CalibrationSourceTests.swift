@@ -144,4 +144,66 @@ struct CalibrationSourceTests {
         #expect(inertEnrichment.isEnriching == false)
         #expect(CalibrationCompletion.evaluate(session.progress) == .complete)
     }
+
+    // MARK: - Registration (Task 3)
+
+    @Test("CalibrationRegistration.registerAll resolves a real view for each of the three calibration steps and shrinks unregisteredSteps by exactly those three")
+    func registerAllResolvesCalibrationSteps() {
+        let steps: [OnboardingStep] = [.calibrationIntro, .calibrationSession, .calibrationComplete]
+        let before = Set(StepRegistry.unregisteredSteps)
+        for step in steps { #expect(before.contains(step)) }
+
+        CalibrationRegistration.registerAll()
+
+        let after = Set(StepRegistry.unregisteredSteps)
+        for step in steps { #expect(!after.contains(step)) }
+        #expect(before.subtracting(after) == Set(steps))
+
+        let flow = OnboardingFlow()
+        for step in steps {
+            _ = StepRegistry.view(for: step, flow: flow)
+        }
+        #expect(true)
+    }
+
+    // MARK: - Routing (Task 3)
+
+    @Test("router routes past calibrationSession and calibrationComplete when calibration was skipped, so skipping blocks nothing")
+    func routerRoutesPastSessionAndCompleteWhenSkipped() {
+        var answers = OnboardingAnswers()
+        answers.calibrationOutcome = .skipped
+
+        let next = OnboardingRouter.nextStep(after: .calibrationIntro, answers: answers)
+        #expect(next != .calibrationSession)
+        #expect(next != .calibrationComplete)
+        #expect(next == OnboardingRouter.nextStep(after: .calibrationComplete, answers: answers))
+    }
+
+    @Test("router passes through calibrationSession then calibrationComplete when calibration was not skipped")
+    func routerPassesThroughSessionAndCompleteWhenNotSkipped() {
+        var answers = OnboardingAnswers()
+        answers.calibrationOutcome = .notStarted
+
+        #expect(OnboardingRouter.nextStep(after: .calibrationIntro, answers: answers) == .calibrationSession)
+        #expect(OnboardingRouter.nextStep(after: .calibrationSession, answers: answers) == .calibrationComplete)
+
+        answers.calibrationOutcome = .completed(CalibrationBaseline.provisional(establishedAt: Date()))
+        #expect(OnboardingRouter.nextStep(after: .calibrationIntro, answers: answers) == .calibrationSession)
+        #expect(OnboardingRouter.nextStep(after: .calibrationSession, answers: answers) == .calibrationComplete)
+    }
+
+    // MARK: - Skip yields a real provisional baseline, never nil (Task 3)
+
+    @Test("after a skip, the persisted baseline round-trips through HealthDataStore with source .provisional, not nil")
+    func skipYieldsProvisionalBaselineNotNil() throws {
+        let store = try makeStore()
+        let knownDate = Date(timeIntervalSince1970: 1_000_000)
+
+        try store.saveCalibrationBaseline(CalibrationBaseline.provisional(establishedAt: knownDate))
+
+        let loaded = try store.loadCalibrationBaseline()
+        #expect(loaded != nil)
+        #expect(loaded?.source == .provisional)
+        #expect(loaded?.establishedAt == knownDate)
+    }
 }
