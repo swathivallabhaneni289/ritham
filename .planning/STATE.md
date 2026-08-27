@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-15-PLAN.md
-last_updated: "2026-08-27T12:12:16.881Z"
+stopped_at: Completed 01-16-PLAN.md
+last_updated: "2026-08-27T12:38:18.131Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 11
+  completed_plans: 12
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 12 of 14
+Plan: 13 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-onboarding-safety-intake P12 | 40min | 3 tasks | 9 files |
 | Phase 01-onboarding-safety-intake P13 | 55min | 3 tasks | 11 files |
 | Phase 01-onboarding-safety-intake P15 | 50min | 3 tasks | 13 files |
+| Phase 01-onboarding-safety-intake P16 | 90min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,9 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-15: OnboardingFlow.calibrationMode (transient, non-Codable) carries the intro's activity choice to the session screen since OnboardingRouter never branches on it and CalibrationMode has no Codable conformance to add to OnboardingAnswers
 - [Phase 01]: 01-15: CalibrationSessionSource conformers (PedometerSession/StopwatchSession/LiftSessionRecorder) are non-actor-isolated with @unchecked Sendable + nonisolated(unsafe) storage, not @MainActor -- Swift 6 rejects an isolated conformance to a Sendable-inheriting protocol
 - [Phase 01]: 01-15: Added OnboardingCopy.Calibration.skipCTA ('Skip for now'), transcribed verbatim from D-03's own decision text since 01-UI-SPEC.md's Copywriting Contract table has no dedicated row for it
+- [Phase ?]: 01-16: Centralized every §1.2/§1.4 screening question prompt and option label into new ScreeningCopy.Gate/.FollowUp/.EatingPattern namespaces (RithamCore), plus ChecklistItem.displayName -- one reviewable file for LAUNCH-01/LAUNCH-02 counsel/clinician review instead of scattering doc-sourced wording across seven view files
+- [Phase ?]: 01-16: SeverityFollowUpView is one data-driven screen -- a [ChecklistCategory: [SeverityQuestion]] table built via a generic severityQuestion(...) helper -- covering all eight §1.4 category groups instead of eight hand-built view bodies
+- [Phase ?]: 01-16: Gate-pass affirmation shown via .alert gated on GateResolution.resolve's own interstitial == .none result, since no dedicated OnboardingStep case exists for it; 'shown once' for the opening disclaimer tracked via the existing OnboardingAnswers.completedSteps field, not a new persisted UserProfile column
 
 ### Pending Todos
 
@@ -140,8 +144,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-27T12:12:16.877Z
-Stopped at: Completed 01-15-PLAN.md
+Last session: 2026-08-27T12:38:18.126Z
+Stopped at: Completed 01-16-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
 Resume file: 
