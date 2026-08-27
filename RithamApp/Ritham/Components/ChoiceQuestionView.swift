@@ -73,7 +73,7 @@ enum ChoiceSelectionReducer {
 /// concept, so RithamCore has no reason to conform it. `ChoiceQuestionView` requires
 /// `Identifiable` to drive `ForEach` without a separate id parameter; a raw-value-backed
 /// `CaseIterable` enum is its own stable, unique identity, so `id: Self { self }` is safe here.
-extension ChecklistItem: Identifiable {
+extension ChecklistItem: @retroactive Identifiable {
     public var id: Self { self }
 }
 

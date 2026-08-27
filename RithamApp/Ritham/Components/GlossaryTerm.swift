@@ -13,7 +13,7 @@ struct GlossaryTerm: View {
     let term: String
 
     @State private var isExpanded = false
-    @Environment(\.explanationRegister) private var register
+    @Environment(\.explanationRegister) private var register: ExplanationRegister
 
     var body: some View {
         if let entry = Glossary.entry(for: term) {
