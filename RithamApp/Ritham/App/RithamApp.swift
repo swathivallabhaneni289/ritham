@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // This file has exactly three owners, touched in this order across the phase's wave sequence.
 // Each edit is additive — do not restructure what a prior owner added:
@@ -16,5 +17,6 @@ struct RithamApp: App {
         WindowGroup {
             OnboardingRootView()
         }
+        .modelContainer(RithamModelContainer.shared)
     }
 }

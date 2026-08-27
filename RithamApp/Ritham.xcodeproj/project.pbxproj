@@ -11,6 +11,7 @@
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
 		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
 		1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99579F2588DE8ABC5FB503D /* ScreenHeader.swift */; };
+		44F1B1ED7CD062A5B03F9536 /* RithamModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */; };
 		5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D89BB7A3DD06DB23570E75 /* RithamType.swift */; };
 		5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5D3C503846C096E9A8713 /* BandMotif.swift */; };
 		5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D475288D596A167095155 /* ConditionTagRecord.swift */; };
@@ -51,6 +52,7 @@
 		63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRegistry.swift; sourceTree = "<group>"; };
 		7326799926C7C75029BF3A31 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
 		74D89BB7A3DD06DB23570E75 /* RithamType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamType.swift; sourceTree = "<group>"; };
+		7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamModelContainer.swift; sourceTree = "<group>"; };
 		93E5D3C503846C096E9A8713 /* BandMotif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandMotif.swift; sourceTree = "<group>"; };
 		9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometry.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
@@ -121,6 +123,7 @@
 			children = (
 				C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */,
 				2D7D475288D596A167095155 /* ConditionTagRecord.swift */,
+				7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */,
 				C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */,
 			);
 			path = Persistence;
@@ -253,6 +256,7 @@
 				F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */,
 				C87638F14A7A077650B52332 /* RithamApp.swift in Sources */,
 				CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */,
+				44F1B1ED7CD062A5B03F9536 /* RithamModelContainer.swift in Sources */,
 				D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */,
 				5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */,
 				1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */,
