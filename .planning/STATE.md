@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-11-PLAN.md
-last_updated: "2026-08-27T10:52:13.263Z"
+stopped_at: Completed 01-12-PLAN.md
+last_updated: "2026-08-27T11:10:24.247Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 9 of 14
+Plan: 10 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-onboarding-safety-intake P09 | 55min | 3 tasks | 10 files |
 | Phase 01-onboarding-safety-intake P10 | 45min | 3 tasks | 8 files |
 | Phase 01 P11 | 45min | 3 tasks | 9 files |
+| Phase 01-onboarding-safety-intake P12 | 40min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-11: HealthDataStore.updateProfile treats a nil register/dietaryPattern in the draft as 'leave unchanged'; only invalidateSection clears those fields to unanswered
 - [Phase ?]: 01-11: invalidateSection deletes the edited section's ConditionTagRecords rather than stamping editedAt, so an overdue tag's re-screen clock is never silently reset by starting an edit
 - [Phase ?]: 01-11: File-protection read-back verification throws on-device only, logs on Simulator — Simulator's host filesystem does not honor Data Protection classes
+- [Phase ?]: 01-12: ChoiceQuestionView's ChecklistItem-specific initializer defers directly to ChecklistSelection.toggle(_:) rather than reproducing its exclusive-option invariant through the generic ChoiceSelectionReducer
+- [Phase ?]: 01-12: ChecklistItem: Identifiable conformance added at the UI layer (RithamApp target), not RithamCore, since Identifiable is a ForEach-driven UI concern RithamCore has no reason to carry
 
 ### Pending Todos
 
@@ -130,8 +133,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-27T10:51:51.675Z
-Stopped at: Completed 01-11-PLAN.md
+Last session: 2026-08-27T11:10:24.243Z
+Stopped at: Completed 01-12-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
 Resume file: 
