@@ -143,6 +143,57 @@ public enum ChecklistItem: String, CaseIterable, Sendable, Hashable, Codable {
             return .none
         }
     }
+
+    /// The checkbox label exactly as §1.3 writes it. User-facing copy (plan 01-16's condition
+    /// checklist screen), mirroring the `ConditionTag.displayName` pattern (plan 01-06) so every
+    /// screening-flow label has one addressable, verbatim source rather than being re-transcribed
+    /// per call site.
+    public var displayName: String {
+        switch self {
+        case .highBloodPressure:
+            return "High blood pressure"
+        case .heartDisease:
+            return "Heart disease (including a prior heart attack, heart failure, coronary artery disease, or a cardiac surgery/procedure)"
+        case .irregularHeartbeat:
+            return "Irregular heartbeat (arrhythmia, e.g., atrial fibrillation)"
+        case .otherHeartOrCirculatoryCondition:
+            return "Another heart or circulatory condition"
+        case .type1Diabetes:
+            return "Type 1 diabetes"
+        case .type2Diabetes:
+            return "Type 2 diabetes"
+        case .prediabetes:
+            return "Prediabetes"
+        case .otherMetabolicCondition:
+            return "Another metabolic condition"
+        case .osteoarthritis:
+            return "Osteoarthritis (knee, hip, or other joint)"
+        case .osteoporosisOrOsteopenia:
+            return "Osteoporosis or osteopenia (low bone density)"
+        case .chronicLowBackPain:
+            return "Chronic or ongoing low back pain"
+        case .priorInjuryOrSurgery:
+            return "A prior injury or surgery (e.g., joint replacement, ACL repair, rotator cuff repair)"
+        case .currentlyPregnant:
+            return "Currently pregnant"
+        case .postpartum:
+            return "Postpartum (gave birth within the last 12 months)"
+        case .kidneyDiseaseCKD:
+            return "Diagnosed kidney disease (CKD)"
+        case .currentlyOnDialysis:
+            return "Currently on dialysis"
+        case .eatingDisorderHistory:
+            return "Current or past eating disorder, disordered eating, or a difficult relationship with food or exercise"
+        case .foodAllergies:
+            return "I have one or more food allergies"
+        case .activeCancerTreatment:
+            return "Currently undergoing treatment for cancer (e.g., chemotherapy or radiation)"
+        case .otherSeriousOrComplexCondition:
+            return "Another serious or complex condition not listed above"
+        case .noneOfTheAbove:
+            return "None of the above"
+        }
+    }
 }
 
 /// The user's current condition-checklist selection. §1.3 states that choosing "None of the

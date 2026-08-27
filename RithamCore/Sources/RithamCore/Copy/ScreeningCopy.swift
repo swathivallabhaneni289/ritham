@@ -97,4 +97,86 @@ public enum ScreeningCopy {
         let joined = conditions.joined(separator: ", ")
         return "This suggestion reflects a general, guideline-based adjustment for **\(joined)**. It is not personalized medical or nutrition advice, not a diagnosis, and not a substitute for your doctor or a registered dietitian — no clinician has reviewed it for you individually. Using Ritham doesn't create a doctor-patient or dietitian-client relationship. Always check with your healthcare provider before changing your exercise or eating habits, especially if your condition, medications, or symptoms have changed since you last answered these questions."
     }
+
+    // MARK: - §5's closing section: the unconditional emergency line
+
+    /// The standing, never-conditional emergency line `GateEscalation.showsEmergencyLine(for:)`
+    /// gates rendering of (never its content — the line itself is never conditional on any
+    /// answer). Extracted verbatim from the bolded opening sentence of
+    /// `urgentClearanceInterstitial` (§4.3), which §5 names as the line's "repeated" location —
+    /// the gate section (§1.2) is where it is shown first. Kept as plain text (no `**` markers)
+    /// so both render sites can format the same string without one needing markdown parsing and
+    /// the other not.
+    public static let emergencyLine = "Before anything else: if you're currently experiencing chest pain, difficulty breathing, sudden severe dizziness, or think you may be having a medical emergency, stop and call 911 (or your local emergency number) right now. Don't wait to finish this questionnaire."
+
+    // MARK: - §1.2 Gate questions (G1-G7) and their immediate MED-1/MED-2 follow-ups
+
+    /// Plan 01-16's screen-building scope: docs/health-screening.md §1.2's seven gate questions
+    /// verbatim, plus G3's parenthetical clarification and the two immediate MED-1/MED-2
+    /// follow-ups revealed when G5 is "Yes". `ScreeningCopy.swift`'s original scope (plan 01-01)
+    /// covered only the section-level framing/pass copy; the individual question prompts had no
+    /// addressable home until this plan needed to render them, and centralizing them here (with
+    /// everything else in `docs/health-screening.md` §1) keeps the whole PAR-Q+-style word set in
+    /// the one file LAUNCH-01's counsel review will actually read.
+    public enum Gate {
+        public static let g1 = "Has a doctor ever told you that you have a heart condition or high blood pressure?"
+        public static let g2 = "Do you feel chest pain or significant shortness of breath at rest, during your daily activities, or during exercise?"
+        public static let g3 = "In the past 12 months, have you lost your balance because of dizziness, or lost consciousness?"
+        public static let g3Clarification = "This doesn't include brief lightheadedness from breathing hard during a tough workout."
+        public static let g4 = "Have you been diagnosed with any other ongoing medical condition not covered above — for example diabetes, kidney disease, cancer, an eating disorder, or another chronic condition?"
+        public static let g5 = "Are you currently taking a prescription medication for an ongoing health condition, or following a specific meal plan or nutrition targets given to you by a doctor or dietitian?"
+        public static let g6 = "Do you currently have — or have you had in the last 12 months — a bone, joint, or soft-tissue problem that gets worse with physical activity?"
+        public static let g7 = "Has a doctor ever told you that you should only do physical activity that is medically supervised?"
+        public static let med1 = "Does this include a medication for your heart or blood pressure, such as a beta-blocker?"
+        public static let med2 = "Is this a specific meal plan or nutrition targets from a doctor or dietitian (not just general advice)?"
+    }
+
+    // MARK: - §1.4 Severity/context follow-up questions, shown only for selected categories
+
+    /// Verbatim §1.4 follow-up prompts and, where a follow-up's option list is not a plain
+    /// Yes/No/Not-sure, its option labels too (the blood-pressure-control, surgical-clearance,
+    /// and postpartum-weeks answer sets are themselves clinically-reviewable wording, same as
+    /// the questions).
+    public enum FollowUp {
+        public static let cv1 = "In the last 6 weeks, have you had a heart attack, heart surgery, or a cardiac procedure (such as a stent, ablation, or pacemaker placement)?"
+        public static let cv2 = "How would you describe your blood pressure right now?"
+        public static let cv2OptionWellControlled = "Well-controlled with treatment"
+        public static let cv2OptionNotSureOrNotChecked = "Not sure, or I haven't checked recently"
+        public static let cv2OptionDoctorSaysHigh = "My doctor has told me it's high or not well-controlled"
+        public static let cv2b = "Is your heart rhythm currently well-controlled with treatment?"
+        public static let m1 = "Do you take insulin, or a medication that can cause low blood sugar (such as a sulfonylurea)?"
+        public static let m2 = "Have you been told you have diabetes-related eye disease, nerve damage in your feet, or a current foot wound?"
+        public static let msk1 = "Is this currently flaring up, or has it gotten noticeably worse in the last 2 weeks?"
+        public static let msk2 = "Has your surgeon or physical therapist cleared you for regular exercise?"
+        public static let msk2OptionFullyCleared = "Yes, fully cleared"
+        public static let msk2OptionStillInRecoveryNotCleared = "Still in recovery, not yet cleared"
+        public static let msk2OptionNotApplicable = "Not applicable"
+        public static let pg1 = "Has your doctor told you about any pregnancy complications — for example high blood pressure, a placenta condition, preterm labor, bleeding, or a heart or lung condition?"
+        public static let pp1 = "Did you have a C-section, or were there any complications with your delivery?"
+        public static let pp2 = "How many weeks postpartum are you?"
+        public static let pp2OptionUnderSix = "Under 6 weeks"
+        public static let pp2OptionSixToTwelve = "6–12 weeks"
+        public static let pp2OptionOverTwelve = "Over 12 weeks"
+        public static let kr1 = "Are you currently on dialysis?"
+        public static let kr2 = "Has your doctor or dietitian given you specific limits on things like protein, potassium, phosphorus, or fluids?"
+        public static let fa1 = "Is any of your allergies severe or life-threatening — for example, could it cause anaphylaxis, or have you been prescribed an epinephrine auto-injector (like an EpiPen)?"
+        public static let os1 = "Is this a new diagnosis, or a change in treatment, within the last 3 months?"
+    }
+
+    // MARK: - §1.4 Eating-disorder-history follow-up (SCOFF, ED-1 through ED-5)
+
+    /// The five SCOFF questions verbatim. §1.5 forbids surfacing the computed score or a label —
+    /// these five prompts are the entire user-visible content of the SCOFF screen besides
+    /// `scoffIntro`; nothing here computes or names a result.
+    public enum EatingPattern {
+        public static let ed1 = "Do you make yourself sick because you feel uncomfortably full?"
+        public static let ed2 = "Do you worry you have lost control over how much you eat?"
+        public static let ed3 = "Have you recently lost more than about 14 lb (6.4 kg) in a 3-month period?"
+        public static let ed4 = "Do you believe yourself to be fat when others say you are too thin?"
+        public static let ed5 = "Would you say that food dominates your life?"
+    }
+
+    // MARK: - §1.4 Universal follow-up (U-1, shown to every user regardless of selection)
+
+    public static let universalFollowUp = "One more thing: are you 65 or older, or returning to exercise after being inactive for the last 3 months or more?"
 }
