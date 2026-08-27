@@ -85,7 +85,7 @@ coverage:
         ref: "grep -c minimumTapTarget across PrimaryCTAButton.swift/ChoiceChip.swift/GlossaryTerm.swift >= 1 each; RithamScreen's surface parameter has no default value"
         status: pass
     human_judgment: true
-    rationale: "The mechanism (required-surface parameter, 44pt frames, label(on:) contrast rule) is proven by grep and by BUILD SUCCEEDED, but actual visual/tactile confirmation -- that a chip genuinely reads as a 44pt target and that coral-fill/charcoal-label actually looks correct at real device sizes -- requires a rendered, composed screen, which does not exist until 01-13/01-15/01-16/01-17 consume these components. 01-10-SUMMARY.md's D4 deferred the identical visual-confirmation question for ScreenHeader to plan 01-19's human checkpoint; this plan's components carry the same deferral for the same reason."
+    rationale: "The mechanism (required-surface parameter, 44pt frames, label(on:) contrast rule) is proven by grep and by BUILD SUCCEEDED, but actual visual/tactile confirmation -- that a chip genuinely reads as a 44pt target and that coral-fill/charcoal-label actually looks correct at real device sizes -- requires a rendered, composed screen, which does not exist until 01-13/01-15/01-16/01-17 consume these components. 01-10-SUMMARY.md's D4 deferred the identical visual-confirmation question for ScreenHeader to plan 01-19's human checkpoint; this plan's components carry the same deferral for the same reason. Specific additional item to check at that AX3+ pass: WrapLayout's placeSubviews sizes each subview with .unspecified, so a single chip whose ideal label width exceeds the container could overflow rather than wrap its own text -- flagged during advisor review, not fixed blind since the layout is otherwise working and committed."
 
 duration: 40min
 completed: 2026-08-27
@@ -119,6 +119,7 @@ Each task was committed atomically:
 1. **Task 1: Screen scaffold and primary action button** - `811511e` (feat)
 2. **Task 2: The fixed-choice question component** - `9acaf0e` (feat)
 3. **Task 3: Register environment and tap-to-expand glossary term** - `35ef66a` (feat)
+4. **Follow-up: artifact-gate and retroactive-conformance fixes (see Deviations)** - `b5ff55d` (fix)
 
 ## Files Created/Modified
 - `RithamApp/Ritham/Components/RithamScreen.swift` - Screen scaffold: required `DecorativeSurface`, `ScreenHeader`, scrolling content with no fixed-height text region, headline/body at `display`/`body` roles
@@ -138,7 +139,28 @@ Each task was committed atomically:
 
 ## Deviations from Plan
 
-None - plan executed exactly as written. The only in-flight correction was to my own test code (Swift's type inference could not resolve a bare `.alpha` literal across two generic parameters without an explicit `TestOption.alpha` annotation) -- caught and fixed before any commit, not a deviation from the plan's instructions or a change to shipped component behavior.
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] `GlossaryTerm.swift` did not literally satisfy the plan's `must_haves.artifacts` gate**
+- **Found during:** Advisor review after all three tasks were committed
+- **Issue:** The plan's frontmatter requires `GlossaryTerm.swift` to `contains: "ExplanationRegister"`. The shipped file referenced the register only through the lowercase keypath (`@Environment(\.explanationRegister) private var register`) and prose comments -- the capital-`E` type name never appeared as a literal token, so `grep -c 'ExplanationRegister' GlossaryTerm.swift` returned 0.
+- **Fix:** Added an explicit type annotation to the property (`private var register: ExplanationRegister`), which is also better Swift style at a call site relying on inference through an environment key.
+- **Files modified:** `RithamApp/Ritham/Components/GlossaryTerm.swift`
+- **Verification:** `grep -c 'ExplanationRegister' GlossaryTerm.swift` now returns 1; full `RithamTests` suite re-run (48/48 pass)
+- **Committed in:** `b5ff55d` (follow-up commit, not amended into the Task 3 commit)
+
+**2. [Rule 1 - Bug] `ChecklistItem: Identifiable` conformance triggered a Swift 6 retroactive-conformance warning**
+- **Found during:** Advisor review; confirmed with a full rebuild capturing warnings
+- **Issue:** `extension ChecklistItem: Identifiable` conforms an imported type (`RithamCore`'s `ChecklistItem`) to an imported protocol (`Identifiable`) without `@retroactive`, which Swift 6 flags: "this will not behave correctly if the owners of 'RithamCore' introduce this conformance in the future."
+- **Fix:** Annotated the extension `@retroactive Identifiable`, per Swift's own suggested fix.
+- **Files modified:** `RithamApp/Ritham/Components/ChoiceQuestionView.swift`
+- **Verification:** Rebuild output no longer contains the warning; full `RithamTests` suite re-run (48/48 pass)
+- **Committed in:** `b5ff55d` (follow-up commit, not amended into the Task 2 commit)
+
+---
+
+**Total deviations:** 2 auto-fixed (both Rule 1 bugs caught during advisor review, not by the plan's own literal task gates)
+**Impact on plan:** Both fixes tighten conformance to the plan's own contract (the artifact gate) and to Swift 6 diagnostics; neither changes any shipped component's runtime behavior. The only other in-flight correction was to my own test code (Swift's type inference could not resolve a bare `.alpha` literal across two generic parameters without an explicit `TestOption.alpha` annotation) -- caught and fixed before any commit, not a deviation from the plan's instructions.
 
 ## Issues Encountered
 One transient simulator "Busy" / "Application failed preflight checks" failure on the first full-`RithamTests` run after Task 3 -- same failure mode 01-09-SUMMARY.md and 01-11-SUMMARY.md documented, resolved identically via `xcrun simctl shutdown all` and retrying; not caused by anything in this plan's code and did not recur.
@@ -159,5 +181,5 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-All 8 created files verified present on disk; all four commit hashes (811511e, 9acaf0e,
-35ef66a, ea3ceaf) verified in git log.
+All 8 created files verified present on disk; all commit hashes (811511e, 9acaf0e, 35ef66a,
+ea3ceaf, b5ff55d) verified in git log.
