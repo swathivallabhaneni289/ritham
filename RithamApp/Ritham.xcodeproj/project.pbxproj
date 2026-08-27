@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		013581EA2FA2E3097156C900 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */; };
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
 		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
 		1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99579F2588DE8ABC5FB503D /* ScreenHeader.swift */; };
 		5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D89BB7A3DD06DB23570E75 /* RithamType.swift */; };
 		5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5D3C503846C096E9A8713 /* BandMotif.swift */; };
+		5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D475288D596A167095155 /* ConditionTagRecord.swift */; };
+		69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1024D116B21BD85232045566 /* PersistenceTests.swift */; };
 		8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */; };
 		92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202A72738414384DAE6A08D /* AppShellTests.swift */; };
 		96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */; };
@@ -19,6 +22,7 @@
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
 		CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A018DD943E342E021CC548 /* RithamColor.swift */; };
 		CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */; };
+		D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */; };
 		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
 		D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074665026698CCD2C09002E0 /* RithamSpacing.swift */; };
 		F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226CB34F3DE1E1C5B984771E /* RingAndDot.swift */; };
@@ -38,7 +42,9 @@
 		05A018DD943E342E021CC548 /* RithamColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamColor.swift; sourceTree = "<group>"; };
 		074665026698CCD2C09002E0 /* RithamSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamSpacing.swift; sourceTree = "<group>"; };
 		0B4438C355A19887EE4B879F /* RithamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamApp.swift; sourceTree = "<group>"; };
+		1024D116B21BD85232045566 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		226CB34F3DE1E1C5B984771E /* RingAndDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingAndDot.swift; sourceTree = "<group>"; };
+		2D7D475288D596A167095155 /* ConditionTagRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionTagRecord.swift; sourceTree = "<group>"; };
 		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		33CE82EE341BE99682A4A6E6 /* Ritham.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Ritham.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6202A72738414384DAE6A08D /* AppShellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellTests.swift; sourceTree = "<group>"; };
@@ -48,6 +54,8 @@
 		93E5D3C503846C096E9A8713 /* BandMotif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandMotif.swift; sourceTree = "<group>"; };
 		9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometry.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
+		C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationBaselineRecord.swift; sourceTree = "<group>"; };
 		C99579F2588DE8ABC5FB503D /* ScreenHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenHeader.swift; sourceTree = "<group>"; };
 		DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometryTests.swift; sourceTree = "<group>"; };
 		F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepPresenting.swift; sourceTree = "<group>"; };
@@ -108,6 +116,16 @@
 			);
 			sourceTree = "<group>";
 		};
+		7FD87B7935EA7FA693BA657B /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */,
+				2D7D475288D596A167095155 /* ConditionTagRecord.swift */,
+				C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		B154AD2168849A5ED413E3AB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +140,7 @@
 			children = (
 				41B86503947D833E190324C6 /* App */,
 				1A8EC73B6C73A767D7367F6B /* DesignSystem */,
+				7FD87B7935EA7FA693BA657B /* Persistence */,
 			);
 			path = Ritham;
 			sourceTree = "<group>";
@@ -131,6 +150,7 @@
 			children = (
 				6202A72738414384DAE6A08D /* AppShellTests.swift */,
 				DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */,
+				1024D116B21BD85232045566 /* PersistenceTests.swift */,
 			);
 			path = RithamTests;
 			sourceTree = "<group>";
@@ -226,6 +246,8 @@
 			files = (
 				96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */,
 				5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */,
+				D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */,
+				5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */,
 				162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */,
 				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
 				F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */,
@@ -235,6 +257,7 @@
 				5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */,
 				1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */,
 				9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */,
+				013581EA2FA2E3097156C900 /* UserProfile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +267,7 @@
 			files = (
 				92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */,
 				8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */,
+				69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
