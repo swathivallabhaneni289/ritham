@@ -1,0 +1,457 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
+		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
+		92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202A72738414384DAE6A08D /* AppShellTests.swift */; };
+		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
+		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BED2BFA6F0DAFBD0768765A6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 313D693A1F73C6F7B4D0B3B8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C740F23DD6C23DADE601970F;
+			remoteInfo = Ritham;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0B4438C355A19887EE4B879F /* RithamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamApp.swift; sourceTree = "<group>"; };
+		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33CE82EE341BE99682A4A6E6 /* Ritham.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Ritham.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6202A72738414384DAE6A08D /* AppShellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellTests.swift; sourceTree = "<group>"; };
+		7326799926C7C75029BF3A31 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
+		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B83254FAFC8FD8F5B6A43FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19EB62247B63E9489AA87021 /* RithamCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DF9B4D37275D19F793B16FD0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		41B86503947D833E190324C6 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				7326799926C7C75029BF3A31 /* OnboardingRootView.swift */,
+				0B4438C355A19887EE4B879F /* RithamApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		635CF0C5274641C7FE8C5EB3 = {
+			isa = PBXGroup;
+			children = (
+				EBD57CC3FBDDA92445B67D7B /* Packages */,
+				BA10DD00378DE87FE11A17EF /* Ritham */,
+				BF6EB89EB83AC89ADB418625 /* RithamTests */,
+				B154AD2168849A5ED413E3AB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B154AD2168849A5ED413E3AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				33CE82EE341BE99682A4A6E6 /* Ritham.app */,
+				309EA04063A9FC990A21210A /* RithamTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BA10DD00378DE87FE11A17EF /* Ritham */ = {
+			isa = PBXGroup;
+			children = (
+				41B86503947D833E190324C6 /* App */,
+			);
+			path = Ritham;
+			sourceTree = "<group>";
+		};
+		BF6EB89EB83AC89ADB418625 /* RithamTests */ = {
+			isa = PBXGroup;
+			children = (
+				6202A72738414384DAE6A08D /* AppShellTests.swift */,
+			);
+			path = RithamTests;
+			sourceTree = "<group>";
+		};
+		EBD57CC3FBDDA92445B67D7B /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				B6659E2E2F67CEC959ACCD02 /* RithamCore */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1E0D768BB7B3C2C783D0A4DB /* RithamTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E3B18D35F493C780C16D8C6 /* Build configuration list for PBXNativeTarget "RithamTests" */;
+			buildPhases = (
+				85BA814B68048006186FFD77 /* Sources */,
+				9B83254FAFC8FD8F5B6A43FD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				59A180E530E6F6F006720341 /* PBXTargetDependency */,
+			);
+			name = RithamTests;
+			packageProductDependencies = (
+				267FB3A29A69935DA779166A /* RithamCore */,
+			);
+			productName = RithamTests;
+			productReference = 309EA04063A9FC990A21210A /* RithamTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C740F23DD6C23DADE601970F /* Ritham */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB90453E5E9A63F1228F066E /* Build configuration list for PBXNativeTarget "Ritham" */;
+			buildPhases = (
+				4AAC6F9DAA2CDF3CD612C13F /* Sources */,
+				DF9B4D37275D19F793B16FD0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Ritham;
+			packageProductDependencies = (
+				C8F7B5BB088D21FCA90D16A3 /* RithamCore */,
+			);
+			productName = Ritham;
+			productReference = 33CE82EE341BE99682A4A6E6 /* Ritham.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		313D693A1F73C6F7B4D0B3B8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 93DF7D370994745F2A9A1DA5 /* Build configuration list for PBXProject "Ritham" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 635CF0C5274641C7FE8C5EB3;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1B2453CF9508124AAB3D1F82 /* XCLocalSwiftPackageReference "../RithamCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B154AD2168849A5ED413E3AB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C740F23DD6C23DADE601970F /* Ritham */,
+				1E0D768BB7B3C2C783D0A4DB /* RithamTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4AAC6F9DAA2CDF3CD612C13F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */,
+				C87638F14A7A077650B52332 /* RithamApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85BA814B68048006186FFD77 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		59A180E530E6F6F006720341 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C740F23DD6C23DADE601970F /* Ritham */;
+			targetProxy = BED2BFA6F0DAFBD0768765A6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		131736C358BB3B60711BAF6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		53F1E060B364E7EEF9482A16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		750A22CFDB212E2D3E7D927D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Ritham/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		75F8435F2BEFE771F9C02624 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.RithamTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ritham.app/Ritham";
+			};
+			name = Release;
+		};
+		D3F2ED133317AB070466B466 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Ritham/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		EF8E95831BC418C1FE9CE901 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritham.RithamTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ritham.app/Ritham";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3E3B18D35F493C780C16D8C6 /* Build configuration list for PBXNativeTarget "RithamTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF8E95831BC418C1FE9CE901 /* Debug */,
+				75F8435F2BEFE771F9C02624 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		93DF7D370994745F2A9A1DA5 /* Build configuration list for PBXProject "Ritham" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				131736C358BB3B60711BAF6F /* Debug */,
+				53F1E060B364E7EEF9482A16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AB90453E5E9A63F1228F066E /* Build configuration list for PBXNativeTarget "Ritham" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				750A22CFDB212E2D3E7D927D /* Debug */,
+				D3F2ED133317AB070466B466 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		1B2453CF9508124AAB3D1F82 /* XCLocalSwiftPackageReference "../RithamCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../RithamCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		267FB3A29A69935DA779166A /* RithamCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RithamCore;
+		};
+		C8F7B5BB088D21FCA90D16A3 /* RithamCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RithamCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 313D693A1F73C6F7B4D0B3B8 /* Project object */;
+}
