@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-12-PLAN.md
-last_updated: "2026-08-27T11:32:50.969Z"
+stopped_at: Completed 01-15-PLAN.md
+last_updated: "2026-08-27T12:12:16.881Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 11 of 14
+Plan: 12 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -67,6 +67,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P11 | 45min | 3 tasks | 9 files |
 | Phase 01-onboarding-safety-intake P12 | 40min | 3 tasks | 9 files |
 | Phase 01-onboarding-safety-intake P13 | 55min | 3 tasks | 11 files |
+| Phase 01-onboarding-safety-intake P15 | 50min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-12: ChecklistItem: Identifiable conformance added at the UI layer (RithamApp target), not RithamCore, since Identifiable is a ForEach-driven UI concern RithamCore has no reason to carry
 - [Phase 01]: 01-13: ExplanationRegisterStepView persists conditionally (profile-exists guard) rather than unconditionally; AgeStepView folds the in-memory register choice into its own first-ever updateProfile call, since UserProfileDraft.age is required and no profile can exist before Age runs (Rule 3 deviation)
 - [Phase 01]: 01-13: OnboardingRootView now injects .explanationRegister(_:) at the root, reading flow.answers.register first, then the stored profile, then .plainLanguage (Rule 2 deviation, closes gap flagged by 01-12-SUMMARY.md)
+- [Phase 01]: 01-15: OnboardingFlow.calibrationMode (transient, non-Codable) carries the intro's activity choice to the session screen since OnboardingRouter never branches on it and CalibrationMode has no Codable conformance to add to OnboardingAnswers
+- [Phase 01]: 01-15: CalibrationSessionSource conformers (PedometerSession/StopwatchSession/LiftSessionRecorder) are non-actor-isolated with @unchecked Sendable + nonisolated(unsafe) storage, not @MainActor -- Swift 6 rejects an isolated conformance to a Sendable-inheriting protocol
+- [Phase 01]: 01-15: Added OnboardingCopy.Calibration.skipCTA ('Skip for now'), transcribed verbatim from D-03's own decision text since 01-UI-SPEC.md's Copywriting Contract table has no dedicated row for it
 
 ### Pending Todos
 
@@ -136,8 +140,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-27T11:32:21.517Z
-Stopped at: Completed 01-12-PLAN.md
+Last session: 2026-08-27T12:12:16.877Z
+Stopped at: Completed 01-15-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
 Resume file: 
