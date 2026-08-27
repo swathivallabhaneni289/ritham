@@ -10,7 +10,10 @@
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
 		19EB62247B63E9489AA87021 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = 267FB3A29A69935DA779166A /* RithamCore */; };
 		5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D89BB7A3DD06DB23570E75 /* RithamType.swift */; };
+		5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5D3C503846C096E9A8713 /* BandMotif.swift */; };
+		8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */; };
 		92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202A72738414384DAE6A08D /* AppShellTests.swift */; };
+		96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */; };
 		9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */; };
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
 		CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A018DD943E342E021CC548 /* RithamColor.swift */; };
@@ -39,7 +42,10 @@
 		63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRegistry.swift; sourceTree = "<group>"; };
 		7326799926C7C75029BF3A31 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
 		74D89BB7A3DD06DB23570E75 /* RithamType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamType.swift; sourceTree = "<group>"; };
+		93E5D3C503846C096E9A8713 /* BandMotif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandMotif.swift; sourceTree = "<group>"; };
+		9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometry.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
+		DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometryTests.swift; sourceTree = "<group>"; };
 		F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepPresenting.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +72,8 @@
 		1A8EC73B6C73A767D7367F6B /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */,
+				93E5D3C503846C096E9A8713 /* BandMotif.swift */,
 				05A018DD943E342E021CC548 /* RithamColor.swift */,
 				074665026698CCD2C09002E0 /* RithamSpacing.swift */,
 				74D89BB7A3DD06DB23570E75 /* RithamType.swift */,
@@ -116,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				6202A72738414384DAE6A08D /* AppShellTests.swift */,
+				DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */,
 			);
 			path = RithamTests;
 			sourceTree = "<group>";
@@ -209,6 +218,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */,
+				5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */,
 				162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */,
 				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
 				C87638F14A7A077650B52332 /* RithamApp.swift in Sources */,
@@ -224,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */,
+				8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
