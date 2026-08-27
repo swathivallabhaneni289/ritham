@@ -64,7 +64,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
   7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
-**Plans**: 5/14 plans executed
+**Plans**: 6/14 plans executed
 
 Plans:
 
@@ -73,7 +73,7 @@ Plans:
 - [x] 01-05-PLAN.md — Calibration domain: completion thresholds and baseline derivation
 - [x] 01-06-PLAN.md — Gate resolution: tag derivation plus the sixteen red-flag escalation rules
 - [x] 01-07-PLAN.md — Onboarding routing core, the permanent 13+ age floor, and its no-age-fork guarantee
-- [ ] 01-09-PLAN.md — Xcode install checkpoint, iOS app target, single shared navigation container
+- [x] 01-09-PLAN.md — Xcode install checkpoint, iOS app target, single shared navigation container
 - [ ] 01-10-PLAN.md — Design system: palette, type scale, spacing, computed band motif geometry
 - [ ] 01-11-PLAN.md — SwiftData persistence with file protection (no consent gate — see D-14)
 - [ ] 01-12-PLAN.md — Shared UI components and the tap-to-expand glossary
@@ -213,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Onboarding & Safety Intake | 5/14 | In Progress|  |
+| 1. Onboarding & Safety Intake | 6/14 | In Progress|  |
 | 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
