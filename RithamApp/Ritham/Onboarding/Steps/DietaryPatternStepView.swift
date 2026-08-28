@@ -4,8 +4,8 @@ import RithamCore
 
 // DIET-01: `DietaryPattern` needs `Identifiable` to drive `ChoiceQuestionView`'s `ForEach`
 // without a separate id parameter -- the same retroactive-conformance pattern
-// `ExplanationRegisterStepView.swift` applies to `ExplanationRegister`. `DietaryPattern` is
-// already `Hashable` (raw-value-backed `CaseIterable` enums get that automatically); only
+// `ChoiceQuestionView.swift` applies to `ChecklistItem`. `DietaryPattern` is already
+// `Hashable` (raw-value-backed `CaseIterable` enums get that automatically); only
 // `Identifiable` is missing.
 extension DietaryPattern: @retroactive Identifiable {
     public var id: Self { self }

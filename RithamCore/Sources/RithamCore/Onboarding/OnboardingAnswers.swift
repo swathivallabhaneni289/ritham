@@ -12,11 +12,9 @@
 /// answer later (e.g. from Settings) re-checks only that specific section, not the entire
 /// questionnaire.
 ///
-/// `dietaryPattern` and `explanationRegister` are editable with no re-screen consequence at
-/// all — DIET-01 gives dietary pattern no expiry, and EXPLAIN-01 makes the register
-/// changeable anytime.
+/// `dietaryPattern` is editable with no re-screen consequence at all — DIET-01 gives dietary
+/// pattern no expiry.
 public enum EditableSection: Sendable, CaseIterable, Codable {
-    case explanationRegister
     case dietaryPattern
     case gateSection
     case conditionChecklist
@@ -39,7 +37,6 @@ public enum CalibrationOutcome: Sendable, Equatable, Codable {
 /// Everything the onboarding/screening flow collects, aggregated into one place so
 /// `OnboardingRouter` and every step's view read the same source of truth.
 public struct OnboardingAnswers: Sendable, Equatable, Codable {
-    public var register: ExplanationRegister?
     public var age: Int?
     public var dietaryPattern: DietaryPattern?
     public var privacyExplainerAcknowledged: Bool
@@ -48,7 +45,6 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
     public var completedSteps: Set<OnboardingStep>
 
     public init(
-        register: ExplanationRegister? = nil,
         age: Int? = nil,
         dietaryPattern: DietaryPattern? = nil,
         privacyExplainerAcknowledged: Bool = false,
@@ -56,7 +52,6 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
         screening: ScreeningAnswers = ScreeningAnswers(),
         completedSteps: Set<OnboardingStep> = []
     ) {
-        self.register = register
         self.age = age
         self.dietaryPattern = dietaryPattern
         self.privacyExplainerAcknowledged = privacyExplainerAcknowledged
@@ -91,10 +86,6 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
     /// section, supporting D-09's "editing one answer later re-checks only that section" rule.
     public mutating func invalidate(section: EditableSection) {
         switch section {
-        case .explanationRegister:
-            register = nil
-            completedSteps.remove(.explanationRegister)
-
         case .dietaryPattern:
             dietaryPattern = nil
             completedSteps.remove(.dietaryPattern)

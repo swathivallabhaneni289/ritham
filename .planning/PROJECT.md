@@ -39,9 +39,9 @@ ranking.
 
 ### Active
 
-- [ ] Cross-generational onboarding with a real walk-or-light-lift calibration session, a
-      user-chosen dual-register explanation layer, and fixed-choice safety screening
-      (PAR-Q-style gates + SCOFF), never a "senior mode" or age-gated fork
+- [ ] Cross-generational onboarding with a real walk-or-light-lift calibration session, one
+      consistent explanation voice with tap-to-expand definitions, and fixed-choice safety
+      screening (PAR-Q-style gates + SCOFF), never a "senior mode" or age-gated fork
 - [ ] A 13+ age floor: age is self-attested at onboarding with no verification beyond entry;
       entering an age under 13 shows a plain blocking message and allows re-entry with a
       different age; no minor consent flow or parental gate anywhere in the product, and a
@@ -137,8 +137,10 @@ ranking.
 | Forgiveness mechanics (shields, comeback repair, injury guardrail) are never monetized, permanently | Keeps the Momentum streak's fairness promise credible — a purchasable shield would undermine "earned, never sold" | — Pending |
 | `dietary_pattern` is strictly downstream of the Clearance Gate, never part of gate-resolution logic | Prevents a dietary preference from ever loosening a safety gate (e.g., a vegan tag never overriding a kidney-disease block) | — Pending |
 | Ritham has a permanent 13+ age floor; under-13 users are never supported in any form (not even a reduced-functionality tier), and there is no minor-consent flow of any kind for any age | Reverses the 2026-08-22 tiered-consent design (D-05/D-06/D-13 in `01-CONTEXT.md`) after GitHub issue #1's device-continuity request traced back to that design's COPPA/App-Store cost; matches actual industry practice — Strava, Nike, Peloton, and MyFitnessPal all set a hard age floor (13 or 18) with self-attested age and no parental-consent machinery, rather than building real under-13 support | Decided |
+| Ritham has no user-chosen explanation register (plain-language vs. technical); every user gets one consistently-written voice, with the tap-to-expand glossary mechanic kept but no register choice behind it | Reverses EXPLAIN-01's original dual-register design after direct Phase 1 sign-off feedback from the product owner: users don't want to choose a "register" for how the app talks to them, and one well-written definition can serve a non-technical and a technical reader at once without a second wording track to maintain or clinically review | Decided |
 
 ---
-*Last updated: 2026-08-23 — reversed the 2026-08-22 tiered Under-18 parental-consent requirement:
-Ritham now has a permanent 13+ age floor, no under-13 support in any form, and no COPPA review
-requirement. See Key Decisions and `01-CONTEXT.md` for the full reasoning (GitHub issue #1).*
+*Last updated: 2026-08-28 — removed the user-chosen dual-register explanation layer: Ritham now
+speaks in one consistent voice with no register choice in onboarding or Settings, while the
+tap-to-expand glossary mechanic itself is unchanged. See Key Decisions and this phase's
+product-owner sign-off report for the full reasoning.*

@@ -108,7 +108,7 @@ struct AppShellTests {
     @Test("goBack removes the last path element")
     func goBackRemovesLastPathElement() {
         let flow = OnboardingFlow(answers: OnboardingAnswers())
-        flow.path = [.welcome, .explanationRegister]
+        flow.path = [.welcome, .age]
 
         flow.goBack()
 

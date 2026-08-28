@@ -2,8 +2,10 @@ import SwiftUI
 import RithamCore
 
 /// EXPLAIN-01's tap-to-expand definition. Renders `term` inline with a visible expand
-/// affordance and, on tap, reveals the definition for the register read from the environment
-/// (`RegisterEnvironment.swift`) -- never from local state, never derived from age or tier.
+/// affordance and, on tap, reveals `term`'s single definition -- there is no user-chosen
+/// explanation register anywhere in the product, per the product owner's direct feedback that
+/// one well-written voice serves every user, so this view has no register to read from local
+/// state, the environment, or anywhere else.
 ///
 /// Expands in place (an inline disclosure) rather than navigating away, since EXPLAIN-01
 /// describes expanding in place, not leaving the flow. When `term` has no glossary entry, this
@@ -13,7 +15,6 @@ struct GlossaryTerm: View {
     let term: String
 
     @State private var isExpanded = false
-    @Environment(\.explanationRegister) private var register: ExplanationRegister
 
     var body: some View {
         if let entry = Glossary.entry(for: term) {
@@ -37,12 +38,12 @@ struct GlossaryTerm: View {
                 .accessibilityAddTraits(isExpanded ? [.isSelected] : [])
 
                 if isExpanded {
-                    Text(entry.definition(for: register))
+                    Text(entry.definition)
                         .font(RithamType.label)
                         .foregroundStyle(RithamColor.paper)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityElement(children: .combine)
-                        .accessibilityLabel("Definition of \(term): \(entry.definition(for: register))")
+                        .accessibilityLabel("Definition of \(term): \(entry.definition)")
                 }
             }
         } else {

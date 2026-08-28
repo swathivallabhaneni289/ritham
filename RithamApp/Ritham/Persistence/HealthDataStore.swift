@@ -33,11 +33,10 @@ public final class HealthDataStore {
 
     /// Creates or updates the stored profile from `draft`.
     ///
-    /// `explanationRegister`/`dietaryPattern` follow "provide to set, `nil` to leave
-    /// unchanged" semantics on an existing profile — a caller updating only the register (e.g.
-    /// `ExplanationRegisterStepView`, plan 01-13) does not need to first reload and re-supply
-    /// the dietary pattern just to avoid silently clearing it. The only way to clear either
-    /// field back to unanswered is `invalidateSection`, never a `nil` here.
+    /// `dietaryPattern` follows "provide to set, `nil` to leave unchanged" semantics on an
+    /// existing profile — a caller updating only the age does not need to first reload and
+    /// re-supply the dietary pattern just to avoid silently clearing it. The only way to clear
+    /// the field back to unanswered is `invalidateSection`, never a `nil` here.
     ///
     /// Per MINOR-01, once a profile exists its owner already cleared the 13+ floor at
     /// onboarding, and this can never be undone later (e.g. a Settings edit): before writing to
@@ -60,9 +59,6 @@ public final class HealthDataStore {
                 throw HealthDataStoreError.ageBelowFloor
             }
             existing.age = draft.age
-            if let register = draft.explanationRegister {
-                existing.explanationRegisterRaw = register.rawValue
-            }
             if let dietaryPattern = draft.dietaryPattern {
                 existing.dietaryPatternRaw = dietaryPattern.rawValue
             }
@@ -70,7 +66,6 @@ public final class HealthDataStore {
         } else {
             let profile = UserProfile(
                 age: draft.age,
-                explanationRegisterRaw: draft.explanationRegister?.rawValue,
                 dietaryPatternRaw: draft.dietaryPattern?.rawValue,
                 edScreenOutcomeRaw: nil,
                 createdAt: now,
@@ -190,10 +185,6 @@ public final class HealthDataStore {
         let profile = try loadProfile()
 
         switch section {
-        case .explanationRegister:
-            profile.explanationRegisterRaw = nil
-            profile.updatedAt = now
-
         case .dietaryPattern:
             profile.dietaryPatternRaw = nil
             profile.updatedAt = now
@@ -320,16 +311,13 @@ public final class HealthDataStore {
 /// context, and this decouples the write API from that identity/context plumbing.
 public struct UserProfileDraft: Sendable, Equatable {
     public var age: Int
-    public var explanationRegister: ExplanationRegister?
     public var dietaryPattern: DietaryPattern?
 
     public init(
         age: Int,
-        explanationRegister: ExplanationRegister? = nil,
         dietaryPattern: DietaryPattern? = nil
     ) {
         self.age = age
-        self.explanationRegister = explanationRegister
         self.dietaryPattern = dietaryPattern
     }
 }

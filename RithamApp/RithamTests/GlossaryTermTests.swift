@@ -3,7 +3,7 @@ import RithamCore
 @testable import Ritham
 
 /// These tests exercise `Glossary` directly, as the plan specifies -- no rendering is needed to
-/// prove the register-lookup and register-distinctness invariants `GlossaryTerm` depends on.
+/// prove the lookup and single-definition invariants `GlossaryTerm` depends on.
 @Suite("GlossaryTermTests")
 struct GlossaryTermTests {
 
@@ -15,14 +15,10 @@ struct GlossaryTermTests {
         }
     }
 
-    @Test("Both registers return different, non-empty strings for every seeded entry")
-    func bothRegistersDistinctAndNonEmpty() {
+    @Test("Every seeded entry has a single, non-empty definition")
+    func everyEntryHasANonEmptyDefinition() {
         for entry in Glossary.entries.values {
-            let plain = entry.definition(for: .plainLanguage)
-            let technical = entry.definition(for: .technical)
-            #expect(!plain.isEmpty)
-            #expect(!technical.isEmpty)
-            #expect(plain != technical)
+            #expect(!entry.definition.isEmpty)
         }
     }
 

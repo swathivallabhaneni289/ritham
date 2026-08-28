@@ -44,7 +44,7 @@ struct EditAnswerFlow: View {
 
     /// Which `EditableSection` this instance re-checks. Always one of the four screening
     /// sections in practice -- `SettingsView` never constructs this type with
-    /// `.explanationRegister`/`.dietaryPattern`, since neither routes through here at all.
+    /// `.dietaryPattern`, since that section never routes through here at all.
     let section: EditableSection
 
     @Environment(\.modelContext) private var modelContext
@@ -52,17 +52,17 @@ struct EditAnswerFlow: View {
     @State private var pathCountAtStart = 0
     @State private var showSaveError = false
 
-    /// The single `OnboardingStep` plan 01-16 registered for this section. `.explanationRegister`
-    /// and `.dietaryPattern` have no screening-screen equivalent -- `SettingsView` edits those
-    /// two directly, in place, and never routes them through this type, since neither may ever
-    /// touch `GateResolution` or a condition tag (EXPLAIN-01/DIET-01).
+    /// The single `OnboardingStep` plan 01-16 registered for this section. `.dietaryPattern` has
+    /// no screening-screen equivalent -- `SettingsView` edits it directly, in place, and never
+    /// routes it through this type, since it may never touch `GateResolution` or a condition tag
+    /// (DIET-01).
     private var step: OnboardingStep? {
         switch section {
         case .gateSection: return .gateSection
         case .conditionChecklist: return .conditionChecklist
         case .severityFollowUps: return .severityFollowUps
         case .scoff: return .scoffFollowUp
-        case .explanationRegister, .dietaryPattern: return nil
+        case .dietaryPattern: return nil
         }
     }
 

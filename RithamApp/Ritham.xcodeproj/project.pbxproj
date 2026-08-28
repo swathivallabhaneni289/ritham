@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		013581EA2FA2E3097156C900 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */; };
 		09F2307D01EA340690519FA7 /* AboutYouStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEA0958C9AB53F8DB2BF5F /* AboutYouStepTests.swift */; };
-		0AD79E3E4D1D01D6AE872CE7 /* RegisterEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0414574D7901774F19BED0BE /* RegisterEnvironment.swift */; };
 		0C6D53AE65D4FED278F77D13 /* EditAnswerFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC7B214A715271F098A892 /* EditAnswerFlow.swift */; };
 		0EFEBA5EDD3261599A216BDA /* CalibrationSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384060D1603588777B8A5894 /* CalibrationSessionView.swift */; };
 		162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326799926C7C75029BF3A31 /* OnboardingRootView.swift */; };
@@ -43,7 +42,6 @@
 		7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */; };
 		84DE0CBBAAF0046434CD77C6 /* AboutYouRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B2F8F3C1DFD35D08F440D /* AboutYouRegistration.swift */; };
 		87808DE1AEE493D4C2504F34 /* WelcomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */; };
-		8E49823AA318A99A8192B405 /* ExplanationRegisterStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */; };
 		8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */; };
 		8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */; };
 		90C538F5EAFE6CAC0FA2A0D0 /* GlossaryTermTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */; };
@@ -91,7 +89,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0414574D7901774F19BED0BE /* RegisterEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEnvironment.swift; sourceTree = "<group>"; };
 		05A018DD943E342E021CC548 /* RithamColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamColor.swift; sourceTree = "<group>"; };
 		074665026698CCD2C09002E0 /* RithamSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamSpacing.swift; sourceTree = "<group>"; };
 		09805A56977119359C6D3ABC /* ScreeningOpeningDisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningOpeningDisclaimerView.swift; sourceTree = "<group>"; };
@@ -114,7 +111,6 @@
 		384060D1603588777B8A5894 /* CalibrationSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSessionView.swift; sourceTree = "<group>"; };
 		43F4A3D6EF4FF31BA0587C42 /* SeverityFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeverityFollowUpView.swift; sourceTree = "<group>"; };
 		479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTermTests.swift; sourceTree = "<group>"; };
-		4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationRegisterStepView.swift; sourceTree = "<group>"; };
 		4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataStore.swift; sourceTree = "<group>"; };
 		4FFC7B214A715271F098A892 /* EditAnswerFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAnswerFlow.swift; sourceTree = "<group>"; };
 		56204CF43FAEB1A870F9470A /* PedometerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSession.swift; sourceTree = "<group>"; };
@@ -308,7 +304,6 @@
 				1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */,
 				B040926DC5083605CE450DEF /* GlossaryTerm.swift */,
 				A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */,
-				0414574D7901774F19BED0BE /* RegisterEnvironment.swift */,
 				7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */,
 			);
 			path = Components;
@@ -381,7 +376,6 @@
 				8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */,
 				A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */,
 				832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */,
-				4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */,
 				A7E8647274BFC9B0186D1250 /* HomeStepView.swift */,
 				262E2C544658C88B34F194BD /* OnboardingCompletionRegistration.swift */,
 				9B61ACD89789D585BDF4FFE4 /* PrivacyExplainerStepView.swift */,
@@ -499,7 +493,6 @@
 				2D41B1597969D1E25E5E578D /* DietaryPatternStepView.swift in Sources */,
 				7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */,
 				0C6D53AE65D4FED278F77D13 /* EditAnswerFlow.swift in Sources */,
-				8E49823AA318A99A8192B405 /* ExplanationRegisterStepView.swift in Sources */,
 				C3E725D13FFCE9D9F7EB838D /* GateSectionView.swift in Sources */,
 				3B38A96C15C0B2ACC05FD7C3 /* GlossaryTerm.swift in Sources */,
 				BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */,
@@ -514,7 +507,6 @@
 				9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */,
 				246E6790BDB65CFCEB25A333 /* PrivacyExplainerStepView.swift in Sources */,
 				2FFF9D0FA7BC7D8F75DF9DB2 /* ReScreenBanner.swift in Sources */,
-				0AD79E3E4D1D01D6AE872CE7 /* RegisterEnvironment.swift in Sources */,
 				53F41F6E3E6DF32C8BFF886D /* RequiredBlockingMessageView.swift in Sources */,
 				F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */,
 				C87638F14A7A077650B52332 /* RithamApp.swift in Sources */,

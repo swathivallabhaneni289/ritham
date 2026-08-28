@@ -16,10 +16,11 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Explanation Layer
 
-- [x] **EXPLAIN-01**: User picks an explanation register (plain-language or technical) once at
-  onboarding and can change it anytime; every technical term elsewhere (1RM, HRV, grade-adjusted
-  pace, etc.) is tap-to-expand into a definition in that register. Register is user-selected, not
-  inferred from age, and is never a separate "senior mode."
+- [x] **EXPLAIN-01**: Ritham speaks to every user in one consistent voice, with no user-chosen
+  explanation register anywhere in the product (no onboarding question, no Settings toggle);
+  every technical term elsewhere (1RM, HRV, grade-adjusted pace, etc.) is tap-to-expand into a
+  single, well-written definition. There is no dual-register system to infer from age, and no
+  separate "senior mode."
 
 ### Health Screening
 

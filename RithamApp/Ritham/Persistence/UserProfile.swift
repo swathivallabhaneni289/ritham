@@ -9,12 +9,19 @@ import RithamCore
 // content-adjustment tag elsewhere in the app (`ConditionTag.ageDerivedTags(forAge:)`) — that
 // mechanism is untouched by this file.
 //
-// Enum-valued fields are stored by their `String` raw value (`explanationRegisterRaw`,
-// `dietaryPatternRaw`, `edScreenOutcomeRaw`) with a computed accessor decoding back to the core
-// type. SwiftData persists primitives most predictably, and the raw values are already the
-// stable identifiers RithamCore defines. Every computed accessor below returns `nil` rather than
-// force-unwrapping an unrecognised raw value, so a future schema/case change cannot crash the app
-// on old data (T-01-64).
+// Enum-valued fields are stored by their `String` raw value (`dietaryPatternRaw`,
+// `edScreenOutcomeRaw`) with a computed accessor decoding back to the core type. SwiftData
+// persists primitives most predictably, and the raw values are already the stable identifiers
+// RithamCore defines. Every computed accessor below returns `nil` rather than force-unwrapping
+// an unrecognised raw value, so a future schema/case change cannot crash the app on old data
+// (T-01-64).
+//
+// There is no `explanationRegisterRaw` field -- EXPLAIN-01 no longer has a user-chosen
+// explanation register (see `RithamCore/Onboarding/Glossary.swift`'s header comment). This app
+// has no `VersionedSchema`/`SchemaMigrationPlan` (see `RithamModelContainer.swift`), so a local
+// store created before this change is not guaranteed to open cleanly against this narrower
+// schema. Not a production-data risk pre-launch, but a real one for an existing simulator/device
+// install with a prior build's data -- see this phase's sign-off report for the remedy.
 //
 // Resolves the storage question 01-RESEARCH.md flagged for this plan rather than defaulting
 // silently: only the *derived* eating-disorder outcome is stored (`edScreenOutcomeRaw`, holding
@@ -31,7 +38,6 @@ import RithamCore
 @Model
 public final class UserProfile {
     public var age: Int
-    public var explanationRegisterRaw: String?
     public var dietaryPatternRaw: String?
     public var edScreenOutcomeRaw: String?
     public var createdAt: Date
@@ -39,25 +45,16 @@ public final class UserProfile {
 
     public init(
         age: Int,
-        explanationRegisterRaw: String? = nil,
         dietaryPatternRaw: String? = nil,
         edScreenOutcomeRaw: String? = nil,
         createdAt: Date,
         updatedAt: Date
     ) {
         self.age = age
-        self.explanationRegisterRaw = explanationRegisterRaw
         self.dietaryPatternRaw = dietaryPatternRaw
         self.edScreenOutcomeRaw = edScreenOutcomeRaw
         self.createdAt = createdAt
         self.updatedAt = updatedAt
-    }
-
-    /// Per EXPLAIN-01, changeable at any time; never derived from age. `nil` when unanswered
-    /// or when the stored raw value no longer matches a known case.
-    public var explanationRegister: ExplanationRegister? {
-        guard let explanationRegisterRaw else { return nil }
-        return ExplanationRegister(rawValue: explanationRegisterRaw)
     }
 
     /// Per DIET-01, has no expiry and no re-screen; never derived from age. `nil` when

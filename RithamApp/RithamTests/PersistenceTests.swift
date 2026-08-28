@@ -26,7 +26,6 @@ struct PersistenceTests {
         let now = Date()
         let profile = UserProfile(
             age: 30,
-            explanationRegisterRaw: ExplanationRegister.technical.rawValue,
             dietaryPatternRaw: DietaryPattern.vegan.rawValue,
             edScreenOutcomeRaw: ConditionTag.eatingDisorderSelfReportedNegativeScreen.rawValue,
             createdAt: now,
@@ -38,7 +37,6 @@ struct PersistenceTests {
         let fetched = try context.fetch(FetchDescriptor<UserProfile>())
         #expect(fetched.count == 1)
         #expect(fetched.first?.age == 30)
-        #expect(fetched.first?.explanationRegister == .technical)
         #expect(fetched.first?.dietaryPattern == .vegan)
         #expect(fetched.first?.edScreenOutcome == .eatingDisorderSelfReportedNegativeScreen)
     }
@@ -123,13 +121,11 @@ struct PersistenceTests {
         let now = Date()
         let profile = UserProfile(
             age: 40,
-            explanationRegisterRaw: "not-a-real-register",
             dietaryPatternRaw: "not-a-real-pattern",
             edScreenOutcomeRaw: "not-a-real-tag",
             createdAt: now,
             updatedAt: now
         )
-        #expect(profile.explanationRegister == nil)
         #expect(profile.dietaryPattern == nil)
         #expect(profile.edScreenOutcome == nil)
     }

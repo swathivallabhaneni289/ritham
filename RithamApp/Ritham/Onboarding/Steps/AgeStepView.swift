@@ -85,7 +85,7 @@ struct AgeStepView: View, OnboardingStepPresenting {
 
     private func persistEligibleAge(_ age: Int) {
         let store = HealthDataStore(context: modelContext)
-        try? store.updateProfile(UserProfileDraft(age: age, explanationRegister: flow.answers.register))
+        try? store.updateProfile(UserProfileDraft(age: age))
     }
 }
 

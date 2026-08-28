@@ -40,28 +40,26 @@ struct HealthDataStoreTests {
     @Test("updateProfile with an incoming age under 13 against an existing 13+ profile throws ageBelowFloor and leaves the stored profile completely unchanged")
     func updateProfileRejectsAgeBelowFloorWithNoPartialWrite() throws {
         let store = try makeStore()
-        try store.updateProfile(UserProfileDraft(age: 30, explanationRegister: .plainLanguage, dietaryPattern: .vegetarian))
+        try store.updateProfile(UserProfileDraft(age: 30, dietaryPattern: .vegetarian))
 
         #expect(throws: HealthDataStoreError.ageBelowFloor) {
-            try store.updateProfile(UserProfileDraft(age: 12, explanationRegister: .technical, dietaryPattern: .vegan))
+            try store.updateProfile(UserProfileDraft(age: 12, dietaryPattern: .vegan))
         }
 
         let profile = try store.loadProfile()
         #expect(profile.age == 30)
-        #expect(profile.explanationRegister == .plainLanguage)
         #expect(profile.dietaryPattern == .vegetarian)
     }
 
-    @Test("updateProfile leaves explanationRegister/dietaryPattern unchanged when the draft omits them")
+    @Test("updateProfile leaves dietaryPattern unchanged when the draft omits it")
     func updateProfilePreservesUnspecifiedFields() throws {
         let store = try makeStore()
-        try store.updateProfile(UserProfileDraft(age: 20, explanationRegister: .technical, dietaryPattern: .vegan))
-        // Only age changes here; register/dietary pattern are omitted (nil).
+        try store.updateProfile(UserProfileDraft(age: 20, dietaryPattern: .vegan))
+        // Only age changes here; dietary pattern is omitted (nil).
         try store.updateProfile(UserProfileDraft(age: 21))
 
         let profile = try store.loadProfile()
         #expect(profile.age == 21)
-        #expect(profile.explanationRegister == .technical)
         #expect(profile.dietaryPattern == .vegan)
     }
 
@@ -128,10 +126,10 @@ struct HealthDataStoreTests {
 
     // MARK: - invalidateSection
 
-    @Test("invalidateSection for the condition checklist leaves the dietary pattern and register untouched")
-    func invalidateConditionChecklistLeavesDietaryPatternAndRegisterUntouched() throws {
+    @Test("invalidateSection for the condition checklist leaves the dietary pattern untouched")
+    func invalidateConditionChecklistLeavesDietaryPatternUntouched() throws {
         let store = try makeStore()
-        try store.updateProfile(UserProfileDraft(age: 25, explanationRegister: .plainLanguage, dietaryPattern: .vegan))
+        try store.updateProfile(UserProfileDraft(age: 25, dietaryPattern: .vegan))
         let now = Date()
         try store.saveScreeningResult(
             makeGateResolutionResult(matchedTags: [.osteoarthritis, .rateLimitingHeartOrBPMedication]),
@@ -142,7 +140,6 @@ struct HealthDataStoreTests {
         try store.invalidateSection(.conditionChecklist, now: now)
 
         let profile = try store.loadProfile()
-        #expect(profile.explanationRegister == .plainLanguage)
         #expect(profile.dietaryPattern == .vegan)
         // The checklist-derived tag is cleared, but the gate-section-derived tag is untouched.
         #expect(try store.activeConditionTags(now: now).contains(.osteoarthritis) == false)

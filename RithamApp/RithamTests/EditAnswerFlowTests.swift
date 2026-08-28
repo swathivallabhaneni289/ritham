@@ -36,7 +36,7 @@ struct EditAnswerFlowTests {
         )
     }
 
-    // MARK: - EXPLAIN-01 / DIET-01: register and dietary pattern never touch gates or tags
+    // MARK: - DIET-01: dietary pattern never touches gates or tags
 
     @Test("editing the dietary pattern changes the stored pattern and leaves every condition tag and both gates unchanged")
     func editingDietaryPatternLeavesTagsAndGatesUnchanged() throws {
@@ -55,29 +55,6 @@ struct EditAnswerFlowTests {
 
         let profile = try store.loadProfile()
         #expect(profile.dietaryPattern == .vegan)
-
-        let tagsAfter = Set(try store.activeConditionTags(now: now))
-        #expect(tagsAfter == tagsBefore)
-        #expect(GateEscalation.escalate(tags: tagsAfter, answers: ScreeningAnswers()) == gatesBefore)
-    }
-
-    @Test("editing the explanation register changes the stored register and leaves every condition tag and both gates unchanged")
-    func editingRegisterLeavesTagsAndGatesUnchanged() throws {
-        let store = try makeStore()
-        try store.updateProfile(UserProfileDraft(age: 30, explanationRegister: .plainLanguage))
-        let now = Date()
-        let seededTags: Set<ConditionTag> = [.kidneyDiseaseOrDialysis, .osteoarthritis]
-        try store.saveScreeningResult(makeResult(matchedTags: seededTags), answers: ScreeningAnswers(), now: now)
-
-        let tagsBefore = Set(try store.activeConditionTags(now: now))
-        let gatesBefore = GateEscalation.escalate(tags: tagsBefore, answers: ScreeningAnswers())
-
-        // The Settings register edit path (`SettingsView.persistRegister`): only
-        // `updateProfile`, never `GateResolution` or `invalidateSection`.
-        try store.updateProfile(UserProfileDraft(age: 30, explanationRegister: .technical))
-
-        let profile = try store.loadProfile()
-        #expect(profile.explanationRegister == .technical)
 
         let tagsAfter = Set(try store.activeConditionTags(now: now))
         #expect(tagsAfter == tagsBefore)

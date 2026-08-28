@@ -3,20 +3,16 @@ import SwiftData
 import RithamCore
 
 /// `EditAnswerFlow`/`SettingsView`'s first consumer of `EditableSection` as a `.sheet(item:)`
-/// identity -- the same retroactive-`Identifiable` pattern `ChecklistItem`/`ExplanationRegister`/
-/// `DietaryPattern` already use at their own first UI-layer consumer.
+/// identity -- the same retroactive-`Identifiable` pattern `ChecklistItem`/`DietaryPattern`
+/// already use at their own first UI-layer consumer.
 extension EditableSection: @retroactive Identifiable {
     public var id: Self { self }
 }
 
-/// EXPLAIN-01's register choice and DIET-01's dietary-pattern choice, edited in place with
-/// immediate effect and no re-screen consequence. Both are downstream-of-the-gate concerns
-/// (DIET-01's own isolation rule; EXPLAIN-01 has no clearance concept at all) -- neither
-/// `.onChange` handler below may ever call `GateResolution` or `HealthDataStore.invalidateSection`,
-/// and neither does. Changing the register updates `flow.answers.register`, which
-/// `OnboardingRootView`'s `currentRegister` already reads first (plan 01-13) -- since `flow` is
-/// `@Observable` and shared by reference, this is what makes every `GlossaryTerm` in the app
-/// update at once, with no re-entry into onboarding.
+/// DIET-01's dietary-pattern choice, edited in place with immediate effect and no re-screen
+/// consequence -- a downstream-of-the-gate concern (DIET-01's own isolation rule), so the
+/// `.onChange` handler below may never call `GateResolution` or
+/// `HealthDataStore.invalidateSection`, and it does not.
 ///
 /// Also offers an entry point to the health profile, plus one per-section entry point for each
 /// of the four screening sections (`.gateSection`, `.conditionChecklist`, `.severityFollowUps`,
@@ -29,7 +25,6 @@ struct SettingsView: View {
     var onOpenHealthProfile: () -> Void = {}
 
     @Environment(\.modelContext) private var modelContext
-    @State private var registerSelection: Set<ExplanationRegister>
     @State private var dietSelection: Set<DietaryPattern>
     @State private var editingSection: EditableSection?
     @State private var isReScreenDue = false
@@ -37,7 +32,6 @@ struct SettingsView: View {
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
         self.flow = flow
         self.onOpenHealthProfile = onOpenHealthProfile
-        _registerSelection = State(initialValue: [flow.answers.register ?? .plainLanguage])
         _dietSelection = State(initialValue: [flow.answers.dietaryPattern ?? .none])
     }
 
@@ -50,15 +44,6 @@ struct SettingsView: View {
             ReScreenBanner(isReScreenDue: isReScreenDue) {
                 editingSection = .gateSection
             }
-
-            ChoiceQuestionView(
-                prompt: OnboardingCopy.Register.headline,
-                helper: OnboardingCopy.Register.helper,
-                options: ExplanationRegister.allCases,
-                mode: .single,
-                selection: $registerSelection,
-                optionTitle: { $0.optionLabel }
-            )
 
             ChoiceQuestionView(
                 prompt: OnboardingCopy.Diet.headline,
@@ -83,11 +68,6 @@ struct SettingsView: View {
             }
         }
         .onAppear(perform: refreshReScreenDue)
-        .onChange(of: registerSelection) { _, newValue in
-            guard let chosen = newValue.first else { return }
-            flow.answers.register = chosen
-            persistRegister(chosen)
-        }
         .onChange(of: dietSelection) { _, newValue in
             guard let chosen = newValue.first else { return }
             flow.answers.dietaryPattern = chosen
@@ -111,14 +91,6 @@ struct SettingsView: View {
         case .vegetarian: return OnboardingCopy.Diet.optionVegetarian
         case .vegan: return OnboardingCopy.Diet.optionVegan
         }
-    }
-
-    /// EXPLAIN-01: changeable at any time, immediate effect. Never calls `GateResolution` and
-    /// never invalidates a condition tag.
-    private func persistRegister(_ register: ExplanationRegister) {
-        let store = HealthDataStore(context: modelContext)
-        guard let existingAge = try? store.loadProfile().age else { return }
-        try? store.updateProfile(UserProfileDraft(age: existingAge, explanationRegister: register))
     }
 
     /// DIET-01: no expiry, no re-screen. Never calls `GateResolution` and never invalidates a

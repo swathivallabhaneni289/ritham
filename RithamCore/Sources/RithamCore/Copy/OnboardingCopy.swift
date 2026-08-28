@@ -13,14 +13,6 @@ public enum OnboardingCopy {
         public static let cta = "Get Started"
     }
 
-    public enum Register {
-        public static let headline = "How should we talk to you?"
-        public static let optionPlain = "Plain language"
-        public static let optionTechnical = "Technical terms"
-        public static let helper = "You can change this anytime in Settings."
-        public static let cta = "Continue"
-    }
-
     public enum Age {
         public static let headline = "What's your age?"
         public static let helper = "We ask so Ritham can keep things safe and age-appropriate — never to sort you into a different app."

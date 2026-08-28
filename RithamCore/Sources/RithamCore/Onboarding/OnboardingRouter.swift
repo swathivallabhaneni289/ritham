@@ -21,9 +21,6 @@ public enum OnboardingRouter {
     public static func nextStep(after current: OnboardingStep, answers: OnboardingAnswers) -> OnboardingStep? {
         switch current {
         case .welcome:
-            return .explanationRegister
-
-        case .explanationRegister:
             return .age
 
         case .age, .ageIneligible:

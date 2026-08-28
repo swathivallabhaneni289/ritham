@@ -20,7 +20,6 @@
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case welcome
-    case explanationRegister
     case age
     case ageIneligible
     case dietaryPattern

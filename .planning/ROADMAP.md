@@ -40,8 +40,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. A new user's first session is a guided walk-or-light-lift calibration (never a self-reported
      fitness-level dropdown), and the result sets their starting baseline.
 
-  2. A user chooses an explanation register once at onboarding, can change it anytime, and every
-     technical term elsewhere is tap-to-expand into that register's definition.
+  2. Ritham speaks to every user in one consistent voice, with no explanation-register choice
+     anywhere in onboarding or Settings, and every technical term elsewhere is tap-to-expand into
+     that one well-written definition.
 
   3. A user completes the fixed-choice screening questionnaire (age, gate questions, condition
      checklist, SCOFF follow-up where triggered) with no free-text entry or live AI-generated
