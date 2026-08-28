@@ -16,6 +16,14 @@ import RithamCore
 /// content when an asset is supplied and collapses cleanly to nothing when none is, so this file
 /// is correct regardless of how that decision resolves later. No artwork is commissioned,
 /// generated, or invented here.
+///
+/// Product-owner sign-off feedback: this screen "looks really empty" at default text size, with
+/// a lot of dead space below the CTA. Fix: `RithamScreen`'s opt-in `animatesEntrance` (default
+/// `false`, changing nothing for any other screen) is turned on here only, giving the header,
+/// the headline/body group, and the CTA a quick, staggered fade/slide-in on load instead of
+/// appearing instantly static. No new persistent visual element was added -- this animates
+/// exactly the elements already on screen -- and `RithamScreen` itself skips the sequence
+/// entirely under Reduce Motion, matching this project's existing accessibility discipline.
 struct WelcomeStepView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .welcome
 
@@ -29,7 +37,8 @@ struct WelcomeStepView: View, OnboardingStepPresenting {
         RithamScreen(
             surface: DecorativeSurface.welcome,
             headline: OnboardingCopy.Welcome.headline,
-            bodyText: OnboardingCopy.Welcome.subhead
+            bodyText: OnboardingCopy.Welcome.subhead,
+            animatesEntrance: true
         ) {
             VStack(alignment: .leading, spacing: RithamSpacing.lg) {
                 MomoHeroCard(asset: nil)

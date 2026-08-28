@@ -20,18 +20,48 @@ struct RithamScreen<Content: View>: View {
     let surface: DecorativeSurface
     var headline: String?
     var bodyText: String?
+
+    /// Opt-in, one-time entrance sequence: the header, the headline/body group, and `content()`
+    /// fade/slide in staggered rather than appearing instantly static. Defaults to `false` so
+    /// every existing screen's layout and appearance are byte-for-byte unchanged -- only a
+    /// screen that explicitly asks for this (currently just `WelcomeStepView`, the one flagged
+    /// as feeling empty at default text size) opts in. This is a first-impression touch for a
+    /// screen seen once per onboarding, not a mechanism every decorated screen should adopt.
+    var animatesEntrance: Bool = false
+
     @ViewBuilder let content: () -> Content
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var hasAppeared = false
 
     init(
         surface: DecorativeSurface,
         headline: String? = nil,
         bodyText: String? = nil,
+        animatesEntrance: Bool = false,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.surface = surface
         self.headline = headline
         self.bodyText = bodyText
+        self.animatesEntrance = animatesEntrance
         self.content = content
+    }
+
+    /// True once every element should render in its final, resting state: either this screen
+    /// never asked for an entrance sequence, Reduce Motion is on (elements must just appear,
+    /// never move), or the one-time sequence has already played this launch. `animatesEntrance
+    /// == false` makes this `true` from the very first render, which is what keeps every other
+    /// screen's appearance identical to before this parameter existed.
+    private var isRevealed: Bool {
+        !animatesEntrance || reduceMotion || hasAppeared
+    }
+
+    /// `nil` whenever nothing should animate (entrance not requested, or Reduce Motion is on) --
+    /// so the transition below is structurally inert rather than merely unused in those cases.
+    private func entranceAnimation(delay: Double) -> Animation? {
+        guard animatesEntrance, !reduceMotion else { return nil }
+        return .easeOut(duration: 0.45).delay(delay)
     }
 
     var body: some View {
@@ -43,28 +73,51 @@ struct RithamScreen<Content: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // The decorative header sits outside the screen margin -- it manages its
                     // own bounded height and accessibility-size drop-out (ScreenHeader.swift).
+                    // The header fades/slides in as one unbroken block (never per-ornament) so
+                    // the static ring-and-dot brand ornament inside it never reads as filling or
+                    // progressing, and the halftone stays confined to the header's own clipped
+                    // corner throughout -- this entrance sequence never extends either surface
+                    // beyond what 01-UI-SPEC.md already locks in.
                     ScreenHeader(surface: surface)
+                        .opacity(isRevealed ? 1 : 0)
+                        .offset(y: isRevealed ? 0 : -20)
+                        .animation(entranceAnimation(delay: 0), value: hasAppeared)
 
                     VStack(alignment: .leading, spacing: RithamSpacing.lg) {
-                        if let headline {
-                            Text(headline)
-                                .font(RithamType.display)
-                                .foregroundStyle(RithamColor.paper)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
+                        VStack(alignment: .leading, spacing: RithamSpacing.lg) {
+                            if let headline {
+                                Text(headline)
+                                    .font(RithamType.display)
+                                    .foregroundStyle(RithamColor.paper)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
 
-                        if let bodyText {
-                            Text(bodyText)
-                                .font(RithamType.body)
-                                .foregroundStyle(RithamColor.paper)
-                                .fixedSize(horizontal: false, vertical: true)
+                            if let bodyText {
+                                Text(bodyText)
+                                    .font(RithamType.body)
+                                    .foregroundStyle(RithamColor.paper)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
+                        .opacity(isRevealed ? 1 : 0)
+                        .offset(y: isRevealed ? 0 : 14)
+                        .animation(entranceAnimation(delay: 0.15), value: hasAppeared)
 
                         content()
+                            .opacity(isRevealed ? 1 : 0)
+                            .offset(y: isRevealed ? 0 : 14)
+                            .animation(entranceAnimation(delay: 0.3), value: hasAppeared)
                     }
                     .padding(RithamSpacing.md)
                 }
             }
+        }
+        .onAppear {
+            // Reduce Motion: skip the sequence entirely rather than firing it and letting
+            // `isRevealed` short-circuit around it -- `hasAppeared` simply never becomes the
+            // animation's trigger, so no motion is ever requested in the first place.
+            guard animatesEntrance, !reduceMotion else { return }
+            hasAppeared = true
         }
     }
 }
