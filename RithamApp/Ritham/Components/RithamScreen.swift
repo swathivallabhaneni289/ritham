@@ -73,14 +73,14 @@ struct RithamScreen<Content: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // The decorative header sits outside the screen margin -- it manages its
                     // own bounded height and accessibility-size drop-out (ScreenHeader.swift).
-                    // The header fades/slides in as one unbroken block (never per-ornament) so
-                    // the static ring-and-dot brand ornament inside it never reads as filling or
-                    // progressing, and the halftone stays confined to the header's own clipped
-                    // corner throughout -- this entrance sequence never extends either surface
-                    // beyond what 01-UI-SPEC.md already locks in.
-                    ScreenHeader(surface: surface)
+                    // The header itself only fades in, no slide -- per product-owner feedback,
+                    // stripes sliding into place read as arbitrary motion. The one deliberate
+                    // motion is `RingAndDot`'s own opt-in entrance (a fixed, non-data-bearing
+                    // curved dot travel, matching sketch 004's approved Synthesis variant), which
+                    // is why `animatesEntrance` is threaded through to `ScreenHeader` here rather
+                    // than stopping at this block-level fade.
+                    ScreenHeader(surface: surface, animatesEntrance: animatesEntrance)
                         .opacity(isRevealed ? 1 : 0)
-                        .offset(y: isRevealed ? 0 : -20)
                         .animation(entranceAnimation(delay: 0), value: hasAppeared)
 
                     VStack(alignment: .leading, spacing: RithamSpacing.lg) {

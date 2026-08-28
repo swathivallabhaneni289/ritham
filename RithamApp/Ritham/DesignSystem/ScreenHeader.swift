@@ -51,6 +51,10 @@ struct ScreenHeader: View {
     /// Within 01-UI-SPEC.md's 220-280pt recommended header height.
     var height: CGFloat = 250
 
+    /// Opt-in one-time ring-and-dot entrance (see `RingAndDot`'s own doc comment). Defaults to
+    /// `false` so every screen besides Welcome renders exactly as before this existed.
+    var animatesEntrance: Bool = false
+
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -84,7 +88,7 @@ struct ScreenHeader: View {
             }
 
             if surface.ringAndDot {
-                RingAndDot()
+                RingAndDot(animatesEntrance: animatesEntrance)
                     .padding(RithamSpacing.md)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             }
