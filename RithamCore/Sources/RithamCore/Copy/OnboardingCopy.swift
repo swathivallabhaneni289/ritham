@@ -2,6 +2,11 @@
 // the rows marked "Original app copy" / "Original app copy, locked, implement
 // verbatim". Downstream view plans reference these identifiers rather than
 // re-transcribing the locked copy.
+//
+// No em dash and no en dash (the two Unicode dash characters, not a plain ASCII hyphen)
+// appears anywhere in this file, comments included: this directory is the shipped string set,
+// and a phase sign-off check greps it for a hard zero. Rewrite a sentence naturally (a comma,
+// "and", a period splitting it in two, or parentheses) rather than reintroducing one here.
 
 /// Namespace for the onboarding screen copy, grouped by screen so call sites read as
 /// the screen they belong to.

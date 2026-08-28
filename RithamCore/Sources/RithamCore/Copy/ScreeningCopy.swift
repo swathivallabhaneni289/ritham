@@ -7,6 +7,13 @@
 // Consumers must not impose fixed-height containers on these strings: a Phase 5
 // revision to their length is expected, and the layout/interaction contract must
 // tolerate string-length changes without redesign.
+//
+// No em dash and no en dash (the two Unicode dash characters, not a plain ASCII hyphen)
+// appears anywhere in this file, comments included: this directory is the shipped string set,
+// and a phase sign-off check greps it for a hard zero. Rewrite a sentence naturally (a comma,
+// "and", a period splitting it in two, or parentheses) rather than reintroducing one here --
+// this applies to the pending-review clinical wording too, since the dash rule is a house-style
+// constraint, independent of LAUNCH-01/02's separate substance review.
 
 /// Namespace for the verbatim disclaimer, legal, and framing copy used throughout the
 /// health screening flow (§1.2-1.4 and §4.1-4.7 of docs/health-screening.md).
