@@ -2,9 +2,9 @@
 
 **Researched:** 2026-08-28
 **Domain:** Native iOS (SwiftUI/SwiftData/CoreLocation/CoreMotion) cardio + strength session logging, condition-tag-adjusted workout/nutrition guidance content, plate-math and superset domain logic
-**Confidence:** MEDIUM — the RithamCore API surface this phase builds on (`ConditionTag`, `ClearanceGate`, `GateResolution`, `DietaryPattern`) was read directly from the committed source, not inferred (HIGH for that part specifically). The Apple-framework technical findings (CoreMotion auto-detect, CoreLocation accuracy/battery practice, Swift Charts, plate-math, grade-adjusted pace) are WebSearch cross-referenced across 2+ independent sources per finding (MEDIUM per the `classify-confidence` seam), not compiled/run this session — no MCP documentation providers (Context7, Ref, Exa) were available in this environment, so every non-codebase finding below is `[CITED: websearch]`, never `[VERIFIED]`.
+**Confidence:** MEDIUM — the RithamCore API surface this phase builds on (`ConditionTag`, `ClearanceGate`, `GateResolution`, `GateEscalation` including `weightLossFeatureGate`, `DietaryPattern`) was read directly from the committed source, not inferred (HIGH for that part specifically). The Apple-framework technical findings (CoreMotion auto-detect, CoreLocation accuracy/battery practice, Swift Charts, plate-math, grade-adjusted pace) are WebSearch cross-referenced across 2+ independent sources per finding (MEDIUM per the `classify-confidence` seam), not compiled/run this session — no MCP documentation providers (Context7, Ref, Exa) were available in this environment, so every non-codebase finding below is `[CITED: websearch]`, never `[VERIFIED]`.
 
-> **No CONTEXT.md exists for this phase yet.** This research runs before `/gsd-discuss-phase 2` (per this task's own instructions, matching Phase 1's sequencing where `01-CONTEXT.md` preceded `01-RESEARCH.md`... actually the reverse here: Phase 2 has no discuss-phase output yet). There is therefore no `<user_constraints>` section — nothing has been locked by the user for this phase. Every gray area below is written up in **Open Questions for Discussion**, not decided. Do not read the absence of that section as an oversight.
+> **No CONTEXT.md exists for this phase yet.** This research runs before `/gsd-discuss-phase 2`, per this task's own instructions. There is therefore no `<user_constraints>` section — nothing has been locked by the user for this phase. Every gray area below is written up in **Open Questions for Discussion**, not decided. Do not read the absence of that section as an oversight.
 
 <phase_requirements>
 ## Phase Requirements
@@ -20,7 +20,7 @@
 | STRENGTH-04 | Auto-tagged movement pattern (push/pull/squat/hinge/carry), filterable | Exercise-to-pattern lookup table in RithamCore; ambiguity (multi-pattern exercises) flagged as Open Question |
 | STRENGTH-05 | Full retroactive editing, year-jump date picker, session merge/split | Data-model constraint, not just a UI feature — sets need stable identity independent of session, see Common Pitfalls |
 | HEALTH-03 | Workout guidance adjusts per condition tag the moment logged/planned; required-blocking → generic + referral only | `GateResolution`/`ConditionTag`/`GateEscalation.baseGates` already fully implemented (Phase 1) and sufficient for gating; a **new** RithamCore content-permission type is needed for guidance *text* — see Architectural Responsibility Map and Pattern 4 |
-| HEALTH-04 | Nutrition guidance adjusts per condition tag; population-level reference figures only, never individually calculated; Under-18 required-blocking for weight-management features | Same gate infrastructure; `.under18Minor` producer confirmed already wired (Phase 1, plan 01-06) — Phase 2 does not need to re-derive it, only read `HealthDataStore.activeConditionTags` |
+| HEALTH-04 | Nutrition guidance adjusts per condition tag; population-level reference figures only, never individually calculated; Under-18 required-blocking for weight-management features | Same gate infrastructure; `.under18Minor` producer confirmed already wired (Phase 1, plan 01-06) — Phase 2 does not need to re-derive it, only read `HealthDataStore.activeConditionTags`. **`GateEscalation.weightLossFeatureGate(tags:goalBelowHealthyBMIFloor:)` already exists in RithamCore** (public API, currently called only from Phase 1's tests, never from app code) and its own doc comment states "Phase 2 calls this at goal-setting time" — see Pattern 1 and Open Question 6 |
 | DIET-02 | Dietary-pattern-keyed food-swap table, only when nutrition gate is `none`/`recommended` | New RithamCore lookup keyed by `(nutrition row, DietaryPattern)` — gate-conditional, per `docs/dietary-pattern.md` §2's worked kidney-disease example |
 | DIET-03 | Vegan/vegetarian nutrient-education blocks, shown identically regardless of condition tag | **Not** gate-conditional — must render even under a `required-blocking` nutrition gate, unlike DIET-02; see Common Pitfalls for the trap of conflating the two |
 | MONETIZE-01 | Visible "always free" list in Settings, matching what's actually never paywalled | Pure content/Settings-screen addition; reuses `SettingsView` (Phase 1) as the host — no new gating architecture, since Phase 1/2 introduce no paywall infrastructure at all |
@@ -29,7 +29,7 @@
 
 ## Summary
 
-Phase 2 is the first phase to write outside the onboarding/screening domain, and it lands on a genuinely solid foundation: `RithamCore`'s `ConditionTag` (31 cases), `ClearanceGate` (a structurally one-way `mostRestrictive` selector), `GateResolution.resolve`, and `GateEscalation.baseGates(for:)` already implement the *entire* per-tag, per-domain gate matrix from `docs/health-screening.md` §2/§3 — this was verified by reading the committed source, not inferred. **What Phase 2 actually needs to build is content, not gating logic.** `blocksPersonalization(in: .nutrition)` correctly tells a caller whether personalization is blocked, but the existing three-level `ClearanceGate` enum (`none`/`recommended`/`requiredBlocking`) cannot by itself distinguish "show zero content of any kind" (kidney disease, pregnancy-complicated, positive ED screen) from "show generic education, zero numbers" (Under-18, hypertension-uncontrolled, postpartum-uncomplicated) — `GateEscalation.swift`'s own comment on `hypertensionUncontrolledOrUnsure` names this exact gap as "content-layer, not gate-level." Phase 2's primary RithamCore addition is therefore a new content-permission type sitting downstream of `DomainGates`, plus the actual guidance-text catalog (workout adjustment copy, contraindicated lists, nutrition guidance copy, dietary-pattern food swaps) transcribed from `docs/health-screening.md` §2/§3 and `docs/dietary-pattern.md` §3/§4 — the same "transcribe verbatim, single source of truth" pattern Phase 1 already established for `ScreeningCopy`/`OnboardingCopy`.
+Phase 2 is the first phase to write outside the onboarding/screening domain, and it lands on a genuinely solid foundation: `RithamCore`'s `ConditionTag` (31 cases), `ClearanceGate` (a structurally one-way `mostRestrictive` selector), `GateResolution.resolve`, `GateEscalation.baseGates(for:)`, and `GateEscalation.weightLossFeatureGate(tags:goalBelowHealthyBMIFloor:)` already implement the *entire* per-tag, per-domain gate matrix from `docs/health-screening.md` §2/§3/§5 — this was verified by reading the committed source, not inferred. `weightLossFeatureGate` is a load-bearing find: it's a public RithamCore function whose own doc comment states "Phase 2 calls this at goal-setting time," implementing §5 rules 14/15 (the Under-18 and below-healthy-BMI-floor weight-loss-goal red flags) — it exists today but is called only from Phase 1's tests, never from any app code, making Phase 2's nutrition guidance its natural first real caller if this phase exposes any weight-loss or goal-setting affordance at all (see Open Question 6). **What Phase 2 actually needs to build is content, not gating logic.** `blocksPersonalization(in: .nutrition)` correctly tells a caller whether personalization is blocked, but the existing three-level `ClearanceGate` enum (`none`/`recommended`/`requiredBlocking`) cannot by itself distinguish "show zero content of any kind" (kidney disease, pregnancy-complicated, positive ED screen) from "show generic education, zero numbers" (Under-18, hypertension-uncontrolled, postpartum-uncomplicated) — `GateEscalation.swift`'s own comment on `hypertensionUncontrolledOrUnsure` names this exact gap as "content-layer, not gate-level." Phase 2's primary RithamCore addition is therefore a new content-permission type sitting downstream of `DomainGates`, plus the actual guidance-text catalog (workout adjustment copy, contraindicated lists, nutrition guidance copy, dietary-pattern food swaps) transcribed from `docs/health-screening.md` §2/§3 and `docs/dietary-pattern.md` §3/§4 — the same "transcribe verbatim, single source of truth" pattern Phase 1 already established for `ScreeningCopy`/`OnboardingCopy`.
 
 The cardio/strength tracking half of this phase is standard, well-precedented native-iOS work: CoreLocation for GPS (accuracy-threshold filtering, not a hand-rolled Kalman filter), a new `CMMotionActivityManager`-based auto-detect type (genuinely new code, not a refactor of Phase 1's `CMPedometer`-based `PedometerSession`/`StopwatchSession`/`LocationEnrichment` — their contracts don't stretch to cover six extensible activity types or continuous background classification), Swift Charts for history/progress visualization, and a pure-Swift greedy-algorithm plate calculator. No third-party dependency is required for any of it — Phase 2 can match Phase 1's zero-third-party-package precedent.
 
@@ -207,6 +207,8 @@ RithamApp/Ritham/
 - Kidney Disease, Pregnancy — Complicated/Unsure, Eating Disorder History — Positive Screen → **zero** content of any kind, including general framework education (§3's own wording: "including general framework content")
 - Under-18 (Minor), Hypertension — Uncontrolled/Unsure, Postpartum — Uncomplicated (for the weight-loss-goal feature specifically) → generic **education** permitted, only numeric quantities withheld
 
+**A closely-related, already-built function this pattern must call, not reimplement:** `GateEscalation.weightLossFeatureGate(tags:goalBelowHealthyBMIFloor:)` already exists in RithamCore, implementing §5 rules 14/15 exactly (`.requiredBlocking` when tags contain `.under18Minor` or `.eatingDisorderPositiveScreen`, or when a set goal weight falls below a healthy-BMI floor). If Phase 2 exposes any weight-loss-goal-setting UI, that UI's gate check must call this existing function — never a new inline `age < 18` check — both because it's already correct and tested, and because it's the one place `goalBelowHealthyBMIFloor` (a runtime input, not a stored condition tag) is meant to be evaluated.
+
 **Example:**
 ```swift
 // RithamCore/Sources/RithamCore/Guidance/ContentPermission.swift
@@ -296,6 +298,35 @@ public struct PlateCalculator {
 ```
 **Equipment-specific note:** Smith machines and some trap bars have their own fixed bar weight and, per STRENGTH-02's "nearest loadable weight" requirement, stack machines don't take plates at all — they select from a fixed pin-weight increment list, which is a different (simpler) lookup, not a plate-greedy algorithm. The `Equipment` enum should model this distinction explicitly rather than forcing stack machines through the plate-math path.
 
+### Pattern 5: Superset as a grouping key on `LiftSet`, not a separate session type
+
+**What:** A superset is modeled as an ordering/grouping attribute on individual `LiftSet` records (a `supersetGroupID: UUID?` plus a `supersetOrder: Int`), not a distinct top-level entity that owns its own sets, and not a property of the parent `LiftSession`.
+
+**When to use:** STRENGTH-03's "tap 'add to superset' on any two consecutive exercises, no separate creation step" — the ROADMAP's own framing rules out a separate creation flow, which rules out a heavyweight separate `Superset` entity that has to be created before sets can join it.
+
+**Why this shape, and how it interacts with STRENGTH-05's merge/split requirement:** Per Anti-Patterns below, `LiftSet` already needs its own stable, reparentable identity (a `@Model` with its own persistent ID, not a value type embedded in a session's array) so STRENGTH-05's session merge/split can work at all. A superset grouping key on that same already-independently-addressable `LiftSet` composes for free: merging two sessions carries each set's `supersetGroupID` along with it unchanged, and splitting a session only has to reason about which sets go where — it never has to reconstruct or migrate a separate superset entity's ownership. A `nil` group ID means "not part of a superset" (the common case); a shared non-nil ID across 2+ consecutive sets means "these are one superset," and `supersetOrder` (or reuse of each set's own ordering field) determines display sequence within the group.
+
+**Example:**
+```swift
+// RithamCore/Sources/RithamCore/Strength/Superset.swift
+// A superset is a grouping over existing LiftSet identity, not a new owning entity.
+public struct SupersetGroupID: Hashable, Sendable, Codable {
+    public let rawValue: UUID
+    public init(_ rawValue: UUID = UUID()) { self.rawValue = rawValue }
+}
+
+// On the LiftSet model (app-side @Model, or a RithamCore value type consumed by it):
+//   var supersetGroupID: SupersetGroupID?   // nil = not part of a superset
+//   var supersetOrder: Int                  // display order within the group, if any
+
+// "Add to superset" (tap on two consecutive sets) just assigns the same
+// SupersetGroupID to both — no separate creation step, matching STRENGTH-03's
+// stated UX exactly, and no migration needed when a session later merges or splits
+// (Anti-Patterns, STRENGTH-05).
+```
+
+**Open design point, not resolved here:** whether the grouping key lives at the `LiftSet` level (grouping individual sets across exercises) or at a coarser `exercise-within-session` level (grouping whole exercises, with all of an exercise's sets inheriting the group) depends on whether Ritham's superset UX lets a user group individual sets or only whole exercise blocks — flagged as an implementation detail for the planner, not decided here, since it doesn't change the "grouping key on existing identity, not a new owning entity" recommendation either way.
+
 ### Anti-Patterns to Avoid
 
 - **Deriving `ContentPermission` mechanically from `ClearanceGate`:** e.g. `none → .full, recommended → .full, requiredBlocking → .none` would be wrong for at least Under-18/Hypertension-Uncontrolled/Postpartum-Uncomplicated, whose `requiredBlocking` nutrition gate still permits generic education. `ContentPermission` must be its own per-tag lookup, transcribed from the rule tables' prose, not computed from the gate enum.
@@ -355,7 +386,7 @@ public struct PlateCalculator {
 
 ## Code Examples
 
-See Architecture Patterns above for the four load-bearing patterns (content-permission layer, guidance-copy catalog, new sensor adapters, plate calculator) with inline source annotations.
+See Architecture Patterns above for the five load-bearing patterns (content-permission layer, guidance-copy catalog, new sensor adapters, plate calculator, superset grouping key) with inline source annotations.
 
 ## State of the Art
 
@@ -406,6 +437,11 @@ See Architecture Patterns above for the four load-bearing patterns (content-perm
    - What's unclear: Whether Phase 2 needs to handle a state where `HealthDataStore.activeConditionTags` returns an *empty* set (e.g., a user who somehow reaches the cardio/strength screens before ever completing screening, if that's reachable given Phase 1's flow) distinctly from a user who completed screening and got `noneOfTheAboveBaseline`.
    - Recommendation: Verify during planning whether Phase 1's onboarding flow makes an empty-tag-set state reachable at all before Phase 2's tracking screens are accessible; if it is reachable, the guidance layer needs an explicit "no screening data" fallback distinct from "screened, baseline."
 
+6. **Does Phase 2 expose any weight-loss-goal-setting affordance at all, and if so, is it routed through the already-existing `GateEscalation.weightLossFeatureGate`?**
+   - What we know: `weightLossFeatureGate(tags:goalBelowHealthyBMIFloor:)` already exists in RithamCore, is fully implemented and tested (Phase 1), and its own doc comment states "Phase 2 calls this at goal-setting time" — it is currently called only from tests, never from app code. Phase 2's requirement list (CARDIO-01/02/03, STRENGTH-01 through 05, HEALTH-03/04, DIET-02/03, MONETIZE-01, CROSSGEN-02) does not explicitly name a "set a weight-loss goal" feature.
+   - What's unclear: Whether HEALTH-04's nutrition guidance surfaces a goal-weight-setting affordance as part of this phase (in which case `weightLossFeatureGate` has a real, in-scope caller this phase), or whether goal-setting is out of Phase 2's scope entirely (in which case the function remains correctly built-but-uncalled until whichever future phase adds goal-setting, and Phase 2 doesn't need to touch it at all).
+   - Recommendation: Confirm during `/gsd-discuss-phase 2` whether any Phase 2 nutrition screen lets a user set a goal weight or a weight-management target. If yes, that screen's gate check must call `weightLossFeatureGate`, never reimplement the under-18/ED-positive/below-BMI-floor logic inline. If no, note explicitly in the plan that this function is intentionally left uncalled by Phase 2 and flag it for whichever future phase adds goal-setting.
+
 ## Environment Availability
 
 | Dependency | Required By | Available | Version | Fallback |
@@ -429,13 +465,15 @@ See Architecture Patterns above for the four load-bearing patterns (content-perm
 | Framework | Swift Testing (Xcode 16+) for unit/business-logic tests — same as Phase 1, no change |
 | Config file | `RithamCore/Package.swift` (package tests), `RithamApp/project.yml` (app-target tests via xcodegen) — both already exist, no new scaffold needed |
 | Quick run command | `RithamCore/Scripts/test-core.sh` for pure-Swift RithamCore logic (plate calculator, guidance catalog, movement-pattern lookup) — reuses Phase 1's toolchain-adaptive harness unchanged |
-| Full suite command | `xcodebuild test -project RithamApp/Ritham.xcodeproj -scheme Ritham -destination 'platform=iOS Simulator,id=<simulator-UDID>'` — **note:** no `.xcscheme` file was found checked into the repo this session (`find` returned zero matches), so the exact scheme-resolution behavior should be confirmed via `xcodebuild -list -project RithamApp/Ritham.xcodeproj` during Wave 0 rather than assumed; a `name=iPhone 17` (or similar, from the confirmed-available simulator list) destination is a safer starting point than an unconfirmed scheme name |
+| Full suite command | `xcodebuild test -project RithamApp/Ritham.xcodeproj -scheme Ritham -destination 'platform=iOS Simulator,name=iPhone 17'` — **confirmed this session** via `xcodebuild -list -project RithamApp/Ritham.xcodeproj`: no `.xcscheme` file is checked into the repo, but Xcode auto-generates a working `Ritham` scheme (alongside an auto-generated `RithamCore` scheme for the package) and `iPhone 17` is a confirmed-available simulator on this machine (`xcrun simctl list devices available`) |
 
 ### Phase Requirements → Test Map
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|-------------|
+| STRENGTH-01 | Set logging auto-fills the previous session's weight/reps for the same exercise identifier | unit | `RithamCore/Scripts/test-core.sh` (targeting `ExerciseLogTests`, pure "most recent set for this exercise" query logic) | ❌ Wave 0 |
 | STRENGTH-02 | Plate calculator returns nearest loadable weight for barbell/EZ/trap/Smith/stack, exact and inexact targets | unit | `RithamCore/Scripts/test-core.sh` (targeting `PlateCalculatorTests`) | ❌ Wave 0 |
+| STRENGTH-03 | Two consecutive sets assigned the same superset group render/query as one superset; a session merge/split preserves each set's group membership unchanged | unit | `RithamCore/Scripts/test-core.sh` (targeting `SupersetTests`) | ❌ Wave 0 |
 | STRENGTH-04 | Every seeded exercise resolves to at least one movement pattern; compound exercises resolve to multiple if `Set<MovementPattern>` is adopted (Open Question 3) | unit | `RithamCore/Scripts/test-core.sh` (targeting `MovementPatternTests`) | ❌ Wave 0 |
 | HEALTH-03 | Every `ConditionTag` has a defined `ContentPermission` for the workout domain; no tag falls through to an implicit default | unit | `RithamCore/Scripts/test-core.sh` (targeting `GuidanceCatalogTests`, exhaustive-switch style like Phase 1's `GateResolutionTests`) | ❌ Wave 0 |
 | HEALTH-04 | Every `ConditionTag` has a defined `ContentPermission` for the nutrition domain; Under-18 resolves to `.educationOnly` (never `.full`) for any weight-management-flavored content | unit | `RithamCore/Scripts/test-core.sh` (targeting `GuidanceCatalogTests`) | ❌ Wave 0 |
@@ -443,6 +481,8 @@ See Architecture Patterns above for the four load-bearing patterns (content-perm
 | DIET-03 | Nutrient-education block renders identically regardless of condition tag or gate state | unit | `RithamCore/Scripts/test-core.sh` (targeting `DietarySwapCatalogTests`) | ❌ Wave 0 |
 | CARDIO-02 | Grade-adjusted pace is suppressed or clearly down-weighted when elevation-signal confidence is poor (Pitfall 5) | unit (pure math against synthetic confidence inputs) | `RithamCore/Scripts/test-core.sh` (targeting `GradeAdjustedPaceTests`) | ❌ Wave 0 |
 | STRENGTH-05 | A `LiftSet` retains stable identity across a session merge/split operation | unit | `RithamCore/Scripts/test-core.sh` or app-target SwiftData test, depending on where merge/split logic lands | ❌ Wave 0 |
+
+**Deliberately not listed above:** CARDIO-01 (activity-type selector, manual stopwatch, history) and CARDIO-03 (route/segment comparison opt-in) are primarily UI/visibility-flow behaviors best covered by app-target integration/UI tests once the planner defines the actual screens, not pure-logic unit tests this research can specify in advance — the underlying data (session records, opt-in visibility flag) should still be unit-tested at the model level, which is covered implicitly by the SwiftData-model tests any session-persistence plan will need. MONETIZE-01 (the "always free" Settings list) is static content with no branching logic to unit test — a smoke/UI test confirming the list renders and matches the actual gating state elsewhere in the app is more appropriate than a unit test, and belongs in whichever plan builds that screen.
 
 ### Sampling Rate
 
@@ -452,12 +492,15 @@ See Architecture Patterns above for the four load-bearing patterns (content-perm
 
 ### Wave 0 Gaps
 
+- [ ] `RithamCoreTests/ExerciseLogTests.swift` — covers STRENGTH-01
 - [ ] `RithamCoreTests/PlateCalculatorTests.swift` — covers STRENGTH-02
+- [ ] `RithamCoreTests/SupersetTests.swift` — covers STRENGTH-03
 - [ ] `RithamCoreTests/MovementPatternTests.swift` — covers STRENGTH-04
 - [ ] `RithamCoreTests/GuidanceCatalogTests.swift` — covers HEALTH-03, HEALTH-04 (recommend an exhaustive-switch-style test asserting every `ConditionTag` case has a defined `ContentPermission` per domain, mirroring Phase 1's `GateResolutionTests` discipline)
 - [ ] `RithamCoreTests/DietarySwapCatalogTests.swift` — covers DIET-02, DIET-03
 - [ ] `RithamCoreTests/GradeAdjustedPaceTests.swift` — covers CARDIO-02's confidence-gating behavior
-- [ ] Confirm the actual Xcode scheme name / `-destination` string via `xcodebuild -list` before writing any plan's literal test-run commands — do not assume `-scheme Ritham` resolves without checking
+
+*(Xcode scheme/destination already confirmed this session — see Test Framework table above; no Wave 0 action needed for that item.)*
 
 ## Security Domain
 
