@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-16-PLAN.md
-last_updated: "2026-08-27T12:38:18.131Z"
+stopped_at: Completed 01-17-PLAN.md
+last_updated: "2026-08-28T10:10:42.698Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 01 (onboarding-safety-intake) — EXECUTING
-Plan: 13 of 14
+Plan: 14 of 14
 Status: Ready to execute
 Last activity: 2026-08-25 — Phase 01 execution started
 
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-onboarding-safety-intake P13 | 55min | 3 tasks | 11 files |
 | Phase 01-onboarding-safety-intake P15 | 50min | 3 tasks | 13 files |
 | Phase 01-onboarding-safety-intake P16 | 90min | 3 tasks | 13 files |
+| Phase 01-onboarding-safety-intake P17 | 50min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-16: Centralized every §1.2/§1.4 screening question prompt and option label into new ScreeningCopy.Gate/.FollowUp/.EatingPattern namespaces (RithamCore), plus ChecklistItem.displayName -- one reviewable file for LAUNCH-01/LAUNCH-02 counsel/clinician review instead of scattering doc-sourced wording across seven view files
 - [Phase ?]: 01-16: SeverityFollowUpView is one data-driven screen -- a [ChecklistCategory: [SeverityQuestion]] table built via a generic severityQuestion(...) helper -- covering all eight §1.4 category groups instead of eight hand-built view bodies
 - [Phase ?]: 01-16: Gate-pass affirmation shown via .alert gated on GateResolution.resolve's own interstitial == .none result, since no dedicated OnboardingStep case exists for it; 'shown once' for the opening disclaimer tracked via the existing OnboardingAnswers.completedSteps field, not a new persisted UserProfile column
+- [Phase ?]: 01-17: HealthProfileView is store-driven (reconstructs GateResolutionResult from persisted tags via GateEscalation.escalate), not OnboardingFlow-driven, so it works reachable-anytime after onboarding ends
+- [Phase ?]: 01-17: EditAnswerFlow reuses plan 01-16's registered screening screens via StepRegistry, neutralizing their flow.advance side effect by popping flow.path back after each edit, rather than forking a second copy of any question
+- [Phase ?]: 01-17: Added HealthDataStore.conditionTagStatuses(now:) (Rule 2) -- no existing accessor exposed per-tag validity, which D-08's overdue-tag display requires
 
 ### Pending Todos
 
@@ -134,6 +138,8 @@ Recent decisions affecting current work:
   registered dietitian before public App Store submission — schedule these reviews early enough
   that they don't block the release once Phases 1-4 are code-complete.
 
+- 01-18's PhaseCoverageTests (unregisteredSteps-is-empty) will trip: .screeningComplete and .home have no registrar in the phase as currently scoped (01-16-SUMMARY claimed 01-17 owns .screeningComplete, but neither 01-17 nor 01-18's registrar list covers it) -- see deferred-items.md
+
 ## Deferred Items
 
 Items acknowledged and carried forward from previous milestone close:
@@ -144,8 +150,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-27T12:38:18.126Z
-Stopped at: Completed 01-16-PLAN.md
+Last session: 2026-08-28T10:10:42.693Z
+Stopped at: Completed 01-17-PLAN.md
 Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
 device-continuity question first if that should land before execution.
 Resume file: 

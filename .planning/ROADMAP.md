@@ -64,7 +64,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
   7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
-**Plans**: 12/14 plans executed
+**Plans**: 13/14 plans executed
 
 Plans:
 
@@ -80,7 +80,7 @@ Plans:
 - [x] 01-13-PLAN.md — Welcome, explanation register, age, age-ineligible block, dietary pattern, privacy explainer
 - [x] 01-15-PLAN.md — Calibration screens with pedometer and stopwatch sources
 - [x] 01-16-PLAN.md — The screening questionnaire: disclaimer, gate section, interstitials, checklist, follow-ups
-- [ ] 01-17-PLAN.md — Disclaimer surfaces, health profile, Settings and re-screen
+- [x] 01-17-PLAN.md — Disclaimer surfaces, health profile, Settings and re-screen
 - [ ] 01-18-PLAN.md — Step bootstrap, phase coverage assertions, end-to-end human verification
 
 *2026-08-23: four plans removed entirely (01-02 Go consent service, 01-04 consent domain, 01-08*
@@ -213,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Onboarding & Safety Intake | 12/14 | In Progress|  |
+| 1. Onboarding & Safety Intake | 13/14 | In Progress|  |
 | 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
