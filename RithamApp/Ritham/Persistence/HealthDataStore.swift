@@ -146,6 +146,27 @@ public final class HealthDataStore {
         }
     }
 
+    /// Every stored tag paired with its own `TagValidity`, for a caller (plan 01-17's
+    /// `HealthProfileView`) that needs to render *which* tags are overdue rather than only
+    /// whether any are. `activeConditionTags` collapses that distinction away by design (both
+    /// validity states return the tag); this is the same query one level less collapsed, added
+    /// as a Rule 2 deviation because no existing accessor exposes per-tag validity and D-08
+    /// requires an overdue tag to be shown as still applying, never as inactive or removed —
+    /// which is not renderable without knowing which validity state it's in.
+    public func conditionTagStatuses(now: Date) throws -> [ConditionTagStatus] {
+        _ = try loadProfile()
+
+        let records = try context.fetch(FetchDescriptor<ConditionTagRecord>())
+        return records.compactMap { record -> ConditionTagStatus? in
+            guard let tag = record.tag else { return nil }
+            return ConditionTagStatus(
+                tag: tag,
+                validity: record.validity(now: now, calendar: calendar),
+                professionalClearanceGrantedAt: record.professionalClearanceGrantedAt
+            )
+        }
+    }
+
     /// True when any stored tag is overdue for re-screen. Per D-07 this drives a non-blocking
     /// banner only — no caller may use this to gate access; it says "prompt," never "block."
     public func isReScreenDue(now: Date) throws -> Bool {
@@ -310,6 +331,20 @@ public struct UserProfileDraft: Sendable, Equatable {
         self.age = age
         self.explanationRegister = explanationRegister
         self.dietaryPattern = dietaryPattern
+    }
+}
+
+/// One condition tag paired with its validity and (if granted) professional-clearance date, as
+/// returned by `HealthDataStore.conditionTagStatuses(now:)`.
+public struct ConditionTagStatus: Sendable, Equatable {
+    public var tag: ConditionTag
+    public var validity: TagValidity
+    public var professionalClearanceGrantedAt: Date?
+
+    public init(tag: ConditionTag, validity: TagValidity, professionalClearanceGrantedAt: Date? = nil) {
+        self.tag = tag
+        self.validity = validity
+        self.professionalClearanceGrantedAt = professionalClearanceGrantedAt
     }
 }
 

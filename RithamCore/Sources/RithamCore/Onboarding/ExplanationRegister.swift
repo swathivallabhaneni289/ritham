@@ -90,6 +90,24 @@ public enum Glossary {
                 plainLanguageDefinition: "A comfortable range of paces, not a single target number — Ritham always gives you a range to work within rather than one exact figure to hit.",
                 technicalDefinition: "A pace interval (seconds per kilometer) bounding a target training effort, expressed as a range rather than a single value to avoid a single-number performance target."
             ),
+            // Plan 01-17's health profile screen: neither term is a diagnosis, and both
+            // definitions repeat that explicitly, matching the non-diagnostic framing every
+            // other screening surface in this phase holds to.
+            GlossaryEntry(
+                term: "Condition tag",
+                plainLanguageDefinition: "A label Ritham uses internally to remember something you told us in the screening — not a diagnosis, just a way to adjust suggestions safely.",
+                technicalDefinition: "An internal classification derived from your screening answers, used only to select which guideline-based adjustment rules apply — never a clinical diagnosis."
+            ),
+            GlossaryEntry(
+                term: "Clearance gate",
+                plainLanguageDefinition: "How much Ritham can safely personalize a suggestion for you right now: shown normally, shown with a check-with-a-professional note, or held back until you've checked in with one.",
+                technicalDefinition: "The three-level personalization state (none / recommended / required-blocking) a domain resolves to, computed from your matched condition tags and never averaged, blended, or softened when more than one applies."
+            ),
+            GlossaryEntry(
+                term: "Professional clearance",
+                plainLanguageDefinition: "A note that you've checked in with a doctor or other qualified professional about a condition. It isn't permanent — Ritham asks again at your next re-screen.",
+                technicalDefinition: "A dated grant recorded against a condition tag, re-prompted for re-confirmation at each re-screen point rather than persisting indefinitely; it never removes the underlying tag."
+            ),
         ]
         return Dictionary(uniqueKeysWithValues: all.map { ($0.term, $0) })
     }()
