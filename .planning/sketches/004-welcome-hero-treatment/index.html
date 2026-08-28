@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sketch 004 — Welcome Hero Treatment</title>
+<link rel="stylesheet" href="../themes/default.css" id="theme-link">
+<style>
+  :root {
+    --ink:   #0E100D;
+    --hot:   #FF5C39;
+    --volt:  #C6F24E;
+    --paper: #F5F3EC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding-top: 56px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #1b1b1b;
+    color: var(--paper);
+  }
+
+  #variant-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+    background: #111; border-bottom: 1px solid #333;
+    padding: 10px 16px; display: flex; gap: 8px; align-items: center;
+  }
+  .variant-tab {
+    font-family: inherit; font-size: 13px; padding: 8px 14px;
+    background: #222; color: #ccc; border: 1px solid #333; border-radius: 8px;
+    cursor: pointer;
+  }
+  .variant-tab.active { background: var(--hot); color: var(--ink); border-color: var(--hot); font-weight: 600; }
+  .nav-label { color: #777; font-size: 12px; margin-right: 4px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 32px;
+    align-items: start;
+  }
+  .replay-btn {
+    font-family: inherit; font-size: 11.5px; padding: 5px 10px; margin-bottom: 10px;
+    background: #222; color: var(--paper); border: 1px solid #444; border-radius: 6px; cursor: pointer;
+  }
+  .col h3 { font-size: 14px; color: var(--paper); margin: 0 0 4px; }
+  .col p.desc { font-size: 12.5px; color: #999; margin: 0 0 16px; line-height: 1.4; }
+
+  .phone {
+    width: 300px;
+    height: 650px;
+    background: var(--ink);
+    border-radius: 44px;
+    border: 8px solid #2a2a2a;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 24px; background: #000; border-radius: 14px; z-index: 5;
+  }
+  .status { position: absolute; top: 16px; left: 22px; font-size: 13px; color: var(--paper); z-index: 5; font-weight: 600; }
+
+  .hero { position: absolute; top: 0; left: 0; right: 0; overflow: hidden; }
+
+  .band {
+    position: absolute;
+    width: 46px;
+    height: 480px;
+    transform-origin: bottom left;
+  }
+  .band.hot   { background: var(--hot); }
+  .band.volt  { background: var(--volt); }
+  .band.paper { background: var(--paper); }
+
+  .ring {
+    position: absolute;
+    border: 2.5px solid var(--volt);
+    border-radius: 50%;
+  }
+  .ring .dot {
+    position: absolute; top: 50%; left: 50%;
+    width: 30%; height: 30%;
+    background: var(--volt);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .halftone {
+    position: absolute;
+    background-image: radial-gradient(var(--hot) 1.1px, transparent 1.6px);
+    background-size: 9px 9px;
+    opacity: 0.55;
+  }
+
+  .content { position: relative; padding: 0 22px; }
+  h1.headline { font-size: 30px; font-weight: 800; line-height: 1.12; margin: 0 0 12px; color: var(--paper); }
+  p.subhead { font-size: 14.5px; line-height: 1.4; color: #d8d6cf; margin: 0 0 20px; }
+  .cta {
+    display: block; width: 100%; text-align: center;
+    background: var(--hot); color: var(--ink); font-weight: 700; font-size: 15.5px;
+    padding: 15px; border-radius: 12px; border: none;
+  }
+
+  .annotation {
+    position: absolute; bottom: 10px; left: 12px; right: 12px;
+    font-size: 10.5px; color: #d8d6cf; opacity: 0.55; line-height: 1.4;
+  }
+
+  /* ===== Variant A: baseline (current) ===== */
+  #a .hero { height: 235px; }
+  #a .band.hot   { bottom: -30px; left: 100px; transform: rotate(-33deg); }
+  #a .band.volt  { bottom: -30px; left: 138px; transform: rotate(-33deg); }
+  #a .band.paper { bottom: -30px; left: 176px; transform: rotate(-33deg); }
+  #a .ring { width: 22px; height: 22px; top: 46px; right: 24px; }
+  #a .content { top: 255px; }
+
+  /* ===== Variant B: ring-and-dot as hero element ===== */
+  #b .hero { height: 300px; }
+  #b .halftone { top: 24px; right: 0; width: 130px; height: 130px; }
+  #b .ring.giant { width: 190px; height: 190px; top: 40px; left: 50%; transform: translateX(-50%); border-width: 3px; }
+  #b .ring.giant .dot { width: 14%; height: 14%; }
+  #b .ring.small1 { width: 40px; height: 40px; top: 20px; right: 18px; opacity: 0.5; }
+  #b .ring.small2 { width: 16px; height: 16px; bottom: 30px; left: 24px; opacity: 0.35; }
+  #b .content { top: 320px; }
+
+  /* ===== Variant C: shortened band + bigger ring + reclaimed lower space ===== */
+  #c .hero { height: 210px; }
+  #c .band.hot   { bottom: -30px; left: 150px; height: 320px; transform: rotate(-33deg); }
+  #c .band.volt  { bottom: -30px; left: 182px; height: 320px; transform: rotate(-33deg); }
+  #c .band.paper { bottom: -30px; left: 214px; height: 320px; transform: rotate(-33deg); }
+  #c .ring { width: 46px; height: 46px; top: 34px; right: 22px; }
+  #c .content { top: 232px; display: flex; flex-direction: column; justify-content: space-between; height: 380px; }
+  #c .content .top-block {}
+  #c .footprint {
+    border: 1px dashed rgba(245,243,236,0.35); border-radius: 14px;
+    padding: 14px; font-size: 11px; color: #b9b7ae; line-height: 1.5;
+  }
+  #c .footprint b { color: var(--paper); }
+
+  /* ===== Synthesis: band + big ring together, animated entrance (Welcome only) ===== */
+  .hero-phone .hero { height: 300px; }
+  .hero-phone .halftone { top: 20px; right: 0; width: 120px; height: 120px; }
+  .hero-phone .band.hot   { bottom: -30px; left: 90px;  height: 420px; transform: rotate(-33deg); }
+  .hero-phone .band.volt  { bottom: -30px; left: 128px; height: 420px; transform: rotate(-33deg); }
+  .hero-phone .band.paper { bottom: -30px; left: 166px; height: 420px; transform: rotate(-33deg); }
+  .hero-phone .ring.giant { width: 150px; height: 150px; top: 50px; right: 8px; border-width: 3px; }
+  .hero-phone .ring.giant .dot { width: 14%; height: 14%; }
+  .hero-phone .content { top: 322px; }
+
+  /* Band: present immediately, just a quick settle-fade — no sliding. */
+  .hero-phone.play .band { animation: band-settle 0.35s ease both; }
+  .hero-phone.play .band.hot { animation-delay: 0s; }
+  .hero-phone.play .band.volt { animation-delay: 0.03s; }
+  .hero-phone.play .band.paper { animation-delay: 0.06s; }
+
+  /* Ring: one clean reveal — fades and settles into place. Understated on purpose;
+     the dot's travel is the one thing doing the "interesting" work, not the ring. */
+  .hero-phone.play .ring.giant { animation: ring-reveal 0.5s ease both; animation-delay: 0.1s; }
+
+  /* Dot: the single deliberate motion. Starts off to the side, travels in on a curved
+     path, and locks into the ring's center — like a reticle finding its mark. One
+     continuous move, not a bounce/pulse/ping pile. */
+  .hero-phone .ring.giant .dot {
+    top: 0; left: 0; transform: none;
+    offset-path: path("M135,12 C100,5 55,25 75,75");
+    offset-distance: 100%;
+    offset-anchor: 50% 50%;
+  }
+  .hero-phone.play .ring.giant .dot { animation: dot-lock-on 0.85s cubic-bezier(.22,.61,.36,1) both; animation-delay: 0.35s; }
+
+  .hero-phone.play .halftone { animation: fade-in 0.5s ease both; animation-delay: 0.15s; }
+  .hero-phone.play .content h1 { animation: rise-in 0.5s ease both; animation-delay: 0.35s; }
+  .hero-phone.play .content p.subhead { animation: rise-in 0.5s ease both; animation-delay: 0.45s; }
+  .hero-phone.play .content .cta { animation: rise-in 0.5s ease both; animation-delay: 0.55s; }
+
+  @keyframes band-settle { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ring-reveal {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  /* Curved travel from upper-right of the ring into dead center, easing to a stop —
+     no overshoot, no bounce. offset-path (set above) draws the exact arc it follows;
+     this keyframe just moves the dot along it. */
+  @keyframes dot-lock-on {
+    0%   { offset-distance: 0%; opacity: 0; transform: scale(0.7); }
+    10%  { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 1; transform: scale(1); }
+  }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 0.55; } }
+  @keyframes rise-in { from { transform: translateY(14px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* ===== Later-screen alternation strip ===== */
+  .alt-strip { padding: 8px 32px 40px; }
+  .alt-strip h3 { font-size: 14px; margin: 0 0 6px; }
+  .alt-strip > p { font-size: 12.5px; color: #999; margin: 0 0 20px; max-width: 640px; line-height: 1.5; }
+  .alt-row { display: flex; gap: 24px; }
+  .mini-phone {
+    width: 190px; height: 130px; background: var(--ink); border-radius: 16px;
+    border: 5px solid #2a2a2a; position: relative; overflow: hidden;
+  }
+  .mini-label { font-size: 12px; color: #bbb; margin: 8px 0 6px; }
+  .mini-band { position: absolute; width: 20px; height: 220px; transform-origin: bottom left; transform: rotate(-33deg); }
+  .mini-ring { position: absolute; border: 2px solid var(--volt); border-radius: 50%; }
+  .mini-ring .dot { position: absolute; top: 50%; left: 50%; width: 30%; height: 30%; background: var(--volt); border-radius: 50%; transform: translate(-50%,-50%); }
+  .mini-title { position: absolute; bottom: 14px; left: 14px; right: 14px; font-size: 13px; font-weight: 700; color: var(--paper); }
+
+  .variant { display: none; }
+  .variant.active { display: grid; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <span class="nav-label">Sketch 004 — Welcome hero treatment</span>
+  <button class="variant-tab active" onclick="showVariant('view-all', this)">All side by side</button>
+  <button class="variant-tab" onclick="showVariant('a', this)">A: Baseline</button>
+  <button class="variant-tab" onclick="showVariant('b', this)">B: Ring as hero</button>
+  <button class="variant-tab" onclick="showVariant('c', this)">C: Shortened band + reclaimed space</button>
+  <button class="variant-tab" onclick="showVariant('synth', this)">★ Synthesis ★ Selected — built into the app</button>
+</div>
+
+<div id="view-all" class="variant active grid">
+  <div class="col">
+    <h3>A — Baseline (current)</h3>
+    <p class="desc">Small band top-left, tiny static ring-dot in the corner. For comparison — this is what's live today.</p>
+    <div class="phone" id="a">
+      <div class="notch"></div><div class="status">4:19</div>
+      <div class="hero">
+        <div class="band hot"></div><div class="band volt"></div><div class="band paper"></div>
+        <div class="ring"><div class="dot"></div></div>
+      </div>
+      <div class="content">
+        <h1 class="headline">Welcome to Ritham.</h1>
+        <p class="subhead">Real training. Fair streaks. No comparison, ever.</p>
+        <button class="cta">Get Started</button>
+      </div>
+      <div class="annotation">⬇ ~55% of screen height is empty below the button</div>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3>B — Ring-and-dot as the hero</h3>
+    <p class="desc">Band dropped entirely. One large static ring-and-dot becomes the primary mark, plus two faint echo rings for depth. Still no fill, no progress reading — just scaled up.</p>
+    <div class="phone" id="b">
+      <div class="notch"></div><div class="status">4:19</div>
+      <div class="hero">
+        <div class="halftone"></div>
+        <div class="ring giant"><div class="dot"></div></div>
+        <div class="ring small1"></div>
+        <div class="ring small2"></div>
+      </div>
+      <div class="content">
+        <h1 class="headline">Welcome to Ritham.</h1>
+        <p class="subhead">Real training. Fair streaks. No comparison, ever.</p>
+        <button class="cta">Get Started</button>
+      </div>
+      <div class="annotation">Risk: a big static circle reads close to a progress ring at this size — worth checking against the "never fill/progress" rule even though nothing here animates or fills.</div>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3>C — Shortened band + bigger ring + reclaimed space</h3>
+    <p class="desc">Band trimmed to a smaller corner mark, ring-dot enlarged modestly. The freed space below is used for a real content block instead of staying empty — here, a placeholder "what's next" preview card.</p>
+    <div class="phone" id="c">
+      <div class="notch"></div><div class="status">4:19</div>
+      <div class="hero">
+        <div class="band hot"></div><div class="band volt"></div><div class="band paper"></div>
+        <div class="ring"><div class="dot"></div></div>
+      </div>
+      <div class="content">
+        <div class="top-block">
+          <h1 class="headline">Welcome to Ritham.</h1>
+          <p class="subhead">Real training. Fair streaks. No comparison, ever.</p>
+        </div>
+        <div class="footprint">
+          <b>Space reclaimed, not just decorated.</b><br>
+          e.g. a 3-step "what you'll do" preview, or nothing — just tighter vertical rhythm so the button sits mid-screen instead of stranded up top with a void below.
+        </div>
+        <button class="cta">Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3>★ Synthesis — band + big ring, animated (Welcome only)</h3>
+    <p class="desc">Stripped back down: one deliberate motion, not a pile of effects. Band settles instantly. The ring fades into place, understated. The dot is the whole story — it flies in from outside the ring on a curved path and locks into dead center, like a reticle finding its mark, then goes completely still. No bouncing, no repeated pulsing, no clutter.</p>
+    <button class="replay-btn" onclick="replaySynth(this)">▶ Replay entrance</button>
+    <div class="phone hero-phone" id="synth">
+      <div class="notch"></div><div class="status">4:19</div>
+      <div class="hero">
+        <div class="halftone" id="synth-specks"></div>
+        <div class="band hot"></div><div class="band volt"></div><div class="band paper"></div>
+        <div class="ring giant">
+          <div class="dot"></div>
+        </div>
+      </div>
+      <div class="content">
+        <h1 class="headline">Welcome to Ritham.</h1>
+        <p class="subhead">Real training. Fair streaks. No comparison, ever.</p>
+        <button class="cta">Get Started</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alt-strip">
+  <h3>Later screens — alternate instead of repeating the full combo</h3>
+  <p>Per your note: the big first-open moment is just for Welcome. Screens after that (privacy explainer, calibration start/complete — the ones with "bounded header only" decoration per the locked spec) alternate between a ring-and-dot header and a band header, small and static, no motion. Question-only screens (age, gate section, checklist, SCOFF) stay fully flat with no motif at all — that was already locked for screening-integrity reasons and isn't changing.</p>
+  <div class="alt-row">
+    <div>
+      <div class="mini-phone">
+        <div class="mini-ring" style="width:44px;height:44px;top:14px;right:14px;"><div class="dot"></div></div>
+        <div class="mini-title">Privacy, explained</div>
+      </div>
+      <div class="mini-label">Privacy explainer — ring-and-dot only</div>
+    </div>
+    <div>
+      <div class="mini-phone">
+        <div class="mini-band" style="background:var(--hot); bottom:-40px; left:40px;"></div>
+        <div class="mini-band" style="background:var(--volt); bottom:-40px; left:56px;"></div>
+        <div class="mini-band" style="background:var(--paper); bottom:-40px; left:72px;"></div>
+        <div class="mini-title">Start your walk</div>
+      </div>
+      <div class="mini-label">Calibration start — band only</div>
+    </div>
+  </div>
+</div>
+
+<div id="view-a" class="variant grid" style="display:none;grid-template-columns:1fr;justify-items:center;"></div>
+<div id="view-b" class="variant grid" style="display:none;grid-template-columns:1fr;justify-items:center;"></div>
+<div id="view-c" class="variant grid" style="display:none;grid-template-columns:1fr;justify-items:center;"></div>
+<div id="view-synth" class="variant grid" style="display:none;grid-template-columns:1fr;justify-items:center;"></div>
+
+<script>
+  // Single-variant tabs re-show the same phone from the all-view via a clone,
+  // so users can zoom into one without duplicating markup by hand.
+  function showVariant(key, btn) {
+    document.querySelectorAll('.variant').forEach(v => v.style.display = 'none');
+    document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+
+    if (key === 'view-all') {
+      document.getElementById('view-all').style.display = 'grid';
+      btn.classList.add('active');
+      return;
+    }
+
+    var target = document.getElementById('view-' + key);
+    var isNewClone = target.children.length === 0;
+    if (isNewClone) {
+      var source = document.querySelector('#view-all .phone#' + key);
+      var wrap = document.createElement('div');
+      wrap.appendChild(source.cloneNode(true));
+      target.appendChild(wrap);
+    }
+    target.style.display = 'flex';
+    btn.classList.add('active');
+    if (key === 'synth') {
+      var clonedPhone = target.querySelector('.hero-phone');
+      clonedPhone.classList.remove('play');
+      void clonedPhone.offsetWidth; // restart CSS animation
+      clonedPhone.classList.add('play');
+    }
+  }
+
+  function replaySynth(btn) {
+    // Whichever .hero-phone is currently visible (grid view or single-tab view).
+    var el = Array.prototype.find.call(document.querySelectorAll('.hero-phone'), function (p) {
+      return p.offsetParent !== null;
+    });
+    if (!el) return;
+    el.classList.remove('play');
+    void el.offsetWidth; // restart CSS animation
+    el.classList.add('play');
+  }
+
+  // Autoplay once on first load, for the grid view.
+  window.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('synth');
+    requestAnimationFrame(function () { el.classList.add('play'); });
+  });
+</script>
+
+</body>
+</html>

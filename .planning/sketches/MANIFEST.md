@@ -46,3 +46,4 @@ decisions carried forward into UI-spec/implementation, not yet resolved:
 | 001 | app-theme-direction | What background/theme direction should Ritham use app-wide, and how should Momo sit in it? | rejected | theme, background, color, mascot, onboarding, phase-1 |
 | 002 | athletic-theme-direction | Round 2 — genuinely athletic/trendy/premium direction after round 1's rejection | superseded | theme, background, color, mascot, onboarding, phase-1, round-2 |
 | 003 | band-motif-asset | Round 3 — direct build of the user's own diagonal-band SVG spec | ★ default palette | theme, background, svg, asset, phase-1, round-3 |
+| 004 | welcome-hero-treatment | Round 4 — should ring-and-dot become a bigger element, and how to fix empty space on short-content screens | ★ Synthesis (band settles, dot travels a curved path to lock in center) | layout, hero, ring-and-dot, band-motif, welcome, phase-1, round-4 |
