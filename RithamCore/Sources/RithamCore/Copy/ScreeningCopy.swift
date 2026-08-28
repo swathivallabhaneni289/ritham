@@ -4,7 +4,7 @@
 // wording/scoring, per 01-UI-SPEC.md. They ship as-is for Phase 1 per the roadmap's
 // own sequencing (Phase 5 gates the review, not Phase 1 build).
 //
-// Consumers must not impose fixed-height containers on these strings — a Phase 5
+// Consumers must not impose fixed-height containers on these strings: a Phase 5
 // revision to their length is expected, and the layout/interaction contract must
 // tolerate string-length changes without redesign.
 
@@ -15,7 +15,7 @@ public enum ScreeningCopy {
     // MARK: - §4.1 Questionnaire opening disclaimer (shown once, before Question 1)
 
     public static let openingDisclaimer = """
-    Ritham asks a few questions about your health so we can show general, guideline-based workout and food suggestions that fit you better — not to diagnose or treat anything. This is a short screening questionnaire, not a medical exam, and your answers aren't reviewed by a doctor or dietitian.
+    Ritham asks a few questions about your health so we can show general, guideline-based workout and food suggestions that fit you better, not to diagnose or treat anything. This is a short screening questionnaire, not a medical exam, and your answers aren't reviewed by a doctor or dietitian.
 
     If you have a health condition, are pregnant, are recovering from an injury or surgery, or take medication, please talk to your doctor or another qualified professional before starting or changing an exercise or eating routine. If you think you might be having a medical emergency right now, stop and call 911 (or your local emergency number) instead of continuing this questionnaire.
 
@@ -27,9 +27,9 @@ public enum ScreeningCopy {
     public static let routineClearanceInterstitial = """
     **Let's have you check in with a professional first.**
 
-    Based on what you told us, we'd like you to talk with a doctor or a qualified exercise/nutrition professional before we turn on personalized workout and food suggestions. This isn't Ritham judging your fitness — it's just that a few of your answers are outside what a general screening questionnaire can safely personalize on its own.
+    Based on what you told us, we'd like you to talk with a doctor or a qualified exercise/nutrition professional before we turn on personalized workout and food suggestions. This isn't Ritham judging your fitness. It's just that a few of your answers are outside what a general screening questionnaire can safely personalize on its own.
 
-    You can still use Ritham to log workouts and meals manually, and see general (non-personalized) guidance, in the meantime. Once you've checked in with a professional, come back to Settings and let us know — we'll turn personalized suggestions back on.
+    You can still use Ritham to log workouts and meals manually, and see general (non-personalized) guidance, in the meantime. Once you've checked in with a professional, come back to Settings and let us know, and we'll turn personalized suggestions back on.
     """
 
     public static let routineClearanceCTA = "Continue to the rest of the questions"
@@ -42,14 +42,14 @@ public enum ScreeningCopy {
     If that's not what's happening right now: based on your answers, please talk with a doctor before starting or changing an exercise routine. We'll hold off on personalized suggestions until you've done that.
     """
 
-    public static let urgentClearanceCTA = "I understand — continue to the rest of the questions"
+    public static let urgentClearanceCTA = "I understand, continue to the rest of the questions"
 
     // MARK: - §4.6 Required-blocking message
 
     public static let requiredBlockingMessage = """
     **We're holding off on personalized suggestions here.**
 
-    Based on what you told us, this isn't something Ritham can safely tailor on its own — we'd like you to check with a doctor, registered dietitian, or other qualified professional first. You can still track your workouts and meals manually, and see general, non-personalized information.
+    Based on what you told us, this isn't something Ritham can safely tailor on its own. We'd like you to check with a doctor, registered dietitian, or other qualified professional first. You can still track your workouts and meals manually, and see general, non-personalized information.
 
     Once you've talked with a professional, come back to Settings to let us know, and we'll turn personalized suggestions back on for this area.
     """
@@ -60,9 +60,9 @@ public enum ScreeningCopy {
 
     // MARK: - §1.2 Gate section framing / pass affirmation
 
-    public static let gateSectionFraming = "These next questions are the kind a doctor's office typically asks before starting a new activity program. A \"yes\" doesn't stop you from using Ritham — it just means we'll ask you to check in with a professional before we turn on personalized suggestions in that area."
+    public static let gateSectionFraming = "These next questions are the kind a doctor's office typically asks before starting a new activity program. A \"yes\" doesn't stop you from using Ritham. It just means we'll ask you to check in with a professional before we turn on personalized suggestions in that area."
 
-    public static let gatePassAffirmation = "Good to know — you're clear to move on."
+    public static let gatePassAffirmation = "Good to know, you're clear to move on."
 
     // MARK: - §1.3 Condition checklist intro
 
@@ -70,15 +70,15 @@ public enum ScreeningCopy {
 
     // MARK: - §1.4 SCOFF intro
 
-    public static let scoffIntro = "These next questions are a standard, widely-used screening tool, not a diagnosis. We ask so we can turn off calorie- and weight-focused features that could be unhelpful, not to judge or label anything. Your individual answers are never shown to us as a score or a label — only used to turn certain features on or off."
+    public static let scoffIntro = "These next questions are a standard, widely-used screening tool, not a diagnosis. We ask so we can turn off calorie- and weight-focused features that could be unhelpful, not to judge or label anything. Your individual answers are never shown to us as a score or a label, only used to turn certain features on or off."
 
     // MARK: - §1.3 Rationale lines
 
-    public static let pregnancyRationale = "We ask this because pregnancy and the months after birth change what activity and eating guidance is safe to personalize — not for any other reason."
+    public static let pregnancyRationale = "We ask this because pregnancy and the months after birth change what activity and eating guidance is safe to personalize, not for any other reason."
 
-    public static let eatingDisorderRationale = "We ask so we can turn off calorie- and weight-focused features that could be unhelpful for some people — not to label or judge anything."
+    public static let eatingDisorderRationale = "We ask so we can turn off calorie- and weight-focused features that could be unhelpful for some people, not to label or judge anything."
 
-    // MARK: - §4.4 Persistent compact disclaimer tag (parameterised — D-12)
+    // MARK: - §4.4 Persistent compact disclaimer tag (parameterised, D-12)
 
     /// §4.4's compact, always-visible tag. Per D-12, when more than one condition tag is
     /// matched the tag lists ALL matched conditions, not only the one whose gate is
@@ -95,15 +95,15 @@ public enum ScreeningCopy {
     /// binding.
     public static func expandedDisclaimer(conditions: [String]) -> String {
         let joined = conditions.joined(separator: ", ")
-        return "This suggestion reflects a general, guideline-based adjustment for **\(joined)**. It is not personalized medical or nutrition advice, not a diagnosis, and not a substitute for your doctor or a registered dietitian — no clinician has reviewed it for you individually. Using Ritham doesn't create a doctor-patient or dietitian-client relationship. Always check with your healthcare provider before changing your exercise or eating habits, especially if your condition, medications, or symptoms have changed since you last answered these questions."
+        return "This suggestion reflects a general, guideline-based adjustment for **\(joined)**. It is not personalized medical or nutrition advice, not a diagnosis, and not a substitute for your doctor or a registered dietitian. No clinician has reviewed it for you individually. Using Ritham doesn't create a doctor-patient or dietitian-client relationship. Always check with your healthcare provider before changing your exercise or eating habits, especially if your condition, medications, or symptoms have changed since you last answered these questions."
     }
 
     // MARK: - §5's closing section: the unconditional emergency line
 
     /// The standing, never-conditional emergency line `GateEscalation.showsEmergencyLine(for:)`
-    /// gates rendering of (never its content — the line itself is never conditional on any
+    /// gates rendering of (never its content: the line itself is never conditional on any
     /// answer). Extracted verbatim from the bolded opening sentence of
-    /// `urgentClearanceInterstitial` (§4.3), which §5 names as the line's "repeated" location —
+    /// `urgentClearanceInterstitial` (§4.3), which §5 names as the line's "repeated" location:
     /// the gate section (§1.2) is where it is shown first. Kept as plain text (no `**` markers)
     /// so both render sites can format the same string without one needing markdown parsing and
     /// the other not.
@@ -123,9 +123,9 @@ public enum ScreeningCopy {
         public static let g2 = "Do you feel chest pain or significant shortness of breath at rest, during your daily activities, or during exercise?"
         public static let g3 = "In the past 12 months, have you lost your balance because of dizziness, or lost consciousness?"
         public static let g3Clarification = "This doesn't include brief lightheadedness from breathing hard during a tough workout."
-        public static let g4 = "Have you been diagnosed with any other ongoing medical condition not covered above — for example diabetes, kidney disease, cancer, an eating disorder, or another chronic condition?"
+        public static let g4 = "Have you been diagnosed with any other ongoing medical condition not covered above (for example diabetes, kidney disease, cancer, an eating disorder, or another chronic condition)?"
         public static let g5 = "Are you currently taking a prescription medication for an ongoing health condition, or following a specific meal plan or nutrition targets given to you by a doctor or dietitian?"
-        public static let g6 = "Do you currently have — or have you had in the last 12 months — a bone, joint, or soft-tissue problem that gets worse with physical activity?"
+        public static let g6 = "Do you currently have, or have you had in the last 12 months, a bone, joint, or soft-tissue problem that gets worse with physical activity?"
         public static let g7 = "Has a doctor ever told you that you should only do physical activity that is medically supervised?"
         public static let med1 = "Does this include a medication for your heart or blood pressure, such as a beta-blocker?"
         public static let med2 = "Is this a specific meal plan or nutrition targets from a doctor or dietitian (not just general advice)?"
@@ -151,21 +151,21 @@ public enum ScreeningCopy {
         public static let msk2OptionFullyCleared = "Yes, fully cleared"
         public static let msk2OptionStillInRecoveryNotCleared = "Still in recovery, not yet cleared"
         public static let msk2OptionNotApplicable = "Not applicable"
-        public static let pg1 = "Has your doctor told you about any pregnancy complications — for example high blood pressure, a placenta condition, preterm labor, bleeding, or a heart or lung condition?"
+        public static let pg1 = "Has your doctor told you about any pregnancy complications (for example high blood pressure, a placenta condition, preterm labor, bleeding, or a heart or lung condition)?"
         public static let pp1 = "Did you have a C-section, or were there any complications with your delivery?"
         public static let pp2 = "How many weeks postpartum are you?"
         public static let pp2OptionUnderSix = "Under 6 weeks"
-        public static let pp2OptionSixToTwelve = "6–12 weeks"
+        public static let pp2OptionSixToTwelve = "6 to 12 weeks"
         public static let pp2OptionOverTwelve = "Over 12 weeks"
         public static let kr1 = "Are you currently on dialysis?"
         public static let kr2 = "Has your doctor or dietitian given you specific limits on things like protein, potassium, phosphorus, or fluids?"
-        public static let fa1 = "Is any of your allergies severe or life-threatening — for example, could it cause anaphylaxis, or have you been prescribed an epinephrine auto-injector (like an EpiPen)?"
+        public static let fa1 = "Is any of your allergies severe or life-threatening, for example could it cause anaphylaxis, or have you been prescribed an epinephrine auto-injector (like an EpiPen)?"
         public static let os1 = "Is this a new diagnosis, or a change in treatment, within the last 3 months?"
     }
 
     // MARK: - §1.4 Eating-disorder-history follow-up (SCOFF, ED-1 through ED-5)
 
-    /// The five SCOFF questions verbatim. §1.5 forbids surfacing the computed score or a label —
+    /// The five SCOFF questions verbatim. §1.5 forbids surfacing the computed score or a label:
     /// these five prompts are the entire user-visible content of the SCOFF screen besides
     /// `scoffIntro`; nothing here computes or names a result.
     public enum EatingPattern {

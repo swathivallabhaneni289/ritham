@@ -58,27 +58,27 @@ public enum ConditionTag: String, CaseIterable, Sendable, Hashable {
         case .age65PlusOrDeconditioned:
             return "65+ / Deconditioned / Returning After Inactivity"
         case .hypertensionManaged:
-            return "Hypertension — Managed"
+            return "Hypertension: Managed"
         case .hypertensionUncontrolledOrUnsure:
-            return "Hypertension — Uncontrolled / Unsure"
+            return "Hypertension: Uncontrolled / Unsure"
         case .heartDiseaseStable:
-            return "Heart Disease — Stable"
+            return "Heart Disease: Stable"
         case .heartDiseaseRecentEventOrSymptomatic:
-            return "Heart Disease — Recent Event / Symptomatic"
+            return "Heart Disease: Recent Event / Symptomatic"
         case .arrhythmiaStable:
-            return "Arrhythmia — Stable / Rate-Controlled"
+            return "Arrhythmia: Stable / Rate-Controlled"
         case .arrhythmiaUncontrolledOrUnsure:
-            return "Arrhythmia — Uncontrolled / Unsure"
+            return "Arrhythmia: Uncontrolled / Unsure"
         case .rateLimitingHeartOrBPMedication:
             return "Rate-Limiting Heart/BP Medication"
         case .diabetesOnHypoglycemiaRiskMedication:
-            return "Diabetes (Type 1 or Type 2) — On Insulin or Hypoglycemia-Risk Medication"
+            return "Diabetes (Type 1 or Type 2): On Insulin or Hypoglycemia-Risk Medication"
         case .diabetesNotOnHypoglycemiaRiskMedication:
-            return "Diabetes (Type 1 or Type 2) — Not on Hypoglycemia-Risk Medication"
+            return "Diabetes (Type 1 or Type 2): Not on Hypoglycemia-Risk Medication"
         case .prediabetes:
             return "Prediabetes"
         case .diabetesRetinopathyOrFootComplication:
-            return "Diabetes — Retinopathy / Foot Complication Flagged"
+            return "Diabetes: Retinopathy / Foot Complication Flagged"
         case .osteoarthritis:
             return "Osteoarthritis"
         case .osteoporosisOrOsteopenia:
@@ -86,25 +86,25 @@ public enum ConditionTag: String, CaseIterable, Sendable, Hashable {
         case .chronicLowBackPain:
             return "Chronic Low Back Pain"
         case .priorInjuryOrSurgeryNotCleared:
-            return "Prior Injury / Surgery — Not Yet Cleared"
+            return "Prior Injury / Surgery: Not Yet Cleared"
         case .priorInjuryOrSurgeryCleared:
-            return "Prior Injury / Surgery — Cleared"
+            return "Prior Injury / Surgery: Cleared"
         case .musculoskeletalFlare:
             return "Musculoskeletal Flare"
         case .pregnancyUncomplicated:
-            return "Pregnancy — Uncomplicated"
+            return "Pregnancy: Uncomplicated"
         case .pregnancyComplicatedOrUnsure:
-            return "Pregnancy — Complicated / Unsure"
+            return "Pregnancy: Complicated / Unsure"
         case .postpartumUncomplicated:
-            return "Postpartum — Uncomplicated"
+            return "Postpartum: Uncomplicated"
         case .postpartumCSectionOrComplications:
-            return "Postpartum — C-Section / Complications"
+            return "Postpartum: C-Section / Complications"
         case .kidneyDiseaseOrDialysis:
             return "Kidney Disease / Dialysis"
         case .eatingDisorderPositiveScreen:
-            return "Eating Disorder History — Positive Screen / Active Symptoms"
+            return "Eating Disorder History: Positive Screen / Active Symptoms"
         case .eatingDisorderSelfReportedNegativeScreen:
-            return "Eating Disorder History — Self-Reported Only / Negative Screen"
+            return "Eating Disorder History: Self-Reported Only / Negative Screen"
         case .severeFoodAllergy:
             return "Severe Food Allergy"
         case .nonSevereFoodAllergy:

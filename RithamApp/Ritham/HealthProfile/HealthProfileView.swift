@@ -95,7 +95,7 @@ struct HealthProfileView: View {
             }
 
             if status.validity == .expiredStillApplied {
-                Text("Due for re-screen — still applying until you re-screen")
+                Text("Due for re-screen, still applying until you re-screen")
                     .font(RithamType.label)
                     .foregroundStyle(RithamColor.hot)
             }
