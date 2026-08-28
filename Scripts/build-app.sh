@@ -38,13 +38,32 @@ fi
 
 DESTINATION="platform=iOS Simulator,id=${DEVICE_UDID}"
 
-XCODEBUILD_ACTION="build"
-if [[ "$SUBCOMMAND" == "test" ]]; then
-  XCODEBUILD_ACTION="test"
-fi
+XCODEBUILD_ACTION="$SUBCOMMAND"
 
-xcodebuild "$XCODEBUILD_ACTION" \
-  -project RithamApp/Ritham.xcodeproj \
-  -scheme Ritham \
-  -destination "$DESTINATION" \
-  "$@"
+if [[ "$SUBCOMMAND" == "test" ]]; then
+  # `StepRegistry` (App/StepRegistry.swift) is shared static state that several test suites
+  # (AppShellTests, AboutYouStepTests, CalibrationSourceTests, ScreeningFlowTests,
+  # PhaseCoverageTests) reset and register into during their own `init()`. Swift Testing
+  # parallelizes independent suites against each other by default, and full-suite runs were
+  # observed to race across those suites -- one suite's `StepRegistry.reset()` interleaving
+  # with another's assertions, non-deterministically failing `unregisteredSteps`/
+  # registration-count checks that pass every time in isolation (01-18's PhaseCoverageTests
+  # made this collision consistent rather than occasional, since it's the one suite that
+  # registers every step). `-parallel-testing-enabled NO` serializes the whole test run so
+  # suites never interleave, matching what every affected suite's own header comment already
+  # assumed ("running concurrently... would make them order-dependent"). Kept as a plain,
+  # bash-3.2-safe conditional (rather than an optionally-empty array under `set -u`) since
+  # macOS ships bash 3.2 by default and `"${arr[@]}"` on an empty array errors there.
+  xcodebuild "$XCODEBUILD_ACTION" \
+    -project RithamApp/Ritham.xcodeproj \
+    -scheme Ritham \
+    -destination "$DESTINATION" \
+    -parallel-testing-enabled NO \
+    "$@"
+else
+  xcodebuild "$XCODEBUILD_ACTION" \
+    -project RithamApp/Ritham.xcodeproj \
+    -scheme Ritham \
+    -destination "$DESTINATION" \
+    "$@"
+fi

@@ -40,6 +40,11 @@ struct OnboardingCopyTests {
         OnboardingCopy.HealthProfile.emptyStateHeading,
         OnboardingCopy.HealthProfile.emptyStateBody,
         OnboardingCopy.HealthProfile.emptyStateCTA,
+        OnboardingCopy.ScreeningComplete.headline,
+        OnboardingCopy.ScreeningComplete.body,
+        OnboardingCopy.ScreeningComplete.cta,
+        OnboardingCopy.Home.headline,
+        OnboardingCopy.Home.body,
         OnboardingCopy.Errors.savingFailed,
     ]
 

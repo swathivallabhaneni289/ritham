@@ -74,6 +74,28 @@ public enum OnboardingCopy {
         public static let emptyStateCTA = "Start screening"
     }
 
+    /// `.screeningComplete` -- the acknowledgement shown immediately after the universal
+    /// follow-up saves, before the flow reaches `.home`. No source doc names dedicated
+    /// copy for this step (01-UI-SPEC.md's Copywriting Contract has no row for it); this
+    /// constant is new copy added to close the registration gap `deferred-items.md`'s "From
+    /// 01-17" entry flagged, kept deliberately plain and non-diagnostic like every other
+    /// screening-adjacent screen in this phase.
+    public enum ScreeningComplete {
+        public static let headline = "Screening complete."
+        public static let body = "Your answers are saved. Ritham will use them to keep your suggestions safe and appropriate for you."
+        public static let cta = "Continue"
+    }
+
+    /// `.home` -- the flow's terminal step. Phase 1 is onboarding-only; the real home
+    /// screen (a 3-item default view with progressive disclosure) is Phase 4's
+    /// CROSSGEN/HOUSEHOLD work, not this phase's. This copy states plainly that onboarding
+    /// finished without claiming to be that screen -- new copy, for the same reason
+    /// `ScreeningComplete` above is new copy.
+    public enum Home {
+        public static let headline = "You're set up."
+        public static let body = "Onboarding is complete. Ritham's tracking and Momentum screens arrive in a later update."
+    }
+
     public enum Errors {
         public static let savingFailed = "Couldn't save your answer. Check your connection and try again — nothing you've entered so far is lost."
     }

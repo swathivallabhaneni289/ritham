@@ -30,6 +30,7 @@
 		3D4FC3E5BFBFC5EB757AD1FE /* ScreeningRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980B74D1594DF6375B0B13C7 /* ScreeningRegistration.swift */; };
 		44F1B1ED7CD062A5B03F9536 /* RithamModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */; };
 		45FA6FA7A9E776B6BD09B39E /* EditAnswerFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09AFD05148DDECA5064D35BB /* EditAnswerFlowTests.swift */; };
+		4623D5B2CE5480BAF72A7109 /* OnboardingCompletionRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E2C544658C88B34F194BD /* OnboardingCompletionRegistration.swift */; };
 		4A3B3A80A114FF2F6537860A /* CalibrationSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFBFA5F220C3A206E70F8E /* CalibrationSourceTests.swift */; };
 		4EDF881FDE663F23A30F29CE /* ScreeningFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */; };
 		507ED14AF0F3BDB019DE15FF /* AgeValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */; };
@@ -43,9 +44,12 @@
 		84DE0CBBAAF0046434CD77C6 /* AboutYouRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B2F8F3C1DFD35D08F440D /* AboutYouRegistration.swift */; };
 		87808DE1AEE493D4C2504F34 /* WelcomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */; };
 		8E49823AA318A99A8192B405 /* ExplanationRegisterStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */; };
+		8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */; };
 		8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */; };
 		90C538F5EAFE6CAC0FA2A0D0 /* GlossaryTermTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */; };
 		92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202A72738414384DAE6A08D /* AppShellTests.swift */; };
+		949B3F05CDF426A4C9BB39E1 /* ScreeningCompleteStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2E2BBC0CDB85F157164BD1 /* ScreeningCompleteStepView.swift */; };
+		94DDA35A59D98E641168FE28 /* StepBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE4DB527F16467DD5D3C5FB /* StepBootstrap.swift */; };
 		9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */; };
 		96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */; };
 		9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */; };
@@ -57,6 +61,7 @@
 		BEAD3466EE45B0FFE621F497 /* ConditionChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */; };
 		C3E725D13FFCE9D9F7EB838D /* GateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DFCFA1AACDDDED577DD44F /* GateSectionView.swift */; };
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
+		C94BE80B05E101C50F2E2F52 /* HomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E8647274BFC9B0186D1250 /* HomeStepView.swift */; };
 		C98EEFA090BC93D3D278F3EC /* CalibrationRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D161EF261290000542D3672 /* CalibrationRegistration.swift */; };
 		CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A018DD943E342E021CC548 /* RithamColor.swift */; };
 		CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */; };
@@ -99,6 +104,7 @@
 		226CB34F3DE1E1C5B984771E /* RingAndDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingAndDot.swift; sourceTree = "<group>"; };
 		22DFCFA1AACDDDED577DD44F /* GateSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateSectionView.swift; sourceTree = "<group>"; };
 		257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeValidationTests.swift; sourceTree = "<group>"; };
+		262E2C544658C88B34F194BD /* OnboardingCompletionRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCompletionRegistration.swift; sourceTree = "<group>"; };
 		2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStepView.swift; sourceTree = "<group>"; };
 		2D7D475288D596A167095155 /* ConditionTagRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionTagRecord.swift; sourceTree = "<group>"; };
 		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,8 +128,10 @@
 		7D161EF261290000542D3672 /* CalibrationRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationRegistration.swift; sourceTree = "<group>"; };
 		7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamModelContainer.swift; sourceTree = "<group>"; };
 		7ED5B376F4222B06352A10E7 /* ChoiceQuestionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionTests.swift; sourceTree = "<group>"; };
+		7FE4DB527F16467DD5D3C5FB /* StepBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepBootstrap.swift; sourceTree = "<group>"; };
 		832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietaryPatternStepView.swift; sourceTree = "<group>"; };
 		86D7159E624FC249EF284C14 /* RequiredBlockingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredBlockingMessageView.swift; sourceTree = "<group>"; };
+		8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhaseCoverageTests.swift; sourceTree = "<group>"; };
 		899994571E54AFD8D9247EEA /* StopwatchSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopwatchSession.swift; sourceTree = "<group>"; };
 		8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeIneligibleStepView.swift; sourceTree = "<group>"; };
 		93E5D3C503846C096E9A8713 /* BandMotif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandMotif.swift; sourceTree = "<group>"; };
@@ -135,12 +143,14 @@
 		A540323B6DBDE9C87D9AEF3A /* LiftSessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftSessionRecorder.swift; sourceTree = "<group>"; };
 		A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeStepView.swift; sourceTree = "<group>"; };
 		A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryCTAButton.swift; sourceTree = "<group>"; };
+		A7E8647274BFC9B0186D1250 /* HomeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStepView.swift; sourceTree = "<group>"; };
 		AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningFlowTests.swift; sourceTree = "<group>"; };
 		AA0B2F8F3C1DFD35D08F440D /* AboutYouRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutYouRegistration.swift; sourceTree = "<group>"; };
 		ADFFBFA5F220C3A206E70F8E /* CalibrationSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSourceTests.swift; sourceTree = "<group>"; };
 		B040926DC5083605CE450DEF /* GlossaryTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTerm.swift; sourceTree = "<group>"; };
 		B3B8B78315E265C9CEE285C0 /* ClearanceInterstitialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearanceInterstitialView.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
+		BF2E2BBC0CDB85F157164BD1 /* ScreeningCompleteStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningCompleteStepView.swift; sourceTree = "<group>"; };
 		C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationBaselineRecord.swift; sourceTree = "<group>"; };
 		C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionChecklistView.swift; sourceTree = "<group>"; };
@@ -208,6 +218,7 @@
 				7326799926C7C75029BF3A31 /* OnboardingRootView.swift */,
 				F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */,
 				0B4438C355A19887EE4B879F /* RithamApp.swift */,
+				7FE4DB527F16467DD5D3C5FB /* StepBootstrap.swift */,
 				63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */,
 			);
 			path = App;
@@ -357,6 +368,7 @@
 				479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */,
 				C7CF1FE8182F9431C9184C34 /* HealthDataStoreTests.swift */,
 				1024D116B21BD85232045566 /* PersistenceTests.swift */,
+				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
 				AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */,
 			);
 			path = RithamTests;
@@ -370,7 +382,10 @@
 				A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */,
 				832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */,
 				4AB431E0B67409C89FCED639 /* ExplanationRegisterStepView.swift */,
+				A7E8647274BFC9B0186D1250 /* HomeStepView.swift */,
+				262E2C544658C88B34F194BD /* OnboardingCompletionRegistration.swift */,
 				9B61ACD89789D585BDF4FFE4 /* PrivacyExplainerStepView.swift */,
+				BF2E2BBC0CDB85F157164BD1 /* ScreeningCompleteStepView.swift */,
 				2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */,
 			);
 			path = Steps;
@@ -489,8 +504,10 @@
 				3B38A96C15C0B2ACC05FD7C3 /* GlossaryTerm.swift in Sources */,
 				BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */,
 				DE0D7678CF91D1FE5F62F433 /* HealthProfileView.swift in Sources */,
+				C94BE80B05E101C50F2E2F52 /* HomeStepView.swift in Sources */,
 				F874FB2134A24BF9B64F2A05 /* LiftSessionRecorder.swift in Sources */,
 				5095A4F4DA0A7410735424A4 /* LocationEnrichment.swift in Sources */,
+				4623D5B2CE5480BAF72A7109 /* OnboardingCompletionRegistration.swift in Sources */,
 				162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */,
 				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
 				F03CD5A2D32F1E0BCBAA37F5 /* PedometerSession.swift in Sources */,
@@ -507,11 +524,13 @@
 				D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */,
 				5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */,
 				1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */,
+				949B3F05CDF426A4C9BB39E1 /* ScreeningCompleteStepView.swift in Sources */,
 				33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */,
 				3D4FC3E5BFBFC5EB757AD1FE /* ScreeningRegistration.swift in Sources */,
 				B79730E927043D1B94D41757 /* SettingsView.swift in Sources */,
 				36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */,
 				ED5112BF358AF9FD675F531F /* StandingFooterDisclaimer.swift in Sources */,
+				94DDA35A59D98E641168FE28 /* StepBootstrap.swift in Sources */,
 				9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */,
 				E9B451301BBB32186D650E4F /* StopwatchSession.swift in Sources */,
 				F6532E61D986F81B17C40876 /* UniversalFollowUpView.swift in Sources */,
@@ -535,6 +554,7 @@
 				90C538F5EAFE6CAC0FA2A0D0 /* GlossaryTermTests.swift in Sources */,
 				B699CA6F0194F93D60914DBE /* HealthDataStoreTests.swift in Sources */,
 				69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */,
+				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
 				4EDF881FDE663F23A30F29CE /* ScreeningFlowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

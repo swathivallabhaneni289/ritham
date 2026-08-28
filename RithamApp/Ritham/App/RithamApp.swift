@@ -13,6 +13,12 @@ import SwiftData
 
 @main
 struct RithamApp: App {
+    init() {
+        // Registers every screen group before the root view is presented, so `StepRegistry`
+        // resolves a real view for any `OnboardingStep` the app renders from launch.
+        StepBootstrap.registerAllSteps()
+    }
+
     var body: some Scene {
         WindowGroup {
             OnboardingRootView()
