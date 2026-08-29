@@ -27,12 +27,19 @@ struct RingAndDot: View {
     var diameter: CGFloat = 24
     var animatesEntrance: Bool = false
 
+    /// The large "hero" treatment from sketch 004's approved Synthesis variant (Welcome only):
+    /// a thinner relative stroke and a smaller relative dot than the small corner ornament used
+    /// everywhere else, matching `.ring.giant`'s own proportions in the sketch rather than the
+    /// small `.ring`'s -- a giant ring built from the small ring's proportions reads as chunky
+    /// and the dot as oversized, which is why these aren't simple percentages of `diameter`.
+    var isHero: Bool = false
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var ringRevealed = false
     @State private var dotProgress: CGFloat = 0
 
-    private var dotDiameter: CGFloat { diameter * 0.3 }
-    private var strokeWidth: CGFloat { max(diameter * 0.06, 1) }
+    private var dotDiameter: CGFloat { diameter * (isHero ? 0.14 : 0.3) }
+    private var strokeWidth: CGFloat { isHero ? 4 : max(diameter * 0.06, 1) }
     private var shouldAnimate: Bool { animatesEntrance && !reduceMotion }
 
     /// The dot's start offset (outside the ring, upper-right) and a control point that bends its
@@ -61,8 +68,8 @@ struct RingAndDot: View {
         .accessibilityHidden(true)
         .onAppear {
             guard shouldAnimate else { return }
-            withAnimation(.easeOut(duration: 0.3)) { ringRevealed = true }
-            withAnimation(.timingCurve(0.22, 0.61, 0.36, 1, duration: 0.6).delay(0.12)) {
+            withAnimation(.easeOut(duration: 0.5)) { ringRevealed = true }
+            withAnimation(.timingCurve(0.22, 0.61, 0.36, 1, duration: 0.85).delay(0.35)) {
                 dotProgress = 1
             }
         }

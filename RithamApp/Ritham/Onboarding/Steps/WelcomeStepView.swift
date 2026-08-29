@@ -38,7 +38,8 @@ struct WelcomeStepView: View, OnboardingStepPresenting {
             surface: DecorativeSurface.welcome,
             headline: OnboardingCopy.Welcome.headline,
             bodyText: OnboardingCopy.Welcome.subhead,
-            animatesEntrance: true
+            animatesEntrance: true,
+            heroRing: true
         ) {
             VStack(alignment: .leading, spacing: RithamSpacing.lg) {
                 MomoHeroCard(asset: nil)

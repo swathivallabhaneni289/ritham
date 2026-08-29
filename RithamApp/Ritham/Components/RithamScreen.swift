@@ -29,6 +29,10 @@ struct RithamScreen<Content: View>: View {
     /// screen seen once per onboarding, not a mechanism every decorated screen should adopt.
     var animatesEntrance: Bool = false
 
+    /// Opt-in large ring-and-dot header treatment (see `ScreenHeader.heroRing`'s doc comment).
+    /// Defaults to `false` so every screen besides Welcome keeps the small corner ornament.
+    var heroRing: Bool = false
+
     @ViewBuilder let content: () -> Content
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -39,12 +43,14 @@ struct RithamScreen<Content: View>: View {
         headline: String? = nil,
         bodyText: String? = nil,
         animatesEntrance: Bool = false,
+        heroRing: Bool = false,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.surface = surface
         self.headline = headline
         self.bodyText = bodyText
         self.animatesEntrance = animatesEntrance
+        self.heroRing = heroRing
         self.content = content
     }
 
@@ -73,15 +79,16 @@ struct RithamScreen<Content: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // The decorative header sits outside the screen margin -- it manages its
                     // own bounded height and accessibility-size drop-out (ScreenHeader.swift).
-                    // The header itself only fades in, no slide -- per product-owner feedback,
-                    // stripes sliding into place read as arbitrary motion. The one deliberate
-                    // motion is `RingAndDot`'s own opt-in entrance (a fixed, non-data-bearing
-                    // curved dot travel, matching sketch 004's approved Synthesis variant), which
-                    // is why `animatesEntrance` is threaded through to `ScreenHeader` here rather
-                    // than stopping at this block-level fade.
-                    ScreenHeader(surface: surface, animatesEntrance: animatesEntrance)
-                        .opacity(isRevealed ? 1 : 0)
-                        .animation(entranceAnimation(delay: 0), value: hasAppeared)
+                    // `heroRing` screens (currently just Welcome) skip this block-level fade
+                    // entirely -- band and ring appear at full opacity immediately -- per direct
+                    // feedback that the stripes shouldn't animate at all, only the dot. The one
+                    // deliberate motion stays `RingAndDot`'s own opt-in entrance (a fixed,
+                    // non-data-bearing curved dot travel, matching sketch 004's approved
+                    // Synthesis variant), which runs independently of this fade via its own
+                    // internal state, which is why skipping the fade here doesn't touch it.
+                    ScreenHeader(surface: surface, animatesEntrance: animatesEntrance, heroRing: heroRing)
+                        .opacity(heroRing || isRevealed ? 1 : 0)
+                        .animation(heroRing ? nil : entranceAnimation(delay: 0), value: hasAppeared)
 
                     VStack(alignment: .leading, spacing: RithamSpacing.lg) {
                         VStack(alignment: .leading, spacing: RithamSpacing.lg) {
