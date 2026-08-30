@@ -17,7 +17,6 @@
 		1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99579F2588DE8ABC5FB503D /* ScreenHeader.swift */; };
 		1D6C3E93FCDE0349CEA86EB8 /* RithamScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */; };
 		246E6790BDB65CFCEB25A333 /* PrivacyExplainerStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B61ACD89789D585BDF4FFE4 /* PrivacyExplainerStepView.swift */; };
-		2D41B1597969D1E25E5E578D /* DietaryPatternStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */; };
 		2E8A24FD4F574B15EFA3B753 /* DisclaimerTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19602E32E53C3C028C2D45D /* DisclaimerTagTests.swift */; };
 		2FFF9D0FA7BC7D8F75DF9DB2 /* ReScreenBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B9B71125480D87A8BF2F5 /* ReScreenBanner.swift */; };
 		33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09805A56977119359C6D3ABC /* ScreeningOpeningDisclaimerView.swift */; };
@@ -125,7 +124,6 @@
 		7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamModelContainer.swift; sourceTree = "<group>"; };
 		7ED5B376F4222B06352A10E7 /* ChoiceQuestionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionTests.swift; sourceTree = "<group>"; };
 		7FE4DB527F16467DD5D3C5FB /* StepBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepBootstrap.swift; sourceTree = "<group>"; };
-		832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietaryPatternStepView.swift; sourceTree = "<group>"; };
 		86D7159E624FC249EF284C14 /* RequiredBlockingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredBlockingMessageView.swift; sourceTree = "<group>"; };
 		8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhaseCoverageTests.swift; sourceTree = "<group>"; };
 		899994571E54AFD8D9247EEA /* StopwatchSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopwatchSession.swift; sourceTree = "<group>"; };
@@ -375,7 +373,6 @@
 				AA0B2F8F3C1DFD35D08F440D /* AboutYouRegistration.swift */,
 				8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */,
 				A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */,
-				832AAC0347925BECC3462F29 /* DietaryPatternStepView.swift */,
 				A7E8647274BFC9B0186D1250 /* HomeStepView.swift */,
 				262E2C544658C88B34F194BD /* OnboardingCompletionRegistration.swift */,
 				9B61ACD89789D585BDF4FFE4 /* PrivacyExplainerStepView.swift */,
@@ -490,7 +487,6 @@
 				BEAD3466EE45B0FFE621F497 /* ConditionChecklistView.swift in Sources */,
 				B4937617E59E6662F5D61750 /* ConditionDisclaimerTag.swift in Sources */,
 				5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */,
-				2D41B1597969D1E25E5E578D /* DietaryPatternStepView.swift in Sources */,
 				7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */,
 				0C6D53AE65D4FED278F77D13 /* EditAnswerFlow.swift in Sources */,
 				C3E725D13FFCE9D9F7EB838D /* GateSectionView.swift in Sources */,

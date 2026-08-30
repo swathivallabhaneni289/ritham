@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Goal**: Every new user, regardless of age or health background, completes a real calibration session and a safety screening that will safely gate personalized guidance later — without ever being funneled into a separate "senior" or "kid" experience.
 **Depends on**: Nothing (first phase)
-**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, DIET-01, CROSSGEN-03, CROSSGEN-05
+**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, CROSSGEN-03, CROSSGEN-05
 **Success Criteria** (what must be TRUE):
 
   1. A new user's first session is a guided walk-or-light-lift calibration (never a self-reported
@@ -60,10 +60,7 @@ Decimal phases appear between their surrounding integers in numeric order.
      (gate questions, condition checklist, SCOFF) — no parental consent step, no partial gate, at
      any age from 13 up.
 
-  6. A user sets a dietary pattern (none/vegetarian/vegan) right after entering age, can edit it
-     anytime in Settings, and it never changes a clearance-gate outcome.
-
-  7. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
+  6. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
 **Plans**: 13/14 plans executed
 
@@ -94,7 +91,7 @@ Plans:
 
 **Goal**: Users can log every real training session — cardio or strength — and see safety-adjusted guidance the moment it applies, forever for free.
 **Depends on**: Phase 1
-**Requirements**: CARDIO-01, CARDIO-02, CARDIO-03, STRENGTH-01, STRENGTH-02, STRENGTH-03, STRENGTH-04, STRENGTH-05, HEALTH-03, HEALTH-04, DIET-02, DIET-03, MONETIZE-01, CROSSGEN-02
+**Requirements**: CARDIO-01, CARDIO-02, CARDIO-03, STRENGTH-01, STRENGTH-02, STRENGTH-03, STRENGTH-04, STRENGTH-05, HEALTH-03, HEALTH-04, DIET-01, DIET-02, DIET-03, MONETIZE-01, CROSSGEN-02
 **Success Criteria** (what must be TRUE):
 
   1. A user can track a cardio session via GPS (pace/distance/elevation/splits/grade-adjusted
@@ -124,6 +121,9 @@ Plans:
      (heart-rate display when a device is paired, never required), full history, plate/1RM
      calculators, supersets, and movement-pattern tagging are never paywalled — matching what's
      actually gated (or not) elsewhere in the app.
+
+  7. A user can set a dietary pattern (none/vegetarian/vegan) whenever they choose to — never a
+     mandatory onboarding step — and it never changes a clearance-gate outcome.
 **Plans**: TBD
 **UI hint**: yes
 
@@ -271,6 +271,63 @@ scope for Phase 1 — there is no trackable data to sync until Phase 2 (Core Tra
 (Momentum) ship; may extend Phase 4's existing "household accounts" concept rather than being a
 wholly new one. Open question, not yet decided: auth method (email+password, Sign in with Apple,
 or both).
+
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
+### Phase 999.3: Onboarding visual polish, round 2 (BACKLOG)
+
+**Goal:** [Captured for future planning] A grab-bag of live-review feedback from the 2026-08-29
+session, given explicitly as "write these down, don't implement now" — surfaced here so
+`/gsd-progress` picks it up as the starting point for a future session, not lost in chat history.
+Four separate items, not all resolved to the same level of clarity:
+
+1. **A "plain terms" concern was re-raised for onboarding question copy.** The product owner said
+   onboarding questions shouldn't use "plain terms" framing, but Ritham's dual explanation-register
+   system (plain-language vs. technical) was already fully removed earlier in this same session
+   (see PROJECT.md Key Decisions, 2026-08-28) — there is no register choice left anywhere in the
+   app. It's unclear whether this is: (a) stale feedback from before that removal, (b) a specific
+   screen's copy that still *reads* as deliberately simplified/dumbed-down even without a formal
+   register system behind it, or (c) something else entirely. Needs a follow-up conversation to
+   pin down which screen/copy this refers to before any change is made.
+
+2. **Calibration should state up front how long the walk/lift session will take**, and its
+   in-session progress indicator should change from a straight-line/linear bar to a circular,
+   clock-like radial timer — the fill or a hand sweeping around as time elapses, "like how the
+   clock works." **Important distinction for whoever picks this up**: this is a *functional session
+   timer* for `CalibrationSessionView`, not the same thing as the decorative ring-and-dot brand
+   motif (`RingAndDot.swift`). `01-UI-SPEC.md`'s binding rule locks the ring-and-dot as
+   permanently static/non-data-bearing specifically so it never reads as an Apple Activity
+   Rings-style progress widget — that rule stays untouched. A calibration timer showing real
+   elapsed-time progress is a legitimate, different UI element (closer to a stopwatch), and should
+   be built as its own component, not by relaxing the ring-and-dot's locked constraint.
+
+3. **`ScreeningOpeningDisclaimerView` (the "Ritham asks a few questions about your health..."
+   screen) has a large empty charcoal area above its text block** and reads as visually dense/
+   text-heavy once you do reach the content — screenshot from the live session attached to the
+   originating conversation turn. Requested fix: bring back decoration to fill that space,
+   specifically citing the arcs (`ArcOrnament`, removed from the Welcome hero treatment earlier
+   this session) combined with the ring-and-dot, similar to what Welcome now uses.
+   **Real tension to resolve before implementing, not decided here**: `01-UI-SPEC.md`'s Decorative
+   Surface Inventory closing rule locks nine specific screens to flat charcoal (no bands, no
+   halftone, no arcs, no mascot) because they collect, confirm, or block on health/consent data.
+   `screeningOpeningDisclaimer` is not one of the nine literally enumerated, but it *is* the
+   gateway screen directly before that exact data collection begins, and the current
+   implementation already treats it as flat (`DecorativeSurface.flat`) — possibly deliberately,
+   possibly just inherited caution. Whoever picks this up should check with the product owner
+   (or re-read `01-UI-SPEC.md`'s own stated intent) on whether this screen counts as the tenth
+   flat-locked screen before adding any decoration to it, rather than assuming either answer.
+
+4. Possible related concern (mentioned in passing, not confirmed as a real bug): the disclaimer
+   screen "not scrolling up or down" made it hard to review during the live session.
+   `RithamScreen`'s own contract is that every screen scrolls and no text region gets a
+   fixed-height frame — worth a direct re-check on a real device/simulator before assuming
+   anything is actually broken here, since this may just describe the screen *feeling* dense
+   rather than a real scroll failure.
 
 **Requirements:** TBD
 **Plans:** 0 plans

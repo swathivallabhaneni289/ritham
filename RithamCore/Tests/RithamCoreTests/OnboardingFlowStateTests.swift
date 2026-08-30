@@ -60,7 +60,6 @@ struct OnboardingFlowStateTests {
 
         #expect(traversal8 != traversal15)
         #expect(traversal8.last == .ageIneligible)
-        #expect(!traversal8.contains(.dietaryPattern))
     }
 
     // MARK: - MINOR-01: the 13+ floor (T-01-32 / T-01-73B's routing-level counterpart)
@@ -75,12 +74,12 @@ struct OnboardingFlowStateTests {
         }
     }
 
-    @Test("correcting the age to 13+ on a subsequent call routes straight to dietaryPattern")
+    @Test("correcting the age to 13+ on a subsequent call routes straight to privacyExplainer")
     func correctedAgeRoutesForwardLikeAnyOtherUser() {
         let corrected = answers(age: 13)
 
-        #expect(OnboardingRouter.nextStep(after: .age, answers: corrected) == .dietaryPattern)
-        #expect(OnboardingRouter.nextStep(after: .ageIneligible, answers: corrected) == .dietaryPattern)
+        #expect(OnboardingRouter.nextStep(after: .age, answers: corrected) == .privacyExplainer)
+        #expect(OnboardingRouter.nextStep(after: .ageIneligible, answers: corrected) == .privacyExplainer)
     }
 
     @Test("an unanswered age never falls through to the screening flow")
@@ -88,14 +87,14 @@ struct OnboardingFlowStateTests {
         let unanswered = OnboardingAnswers()
 
         #expect(OnboardingRouter.nextStep(after: .age, answers: unanswered) == .age)
-        #expect(!OnboardingRouter.isReachable(.dietaryPattern, answers: unanswered))
+        #expect(!OnboardingRouter.isReachable(.privacyExplainer, answers: unanswered))
         #expect(!OnboardingRouter.isReachable(.gateSection, answers: unanswered))
     }
 
-    @Test("dietaryPattern immediately follows age for every eligible age")
-    func dietaryPatternImmediatelyFollowsAgeForEligibleAges() {
+    @Test("privacyExplainer immediately follows age for every eligible age")
+    func privacyExplainerImmediatelyFollowsAgeForEligibleAges() {
         for age in [13, 15, 40, 70] {
-            #expect(OnboardingRouter.nextStep(after: .age, answers: answers(age: age)) == .dietaryPattern)
+            #expect(OnboardingRouter.nextStep(after: .age, answers: answers(age: age)) == .privacyExplainer)
         }
     }
 
@@ -183,6 +182,6 @@ struct OnboardingFlowStateTests {
 
         let ineligible = answers(age: 8)
         #expect(OnboardingRouter.isReachable(.ageIneligible, answers: ineligible))
-        #expect(!OnboardingRouter.isReachable(.dietaryPattern, answers: ineligible))
+        #expect(!OnboardingRouter.isReachable(.privacyExplainer, answers: ineligible))
     }
 }

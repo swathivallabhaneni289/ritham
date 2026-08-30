@@ -73,11 +73,18 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Dietary Pattern
 
-- [x] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) as Q0b
-  directly after age in the "About You" section — unconditional, before the gate section and
-  condition checklist. Editable anytime in Settings, no expiry/re-screen. Never changes a
-  Clearance Gate value, never triggers `required-blocking`, never blocks/unlocks/softens a
-  condition-specific suggestion.
+- [ ] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) whenever
+  they choose to, in Settings — not a mandatory onboarding step. Editable anytime, no
+  expiry/re-screen. Never changes a Clearance Gate value, never triggers `required-blocking`,
+  never blocks/unlocks/softens a condition-specific suggestion. A user who never sets one simply
+  has none on file — nothing else in the app depends on it being set.
+  *2026-08-29 revision*: originally shipped in Phase 1 as Q0b, asked unconditionally right after
+  age in onboarding. Removed from onboarding after direct product feedback that the question felt
+  arbitrary that early and some users may not want to engage with diet features at all — the
+  Settings-editable path (`SettingsView`) already existed independently and needed no new code to
+  become the only way to set it. Re-homed to Phase 2 since that's where `DIET-02`/`DIET-03`
+  (its actual consumers) live, though the specific "diet plan" screen this eventually surfaces in
+  is not yet scoped.
 
 - [ ] **DIET-02**: When the Nutrition Adjustment Rule Table's gate resolves to `none` or
   `recommended`, a dietary-pattern-keyed lookup decides which example foods populate the already-
@@ -339,7 +346,6 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MINOR-01 | Phase 1 | Complete |
 | HEALTH-05 | Phase 1 | Complete |
 | HEALTH-06 | Phase 1 | Complete |
-| DIET-01 | Phase 1 | Complete |
 | CROSSGEN-03 | Phase 1 | Complete |
 | CROSSGEN-05 | Phase 1 | Complete |
 | CARDIO-01 | Phase 2 | Pending |
@@ -352,6 +358,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRENGTH-05 | Phase 2 | Pending |
 | HEALTH-03 | Phase 2 | Pending |
 | HEALTH-04 | Phase 2 | Pending |
+| DIET-01 | Phase 2 | Pending |
 | DIET-02 | Phase 2 | Pending |
 | DIET-03 | Phase 2 | Pending |
 | MONETIZE-01 | Phase 2 | Pending |

@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: onboarding-safety-intake
 status: executing
-stopped_at: Completed 01-17-PLAN.md
-last_updated: "2026-08-28T10:10:42.698Z"
+stopped_at: context exhaustion at 100% (2026-08-28)
+last_updated: "2026-08-28T12:26:21.071Z"
 last_activity: 2026-08-25
 last_activity_desc: Phase 01 execution started
 progress:
@@ -150,9 +150,15 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-28T10:10:42.693Z
-Stopped at: Completed 01-17-PLAN.md
-Next step: execute Phase 1 (`/gsd-execute-phase`), or resolve GitHub issue #1's remaining
-device-continuity question first if that should land before execution.
+Last session: 2026-08-29 (live design review + dietary-pattern onboarding removal)
+Stopped at: Phase 1 functionally complete (13/14 plans); only 01-18 Task 2 (human verification:
+AX3/AX5 accessibility pass across onboarding, physical-device GPS calibration walk) remains.
+Next step: pick up **Phase 999.3: Onboarding visual polish, round 2** in `ROADMAP.md`'s Backlog
+section — four items of live-review feedback captured 2026-08-29, explicitly deferred to a future
+session rather than implemented immediately. Read that section before starting; it flags two real
+open tensions (a locked-rule conflict on `ScreeningOpeningDisclaimerView`'s flat-surface status,
+and an ambiguous "plain terms" complaint that needs a follow-up conversation to pin down) that
+should not be resolved by guessing. Once that's triaged, resume 01-18 Task 2 to formally close
+Phase 1.
 Resume file: 
 None

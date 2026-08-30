@@ -14,31 +14,31 @@ struct AboutYouStepTests {
         StepRegistry.reset()
     }
 
-    private static let fiveSteps: [OnboardingStep] = [
-        .welcome, .age, .ageIneligible, .dietaryPattern, .privacyExplainer,
+    private static let fourSteps: [OnboardingStep] = [
+        .welcome, .age, .ageIneligible, .privacyExplainer,
     ]
 
     // MARK: - Registration
 
-    @Test("registerAll resolves a real view for each of the five steps and shrinks unregisteredSteps by exactly those five")
+    @Test("registerAll resolves a real view for each of the four steps and shrinks unregisteredSteps by exactly those four")
     func registerAllResolvesRealViewsAndShrinksUnregisteredSteps() {
         let before = Set(StepRegistry.unregisteredSteps)
-        for step in Self.fiveSteps {
+        for step in Self.fourSteps {
             #expect(before.contains(step))
         }
 
         AboutYouRegistration.registerAll()
 
         let after = Set(StepRegistry.unregisteredSteps)
-        for step in Self.fiveSteps {
+        for step in Self.fourSteps {
             #expect(!after.contains(step))
         }
-        #expect(before.subtracting(after) == Set(Self.fiveSteps))
+        #expect(before.subtracting(after) == Set(Self.fourSteps))
 
         // Every registered step resolves without trapping -- the same no-trap proof
         // AppShellTests uses for the full step set.
         let flow = OnboardingFlow()
-        for step in Self.fiveSteps {
+        for step in Self.fourSteps {
             _ = StepRegistry.view(for: step, flow: flow)
         }
         #expect(true)
@@ -46,25 +46,25 @@ struct AboutYouStepTests {
 
     // MARK: - Router walk: welcome -> ... -> privacy explainer
 
-    @Test("walking the router from welcome with a valid adult age, dietary pattern, and privacy acknowledged visits welcome, age, dietary pattern, privacy explainer in order")
-    func routerWalkVisitsFirstFourStepsInOrder() {
+    @Test("walking the router from welcome with a valid adult age and privacy acknowledged visits welcome, age, privacy explainer in order")
+    func routerWalkVisitsFirstThreeStepsInOrder() {
         var answers = OnboardingAnswers()
         answers.age = 30
-        answers.dietaryPattern = .none
         answers.privacyExplainerAcknowledged = true
 
         var visited: [OnboardingStep] = [.welcome]
         var current: OnboardingStep = .welcome
-        for _ in 0..<3 {
+        for _ in 0..<2 {
             guard let next = OnboardingRouter.nextStep(after: current, answers: answers) else { break }
             visited.append(next)
             current = next
         }
 
-        #expect(visited == [.welcome, .age, .dietaryPattern, .privacyExplainer])
-        // Dietary pattern immediately follows age.
+        #expect(visited == [.welcome, .age, .privacyExplainer])
+        // Privacy explainer immediately follows age -- DIET-01's dietary-pattern question is no
+        // longer a step in this flow at all (see `OnboardingRouter`'s doc comment).
         let ageIndex = visited.firstIndex(of: .age)!
-        #expect(visited[ageIndex + 1] == .dietaryPattern)
+        #expect(visited[ageIndex + 1] == .privacyExplainer)
     }
 
     // MARK: - Router walk: under-13 reaches .ageIneligible and goes no further

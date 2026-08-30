@@ -87,8 +87,10 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
     public mutating func invalidate(section: EditableSection) {
         switch section {
         case .dietaryPattern:
+            // No `completedSteps.remove` here -- unlike the screening sections below,
+            // `.dietaryPattern` was never an `OnboardingStep` (see `OnboardingRouter`'s own
+            // doc comment), so it never marked a step complete in the first place.
             dietaryPattern = nil
-            completedSteps.remove(.dietaryPattern)
 
         case .gateSection:
             screening.g1HeartConditionOrHighBP = nil

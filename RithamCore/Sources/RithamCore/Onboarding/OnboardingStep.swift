@@ -22,7 +22,6 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case welcome
     case age
     case ageIneligible
-    case dietaryPattern
     case privacyExplainer
     case calibrationIntro
     case calibrationSession

@@ -6,7 +6,7 @@ import RithamCore
 // 01-CONTEXT.md there is no tier or gate concept to resolve here -- only the raw age value and,
 // downstream, a single boolean (OnboardingAnswers.isAgeEligible) the router reads. This view
 // itself selects no destination: it hands the raw value to `flow.advance`, and
-// OnboardingRouter.nextStep alone decides whether the next step is `.dietaryPattern` or the
+// OnboardingRouter.nextStep alone decides whether the next step is `.privacyExplainer` or the
 // under-13 block screen. Adding a conditional here that picks the next screen would move a
 // routing decision outside the router's own tested surface -- the one thing CROSSGEN-05 forbids
 // most directly for this screen.

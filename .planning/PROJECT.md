@@ -138,9 +138,9 @@ ranking.
 | `dietary_pattern` is strictly downstream of the Clearance Gate, never part of gate-resolution logic | Prevents a dietary preference from ever loosening a safety gate (e.g., a vegan tag never overriding a kidney-disease block) | — Pending |
 | Ritham has a permanent 13+ age floor; under-13 users are never supported in any form (not even a reduced-functionality tier), and there is no minor-consent flow of any kind for any age | Reverses the 2026-08-22 tiered-consent design (D-05/D-06/D-13 in `01-CONTEXT.md`) after GitHub issue #1's device-continuity request traced back to that design's COPPA/App-Store cost; matches actual industry practice — Strava, Nike, Peloton, and MyFitnessPal all set a hard age floor (13 or 18) with self-attested age and no parental-consent machinery, rather than building real under-13 support | Decided |
 | Ritham has no user-chosen explanation register (plain-language vs. technical); every user gets one consistently-written voice, with the tap-to-expand glossary mechanic kept but no register choice behind it | Reverses EXPLAIN-01's original dual-register design after direct Phase 1 sign-off feedback from the product owner: users don't want to choose a "register" for how the app talks to them, and one well-written definition can serve a non-technical and a technical reader at once without a second wording track to maintain or clinically review | Decided |
+| DIET-01 (the dietary-pattern question) is no longer a mandatory onboarding step; it's fully optional, set whenever a user chooses to in Settings, and re-homed to Phase 2 alongside its actual consumers (DIET-02/DIET-03) | Reverses Phase 1's original "Q0b, unconditional, directly after age" design after direct product-owner feedback: the question felt arbitrary that early in onboarding, and since dietary pattern already never affects a clearance gate, some users should be free to never engage with diet features at all | Decided |
 
 ---
-*Last updated: 2026-08-28 — removed the user-chosen dual-register explanation layer: Ritham now
-speaks in one consistent voice with no register choice in onboarding or Settings, while the
-tap-to-expand glossary mechanic itself is unchanged. See Key Decisions and this phase's
-product-owner sign-off report for the full reasoning.*
+*Last updated: 2026-08-29 — moved the dietary-pattern question (DIET-01) out of onboarding
+entirely; it's now Settings-only and optional, re-homed to Phase 2. See Key Decisions and
+`01-CONTEXT.md`'s dietary-pattern-placement note for the full reasoning.*

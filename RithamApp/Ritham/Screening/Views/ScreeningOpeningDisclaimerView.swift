@@ -26,8 +26,8 @@ struct ScreeningOpeningDisclaimerView: View, OnboardingStepPresenting {
         RithamScreen(surface: DecorativeSurface.flat, bodyText: ScreeningCopy.openingDisclaimer) {
             // No dedicated CTA copy exists for this screen (01-UI-SPEC.md's Copywriting Contract
             // has no row for it) -- reusing the already-locked "Continue" string established by
-            // `OnboardingCopy.Age.cta`, matching the pattern `DietaryPatternStepView` and
-            // `CalibrationCompleteView` already set for this exact situation.
+            // `OnboardingCopy.Age.cta`, matching the pattern `CalibrationCompleteView` already
+            // sets for this exact situation.
             PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
                 flow.answers.completedSteps.insert(.screeningOpeningDisclaimer)
                 flow.advance(from: .screeningOpeningDisclaimer)

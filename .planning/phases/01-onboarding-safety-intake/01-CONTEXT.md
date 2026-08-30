@@ -144,6 +144,18 @@ expect any established patterns beyond what `01-UI-SPEC.md` locks.
   this phase's scope to resolve. `01-UI-SPEC.md` includes provisional Momo placement guidance per
   the user's own choice to leave that content as-is rather than strip it, but implementation should
   not treat Momo's inclusion as final until that decision is made separately.
+- **DIET-01 no longer has an onboarding step.** Flagged during a live design review of the
+  running app (2026-08-25) as feeling "random" this early in onboarding, and resolved
+  (2026-08-29) as a firm decision, not a placement tweak: the dietary-pattern question is fully
+  optional and moved out of onboarding entirely into `SettingsView` (`DietaryPatternStepView`
+  removed; `OnboardingRouter` routes `.age`/`.ageIneligible` straight to `.privacyExplainer`).
+  Users who never open Settings simply never set a dietary pattern — `dietaryPattern` was
+  already `nil`-defaulted at the persistence layer, so this required no schema change. The
+  question's copy and its "never affects a clearance gate" isolation rule (DIET-01) are
+  unaffected; only its mandatory-onboarding placement is gone. `DIET-01` itself is re-homed to
+  Phase 2 in `ROADMAP.md`/`REQUIREMENTS.md`, alongside `DIET-02`/`DIET-03`, since that's where a
+  real "diet plan" destination for it is expected to eventually live (Phase 2's tracking/guidance
+  surface, though the specific screen isn't scoped yet).
 
 </specifics>
 

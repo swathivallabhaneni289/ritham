@@ -9,6 +9,17 @@ extension EditableSection: @retroactive Identifiable {
     public var id: Self { self }
 }
 
+// DIET-01: `DietaryPattern` needs `Identifiable` to drive `ChoiceQuestionView`'s `ForEach`
+// without a separate id parameter -- the same retroactive-conformance pattern above applies.
+// `DietaryPattern` is already `Hashable` (raw-value-backed `CaseIterable` enums get that
+// automatically); only `Identifiable` is missing. This conformance used to live in
+// `DietaryPatternStepView.swift`, the onboarding screen for this question -- per direct product
+// feedback (2026-08-29) that question moved out of onboarding entirely (see
+// `OnboardingRouter`'s doc comment), making this view its sole remaining consumer.
+extension DietaryPattern: @retroactive Identifiable {
+    public var id: Self { self }
+}
+
 /// DIET-01's dietary-pattern choice, edited in place with immediate effect and no re-screen
 /// consequence -- a downstream-of-the-gate concern (DIET-01's own isolation rule), so the
 /// `.onChange` handler below may never call `GateResolution` or

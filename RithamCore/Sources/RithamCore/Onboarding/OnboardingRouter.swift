@@ -5,10 +5,17 @@
 //
 // There is no capability-gate type consulted anywhere in this function.
 // `answers.isAgeEligible` is read once, at exactly one fork (right after `.age`), and nothing
-// downstream of `.dietaryPattern` branches on age at all. Per D-15, every user who clears
+// downstream of `.privacyExplainer` branches on age at all. Per D-15, every user who clears
 // MINOR-01's 13+ floor reaches the complete safety screening — gate section, condition
 // checklist, SCOFF — identically, with zero parental involvement and no age-based divergence
 // above the floor.
+//
+// DIET-01's dietary-pattern question is deliberately not a step in this flow. It never gates
+// or adjusts anything a clearance decision depends on, and per direct product feedback
+// (2026-08-29) it moved out of onboarding entirely, into a Settings-editable field a user sets
+// whenever they choose to (`SettingsView`, independent of this router) rather than a mandatory
+// question asked before they've seen the app. See `01-CONTEXT.md`'s dietary-pattern-placement
+// note for the full decision record.
 
 /// Decides what onboarding screen comes after `current`, given the answers collected so far.
 ///
@@ -33,12 +40,7 @@ public enum OnboardingRouter {
             // never a cached flag, so a corrected age routes forward exactly like any other
             // user's first attempt would, from either case.
             guard let isEligible = answers.isAgeEligible else { return .age }
-            return isEligible ? .dietaryPattern : .ageIneligible
-
-        case .dietaryPattern:
-            // DIET-01: Q0b directly after age, unconditionally, for every user who clears
-            // the floor — no exception case.
-            return .privacyExplainer
+            return isEligible ? .privacyExplainer : .ageIneligible
 
         case .privacyExplainer:
             return .calibrationIntro
