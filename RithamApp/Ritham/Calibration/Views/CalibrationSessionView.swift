@@ -120,6 +120,17 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
             }
         } else {
             HStack(spacing: RithamSpacing.sm) {
+                if usesStopwatch {
+                    if stopwatchSession.isRunning {
+                        SecondaryCTAButton(title: "Stop") {
+                            stopwatchSession.stop()
+                        }
+                    } else {
+                        SecondaryCTAButton(title: "Resume") {
+                            stopwatchSession.resume()
+                        }
+                    }
+                }
                 if !usesStopwatch && pedometerSession.isAvailable {
                     SecondaryCTAButton(title: "Switch to manual stopwatch") {
                         switchToStopwatch()
@@ -141,7 +152,10 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
                 ? "Using your phone's motion sensor."
                 : "Motion sensor unavailable -- using the manual stopwatch."
         }
-        return usesStopwatch ? "Manual stopwatch running." : "Motion sensor running."
+        if usesStopwatch {
+            return stopwatchSession.isRunning ? "Manual stopwatch running." : "Manual stopwatch stopped."
+        }
+        return "Motion sensor running."
     }
 
     private var formattedWalkDuration: String {

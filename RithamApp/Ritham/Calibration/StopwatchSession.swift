@@ -53,6 +53,17 @@ final class StopwatchSession: CalibrationSessionSource, @unchecked Sendable {
         currentStartedAt = now()
     }
 
+    /// Freezes the displayed elapsed time without penalty. Unlike `pause()`, this is not an
+    /// interruption: `wasInterrupted` stays false and the accumulated duration/distance are
+    /// kept exactly as measured, so a later `resume()` continues additively from here rather
+    /// than from zero. This is what the session view's manual "Stop" control calls when a user
+    /// deliberately finishes their walk -- distinct from `pause()`, which models an unplanned
+    /// gap in activity and must keep zeroing progress per D-01's continuity requirement.
+    func stop() {
+        recorded = liveProgress()
+        currentStartedAt = nil
+    }
+
     private func liveProgress() -> WalkProgress {
         guard let currentStartedAt else { return recorded }
         let elapsed = now().timeIntervalSince(currentStartedAt)

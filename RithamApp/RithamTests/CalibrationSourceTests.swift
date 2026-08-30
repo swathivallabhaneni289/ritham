@@ -85,6 +85,36 @@ struct CalibrationSourceTests {
         #expect(CalibrationCompletion.evaluate(session.progress) == .incomplete)
     }
 
+    @Test("stopping StopwatchSession freezes elapsed time without penalty, and resume continues additively from there")
+    func stopwatchStopFreezesProgressAndResumeContinuesAdditively() {
+        var currentDate = Date(timeIntervalSince1970: 0)
+        let session = StopwatchSession(now: { currentDate })
+
+        session.start()
+        currentDate = currentDate.addingTimeInterval(300)
+        session.stop()
+
+        guard case .walk(let stopped) = session.progress else {
+            Issue.record("expected .walk progress")
+            return
+        }
+        #expect(stopped.continuousDuration == 300)
+        #expect(stopped.wasInterrupted == false)
+        #expect(session.isRunning == false)
+
+        // Time passing while stopped must not advance the displayed duration.
+        currentDate = currentDate.addingTimeInterval(120)
+        guard case .walk(let stillStopped) = session.progress else {
+            Issue.record("expected .walk progress")
+            return
+        }
+        #expect(stillStopped.continuousDuration == 300)
+
+        session.resume()
+        currentDate = currentDate.addingTimeInterval(300)
+        #expect(CalibrationCompletion.evaluate(session.progress) == .complete)
+    }
+
     // MARK: - LiftSessionRecorder
 
     @Test("LiftSessionRecorder reaches completion at exactly three working sets across two exercises and not at three across one")
