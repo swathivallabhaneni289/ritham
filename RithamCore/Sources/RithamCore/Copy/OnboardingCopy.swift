@@ -31,6 +31,23 @@ public enum OnboardingCopy {
         public static let optionVegetarian = "Vegetarian"
         public static let optionVegan = "Vegan"
         public static let helper = "This only affects example foods later, never your health screening."
+
+        /// Shown as its own block underneath the dietary-pattern picker, framed separately from
+        /// it, only when the health screening already recorded a food allergy. A second, later
+        /// question ("which ones") answering the same "do you have a food allergy" fact the
+        /// checklist already asked would be redundant and risks the two answers drifting apart.
+        public static let allergensHeadline = "Which allergies should we account for?"
+        public static let allergensHelper = "You told us about a food allergy during screening. Pick every one that applies, so diet suggestions can steer around them."
+        public static let allergenOptionMilk = "Milk or dairy"
+        public static let allergenOptionEggs = "Eggs"
+        public static let allergenOptionFish = "Fish"
+        public static let allergenOptionShellfish = "Shellfish"
+        public static let allergenOptionTreeNuts = "Tree nuts"
+        public static let allergenOptionPeanuts = "Peanuts"
+        public static let allergenOptionWheat = "Wheat or gluten"
+        public static let allergenOptionSoy = "Soy"
+        public static let allergenOptionSesame = "Sesame"
+        public static let allergenOptionOther = "Something else"
     }
 
     /// Age blocking (under 13). There is a permanent 13+ floor and nothing else: no

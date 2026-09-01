@@ -39,6 +39,10 @@ public enum CalibrationOutcome: Sendable, Equatable, Codable {
 public struct OnboardingAnswers: Sendable, Equatable, Codable {
     public var age: Int?
     public var dietaryPattern: DietaryPattern?
+    /// Diet-plan preference data framed alongside `dietaryPattern` (Settings' diet section), not
+    /// a health-screening answer -- see `FoodAllergen`'s own header comment for why. Only ever
+    /// shown to the user when `screening.checklist.items` already contains `.foodAllergies`.
+    public var allergens: Set<FoodAllergen>
     public var privacyExplainerAcknowledged: Bool
     public var calibrationOutcome: CalibrationOutcome
     public var screening: ScreeningAnswers
@@ -47,6 +51,7 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
     public init(
         age: Int? = nil,
         dietaryPattern: DietaryPattern? = nil,
+        allergens: Set<FoodAllergen> = [],
         privacyExplainerAcknowledged: Bool = false,
         calibrationOutcome: CalibrationOutcome = .notStarted,
         screening: ScreeningAnswers = ScreeningAnswers(),
@@ -54,6 +59,7 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
     ) {
         self.age = age
         self.dietaryPattern = dietaryPattern
+        self.allergens = allergens
         self.privacyExplainerAcknowledged = privacyExplainerAcknowledged
         self.calibrationOutcome = calibrationOutcome
         self.screening = screening
@@ -91,6 +97,9 @@ public struct OnboardingAnswers: Sendable, Equatable, Codable {
             // `.dietaryPattern` was never an `OnboardingStep` (see `OnboardingRouter`'s own
             // doc comment), so it never marked a step complete in the first place.
             dietaryPattern = nil
+            // `allergens` is framed and edited in the same section as `dietaryPattern` (see its
+            // own doc comment above), so clearing one clears the other.
+            allergens = []
 
         case .gateSection:
             screening.g1HeartConditionOrHighBP = nil

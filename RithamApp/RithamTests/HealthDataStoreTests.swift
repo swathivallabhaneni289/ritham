@@ -11,7 +11,9 @@ struct HealthDataStoreTests {
     private let calendar = Calendar(identifier: .gregorian)
 
     private func makeStore() throws -> HealthDataStore {
-        let schema = Schema([UserProfile.self, ConditionTagRecord.self, CalibrationBaselineRecord.self])
+        let schema = Schema([
+            UserProfile.self, ConditionTagRecord.self, CalibrationBaselineRecord.self, FoodAllergenRecord.self,
+        ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: schema, configurations: [configuration])
         let context = ModelContext(container)
@@ -205,6 +207,43 @@ struct HealthDataStoreTests {
         let loaded = try store.loadCalibrationBaseline()
         #expect(loaded?.source == .measured)
         #expect(loaded?.safeStartingWeightKg == 20)
+    }
+
+    // MARK: - Food allergens
+
+    @Test("loadFoodAllergens with nothing stored returns an empty set")
+    func loadFoodAllergensReturnsEmptyWhenNothingStored() throws {
+        let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30))
+        #expect(try store.loadFoodAllergens().isEmpty)
+    }
+
+    @Test("saveFoodAllergens then loadFoodAllergens round-trips the full set")
+    func saveThenLoadFoodAllergensRoundTrips() throws {
+        let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30))
+        try store.saveFoodAllergens([.peanuts, .shellfish])
+
+        #expect(try store.loadFoodAllergens() == [.peanuts, .shellfish])
+    }
+
+    @Test("saveFoodAllergens replaces the previously stored set rather than adding to it")
+    func saveFoodAllergensReplacesPreviousSet() throws {
+        let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30))
+        try store.saveFoodAllergens([.peanuts, .shellfish])
+        try store.saveFoodAllergens([.milk])
+
+        #expect(try store.loadFoodAllergens() == [.milk])
+    }
+
+    @Test("saveFoodAllergens never writes a ConditionTagRecord (DIET-01-style isolation)")
+    func saveFoodAllergensNeverWritesAConditionTag() throws {
+        let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30))
+        try store.saveFoodAllergens([.peanuts])
+
+        #expect(try store.activeConditionTags(now: Date()).isEmpty)
     }
 
     // MARK: - Professional clearance

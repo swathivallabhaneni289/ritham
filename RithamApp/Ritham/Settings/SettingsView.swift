@@ -20,6 +20,11 @@ extension DietaryPattern: @retroactive Identifiable {
     public var id: Self { self }
 }
 
+// Same reasoning as `DietaryPattern` above, for the allergens picker this view also renders.
+extension FoodAllergen: @retroactive Identifiable {
+    public var id: Self { self }
+}
+
 /// DIET-01's dietary-pattern choice, edited in place with immediate effect and no re-screen
 /// consequence -- a downstream-of-the-gate concern (DIET-01's own isolation rule), so the
 /// `.onChange` handler below may never call `GateResolution` or
@@ -37,6 +42,7 @@ struct SettingsView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var dietSelection: Set<DietaryPattern>
+    @State private var allergenSelection: Set<FoodAllergen>
     @State private var editingSection: EditableSection?
     @State private var isReScreenDue = false
 
@@ -44,6 +50,7 @@ struct SettingsView: View {
         self.flow = flow
         self.onOpenHealthProfile = onOpenHealthProfile
         _dietSelection = State(initialValue: [flow.answers.dietaryPattern ?? .none])
+        _allergenSelection = State(initialValue: flow.answers.allergens)
     }
 
     var body: some View {
@@ -65,6 +72,20 @@ struct SettingsView: View {
                 optionTitle: dietOptionTitle
             )
 
+            // Framed as its own block, separate from the dietary-pattern picker above -- direct
+            // product feedback (2026-09-01) -- and shown only once the health screening has
+            // already recorded a food allergy, so this never re-asks "do you have one" itself.
+            if flow.answers.screening.checklist.items.contains(.foodAllergies) {
+                ChoiceQuestionView(
+                    prompt: OnboardingCopy.Diet.allergensHeadline,
+                    helper: OnboardingCopy.Diet.allergensHelper,
+                    options: FoodAllergen.allCases,
+                    mode: .multiple(exclusiveOption: nil),
+                    selection: $allergenSelection,
+                    optionTitle: allergenOptionTitle
+                )
+            }
+
             SecondaryCTAButton(title: "Health profile", action: onOpenHealthProfile)
 
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
@@ -83,6 +104,10 @@ struct SettingsView: View {
             guard let chosen = newValue.first else { return }
             flow.answers.dietaryPattern = chosen
             persistDiet(chosen)
+        }
+        .onChange(of: allergenSelection) { _, newValue in
+            flow.answers.allergens = newValue
+            persistAllergens(newValue)
         }
         .sheet(item: $editingSection) { section in
             EditAnswerFlow(flow: flow, section: section)
@@ -104,6 +129,21 @@ struct SettingsView: View {
         }
     }
 
+    private func allergenOptionTitle(_ allergen: FoodAllergen) -> String {
+        switch allergen {
+        case .milk: return OnboardingCopy.Diet.allergenOptionMilk
+        case .eggs: return OnboardingCopy.Diet.allergenOptionEggs
+        case .fish: return OnboardingCopy.Diet.allergenOptionFish
+        case .shellfish: return OnboardingCopy.Diet.allergenOptionShellfish
+        case .treeNuts: return OnboardingCopy.Diet.allergenOptionTreeNuts
+        case .peanuts: return OnboardingCopy.Diet.allergenOptionPeanuts
+        case .wheat: return OnboardingCopy.Diet.allergenOptionWheat
+        case .soy: return OnboardingCopy.Diet.allergenOptionSoy
+        case .sesame: return OnboardingCopy.Diet.allergenOptionSesame
+        case .other: return OnboardingCopy.Diet.allergenOptionOther
+        }
+    }
+
     /// DIET-01: no expiry, no re-screen. Never calls `GateResolution` and never invalidates a
     /// condition tag -- a dietary preference must never loosen (or otherwise touch) a safety
     /// gate.
@@ -111,6 +151,13 @@ struct SettingsView: View {
         let store = HealthDataStore(context: modelContext)
         guard let existingAge = try? store.loadProfile().age else { return }
         try? store.updateProfile(UserProfileDraft(age: existingAge, dietaryPattern: pattern))
+    }
+
+    /// Same isolation as `persistDiet` above: saved through `HealthDataStore.saveFoodAllergens`
+    /// alone, never touching `GateResolution`/condition-tag records.
+    private func persistAllergens(_ allergens: Set<FoodAllergen>) {
+        let store = HealthDataStore(context: modelContext)
+        try? store.saveFoodAllergens(allergens)
     }
 
     private func refreshReScreenDue() {

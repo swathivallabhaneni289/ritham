@@ -1,10 +1,12 @@
 import Foundation
 import SwiftData
 
-// The single `ModelContainer` over the three health-screening models. 01-RESEARCH.md's Security
+// The single `ModelContainer` over the app's persisted models. 01-RESEARCH.md's Security
 // Domain V6 finding names condition tags and eating-disorder-derived data as sensitive within
 // LAUNCH-04's GDPR/CCPA review scope, so the store carries an explicit file protection class
-// rather than relying on the platform default (T-01-59).
+// rather than relying on the platform default (T-01-59). `FoodAllergenRecord` is diet-plan
+// preference data rather than health-screening data, but shares this one store like every other
+// model here -- there is no separate container per data class.
 public enum RithamModelContainer {
 
     /// Every model this container persists.
@@ -12,6 +14,7 @@ public enum RithamModelContainer {
         UserProfile.self,
         ConditionTagRecord.self,
         CalibrationBaselineRecord.self,
+        FoodAllergenRecord.self,
     ]
 
     /// Builds a `ModelContainer`. `inMemory: true` is used by tests — an in-memory store has no

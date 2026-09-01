@@ -271,6 +271,33 @@ public final class HealthDataStore {
         return records.first { $0.tag == tag }
     }
 
+    // MARK: - Food allergens
+
+    /// Diet-plan preference data, saved independently of `saveScreeningResult`/condition tags --
+    /// per `FoodAllergen`'s own header comment, never read by `GateResolution`/`TagDerivation`.
+    /// Replaces the full stored set on every call, the same "delete then reinsert" shape
+    /// `saveScreeningResult` uses for `ConditionTagRecord`.
+    public func saveFoodAllergens(_ allergens: Set<FoodAllergen>) throws {
+        _ = try loadProfile()
+
+        let existing = try context.fetch(FetchDescriptor<FoodAllergenRecord>())
+        for record in existing {
+            context.delete(record)
+        }
+        for allergen in allergens {
+            context.insert(FoodAllergenRecord(allergenRaw: allergen.rawValue))
+        }
+
+        try context.save()
+    }
+
+    public func loadFoodAllergens() throws -> Set<FoodAllergen> {
+        _ = try loadProfile()
+
+        let records = try context.fetch(FetchDescriptor<FoodAllergenRecord>())
+        return Set(records.compactMap(\.allergen))
+    }
+
     // MARK: - Calibration baseline
 
     public func saveCalibrationBaseline(_ baseline: CalibrationBaseline) throws {

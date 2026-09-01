@@ -196,4 +196,18 @@ struct OnboardingFlowStateTests {
         #expect(OnboardingRouter.isReachable(.ageIneligible, answers: ineligible))
         #expect(!OnboardingRouter.isReachable(.privacyExplainer, answers: ineligible))
     }
+
+    // MARK: - invalidate
+
+    @Test("invalidating .dietaryPattern clears allergens along with the pattern itself")
+    func invalidatingDietaryPatternClearsAllergens() {
+        var subject = OnboardingAnswers()
+        subject.dietaryPattern = .vegetarian
+        subject.allergens = [.peanuts, .shellfish]
+
+        subject.invalidate(section: .dietaryPattern)
+
+        #expect(subject.dietaryPattern == nil)
+        #expect(subject.allergens.isEmpty)
+    }
 }
