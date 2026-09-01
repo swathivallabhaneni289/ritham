@@ -160,6 +160,17 @@ struct ChoiceQuestionView<Option: Hashable & Identifiable>: View {
 /// A wrapping horizontal-then-vertical layout so chips flow onto a new line instead of being
 /// truncated or forced to shrink -- required so long option strings stay fully readable at
 /// accessibility text sizes (01-UI-SPEC.md's reflow rule).
+///
+/// Every subview is measured against `maxWidth` (this layout's own available width), never
+/// `.unspecified`. `.unspecified` asks "how wide do you want to be with no limit at all" --
+/// for a `Text` that's its full, un-wrapped single-line width, however long, which is exactly
+/// what caused live-review's "text is cutting off" report (2026-09-01): a long option (e.g.
+/// "Heart disease (including a prior heart attack...)") measured itself at that huge unwrapped
+/// width, got placed at the start of a line where the "does it fit" check never fires (there is
+/// nothing before it to overflow past), and rendered past the screen edge. Proposing `maxWidth`
+/// instead lets `Text` report its own smaller natural width when content fits (so short chips
+/// like "Yes" still sit side by side), and wrap internally to multiple lines -- reporting a
+/// taller, width-capped size -- when it doesn't.
 private struct WrapLayout: Layout {
     var spacing: CGFloat
 
@@ -171,7 +182,7 @@ private struct WrapLayout: Layout {
         var widestLine: CGFloat = 0
 
         for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
+            let size = subview.sizeThatFits(ProposedViewSize(width: maxWidth.isFinite ? maxWidth : nil, height: nil))
             if lineWidth > 0, lineWidth + spacing + size.width > maxWidth {
                 totalHeight += lineHeight + spacing
                 widestLine = max(widestLine, lineWidth)
@@ -189,18 +200,19 @@ private struct WrapLayout: Layout {
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let maxWidth = bounds.width
         var x = bounds.minX
         var y = bounds.minY
         var lineHeight: CGFloat = 0
 
         for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
+            let size = subview.sizeThatFits(ProposedViewSize(width: maxWidth, height: nil))
             if x > bounds.minX, x + size.width > bounds.maxX {
                 x = bounds.minX
                 y += lineHeight + spacing
                 lineHeight = 0
             }
-            subview.place(at: CGPoint(x: x, y: y), anchor: .topLeading, proposal: ProposedViewSize(size))
+            subview.place(at: CGPoint(x: x, y: y), anchor: .topLeading, proposal: ProposedViewSize(width: maxWidth, height: nil))
             x += size.width + spacing
             lineHeight = max(lineHeight, size.height)
         }

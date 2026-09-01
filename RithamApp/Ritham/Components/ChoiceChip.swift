@@ -20,6 +20,7 @@ struct ChoiceChip: View {
                 .font(RithamType.body)
                 .foregroundStyle(isSelected ? RithamColor.label(on: RithamColor.hot) : RithamColor.paper)
                 .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, RithamSpacing.md)
                 .frame(minWidth: RithamSpacing.minimumTapTarget, minHeight: RithamSpacing.minimumTapTarget)
                 .background(chipBackground)
