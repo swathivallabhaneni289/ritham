@@ -5,19 +5,22 @@ import Testing
 @Suite("ScreeningCopyTests")
 struct ScreeningCopyTests {
 
-    @Test("opening disclaimer contains the 911 emergency carve-out")
-    func openingDisclaimerContains911() {
-        #expect(ScreeningCopy.openingDisclaimer.contains("911"))
+    @Test("opening disclaimer contains the emergency carve-out and no country-specific number")
+    func openingDisclaimerContainsEmergencyCarveOut() {
+        #expect(ScreeningCopy.openingDisclaimer.contains("local emergency number"))
+        #expect(!ScreeningCopy.openingDisclaimer.contains("911"))
     }
 
-    @Test("urgent clearance interstitial contains the 911 emergency carve-out")
-    func urgentClearanceInterstitialContains911() {
-        #expect(ScreeningCopy.urgentClearanceInterstitial.contains("911"))
+    @Test("urgent clearance interstitial contains the emergency carve-out and no country-specific number")
+    func urgentClearanceInterstitialContainsEmergencyCarveOut() {
+        #expect(ScreeningCopy.urgentClearanceInterstitial.contains("local emergency number"))
+        #expect(!ScreeningCopy.urgentClearanceInterstitial.contains("911"))
     }
 
-    @Test("the standalone emergency line contains the 911 emergency carve-out")
-    func emergencyLineContains911() {
-        #expect(ScreeningCopy.emergencyLine.contains("911"))
+    @Test("the standalone emergency line contains the emergency carve-out and no country-specific number")
+    func emergencyLineContainsEmergencyCarveOut() {
+        #expect(ScreeningCopy.emergencyLine.contains("local emergency number"))
+        #expect(!ScreeningCopy.emergencyLine.contains("911"))
     }
 
     @Test("gate section framing does not name the branded screening instrument")

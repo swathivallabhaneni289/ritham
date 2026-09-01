@@ -34,10 +34,17 @@ public enum ScreeningCopy {
     /// sentence ("Ritham asks a few questions...") rather than restating it as a heading.
     public static let openingDisclaimerHeadline = "Just a few questions first."
 
+    /// The emergency-instruction sentence in this string, `urgentClearanceInterstitial`, and
+    /// `emergencyLine` was revised 2026-09-01 to drop the US-specific "911" carve-out entirely --
+    /// Ritham ships to a global App Store audience, and naming one country's number read as
+    /// US-centric even with the "or your local emergency number" fallback already present. All
+    /// three occurrences say only "your local emergency number" now, everywhere. Like the rest of
+    /// this file, this remains pending LAUNCH-01 legal review before Phase 5 -- this is a
+    /// same-day product-feedback revision, not that review itself.
     public static let openingDisclaimer = """
     Ritham asks a few questions about your health so we can show general, guideline-based workout and food suggestions that fit you better, not to diagnose or treat anything. This is a short screening questionnaire, not a medical exam, and your answers aren't reviewed by a doctor or dietitian.
 
-    If you have a health condition, are pregnant, are recovering from an injury or surgery, or take medication, please talk to your doctor or another qualified professional before starting or changing an exercise or eating routine. If you think you might be having a medical emergency right now, stop and call 911 (or your local emergency number) instead of continuing this questionnaire.
+    If you have a health condition, are pregnant, are recovering from an injury or surgery, or take medication, please talk to your doctor or another qualified professional before starting or changing an exercise or eating routine. If you think you might be having a medical emergency right now, stop and call your local emergency number instead of continuing this questionnaire.
 
     Every suggestion Ritham gives you afterward is a general starting point you can edit or turn off, and you can update these answers anytime in Settings.
     """
@@ -57,7 +64,7 @@ public enum ScreeningCopy {
     // MARK: - §4.3 Urgent clearance interstitial (G2 or G3 = Yes)
 
     public static let urgentClearanceInterstitial = """
-    **Before anything else: if you're currently experiencing chest pain, difficulty breathing, sudden severe dizziness, or think you may be having a medical emergency, stop and call 911 (or your local emergency number) right now. Don't wait to finish this questionnaire.**
+    **Before anything else: if you're currently experiencing chest pain, difficulty breathing, sudden severe dizziness, or think you may be having a medical emergency, stop and call your local emergency number right now. Don't wait to finish this questionnaire.**
 
     If that's not what's happening right now: based on your answers, please talk with a doctor before starting or changing an exercise routine. We'll hold off on personalized suggestions until you've done that.
     """
@@ -127,7 +134,7 @@ public enum ScreeningCopy {
     /// the gate section (§1.2) is where it is shown first. Kept as plain text (no `**` markers)
     /// so both render sites can format the same string without one needing markdown parsing and
     /// the other not.
-    public static let emergencyLine = "Before anything else: if you're currently experiencing chest pain, difficulty breathing, sudden severe dizziness, or think you may be having a medical emergency, stop and call 911 (or your local emergency number) right now. Don't wait to finish this questionnaire."
+    public static let emergencyLine = "Before anything else: if you're currently experiencing chest pain, difficulty breathing, sudden severe dizziness, or think you may be having a medical emergency, stop and call your local emergency number right now. Don't wait to finish this questionnaire."
 
     // MARK: - §1.2 Gate questions (G1-G7) and their immediate MED-1/MED-2 follow-ups
 
