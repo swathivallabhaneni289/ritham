@@ -271,15 +271,24 @@ public enum GateEscalation {
         case urgentInterstitial
     }
 
-    /// §5's closing section, second always-on rule: the emergency line is shown at the top of
-    /// the gate section and repeated in the urgent interstitial, and it is never conditional on
-    /// a specific answer combination — so this always returns the same value for those two
-    /// sections regardless of any tag, gate, or answer state.
+    /// §5's closing section, second always-on rule: the emergency line is shown in the urgent
+    /// interstitial, and it is never conditional on a specific answer combination for that
+    /// section -- so this always returns the same value for it regardless of any tag, gate, or
+    /// answer state.
+    ///
+    /// Revised 2026-09-01 (product decision, not this file's own judgment call): `.gate` no
+    /// longer shows a dedicated emergency-line callout -- live-review feedback found it visually
+    /// dominated the top of the gate section screen. The opening disclaimer's body text (shown
+    /// one screen earlier) still carries the same "if you're having a medical emergency, stop
+    /// and call your local emergency number" instruction inline, and the urgent interstitial
+    /// (`.urgentInterstitial`, still `true` below) still shows it as a dedicated callout when
+    /// G2/G3 = yes. This function's return value for `.gate` is what `GateSectionView` obeys --
+    /// see its own header comment for the full record.
     public static func showsEmergencyLine(for section: ScreeningSection) -> Bool {
         switch section {
-        case .gate, .urgentInterstitial:
+        case .urgentInterstitial:
             return true
-        case .openingDisclaimer, .conditionChecklist, .severityFollowUps, .routineInterstitial:
+        case .openingDisclaimer, .gate, .conditionChecklist, .severityFollowUps, .routineInterstitial:
             return false
         }
     }

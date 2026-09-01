@@ -430,9 +430,9 @@ struct GateResolutionTests {
         #expect(GateEscalation.neverGeneratesMedicationDosingGuidance == true)
     }
 
-    @Test("the emergency line shows unconditionally at the gate section and the urgent interstitial")
-    func emergencyLineShowsAtGateAndUrgentInterstitial() {
-        #expect(GateEscalation.showsEmergencyLine(for: .gate) == true)
+    @Test("the emergency line shows unconditionally at the urgent interstitial, and no longer at the gate section (revised 2026-09-01)")
+    func emergencyLineShowsOnlyAtUrgentInterstitial() {
+        #expect(GateEscalation.showsEmergencyLine(for: .gate) == false)
         #expect(GateEscalation.showsEmergencyLine(for: .urgentInterstitial) == true)
     }
 

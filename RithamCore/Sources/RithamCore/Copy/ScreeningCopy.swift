@@ -137,15 +137,14 @@ public enum ScreeningCopy {
     }
 
     // MARK: - §5's closing section: the unconditional emergency line
-
-    /// The standing, never-conditional emergency line `GateEscalation.showsEmergencyLine(for:)`
-    /// gates rendering of (never its content: the line itself is never conditional on any
-    /// answer). Extracted verbatim from the bolded opening sentence of
-    /// `urgentClearanceInterstitial` (§4.3), which §5 names as the line's "repeated" location:
-    /// the gate section (§1.2) is where it is shown first. Kept as plain text (no `**` markers)
-    /// so both render sites can format the same string without one needing markdown parsing and
-    /// the other not.
-    public static let emergencyLine = "Before anything else: if you're currently experiencing chest pain, difficulty breathing, sudden severe dizziness, or think you may be having a medical emergency, stop and call your local emergency number right now. Don't wait to finish this questionnaire."
+    //
+    // Until 2026-09-01 this section held a standalone `emergencyLine` constant, rendered at both
+    // the gate section and (duplicated inline) the urgent clearance interstitial. The gate
+    // section's callout was removed that day (product decision, live-review feedback -- see
+    // `GateEscalation.showsEmergencyLine`'s doc comment for the full record), leaving the
+    // constant with no remaining caller, so it was deleted rather than left as dead, silently
+    // stale copy in a file the Phase 5 legal review will read closely. The rule's one surviving
+    // instance is the bolded opening sentence of `urgentClearanceInterstitial` below (§4.3).
 
     // MARK: - §1.2 Gate questions (G1-G7) and their immediate MED-1/MED-2 follow-ups
 

@@ -17,12 +17,6 @@ struct ScreeningCopyTests {
         #expect(!ScreeningCopy.urgentClearanceInterstitial.contains("911"))
     }
 
-    @Test("the standalone emergency line contains the emergency carve-out and no country-specific number")
-    func emergencyLineContainsEmergencyCarveOut() {
-        #expect(ScreeningCopy.emergencyLine.contains("local emergency number"))
-        #expect(!ScreeningCopy.emergencyLine.contains("911"))
-    }
-
     @Test("gate section framing does not name the branded screening instrument")
     func gateSectionFramingDoesNotNamePARQ() {
         #expect(!ScreeningCopy.gateSectionFraming.contains("PAR-Q"))

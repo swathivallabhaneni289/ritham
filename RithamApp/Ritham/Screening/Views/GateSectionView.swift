@@ -1,8 +1,8 @@
 import SwiftUI
 import RithamCore
 
-// §1.2's PAR-Q-style gate section: G1-G7, the two immediate MED-1/MED-2 follow-ups, and the
-// unconditional emergency line. `YesNo`/`YesNoUnsure` need `Identifiable` to drive
+// §1.2's PAR-Q-style gate section: G1-G7 and the two immediate MED-1/MED-2 follow-ups.
+// `YesNo`/`YesNoUnsure` need `Identifiable` to drive
 // `ChoiceQuestionView`'s `ForEach` without a separate id parameter -- neither conforms in
 // RithamCore, since Identifiable is a UI-layer concern (same rationale `ChecklistItem`'s
 // retroactive conformance in `ChoiceQuestionView.swift` already documents). Declared once here,
@@ -33,11 +33,14 @@ extension YesNoUnsure: @retroactive Identifiable {
 /// pending LAUNCH-01 counsel review, and `ScreeningCopyTests` already pins that the framing
 /// string is free of that name.
 ///
-/// The unconditional emergency line (below) is rendered as a compact, bounded card rather than a
-/// full-width bold paragraph, per live-review feedback (2026-09-01) that it visually dominated
-/// the top of the screen. It is NOT removed -- HEALTH-05/§5 require it unconditionally at this
-/// exact touchpoint, and it is the only emergency-check a user sees before answering any gate
-/// question at all (the urgent clearance interstitial only shows it again if G2/G3 = yes).
+/// This screen no longer shows a dedicated emergency-line callout (removed 2026-09-01, product
+/// decision after live-review feedback that it visually dominated the top of the screen even
+/// after a first pass compacted it). `GateEscalation.showsEmergencyLine(for: .gate)` now returns
+/// `false` -- that domain-layer change, not a UI-only omission, is what this view obeys, so the
+/// rule and the rendered screen cannot drift apart. The opening disclaimer (shown one screen
+/// earlier) still carries the same "call your local emergency number" instruction inline in its
+/// body text, and the urgent clearance interstitial still shows it as a dedicated callout when
+/// G2/G3 = yes -- see `GateEscalation.showsEmergencyLine`'s own doc comment for the full record.
 struct GateSectionView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .gateSection
 
@@ -54,28 +57,6 @@ struct GateSectionView: View, OnboardingStepPresenting {
             headline: ScreeningCopy.gateSectionHeadline,
             bodyText: ScreeningCopy.gateSectionFraming
         ) {
-            // §5's second always-on rule: the emergency line is shown at the top of this section
-            // unconditionally -- never gated on any answer combination. `showsEmergencyLine`
-            // always returns `true` for `.gate`; the call is kept (rather than hardcoding the
-            // render) so this view's behavior visibly tracks the core rule instead of
-            // re-deriving it. Rendered as a compact bounded card (not a full-width bold
-            // paragraph) per 2026-09-01 live-review feedback -- see this file's header comment.
-            if GateEscalation.showsEmergencyLine(for: .gate) {
-                HStack(alignment: .top, spacing: RithamSpacing.xs) {
-                    Image(systemName: "phone.fill")
-                        .font(RithamType.label)
-                        .foregroundStyle(RithamColor.hot)
-                    Text(ScreeningCopy.emergencyLine)
-                        .font(RithamType.label)
-                        .foregroundStyle(RithamColor.hot)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .padding(RithamSpacing.sm)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(RithamColor.hot.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
-            }
-
             ChoiceQuestionView(
                 prompt: ScreeningCopy.Gate.g1,
                 options: YesNo.allCases,
