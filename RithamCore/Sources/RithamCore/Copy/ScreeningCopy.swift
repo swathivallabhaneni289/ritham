@@ -21,6 +21,13 @@ public enum ScreeningCopy {
 
     // MARK: - §4.1 Questionnaire opening disclaimer (shown once, before Question 1)
 
+    /// Live-review feedback (2026-09-01): this screen had no headline at all, reading as an
+    /// empty header followed straight into a wall of body text. New copy, not a re-transcription
+    /// of locked wording -- 01-UI-SPEC.md's Copywriting Contract has no headline row for this
+    /// screen (only "Body"), the same gap `OnboardingCopy.ScreeningComplete`'s headline already
+    /// closed for its own screen. Kept deliberately plain and non-diagnostic, like that one.
+    public static let openingDisclaimerHeadline = "About this health screening."
+
     public static let openingDisclaimer = """
     Ritham asks a few questions about your health so we can show general, guideline-based workout and food suggestions that fit you better, not to diagnose or treat anything. This is a short screening questionnaire, not a medical exam, and your answers aren't reviewed by a doctor or dietitian.
 

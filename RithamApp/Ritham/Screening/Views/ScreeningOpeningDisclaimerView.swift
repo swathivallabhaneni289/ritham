@@ -6,6 +6,15 @@ import RithamCore
 // frame and no truncation (`.fixedSize`), so a Phase 5 legal revision to this copy's length
 // tolerates without redesign, per 01-UI-SPEC.md's LAUNCH-01 constraint.
 //
+// Live-review feedback (2026-09-01): this screen had no headline (an empty header straight into
+// a wall of body text) and used `DecorativeSurface.flat`, leaving that header region visually
+// empty rather than dropped from layout. Fixed by adding a headline and switching to
+// `.boundedHeaderOnly` -- the same treatment the Privacy explainer already uses. This screen is
+// not one of the nine screens `DecorativeSurface.flat`'s own doc comment enumerates (it collects
+// no data itself; the gate section right after it does), so this does not touch that locked set.
+// The body copy itself is untouched -- it is pending-legal-review text (LAUNCH-01) and must not
+// be edited for a presentation concern.
+//
 // "Shown once" is tracked via `OnboardingAnswers.completedSteps` (already designed for exactly
 // this purpose, per its own doc comment) rather than a new persisted `UserProfile` column -- the
 // linear onboarding router only ever reaches `.screeningOpeningDisclaimer` once per pass in the
@@ -23,7 +32,11 @@ struct ScreeningOpeningDisclaimerView: View, OnboardingStepPresenting {
     let flow: OnboardingFlow
 
     var body: some View {
-        RithamScreen(surface: DecorativeSurface.flat, bodyText: ScreeningCopy.openingDisclaimer) {
+        RithamScreen(
+            surface: DecorativeSurface.boundedHeaderOnly,
+            headline: ScreeningCopy.openingDisclaimerHeadline,
+            bodyText: ScreeningCopy.openingDisclaimer
+        ) {
             // No dedicated CTA copy exists for this screen (01-UI-SPEC.md's Copywriting Contract
             // has no row for it) -- reusing the already-locked "Continue" string established by
             // `OnboardingCopy.Age.cta`, matching the pattern `CalibrationCompleteView` already

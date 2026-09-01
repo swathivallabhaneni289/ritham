@@ -11,8 +11,11 @@ struct DecorativeSurface {
     /// Welcome / hero screen -- the full decorative surface.
     static let welcome = DecorativeSurface(bandMotif: true, halftone: true, arcs: true, ringAndDot: true)
 
-    /// Explanation-register picker and the privacy explainer: a bounded header band only, plus
-    /// the small corner ring-and-dot ornament.
+    /// A bounded header band only, plus the small corner ring-and-dot ornament -- used by screens
+    /// that explain or introduce something without collecting, confirming, or blocking on health
+    /// or age data themselves (the privacy explainer, the screening's opening disclaimer). The
+    /// explanation-register picker also used this treatment before EXPLAIN-01's dual-register
+    /// system was removed (2026-08-28); that screen no longer exists.
     static let boundedHeaderOnly = DecorativeSurface(bandMotif: true, halftone: false, arcs: false, ringAndDot: true)
 
     /// Calibration start / complete: band motif and ring, no halftone or arcs.
