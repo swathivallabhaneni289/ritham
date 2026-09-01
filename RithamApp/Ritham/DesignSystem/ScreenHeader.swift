@@ -8,6 +8,16 @@ struct DecorativeSurface {
     var arcs: Bool
     var ringAndDot: Bool
 
+    /// True when none of the four decorative elements are on -- `.flat`, and only `.flat`,
+    /// matches this. `ScreenHeader` uses it to collapse to zero height instead of reserving a
+    /// full header-sized block of pure background fill for nothing. Live-review feedback
+    /// (2026-09-01) on the gate section screen ("empty space at the top") traced back to this:
+    /// every `.flat` screen in the app -- Age, gate section, condition checklist, SCOFF,
+    /// required-blocking messages, and more -- was reserving that dead space, not just this one.
+    var hasVisibleContent: Bool {
+        bandMotif || halftone || arcs || ringAndDot
+    }
+
     /// Welcome / hero screen -- the full decorative surface.
     static let welcome = DecorativeSurface(bandMotif: true, halftone: true, arcs: true, ringAndDot: true)
 
@@ -88,7 +98,7 @@ struct ScreenHeader: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        if dynamicTypeSize.isAccessibilitySize {
+        if dynamicTypeSize.isAccessibilitySize || !surface.hasVisibleContent {
             EmptyView()
         } else {
             decorativeContent
