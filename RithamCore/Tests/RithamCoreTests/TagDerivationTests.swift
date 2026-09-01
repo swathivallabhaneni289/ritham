@@ -447,4 +447,24 @@ struct TagDerivationTests {
         #expect(tags.contains(.noneOfTheAboveBaseline))
         #expect(tags.contains(.age65PlusOrDeconditioned))
     }
+
+    @Test("confirming none for every section yields the baseline tag without the global sentinel")
+    func everySectionConfirmedNoneYieldsBaselineTag() {
+        var checklist = ChecklistSelection()
+        for category in ChecklistCategory.allCases where category != .none {
+            checklist.toggleNoneForSection([category], sectionItems: [])
+        }
+        let answers = ScreeningAnswers(checklist: checklist)
+        let tags = TagDerivation.deriveTags(from: answers, ageDerivedTags: [])
+        #expect(tags == [.noneOfTheAboveBaseline])
+    }
+
+    @Test("confirming none for only some sections does not yield the baseline tag")
+    func partiallyConfirmedSectionsDoNotYieldBaselineTag() {
+        var checklist = ChecklistSelection()
+        checklist.toggleNoneForSection([.cardiovascular], sectionItems: [])
+        let answers = ScreeningAnswers(checklist: checklist)
+        let tags = TagDerivation.deriveTags(from: answers, ageDerivedTags: [])
+        #expect(!tags.contains(.noneOfTheAboveBaseline))
+    }
 }

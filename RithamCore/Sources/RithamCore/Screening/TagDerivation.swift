@@ -42,7 +42,19 @@ public enum TagDerivation {
         // baseline tag, since §1.1's precedence rule is additive-only and a 65-plus baseline
         // user is a real, common case this module must represent, not an edge case to collapse
         // away.
-        if answers.checklist.items == [.noneOfTheAbove] && checklistDerived.isEmpty {
+        //
+        // `ConditionChecklistView` (live-review feedback, 2026-09-01) dropped the single global
+        // "None of the above" control in favor of a per-section confirmation, so a user can no
+        // longer produce `items == [.noneOfTheAbove]` through the screen — they instead confirm
+        // every one of the checklist's real categories individually, leaving `items` empty. That
+        // path is an equally explicit "nothing applies" and must reach the same baseline tag; the
+        // `.noneOfTheAbove` sentinel itself stays in `ChecklistItem`, and this check's original
+        // form stays alongside it for any other caller that still constructs a selection with it
+        // directly.
+        let everySectionConfirmedNone = Set(ChecklistCategory.allCases)
+            .subtracting([.none])
+            .isSubset(of: answers.checklist.noneConfirmedCategories)
+        if checklistDerived.isEmpty && (answers.checklist.items == [.noneOfTheAbove] || everySectionConfirmedNone) {
             result.insert(.noneOfTheAboveBaseline)
         }
 

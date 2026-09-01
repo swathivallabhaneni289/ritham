@@ -6,10 +6,12 @@ import RithamCore
 /// initializer) rather than a second, view-local reimplementation of the exclusive-option rule --
 /// a second implementation could drift and feed the resolver a contradictory selection (T-01-99).
 ///
-/// Each section also carries its own "None of these apply" confirmation, routed through
+/// Each section carries its own "None of these apply" confirmation, routed through
 /// `ChecklistSelection.toggleNoneForSection(_:sectionItems:)` for the same reason -- live-review
-/// feedback (2026-09-01) wanted a per-section "none" rather than only one at the end of the whole
-/// list. The plain global one below the loop still stands for "nothing anywhere, full stop."
+/// feedback (2026-09-01) wanted a per-section "none" rather than one shared control at the end of
+/// the whole list, which this view no longer renders (`TagDerivation` recognizes every section
+/// being confirmed none as the equivalent of the old global sentinel -- see its own comment).
+/// `ChecklistItem.noneOfTheAbove` itself still exists in RithamCore for any other caller.
 ///
 /// The pregnancy/postpartum and eating-disorder-history groups each render their §1.3 rationale
 /// line above the group, at the `label` role (full weight, not `fineprint`'s reduced-opacity
@@ -103,13 +105,6 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
                     }
                 }
             }
-
-            ChoiceQuestionView(
-                prompt: "",
-                options: [ChecklistItem.noneOfTheAbove],
-                checklistSelection: checklistBinding,
-                optionTitle: { $0.displayName }
-            )
 
             PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
                 flow.advance(from: .conditionChecklist)
