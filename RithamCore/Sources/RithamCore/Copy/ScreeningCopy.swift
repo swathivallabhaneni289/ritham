@@ -26,7 +26,13 @@ public enum ScreeningCopy {
     /// of locked wording -- 01-UI-SPEC.md's Copywriting Contract has no headline row for this
     /// screen (only "Body"), the same gap `OnboardingCopy.ScreeningComplete`'s headline already
     /// closed for its own screen. Kept deliberately plain and non-diagnostic, like that one.
-    public static let openingDisclaimerHeadline = "About this health screening."
+    ///
+    /// A first attempt, "About this health screening.", was itself flagged the same day as
+    /// reading like a clinical section label rather than a natural lead-in to what's actually
+    /// next (a few health questions) -- it named the screen instead of previewing the step ahead.
+    /// This version previews the next step directly instead, matching the body's own opening
+    /// sentence ("Ritham asks a few questions...") rather than restating it as a heading.
+    public static let openingDisclaimerHeadline = "Just a few questions first."
 
     public static let openingDisclaimer = """
     Ritham asks a few questions about your health so we can show general, guideline-based workout and food suggestions that fit you better, not to diagnose or treat anything. This is a short screening questionnaire, not a medical exam, and your answers aren't reviewed by a doctor or dietitian.
