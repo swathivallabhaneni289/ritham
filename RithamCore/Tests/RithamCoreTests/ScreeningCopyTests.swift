@@ -45,6 +45,7 @@ struct ScreeningCopyTests {
     @Test("all named string constants are non-empty and trimmed")
     func allConstantsNonEmptyAndTrimmed() {
         let constants: [String] = [
+            ScreeningCopy.openingDisclaimerHeadline,
             ScreeningCopy.openingDisclaimer,
             ScreeningCopy.routineClearanceInterstitial,
             ScreeningCopy.routineClearanceCTA,
@@ -52,6 +53,7 @@ struct ScreeningCopyTests {
             ScreeningCopy.urgentClearanceCTA,
             ScreeningCopy.requiredBlockingMessage,
             ScreeningCopy.standingFooterDisclaimer,
+            ScreeningCopy.gateSectionHeadline,
             ScreeningCopy.gateSectionFraming,
             ScreeningCopy.gatePassAffirmation,
             ScreeningCopy.conditionChecklistIntro,

@@ -87,7 +87,18 @@ public enum ScreeningCopy {
 
     // MARK: - §1.2 Gate section framing / pass affirmation
 
-    public static let gateSectionFraming = "These next questions are the kind a doctor's office typically asks before starting a new activity program. A \"yes\" doesn't stop you from using Ritham. It just means we'll ask you to check in with a professional before we turn on personalized suggestions in that area."
+    /// Live-review feedback (2026-09-01): this screen had no headline, and the framing paragraph
+    /// read as denser than it needed to (three separate sentences for one idea). New headline,
+    /// not a re-transcription of locked wording -- 01-UI-SPEC.md's Copywriting Contract has no
+    /// headline row for this screen (only "Body", same gap the opening disclaimer's headline
+    /// closed the same day). Kept deliberately plain, matching that one.
+    public static let gateSectionHeadline = "A few health basics."
+
+    /// Tightened from three sentences to two, same substance (doctor's-office framing, the
+    /// explicit "doesn't stop you from using Ritham" reassurance, and what a "yes" actually
+    /// triggers). Still pending LAUNCH-01 legal review, like the rest of this section -- a
+    /// same-day product-feedback revision, not that review itself.
+    public static let gateSectionFraming = "These are the kind of questions a doctor's office asks before starting something new. A \"yes\" answer here doesn't stop you from using Ritham, it just means checking in with a professional before we turn on personalized suggestions for that one area."
 
     public static let gatePassAffirmation = "Good to know, you're clear to move on."
 

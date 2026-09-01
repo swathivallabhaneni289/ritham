@@ -22,10 +22,22 @@ extension YesNoUnsure: @retroactive Identifiable {
 /// this view only collects answers and reads `GateResolution.resolve`'s already-computed
 /// `interstitial` value to decide whether to show the gate-pass affirmation before advancing.
 ///
-/// The section heading renders `ScreeningCopy.gateSectionFraming` exactly as written and adds no
-/// heading of its own -- 01-UI-SPEC.md flags the framing copy as a legal constraint (it must not
-/// name the branded clinical instrument the questions are modelled on) pending LAUNCH-01 counsel
-/// review, and `ScreeningCopyTests` already pins that the framing string is free of that name.
+/// The section heading renders `ScreeningCopy.gateSectionFraming` as the body, with
+/// `ScreeningCopy.gateSectionHeadline` as a plain-text headline added 2026-09-01 (live-review
+/// feedback: the screen had none). Neither is decorative -- `DecorativeSurface.flat` still
+/// applies (this is one of the nine screens 01-UI-SPEC.md's Decorative Surface Inventory locks
+/// flat, since it collects health data directly), so no band/arc/halftone is ever added here; a
+/// plain-text headline doesn't touch that rule, matching the precedent `AgeStepView` already sets
+/// for headlines on a flat-locked screen. 01-UI-SPEC.md flags the framing copy as a legal
+/// constraint (it must not name the branded clinical instrument the questions are modelled on)
+/// pending LAUNCH-01 counsel review, and `ScreeningCopyTests` already pins that the framing
+/// string is free of that name.
+///
+/// The unconditional emergency line (below) is rendered as a compact, bounded card rather than a
+/// full-width bold paragraph, per live-review feedback (2026-09-01) that it visually dominated
+/// the top of the screen. It is NOT removed -- HEALTH-05/§5 require it unconditionally at this
+/// exact touchpoint, and it is the only emergency-check a user sees before answering any gate
+/// question at all (the urgent clearance interstitial only shows it again if G2/G3 = yes).
 struct GateSectionView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .gateSection
 
@@ -37,21 +49,31 @@ struct GateSectionView: View, OnboardingStepPresenting {
     @State private var showGatePassAffirmation = false
 
     var body: some View {
-        RithamScreen(surface: DecorativeSurface.flat, bodyText: ScreeningCopy.gateSectionFraming) {
+        RithamScreen(
+            surface: DecorativeSurface.flat,
+            headline: ScreeningCopy.gateSectionHeadline,
+            bodyText: ScreeningCopy.gateSectionFraming
+        ) {
             // §5's second always-on rule: the emergency line is shown at the top of this section
             // unconditionally -- never gated on any answer combination. `showsEmergencyLine`
             // always returns `true` for `.gate`; the call is kept (rather than hardcoding the
             // render) so this view's behavior visibly tracks the core rule instead of
-            // re-deriving it.
+            // re-deriving it. Rendered as a compact bounded card (not a full-width bold
+            // paragraph) per 2026-09-01 live-review feedback -- see this file's header comment.
             if GateEscalation.showsEmergencyLine(for: .gate) {
-                HStack(alignment: .top, spacing: RithamSpacing.sm) {
+                HStack(alignment: .top, spacing: RithamSpacing.xs) {
                     Image(systemName: "phone.fill")
+                        .font(RithamType.label)
                         .foregroundStyle(RithamColor.hot)
                     Text(ScreeningCopy.emergencyLine)
-                        .font(RithamType.body.weight(.semibold))
+                        .font(RithamType.label)
                         .foregroundStyle(RithamColor.hot)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                .padding(RithamSpacing.sm)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(RithamColor.hot.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
             }
 
             ChoiceQuestionView(
