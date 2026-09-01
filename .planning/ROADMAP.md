@@ -371,7 +371,10 @@ piece is genuinely new and bigger. Not yet scoped into requirements or plans.
    moved out of onboarding. Diet-plan section maps to Phase 2's existing DIET-02/DIET-03 nutrition
    guidance (population-level reference figures, matched to dietary pattern). Likely no new
    requirement needed here beyond what Phase 2 already covers — confirm during Phase 2 planning
-   rather than assuming a new section is required.
+   rather than assuming a new section is required. `FoodAllergen` selections (RithamCore,
+   `HealthDataStore.loadFoodAllergens`) are already captured and stored, framed alongside dietary
+   pattern in Settings (2026-09-01) — this diet-plan work is what should actually read them; until
+   then they are stored but unconsumed by anything.
 
 2. **A home page showing steps taken, calories burned, and achievement badges** (e.g. for trying a
    new exercise type). Partially covered already: Phase 4's CROSSGEN-01 locks the home screen to
