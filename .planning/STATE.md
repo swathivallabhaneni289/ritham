@@ -89,6 +89,11 @@ Recent decisions affecting current work:
   keep the pre-launch GDPR/CCPA privacy review scoped for v1; dietary pattern and recovery-aware
   Momentum (self-report slice) kept in v1 since they add no new sensitive-data review surface.
 
+- 2026-09-01: Calibration (ONBOARD-01) is no longer onboarding's first mandatory session — it
+  moves to a triggered pre-assessment inside a future exercise-recommendation feature
+  (provisionally Phase 2), factoring in age and condition tags. Onboarding now ends after the
+  safety screening. Calibration domain/UI kept intact, router-unreachable, for reuse.
+
 - 2026-08-24: Ritham has a permanent 13+ age floor — no under-13 support in any form, no
   parental-consent flow for any age. Reverses the 2026-08-22 tiered-consent design. Removed the Go
   consent-service backend and 3 other now-dead plans from Phase 1 (18 → 14 plans). See PROJECT.md
@@ -138,7 +143,22 @@ Recent decisions affecting current work:
   registered dietitian before public App Store submission — schedule these reviews early enough
   that they don't block the release once Phases 1-4 are code-complete.
 
-- 01-18's PhaseCoverageTests (unregisteredSteps-is-empty) will trip: .screeningComplete and .home have no registrar in the phase as currently scoped (01-16-SUMMARY claimed 01-17 owns .screeningComplete, but neither 01-17 nor 01-18's registrar list covers it) -- see deferred-items.md
+- ~~01-18's PhaseCoverageTests (unregisteredSteps-is-empty) will trip...~~ Stale as of
+  2026-09-01: verified this already passes. `OnboardingCompletionRegistration` (registering
+  `.screeningComplete`/`.home`) is already wired into `StepBootstrap.registerAllSteps()`;
+  presumably fixed in a prior session not reflected here. See `deferred-items.md`, itself also
+  stale on this point.
+
+- Real (not stale) test-infrastructure issue found 2026-09-01: `xcodebuild test` run against the
+  full RithamTests target intermittently fails with steps reported as "unregistered" that are, in
+  fact, registered. Confirmed via `git stash` that this predates the 2026-09-01 calibration pivot.
+  Root cause: `StepRegistry`'s shared static state races across Swift Testing suites that run
+  concurrently -- each suite's own `.serialized` trait only serializes tests *within* that suite,
+  not across suites, so one suite's `StepRegistry.reset()` can interleave with another suite's
+  in-flight assertions. Every suite passes reliably run individually
+  (`-only-testing:RithamTests/<Suite>`); only the full concurrent run flakes. Not fixed --
+  needs its own pass (likely: merge the `StepRegistry`-touching suites into one `.serialized`
+  suite, or find swift-testing's real cross-suite serialization mechanism if one exists).
 
 ## Deferred Items
 
@@ -150,15 +170,29 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-29 (live design review + dietary-pattern onboarding removal)
-Stopped at: Phase 1 functionally complete (13/14 plans); only 01-18 Task 2 (human verification:
-AX3/AX5 accessibility pass across onboarding, physical-device GPS calibration walk) remains.
-Next step: pick up **Phase 999.3: Onboarding visual polish, round 2** in `ROADMAP.md`'s Backlog
-section — four items of live-review feedback captured 2026-08-29, explicitly deferred to a future
-session rather than implemented immediately. Read that section before starting; it flags two real
-open tensions (a locked-rule conflict on `ScreeningOpeningDisclaimerView`'s flat-surface status,
-and an ambiguous "plain terms" complaint that needs a follow-up conversation to pin down) that
-should not be resolved by guessing. Once that's triaged, resume 01-18 Task 2 to formally close
-Phase 1.
-Resume file: 
+Last session: 2026-09-01 (live design review + calibration moved out of onboarding)
+Stopped at: Phase 1 functionally complete (13/14 plans, all passing individually). Calibration
+(ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
+`REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
+Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
+task (moot now) but opened a new one: `RadialSessionTimer` (the calibration session screen's new
+radial progress ring, built this session) has never been verified at AX3/AX5 -- that screen is
+currently unreachable in the running app, so this check waits for whichever phase builds the
+recommend-exercises trigger, not 01-18.
+
+Phase 999.3 backlog (onboarding visual polish, round 2): item 1 (the "plain terms" Privacy
+headline complaint) is resolved -- changed to "Your privacy, up front.", confirmed by direct
+feedback. Item 2 (calibration timer redesign) is resolved -- `RadialSessionTimer` ships, plus an
+upfront duration statement. Item 3 (`ScreeningOpeningDisclaimerView`'s flat-surface tension) has a
+researched recommendation (treat it like Privacy Explainer: `DecorativeSurface.boundedHeaderOnly`,
+not full arcs) but was never confirmed or implemented -- the conversation moved to the calibration
+pivot before that AskUserQuestion resolved. Item 4 (scroll concern) untouched.
+
+Next step: 01-18's remaining task is now just the AX3/AX5 accessibility pass across onboarding
+(the GPS-walk task is moot). Also still open: item 3 above needs a decision before implementing,
+and the Phase 2-vs-new-phase question for the exercise-recommendation feature (Phase 2 criterion 8
+is a placeholder, deliberately not settled). A real, pre-existing `StepRegistry` test-concurrency
+flake was found and documented in Blockers/Concerns but not fixed -- worth its own pass before
+trusting a full `xcodebuild test` run's pass/fail as-is.
+Resume file:
 None

@@ -11,8 +11,13 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Onboarding
 
-- [x] **ONBOARD-01**: User's first session is a short, guided walk-or-light-lift calibration
-  (never a self-reported fitness-level dropdown) that sets their actual starting baseline.
+- [ ] **ONBOARD-01**: The first time a user requests exercise recommendations, they complete a
+  short, guided walk-or-light-lift pre-assessment (never a self-reported fitness-level dropdown)
+  that sets their actual starting baseline, factoring in age and applicable condition tags from
+  the safety screening. Revised 2026-09-01: no longer onboarding's first mandatory session (see
+  `PROJECT.md` Key Decisions) — the "never a dropdown" half is unchanged, only "first session"
+  is reversed. Calibration domain/UI already built in Phase 1 and kept intact for reuse; the
+  triggered entry point itself is not yet built.
 
 ### Explanation Layer
 
@@ -339,7 +344,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ONBOARD-01 | Phase 1 | Complete |
+| ONBOARD-01 | Phase 2 (provisional) | Not started -- domain/UI built in Phase 1, kept for reuse; trigger not yet built |
 | EXPLAIN-01 | Phase 1 | Complete |
 | HEALTH-01 | Phase 1 | Complete |
 | HEALTH-02 | Phase 1 | Complete |

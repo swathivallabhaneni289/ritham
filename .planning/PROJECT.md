@@ -39,9 +39,12 @@ ranking.
 
 ### Active
 
-- [ ] Cross-generational onboarding with a real walk-or-light-lift calibration session, one
-      consistent explanation voice with tap-to-expand definitions, and fixed-choice safety
-      screening (PAR-Q-style gates + SCOFF), never a "senior mode" or age-gated fork
+- [ ] Cross-generational onboarding with one consistent explanation voice with tap-to-expand
+      definitions and fixed-choice safety screening (PAR-Q-style gates + SCOFF), never a
+      "senior mode" or age-gated fork
+- [ ] An exercise-recommendation feature (diet + workout suggestions) that triggers a real
+      walk-or-light-lift pre-assessment (never a self-reported fitness-level dropdown) the first
+      time a user asks for recommendations, factoring in age and condition tags
 - [ ] A 13+ age floor: age is self-attested at onboarding with no verification beyond entry;
       entering an age under 13 shows a plain blocking message and allows re-entry with a
       different age; no minor consent flow or parental gate anywhere in the product, and a
@@ -139,8 +142,10 @@ ranking.
 | Ritham has a permanent 13+ age floor; under-13 users are never supported in any form (not even a reduced-functionality tier), and there is no minor-consent flow of any kind for any age | Reverses the 2026-08-22 tiered-consent design (D-05/D-06/D-13 in `01-CONTEXT.md`) after GitHub issue #1's device-continuity request traced back to that design's COPPA/App-Store cost; matches actual industry practice — Strava, Nike, Peloton, and MyFitnessPal all set a hard age floor (13 or 18) with self-attested age and no parental-consent machinery, rather than building real under-13 support | Decided |
 | Ritham has no user-chosen explanation register (plain-language vs. technical); every user gets one consistently-written voice, with the tap-to-expand glossary mechanic kept but no register choice behind it | Reverses EXPLAIN-01's original dual-register design after direct Phase 1 sign-off feedback from the product owner: users don't want to choose a "register" for how the app talks to them, and one well-written definition can serve a non-technical and a technical reader at once without a second wording track to maintain or clinically review | Decided |
 | DIET-01 (the dietary-pattern question) is no longer a mandatory onboarding step; it's fully optional, set whenever a user chooses to in Settings, and re-homed to Phase 2 alongside its actual consumers (DIET-02/DIET-03) | Reverses Phase 1's original "Q0b, unconditional, directly after age" design after direct product-owner feedback: the question felt arbitrary that early in onboarding, and since dietary pattern already never affects a clearance gate, some users should be free to never engage with diet features at all | Decided |
+| ONBOARD-01's calibration (guided walk-or-light-lift session) is no longer onboarding's first mandatory session; it moves to a triggered pre-assessment inside a later exercise-recommendation feature (provisionally Phase 2), factoring in age and the condition tags the safety screening already collects. Onboarding itself now ends after the safety screening — welcome, age floor, privacy explainer, then the full screening straight through to home. The "never a self-reported fitness-level dropdown" half of ONBOARD-01 is unchanged; only "first session" is reversed. The calibration domain and UI (`CalibrationIntroView`/`CalibrationSessionView`/`CalibrationCompleteView`, pedometer/stopwatch sources, `RadialSessionTimer`) are kept intact, router-unreachable from onboarding rather than deleted, for the future flow to reuse unmodified | Direct product feedback (2026-09-01): calibration felt better positioned as something a user opts into when they actually ask for exercise recommendations, alongside a broader vision (diet section, exercise recommendations, home summary, friend/family events) — see the new Backlog entry this same update adds. Also removes Phase 1's only remaining physical-device-dependent verification task (01-18's GPS calibration walk), since calibration is no longer part of onboarding's closure criteria | Decided |
 
 ---
-*Last updated: 2026-08-29 — moved the dietary-pattern question (DIET-01) out of onboarding
-entirely; it's now Settings-only and optional, re-homed to Phase 2. See Key Decisions and
-`01-CONTEXT.md`'s dietary-pattern-placement note for the full reasoning.*
+*Last updated: 2026-09-01 — moved calibration (ONBOARD-01) out of onboarding entirely; it's now a
+future triggered pre-assessment inside the exercise-recommendation feature, provisionally scoped
+to Phase 2. See Key Decisions, `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s
+updated Phase 1 success criterion 1 and new Backlog entry for the full reasoning.*

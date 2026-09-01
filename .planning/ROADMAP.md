@@ -32,13 +32,17 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 ### Phase 1: Onboarding & Safety Intake
 
-**Goal**: Every new user, regardless of age or health background, completes a real calibration session and a safety screening that will safely gate personalized guidance later — without ever being funneled into a separate "senior" or "kid" experience.
+**Goal**: Every new user, regardless of age or health background, completes a safety screening that will safely gate personalized guidance later — without ever being funneled into a separate "senior" or "kid" experience.
 **Depends on**: Nothing (first phase)
-**Requirements**: ONBOARD-01, EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, CROSSGEN-03, CROSSGEN-05
+**Requirements**: EXPLAIN-01, HEALTH-01, HEALTH-02, HEALTH-05, HEALTH-06, MINOR-01, CROSSGEN-03, CROSSGEN-05
 **Success Criteria** (what must be TRUE):
 
-  1. A new user's first session is a guided walk-or-light-lift calibration (never a self-reported
-     fitness-level dropdown), and the result sets their starting baseline.
+  1. *Revised 2026-09-01 (see PROJECT.md Key Decisions):* Onboarding contains no calibration or
+     fitness-assessment step of any kind — a new user's flow is exactly welcome, the 13+ age
+     floor, the privacy explainer, then the complete safety screening straight through to home.
+     A real guided walk-or-light-lift pre-assessment (never a self-reported fitness-level
+     dropdown, ONBOARD-01) still exists and is unchanged in kind — it now triggers later, the
+     first time a user requests exercise recommendations, and is scoped to Phase 2 (provisional).
 
   2. Ritham speaks to every user in one consistent voice, with no explanation-register choice
      anywhere in onboarding or Settings, and every technical term elsewhere is tap-to-expand into
@@ -56,9 +60,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
   5. A user under 13 sees a plain blocking message and cannot proceed — Ritham has no under-13
      tier of any kind, permanently. Anyone 13 or older gets full, identical access from the moment
-     they enter their age: calibration, tracking, Momentum, and the complete safety screening
-     (gate questions, condition checklist, SCOFF) — no parental consent step, no partial gate, at
-     any age from 13 up.
+     they enter their age: tracking, Momentum, and the complete safety screening (gate questions,
+     condition checklist, SCOFF) — no parental consent step, no partial gate, at any age from 13
+     up.
 
   6. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
@@ -85,13 +89,24 @@ Plans:
 *consent HTTP API, 01-14 consent screens/client) after D-14 replaced tiered parental consent with a*
 *permanent 13+ age floor — see `01-CONTEXT.md` D-14/D-15 and `01-DISCUSSION-LOG.md`. Original count*
 *was 18 plans across 9 waves; no wave was fully emptied, so the wave count is unchanged.*
+
+*2026-09-01: calibration moved out of onboarding entirely (see PROJECT.md Key Decisions).*
+*01-05 and 01-15 stay checked — the calibration domain and screens they built are real, working,*
+*and kept intact for reuse by the future exercise-recommendation flow; only `OnboardingRouter`'s*
+*wiring changed (calibration is now router-unreachable from `.welcome`). This also resolves*
+*01-18's remaining human-verification gap: its physical-device GPS calibration walk task is moot*
+*now that calibration isn't part of onboarding's closure criteria — only the AX3/AX5*
+*accessibility pass remains for 01-18. `RadialSessionTimer` (built 2026-09-01 for the calibration*
+*session screen) has not yet been verified at AX3/AX5 itself, since that screen is currently*
+*unreachable in the running app — carry that check into whichever phase builds the*
+*recommend-exercises trigger.*
 **UI hint**: yes
 
 ### Phase 2: Core Tracking & Adjusted Guidance
 
 **Goal**: Users can log every real training session — cardio or strength — and see safety-adjusted guidance the moment it applies, forever for free.
 **Depends on**: Phase 1
-**Requirements**: CARDIO-01, CARDIO-02, CARDIO-03, STRENGTH-01, STRENGTH-02, STRENGTH-03, STRENGTH-04, STRENGTH-05, HEALTH-03, HEALTH-04, DIET-01, DIET-02, DIET-03, MONETIZE-01, CROSSGEN-02
+**Requirements**: CARDIO-01, CARDIO-02, CARDIO-03, STRENGTH-01, STRENGTH-02, STRENGTH-03, STRENGTH-04, STRENGTH-05, HEALTH-03, HEALTH-04, DIET-01, DIET-02, DIET-03, MONETIZE-01, CROSSGEN-02, ONBOARD-01 (provisional)
 **Success Criteria** (what must be TRUE):
 
   1. A user can track a cardio session via GPS (pace/distance/elevation/splits/grade-adjusted
@@ -124,6 +139,13 @@ Plans:
 
   7. A user can set a dietary pattern (none/vegetarian/vegan) whenever they choose to — never a
      mandatory onboarding step — and it never changes a clearance-gate outcome.
+
+  8. *Provisional scope placeholder, added 2026-09-01, not yet planned in detail:* a user can
+     request exercise recommendations; the first time they do, they complete the real
+     walk-or-light-lift pre-assessment moved out of onboarding (ONBOARD-01), and recommendations
+     factor in age and applicable condition tags from the safety screening. Whether this stays
+     folded into Phase 2 or becomes its own phase was left open deliberately — revisit before
+     planning this phase in detail, not assumed settled by this placeholder.
 **Plans**: TBD
 **UI hint**: yes
 
@@ -328,6 +350,50 @@ Four separate items, not all resolved to the same level of clarity:
    fixed-height frame — worth a direct re-check on a real device/simulator before assuming
    anything is actually broken here, since this may just describe the screen *feeling* dense
    rather than a real scroll failure.
+
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
+### Phase 999.4: Full app vision — recommendations, home summary, friend/family events (BACKLOG)
+
+**Goal:** [Captured for future planning] A broader product vision described 2026-09-01, alongside
+the decision to move calibration out of onboarding into a triggered exercise-recommendation
+pre-assessment (see Key Decisions in `PROJECT.md` and Phase 2's provisional success criterion 8).
+Explicitly captured rather than built now — most of it already fits the existing roadmap; one
+piece is genuinely new and bigger. Not yet scoped into requirements or plans.
+
+1. **A diet-plan section and an exercise-recommendations section.** Exercise recommendations is
+   Phase 2's new provisional scope (criterion 8) — the pre-assessment trigger this same session
+   moved out of onboarding. Diet-plan section maps to Phase 2's existing DIET-02/DIET-03 nutrition
+   guidance (population-level reference figures, matched to dietary pattern). Likely no new
+   requirement needed here beyond what Phase 2 already covers — confirm during Phase 2 planning
+   rather than assuming a new section is required.
+
+2. **A home page showing steps taken, calories burned, and achievement badges** (e.g. for trying a
+   new exercise type). Partially covered already: Phase 4's CROSSGEN-01 locks the home screen to
+   exactly 3 things by default (today's target, streak, last session summary), and Phase 3's
+   MOMENTUM-01 already has a milestone-badge mechanic (4/12/26/52 weeks). Steps/calories and a
+   broader achievement system beyond streak milestones are not currently scoped — needs a decision
+   on whether this extends CROSSGEN-01's "exactly 3 things" rule or adds a new progressive-disclosure
+   layer beneath it, not a silent expansion of what the home screen shows by default.
+
+3. **Friend/family event creation, invites, RSVP-by-availability, and event-completion badges**
+   (e.g. "create a hike to this place, ask people to join, badge on completion"). This is the
+   genuinely new, bigger piece — it goes past what's currently scoped anywhere in the roadmap.
+   Phase 4 today only has a household group with a fixed, non-ranked "nice work" cheer (its own
+   goal: "comparison and ranking structurally impossible, not just discouraged"). A real
+   invite-only friend circle was already deliberately deferred to v2 as its own item
+   (`HOUSEHOLD-02`, referenced in Phase 4's rung-3 note) — this idea should extend HOUSEHOLD-02
+   rather than sit as a disconnected parallel feature, since they're the same underlying capability
+   (a friend-level social graph beyond the household). Two locked decisions bear directly on
+   design here, not just scope: nothing in the app may become comparative ("no comparison, ever"
+   is the core value, not a guideline), and location sharing defaults to no-precision (modeled
+   against the Strava heatmap incident, per `PROJECT.md`'s privacy commitments) — an event like
+   "hike to this place" needs that design worked out before it's just a feature request.
 
 **Requirements:** TBD
 **Plans:** 0 plans
