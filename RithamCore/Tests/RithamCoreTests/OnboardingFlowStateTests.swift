@@ -136,28 +136,40 @@ struct OnboardingFlowStateTests {
         #expect(subject.isSCOFFTriggered)
     }
 
-    // MARK: - D-03: a skipped calibration never blocks progress
+    // MARK: - Calibration is no longer part of onboarding (2026-09-01)
 
-    @Test("a skipped calibration still reaches the step after calibrationComplete")
-    func skippedCalibrationReachesTheStepAfterCalibrationComplete() {
-        var subject = answers(age: 30)
-        subject.calibrationOutcome = .skipped
+    @Test("no walk from welcome ever visits a calibration step, regardless of calibrationOutcome")
+    func onboardingNeverVisitsCalibration() {
+        for outcome: CalibrationOutcome in [.notStarted, .skipped, .completed(CalibrationBaseline.provisional(establishedAt: .distantPast))] {
+            var subject = answers(age: 30)
+            subject.calibrationOutcome = outcome
 
-        let afterIntro = OnboardingRouter.nextStep(after: .calibrationIntro, answers: subject)
-        #expect(afterIntro == .screeningOpeningDisclaimer)
+            let visited = traverse(answers: subject)
+            #expect(!visited.contains(.calibrationIntro))
+            #expect(!visited.contains(.calibrationSession))
+            #expect(!visited.contains(.calibrationComplete))
+            #expect(visited.contains(.screeningOpeningDisclaimer))
+        }
 
-        let visited = traverse(answers: subject)
-        #expect(!visited.contains(.calibrationSession))
-        #expect(!visited.contains(.calibrationComplete))
-        #expect(visited.contains(.screeningOpeningDisclaimer))
+        #expect(!OnboardingRouter.isReachable(.calibrationIntro, answers: answers(age: 30)))
     }
 
-    @Test("a non-skipped calibration visits the session and completion steps")
-    func nonSkippedCalibrationVisitsSessionAndCompletion() {
-        let subject = answers(age: 30)
-        let visited = traverse(answers: subject)
-        #expect(visited.contains(.calibrationSession))
-        #expect(visited.contains(.calibrationComplete))
+    @Test("privacyExplainer routes straight to screeningOpeningDisclaimer, skipping calibration entirely")
+    func privacyExplainerSkipsCalibration() {
+        #expect(OnboardingRouter.nextStep(after: .privacyExplainer, answers: answers(age: 30)) == .screeningOpeningDisclaimer)
+    }
+
+    @Test("the three calibration steps' own switch arms still resolve correctly when invoked directly, since a future flow reuses them")
+    func calibrationStepArmsStillResolveDirectly() {
+        var skipped = answers(age: 30)
+        skipped.calibrationOutcome = .skipped
+        #expect(OnboardingRouter.nextStep(after: .calibrationIntro, answers: skipped) == .screeningOpeningDisclaimer)
+
+        var notStarted = answers(age: 30)
+        notStarted.calibrationOutcome = .notStarted
+        #expect(OnboardingRouter.nextStep(after: .calibrationIntro, answers: notStarted) == .calibrationSession)
+        #expect(OnboardingRouter.nextStep(after: .calibrationSession, answers: notStarted) == .calibrationComplete)
+        #expect(OnboardingRouter.nextStep(after: .calibrationComplete, answers: notStarted) == .screeningOpeningDisclaimer)
     }
 
     // MARK: - Determinism

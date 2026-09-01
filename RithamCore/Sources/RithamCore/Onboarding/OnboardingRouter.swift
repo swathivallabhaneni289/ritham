@@ -16,6 +16,20 @@
 // whenever they choose to (`SettingsView`, independent of this router) rather than a mandatory
 // question asked before they've seen the app. See `01-CONTEXT.md`'s dietary-pattern-placement
 // note for the full decision record.
+//
+// Calibration (`.calibrationIntro`/`.calibrationSession`/`.calibrationComplete`) is, as of
+// direct product feedback (2026-09-01), no longer part of this flow at all: `.privacyExplainer`
+// routes straight to `.screeningOpeningDisclaimer`, so no walk from `.welcome` ever reaches
+// calibration regardless of `answers.calibrationOutcome`. ONBOARD-01's real assessment (never a
+// self-reported fitness-level dropdown) still exists and still matters -- it moves to a
+// triggered pre-assessment inside a later exercise-recommendation flow, factoring in age and
+// condition tags this same screening already collects, rather than being onboarding's first
+// session. The three calibration `OnboardingStep` cases and their switch arms below are left
+// intact on purpose (not deleted): the views built against them (`CalibrationIntroView`,
+// `CalibrationSessionView`, `CalibrationCompleteView`, and the calibration domain/UI beneath
+// them, including `RadialSessionTimer`) are meant to be reused, unmodified, by that future flow.
+// They are router-unreachable from `.welcome` now, not gone -- see `PROJECT.md`'s Key Decisions
+// for the full record.
 
 /// Decides what onboarding screen comes after `current`, given the answers collected so far.
 ///
@@ -43,7 +57,9 @@ public enum OnboardingRouter {
             return isEligible ? .privacyExplainer : .ageIneligible
 
         case .privacyExplainer:
-            return .calibrationIntro
+            // Calibration is no longer part of onboarding (2026-09-01) -- straight to the
+            // safety screening. See this file's header comment for the full record.
+            return .screeningOpeningDisclaimer
 
         case .calibrationIntro:
             // D-03: skipping calibration never blocks progress. A skipped session routes
