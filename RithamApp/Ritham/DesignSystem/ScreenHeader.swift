@@ -18,6 +18,15 @@ struct DecorativeSurface {
     /// Calibration start / complete: band motif and ring, no halftone or arcs.
     static let calibration = DecorativeSurface(bandMotif: true, halftone: false, arcs: false, ringAndDot: true)
 
+    /// The calibration session screen specifically -- same header treatment as `.calibration`
+    /// but with the ring-and-dot ornament turned off. This screen alone also shows
+    /// `RadialSessionTimer`, a genuine data-bearing coral progress ring in the content area.
+    /// Keeping the static lime ring-and-dot in the header at the same time would put two circular
+    /// motifs on one screen, one static and one filling -- exactly the "reads as Apple Activity
+    /// Rings" risk the Ring-and-Dot binding rule exists to prevent (01-UI-SPEC.md). Intro and
+    /// complete keep the ring; only the live session screen drops it.
+    static let calibrationSession = DecorativeSurface(bandMotif: true, halftone: false, arcs: false, ringAndDot: false)
+
     /// Any screen that collects, confirms, or blocks on health or consent data stays flat
     /// charcoal: no bands, no halftone, no arcs, no mascot (01-UI-SPEC.md, Decorative Surface
     /// Inventory closing rule). Per the Inventory's 2026-08-23 update -- Ritham has a permanent

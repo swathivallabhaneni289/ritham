@@ -44,7 +44,11 @@ public enum OnboardingCopy {
     }
 
     public enum Privacy {
-        public static let headline = "Your privacy, in plain terms."
+        /// Live-review feedback (2026-08-29, Phase 999.3 item 1, confirmed 2026-09-01): the
+        /// original "in plain terms" framing self-labels its own copy as simplified, which reads
+        /// as condescending on screen even with no dual-register system behind it anymore. This
+        /// says the same thing directly instead.
+        public static let headline = "Your privacy, up front."
         public static let bulletNothingShared = "Nothing is shared or synced with anyone by default."
         public static let bulletAnswersPrivate = "Your health answers stay private, only used to adjust suggestions for you."
         public static let bulletYouChoose = "You choose if and when to share with household members, later."
@@ -63,6 +67,17 @@ public enum OnboardingCopy {
         /// verbatim, even though 01-UI-SPEC.md's Copywriting Contract table (which enumerates
         /// only the headline/body/CTA rows) has no dedicated row for it.
         public static let skipCTA = "Skip for now"
+
+        /// Live-review feedback (2026-08-29, Phase 999.3 item 2): state up front how long the
+        /// walk takes, shown on the session screen before the user starts. Computed from
+        /// `CalibrationThreshold.qualifyingWalkDuration` rather than a hardcoded number (a Rule 3
+        /// deviation from this file's plain-literal pattern) so the copy cannot drift out of sync
+        /// if that threshold is ever retuned. Walk only: the lift threshold is sets/exercises,
+        /// not time, so a duration statement does not apply there.
+        public static var walkDurationHint: String {
+            let minutes = Int(CalibrationThreshold.qualifyingWalkDuration / 60)
+            return "About \(minutes) minutes of walking counts."
+        }
     }
 
     public enum HealthProfile {

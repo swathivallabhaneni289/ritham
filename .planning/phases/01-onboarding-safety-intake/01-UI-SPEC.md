@@ -223,7 +223,7 @@ Summary:
 | Age blocking (under 13) | Headline | "Ritham is for ages 13+." | MINOR-01 | Original app copy |
 | Age blocking (under 13) | Body | "You'll need to be 13 or older to use Ritham. Go back and double-check the age you entered — nothing you entered is saved." | MINOR-01 | Original app copy |
 | Age blocking (under 13) | CTA | "Go back" | MINOR-01 | Original app copy |
-| Privacy explainer | Headline | "Your privacy, in plain terms." | CROSSGEN-03 | Original app copy |
+| Privacy explainer | Headline | "Your privacy, up front." | CROSSGEN-03 | Revised 2026-09-01: live-review feedback found the original "in plain terms" self-labeling read as condescending on screen |
 | Privacy explainer | Body (bullets) | "Nothing is shared or synced with anyone by default." / "Your health answers stay private — only used to adjust suggestions for you." / "You choose if and when to share with household members, later." | CROSSGEN-03 | Original app copy |
 | Privacy explainer | CTA | "Got it — continue" | CROSSGEN-03 | Original app copy |
 | Calibration start | Headline | "Let's find your starting point." | ONBOARD-01 | Original app copy |

@@ -59,7 +59,7 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
     }
 
     var body: some View {
-        RithamScreen(surface: DecorativeSurface.calibration, headline: sessionHeadline) {
+        RithamScreen(surface: DecorativeSurface.calibrationSession, headline: sessionHeadline) {
             switch mode {
             case .walk:
                 walkContent
@@ -93,10 +93,28 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
                     .font(RithamType.label)
                     .foregroundStyle(RithamColor.paper)
 
-                Text(formattedWalkDuration)
-                    .font(RithamType.display)
-                    .modifier(RithamType.numerals())
-                    .foregroundStyle(RithamColor.paper)
+                if !hasStarted {
+                    Text(OnboardingCopy.Calibration.walkDurationHint)
+                        .font(RithamType.body)
+                        .foregroundStyle(RithamColor.paper)
+                }
+
+                HStack {
+                    Spacer(minLength: 0)
+                    VStack(spacing: RithamSpacing.sm) {
+                        RadialSessionTimer(fraction: walkFraction, isComplete: isComplete())
+
+                        Text(formattedWalkDuration)
+                            .font(RithamType.display)
+                            .modifier(RithamType.numerals())
+                            .foregroundStyle(RithamColor.paper)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Elapsed time")
+                    .accessibilityValue(spokenElapsedDescription)
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, RithamSpacing.sm)
 
                 if let pace = displayPaceSecondsPerKm {
                     Text("Pace: \(formattedPace(pace)) / km")
@@ -104,8 +122,6 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
                         .modifier(RithamType.numerals())
                         .foregroundStyle(RithamColor.paper)
                 }
-
-                ProgressBarStrip(fraction: walkFraction)
 
                 walkControls
             }
@@ -132,7 +148,7 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
                     }
                 }
                 if !usesStopwatch && pedometerSession.isAvailable {
-                    SecondaryCTAButton(title: "Switch to manual stopwatch") {
+                    SecondaryCTAButton(title: "Switch to stopwatch") {
                         switchToStopwatch()
                     }
                 }
@@ -146,14 +162,14 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
     private var walkSourceStatusText: String {
         if !hasStarted {
             if usesStopwatch {
-                return "Using the manual stopwatch."
+                return "Using the stopwatch."
             }
             return pedometerSession.isAvailable
                 ? "Using your phone's motion sensor."
-                : "Motion sensor unavailable -- using the manual stopwatch."
+                : "Motion sensor unavailable -- using the stopwatch."
         }
         if usesStopwatch {
-            return stopwatchSession.isRunning ? "Manual stopwatch running." : "Manual stopwatch stopped."
+            return stopwatchSession.isRunning ? "Stopwatch running." : "Stopwatch stopped."
         }
         return "Motion sensor running."
     }
@@ -162,6 +178,22 @@ struct CalibrationSessionView: View, OnboardingStepPresenting {
         guard case .walk(let walk) = activeWalkSource.progress else { return "00:00" }
         let totalSeconds = max(0, Int(walk.continuousDuration))
         return String(format: "%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+    }
+
+    /// A VoiceOver-friendly spoken form of elapsed vs. target time -- "4 minutes 20 seconds of
+    /// 10 minutes" -- rather than having VoiceOver read the "04:20" digit string literally.
+    /// `RadialSessionTimer` hides itself from the accessibility tree; this is the single value
+    /// its wrapping element reports instead.
+    private var spokenElapsedDescription: String {
+        guard case .walk(let walk) = activeWalkSource.progress else { return "0 seconds" }
+        let elapsedSeconds = max(0, Int(walk.continuousDuration))
+        let targetMinutes = Int(CalibrationThreshold.qualifyingWalkDuration / 60)
+        let elapsedMinutes = elapsedSeconds / 60
+        let remainingSeconds = elapsedSeconds % 60
+        let elapsedDescription = elapsedMinutes > 0
+            ? "\(elapsedMinutes) minutes \(remainingSeconds) seconds"
+            : "\(remainingSeconds) seconds"
+        return "\(elapsedDescription) of \(targetMinutes) minutes"
     }
 
     private var displayPaceSecondsPerKm: Double? {
