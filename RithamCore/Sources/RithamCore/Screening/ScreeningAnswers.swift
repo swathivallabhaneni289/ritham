@@ -198,33 +198,66 @@ public enum ChecklistItem: String, CaseIterable, Sendable, Hashable, Codable {
 
 /// The user's current condition-checklist selection. §1.3 states that choosing "None of the
 /// above" clears any other selection; that rule is enforced inside `toggle`, the type's only
-/// mutator, so no view can ever produce a contradictory selection containing both
+/// item-level mutator, so no view can ever produce a contradictory selection containing both
 /// `noneOfTheAbove` and another item.
 public struct ChecklistSelection: Sendable, Equatable, Codable {
     public private(set) var items: Set<ChecklistItem>
 
-    public init(items: Set<ChecklistItem> = []) {
+    /// Categories the user has explicitly confirmed "none of these apply to me" for, via
+    /// `toggleNoneForSection(_:sectionItems:)`. Kept separate from `items` being merely empty --
+    /// live-review feedback (2026-09-01) wanted each checklist section to carry its own "None of
+    /// the above" rather than one global one at the end, and a health screening should be able to
+    /// tell "the user reviewed this section and confirmed nothing applies" apart from "the user
+    /// hasn't looked at this section yet." `.noneOfTheAbove` (the global sentinel `toggle`
+    /// enforces above) still means "nothing anywhere, full stop" and remains untouched by this.
+    public private(set) var noneConfirmedCategories: Set<ChecklistCategory>
+
+    public init(items: Set<ChecklistItem> = [], noneConfirmedCategories: Set<ChecklistCategory> = []) {
         self.items = items
+        self.noneConfirmedCategories = noneConfirmedCategories
     }
 
     /// Toggles `item`'s membership in the selection. Selecting `noneOfTheAbove` empties the
-    /// set first (then adds it back); selecting any other item removes `noneOfTheAbove`
-    /// before applying the normal add/remove toggle.
+    /// set first (then adds it back) and clears every section's confirmation, since the global
+    /// sentinel already implies all of them; selecting any other item removes `noneOfTheAbove`
+    /// and that item's own section confirmation before applying the normal add/remove toggle.
     public mutating func toggle(_ item: ChecklistItem) {
         if item == .noneOfTheAbove {
             if items.contains(.noneOfTheAbove) {
                 items.remove(.noneOfTheAbove)
             } else {
                 items = [.noneOfTheAbove]
+                noneConfirmedCategories.removeAll()
             }
             return
         }
 
         items.remove(.noneOfTheAbove)
+        noneConfirmedCategories.remove(item.category)
         if items.contains(item) {
             items.remove(item)
         } else {
             items.insert(item)
+        }
+    }
+
+    /// Toggles a per-section "none of these apply" confirmation. `sectionCategories` is normally
+    /// one category, except the pregnancy/postpartum view groups two under a single confirmation
+    /// (`ConditionChecklistView` follows §1.3's visual grouping, not `ChecklistCategory`'s split --
+    /// see that view's own comment). Turning the confirmation on clears any already-selected
+    /// items in `sectionItems`; selecting any of those items back through `toggle(_:)` clears the
+    /// confirmation off again, the same way selecting any item already clears the global
+    /// `noneOfTheAbove` sentinel above.
+    public mutating func toggleNoneForSection(
+        _ sectionCategories: Set<ChecklistCategory>,
+        sectionItems: Set<ChecklistItem>
+    ) {
+        if noneConfirmedCategories.isSuperset(of: sectionCategories) {
+            noneConfirmedCategories.subtract(sectionCategories)
+        } else {
+            noneConfirmedCategories.formUnion(sectionCategories)
+            items.subtract(sectionItems)
+            items.remove(.noneOfTheAbove)
         }
     }
 }

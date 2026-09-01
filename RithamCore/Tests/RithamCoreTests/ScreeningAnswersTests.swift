@@ -103,4 +103,63 @@ struct ScreeningAnswersTests {
         #expect(ChecklistItem.noneOfTheAbove.category == .none)
         #expect(ChecklistItem.highBloodPressure.category == .cardiovascular)
     }
+
+    @Test("confirming a section's none clears that section's selected items")
+    func confirmingSectionNoneClearsSectionItems() {
+        var selection = ChecklistSelection()
+        selection.toggle(.highBloodPressure)
+        selection.toggle(.heartDisease)
+        selection.toggleNoneForSection([.cardiovascular], sectionItems: [
+            .highBloodPressure, .heartDisease, .irregularHeartbeat, .otherHeartOrCirculatoryCondition,
+        ])
+        #expect(selection.items.isEmpty)
+        #expect(selection.noneConfirmedCategories == [.cardiovascular])
+    }
+
+    @Test("confirming a section's none does not disturb another section's selected items")
+    func confirmingSectionNoneLeavesOtherSectionsAlone() {
+        var selection = ChecklistSelection()
+        selection.toggle(.type1Diabetes)
+        selection.toggleNoneForSection([.cardiovascular], sectionItems: [
+            .highBloodPressure, .heartDisease, .irregularHeartbeat, .otherHeartOrCirculatoryCondition,
+        ])
+        #expect(selection.items == [.type1Diabetes])
+    }
+
+    @Test("selecting an item in a confirmed-none section clears that section's confirmation")
+    func selectingItemClearsSectionNoneConfirmation() {
+        var selection = ChecklistSelection()
+        selection.toggleNoneForSection([.cardiovascular], sectionItems: [
+            .highBloodPressure, .heartDisease, .irregularHeartbeat, .otherHeartOrCirculatoryCondition,
+        ])
+        selection.toggle(.highBloodPressure)
+        #expect(selection.noneConfirmedCategories.isEmpty)
+        #expect(selection.items == [.highBloodPressure])
+    }
+
+    @Test("toggling a section's none confirmation twice removes it")
+    func togglingSectionNoneTwiceRemovesIt() {
+        var selection = ChecklistSelection()
+        selection.toggleNoneForSection([.foodAllergies], sectionItems: [.foodAllergies])
+        selection.toggleNoneForSection([.foodAllergies], sectionItems: [.foodAllergies])
+        #expect(selection.noneConfirmedCategories.isEmpty)
+    }
+
+    @Test("selecting the global noneOfTheAbove clears every section's confirmation")
+    func globalNoneOfTheAboveClearsSectionConfirmations() {
+        var selection = ChecklistSelection()
+        selection.toggleNoneForSection([.foodAllergies], sectionItems: [.foodAllergies])
+        selection.toggle(.noneOfTheAbove)
+        #expect(selection.noneConfirmedCategories.isEmpty)
+        #expect(selection.items == [.noneOfTheAbove])
+    }
+
+    @Test("confirming none for a section spanning two categories covers both")
+    func confirmingNoneForMultiCategorySectionCoversBoth() {
+        var selection = ChecklistSelection()
+        selection.toggle(.currentlyPregnant)
+        selection.toggleNoneForSection([.pregnancy, .postpartum], sectionItems: [.currentlyPregnant, .postpartum])
+        #expect(selection.items.isEmpty)
+        #expect(selection.noneConfirmedCategories == [.pregnancy, .postpartum])
+    }
 }

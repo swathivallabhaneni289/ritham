@@ -6,6 +6,11 @@ import RithamCore
 /// initializer) rather than a second, view-local reimplementation of the exclusive-option rule --
 /// a second implementation could drift and feed the resolver a contradictory selection (T-01-99).
 ///
+/// Each section also carries its own "None of these apply" confirmation, routed through
+/// `ChecklistSelection.toggleNoneForSection(_:sectionItems:)` for the same reason -- live-review
+/// feedback (2026-09-01) wanted a per-section "none" rather than only one at the end of the whole
+/// list. The plain global one below the loop still stands for "nothing anywhere, full stop."
+///
 /// The pregnancy/postpartum and eating-disorder-history groups each render their §1.3 rationale
 /// line above the group, at the `label` role (full weight, not `fineprint`'s reduced-opacity
 /// treatment) -- these lines explain why Ritham asks, and treating them as a footnote would
@@ -24,6 +29,14 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         let title: String
         let items: [ChecklistItem]
         let rationale: String?
+
+        /// Derived from `items` rather than hand-listed a second time -- `ChecklistItem.category`
+        /// is already the single source of truth for which category each item belongs to, and a
+        /// second, separately-maintained mapping here could drift from it (T-01-99's reasoning
+        /// applied to this new per-section confirmation).
+        var categories: Set<ChecklistCategory> {
+            Set(items.map(\.category))
+        }
     }
 
     private static let groups: [Group] = [
@@ -81,6 +94,13 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
                         checklistSelection: checklistBinding,
                         optionTitle: { $0.displayName }
                     )
+
+                    ChoiceChip(
+                        title: "None of these apply",
+                        isSelected: checklistBinding.wrappedValue.noneConfirmedCategories.isSuperset(of: group.categories)
+                    ) {
+                        checklistBinding.wrappedValue.toggleNoneForSection(group.categories, sectionItems: Set(group.items))
+                    }
                 }
             }
 
