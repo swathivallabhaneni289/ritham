@@ -104,7 +104,10 @@ public enum ScreeningCopy {
 
     // MARK: - §1.3 Condition checklist intro
 
-    public static let conditionChecklistIntro = "Do any of these apply to you? Select all that apply. Choosing \"None of the above\" clears any other selections."
+    // Rewritten (2026-09-02) once each section got its own "None of these apply" -- the old
+    // wording described the single global sentinel this screen no longer has (see
+    // `ConditionChecklistView`'s own header comment).
+    public static let conditionChecklistIntro = "Do any of these apply to you? Select every option that fits in each section, or choose \"None of these apply\" if nothing does."
 
     // MARK: - §1.4 SCOFF intro
 
