@@ -1,5 +1,13 @@
 import SwiftUI
 
+/// Enough to clear the floating back button and status bar on a collapsed-header screen (see
+/// `RithamScreen`'s own `.safeAreaInset` for where this is used) -- measured directly against a
+/// live screenshot on the reference device, 402pt wide (see `HeroBandMotif`'s own doc comment for
+/// that device and why constants here are measured, not assumed), with a little margin rather
+/// than the exact minimum. A plain top-level constant, not a member of `RithamScreen` itself --
+/// Swift does not allow a stored `static let` on a generic type.
+private let collapsedHeaderTopInset: CGFloat = 110
+
 /// The screen scaffold every onboarding/screening screen in this phase composes, binding the
 /// design system (`RithamColor`/`RithamType`/`RithamSpacing`) to the decorative surface
 /// inventory (01-UI-SPEC.md, Decorative Surface Inventory).
@@ -47,6 +55,7 @@ struct RithamScreen<Content: View>: View {
     private var headerIsCollapsed: Bool {
         dynamicTypeSize.isAccessibilitySize || !surface.hasVisibleContent
     }
+
 
     init(
         surface: DecorativeSurface,
@@ -147,9 +156,16 @@ struct RithamScreen<Content: View>: View {
             // (`HeroBandMotif`'s own doc comment). A screen with a real decorative header already
             // has far more than this clearance from that header alone; this inset exists only to
             // backstop the screens that have none.
+            //
+            // `collapsedHeaderTopInset`, not `RithamSpacing.xl` -- a first pass at the *size* of
+            // this inset used `RithamSpacing.xl` (32pt) and a follow-up screenshot on the
+            // condition checklist showed content still scrolling behind the back button, barely
+            // moved from before the fix. Measured directly against that screenshot, the floating
+            // back button's own bottom edge sits roughly 100pt down the screen -- `xl` covered
+            // under a third of the space actually needed.
             .safeAreaInset(edge: .top, spacing: 0) {
                 if headerIsCollapsed {
-                    Color.clear.frame(height: RithamSpacing.xl)
+                    Color.clear.frame(height: collapsedHeaderTopInset)
                 }
             }
         }
