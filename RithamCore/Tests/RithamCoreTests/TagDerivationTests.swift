@@ -397,14 +397,14 @@ struct TagDerivationTests {
 
     @Test("U-1 yes yields the 65-plus/deconditioned tag")
     func u1YesYieldsAgeTag() {
-        let answers = ScreeningAnswers(u1AgeOrDeconditioned: .yes)
+        let answers = ScreeningAnswers(u1ReturningAfterInactivity: .yes)
         let tags = TagDerivation.deriveTags(from: answers, ageDerivedTags: [])
         #expect(tags.contains(.age65PlusOrDeconditioned))
     }
 
     @Test("a 65-year-old answering U-1 No still holds the 65-plus tag from ageDerivedTags")
     func ageDerivedTagSurvivesU1No() {
-        let answers = ScreeningAnswers(age: 65, u1AgeOrDeconditioned: .no)
+        let answers = ScreeningAnswers(age: 65, u1ReturningAfterInactivity: .no)
         let tags = TagDerivation.deriveTags(
             from: answers,
             ageDerivedTags: ConditionTag.ageDerivedTags(forAge: 65)

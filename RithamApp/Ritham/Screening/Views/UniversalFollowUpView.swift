@@ -3,11 +3,13 @@ import RithamCore
 
 /// §1.4's universal follow-up (U-1), shown to every user regardless of what else was
 /// selected -- including a user who chose only "None of the above" -- so this view has no guard
-/// on `flow.answers.screening.checklist` at all. Per §1.1's precedence rule, a "No" answer here
-/// never clears an age-derived `65+ / Deconditioned / Returning After Inactivity` tag a user
-/// already holds from Q0 (age >= 65); `ConditionTag.ageDerivedTags`/`TagDerivation` already
-/// guarantee that additive-only behavior, and this view has no logic of its own that could
-/// violate it.
+/// on `flow.answers.screening.checklist` at all. The question asks only about recent inactivity;
+/// it does not ask about age at all (live-review feedback, 2026-09-01, dropped a redundant
+/// "are you 65 or older" clause -- see `ScreeningCopy.universalFollowUp`'s own comment). Per
+/// §1.1's precedence rule, a "No" answer here never clears an age-derived
+/// `65+ / Deconditioned / Returning After Inactivity` tag a user already holds from Q0
+/// (age >= 65); `ConditionTag.ageDerivedTags`/`TagDerivation` already guarantee that
+/// additive-only behavior, and this view has no logic of its own that could violate it.
 ///
 /// On continue, resolves the complete screening result and persists it via
 /// `HealthDataStore.saveScreeningResult` -- the last write the onboarding screening flow makes.
@@ -30,7 +32,7 @@ struct UniversalFollowUpView: View, OnboardingStepPresenting {
 
     init(flow: OnboardingFlow) {
         self.flow = flow
-        _selection = State(initialValue: flow.answers.screening.u1AgeOrDeconditioned.map { [$0] } ?? [])
+        _selection = State(initialValue: flow.answers.screening.u1ReturningAfterInactivity.map { [$0] } ?? [])
     }
 
     var body: some View {
@@ -51,7 +53,7 @@ struct UniversalFollowUpView: View, OnboardingStepPresenting {
             }
 
             PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
-                flow.answers.screening.u1AgeOrDeconditioned = selection.first
+                flow.answers.screening.u1ReturningAfterInactivity = selection.first
                 resolveAndSave()
             }
         }

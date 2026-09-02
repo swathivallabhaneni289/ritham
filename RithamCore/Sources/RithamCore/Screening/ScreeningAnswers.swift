@@ -299,7 +299,7 @@ public struct ScreeningAnswers: Sendable, Equatable, Codable {
     public var scoff: SCOFFResponses?
     public var fa1SevereAllergyOrEpinephrine: YesNoUnsure?
     public var os1NewDiagnosisOrTreatmentChange: YesNo?
-    public var u1AgeOrDeconditioned: YesNo?
+    public var u1ReturningAfterInactivity: YesNo?
 
     public init(
         age: Int? = nil,
@@ -328,7 +328,7 @@ public struct ScreeningAnswers: Sendable, Equatable, Codable {
         scoff: SCOFFResponses? = nil,
         fa1SevereAllergyOrEpinephrine: YesNoUnsure? = nil,
         os1NewDiagnosisOrTreatmentChange: YesNo? = nil,
-        u1AgeOrDeconditioned: YesNo? = nil
+        u1ReturningAfterInactivity: YesNo? = nil
     ) {
         self.age = age
         self.g1HeartConditionOrHighBP = g1HeartConditionOrHighBP
@@ -356,6 +356,6 @@ public struct ScreeningAnswers: Sendable, Equatable, Codable {
         self.scoff = scoff
         self.fa1SevereAllergyOrEpinephrine = fa1SevereAllergyOrEpinephrine
         self.os1NewDiagnosisOrTreatmentChange = os1NewDiagnosisOrTreatmentChange
-        self.u1AgeOrDeconditioned = u1AgeOrDeconditioned
+        self.u1ReturningAfterInactivity = u1ReturningAfterInactivity
     }
 }

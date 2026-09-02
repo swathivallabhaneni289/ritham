@@ -68,8 +68,12 @@ public enum TagDerivation {
             result.insert(.clinicianPrescribedDietOrMealPlan)
         }
 
-        // U-1 is a universal follow-up, independent of the checklist.
-        if answers.u1AgeOrDeconditioned == .yes {
+        // U-1 is a universal follow-up, independent of the checklist. It asks only about recent
+        // inactivity -- the 65-plus half of this tag's name comes exclusively from
+        // `ageDerivedTags` below (Q0's age answer), never from U-1 itself; live-review feedback
+        // (2026-09-01) dropped a redundant "are you 65 or older" clause from the question text
+        // once this was confirmed, since it forced a single yes/no over two unrelated facts.
+        if answers.u1ReturningAfterInactivity == .yes {
             result.insert(.age65PlusOrDeconditioned)
         }
 

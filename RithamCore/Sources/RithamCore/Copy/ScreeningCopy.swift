@@ -215,5 +215,15 @@ public enum ScreeningCopy {
 
     // MARK: - §1.4 Universal follow-up (U-1, shown to every user regardless of selection)
 
-    public static let universalFollowUp = "One more thing: are you 65 or older, or returning to exercise after being inactive for the last 3 months or more?"
+    // Live-review feedback (2026-09-01): the original wording asked "are you 65 or older, or
+    // returning to exercise after being inactive for the last 3 months or more" as one yes/no --
+    // two unrelated facts a user cannot answer with a single bit (a 70-year-old who has stayed
+    // active the whole time, or a 30-year-old just back from a 3-month break, both have a real
+    // "yes" and a real "no" buried in that one question). The 65-or-older half was always
+    // redundant anyway: `ConditionTag.ageDerivedTags(forAge:)` already derives the identical
+    // `.age65PlusOrDeconditioned` tag straight from Q0's age answer, unconditionally, before this
+    // question is ever shown (see `TagDerivation`'s own comment). Asking it again here added
+    // nothing but the compound-question bug. This now asks only the one fact nothing else
+    // captures: recent inactivity.
+    public static let universalFollowUp = "One more thing: are you returning to exercise after being inactive for the last 3 months or more?"
 }
