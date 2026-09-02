@@ -2,26 +2,27 @@ import SwiftUI
 import RithamCore
 
 /// §1.3's nine-category condition checklist, shown to everyone. Every selection change routes
-/// through `ChecklistSelection.toggle` (via `ChoiceQuestionView`'s `ChecklistItem`-specific
-/// initializer) rather than a second, view-local reimplementation of the exclusive-option rule --
-/// a second implementation could drift and feed the resolver a contradictory selection (T-01-99).
+/// through `ChecklistSelection.toggle` (via `checkRow`'s commit closure) rather than a second,
+/// view-local reimplementation of the exclusive-option rule -- a second implementation could
+/// drift and feed the resolver a contradictory selection (T-01-99).
 ///
 /// Each section carries its own "None of these apply" confirmation, routed through
 /// `ChecklistSelection.toggleNoneForSection(_:sectionItems:)` for the same reason -- live-review
 /// feedback (2026-09-01) wanted a per-section "none" rather than one shared control at the end of
-/// the whole list, which this view no longer renders (`TagDerivation` recognizes every section
-/// being confirmed none as the equivalent of the old global sentinel -- see its own comment).
-/// `ChecklistItem.noneOfTheAbove` itself still exists in RithamCore for any other caller.
+/// the whole list. `ChecklistItem.noneOfTheAbove` and the single global sentinel it still
+/// enforces (`ChecklistSelection.toggle`) remain in RithamCore for any other caller; `TagDerivation`
+/// recognizes every section being confirmed none as the equivalent of that global sentinel.
 ///
-/// Each section is a tap-to-expand disclosure, the same established pattern `GlossaryTerm`/
-/// `ConditionDisclaimerTag` already use elsewhere in this app (a `Button` toggling local
-/// `@State`, a chevron that flips) rather than SwiftUI's own `DisclosureGroup`, which nothing
-/// else in the app uses -- direct product feedback (2026-09-02): with 8 categories and up to 4
-/// items each, showing every section's chips at once read as "a wall of boxes." Starts fully
-/// collapsed except any section that already has an answer (e.g. re-opening this screen via
-/// Settings' Condition checklist entry point), so a returning user's prior answers are not
-/// hidden behind a second tap. A small checkmark badge next to an answered section's title
-/// survives collapsing it back, so answered state is never silently lost from view.
+/// This has gone through two rounds of live-review feedback on layout alone (2026-09-02): the
+/// original chip grid read as "a wall of boxes," and a tap-to-expand-per-section follow-up added
+/// more interactive surface than it removed ("too complicated"). This version drops both: every
+/// section stays visible with no expand/collapse state at all, each condition is a compact
+/// single-line checkbox row rather than a boxed chip, and "None of these apply" sits inline next
+/// to the section title as one small toggle rather than a separate control down in the list --
+/// declining a whole section is one tap, not two. `checkRow`/the section header are local to this
+/// view (not `ChoiceQuestionView`/`ChoiceChip`, which stay the chip-grid presentation every other
+/// fixed-choice question in this phase uses) since this compact-row treatment is specific to a
+/// list this long, not a change to the shared component.
 ///
 /// The pregnancy/postpartum and eating-disorder-history groups each render their §1.3 rationale
 /// line above the group, at the `label` role (full weight, not `fineprint`'s reduced-opacity
@@ -35,7 +36,6 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
     }
 
     let flow: OnboardingFlow
-    @State private var expandedGroupIDs: Set<String>
 
     private struct Group: Identifiable {
         let id: String
@@ -46,7 +46,7 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         /// Derived from `items` rather than hand-listed a second time -- `ChecklistItem.category`
         /// is already the single source of truth for which category each item belongs to, and a
         /// second, separately-maintained mapping here could drift from it (T-01-99's reasoning
-        /// applied to this new per-section confirmation).
+        /// applied to this per-section confirmation).
         var categories: Set<ChecklistCategory> {
             Set(items.map(\.category))
         }
@@ -83,13 +83,6 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         ], rationale: nil),
     ]
 
-    init(flow: OnboardingFlow) {
-        self.flow = flow
-        let selection = flow.answers.screening.checklist
-        let answeredIDs = Self.groups.filter { Self.isAnswered($0, selection: selection) }.map(\.id)
-        _expandedGroupIDs = State(initialValue: Set(answeredIDs))
-    }
-
     private var checklistBinding: Binding<ChecklistSelection> {
         Binding(
             get: { flow.answers.screening.checklist },
@@ -100,29 +93,22 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, bodyText: ScreeningCopy.conditionChecklistIntro) {
             ForEach(Self.groups) { group in
-                VStack(alignment: .leading, spacing: RithamSpacing.sm) {
-                    disclosureHeader(for: group)
+                VStack(alignment: .leading, spacing: RithamSpacing.xs) {
+                    sectionHeader(for: group)
 
-                    if expandedGroupIDs.contains(group.id) {
-                        if let rationale = group.rationale {
-                            Text(rationale)
-                                .font(RithamType.label)
-                                .foregroundStyle(RithamColor.paper)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
+                    if let rationale = group.rationale {
+                        Text(rationale)
+                            .font(RithamType.label)
+                            .foregroundStyle(RithamColor.paper)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
 
-                        ChoiceQuestionView(
-                            prompt: "",
-                            options: group.items,
-                            checklistSelection: checklistBinding,
-                            optionTitle: { $0.displayName }
-                        )
-
-                        ChoiceChip(
-                            title: "None of these apply",
-                            isSelected: checklistBinding.wrappedValue.noneConfirmedCategories.isSuperset(of: group.categories)
+                    ForEach(group.items) { item in
+                        checkRow(
+                            title: item.displayName,
+                            isSelected: checklistBinding.wrappedValue.items.contains(item)
                         ) {
-                            checklistBinding.wrappedValue.toggleNoneForSection(group.categories, sectionItems: Set(group.items))
+                            checklistBinding.wrappedValue.toggle(item)
                         }
                     }
                 }
@@ -134,50 +120,49 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         }
     }
 
-    private func disclosureHeader(for group: Group) -> some View {
-        let isExpanded = expandedGroupIDs.contains(group.id)
-        let answered = Self.isAnswered(group, selection: checklistBinding.wrappedValue)
+    private func sectionHeader(for group: Group) -> some View {
+        let noneApplies = checklistBinding.wrappedValue.noneConfirmedCategories.isSuperset(of: group.categories)
 
-        return Button {
-            if isExpanded {
-                expandedGroupIDs.remove(group.id)
-            } else {
-                expandedGroupIDs.insert(group.id)
-            }
-        } label: {
-            HStack(spacing: RithamSpacing.xs) {
-                Text(group.title)
-                    .font(RithamType.heading)
-                    .foregroundStyle(RithamColor.paper)
+        return HStack(spacing: RithamSpacing.sm) {
+            Text(group.title)
+                .font(RithamType.heading)
+                .foregroundStyle(RithamColor.paper)
 
-                if answered {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(RithamColor.hot)
-                        .accessibilityHidden(true)
+            Spacer()
+
+            Button {
+                checklistBinding.wrappedValue.toggleNoneForSection(group.categories, sectionItems: Set(group.items))
+            } label: {
+                HStack(spacing: RithamSpacing.xs) {
+                    Image(systemName: noneApplies ? "checkmark.square.fill" : "square")
+                        .foregroundStyle(noneApplies ? RithamColor.hot : RithamColor.paper)
+                    Text("None apply")
+                        .font(RithamType.label)
+                        .foregroundStyle(RithamColor.paper)
                 }
+                .frame(minHeight: RithamSpacing.minimumTapTarget)
+                .contentShape(Rectangle())
+            }
+            .accessibilityLabel("None of these apply")
+            .accessibilityAddTraits(noneApplies ? [.isSelected] : [])
+        }
+    }
 
-                Spacer()
-
-                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+    private func checkRow(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: RithamSpacing.sm) {
+                Image(systemName: isSelected ? "checkmark.square.fill" : "square")
+                    .foregroundStyle(isSelected ? RithamColor.hot : RithamColor.paper)
+                Text(title)
+                    .font(RithamType.body)
                     .foregroundStyle(RithamColor.paper)
-                    .accessibilityHidden(true)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
             }
             .frame(minHeight: RithamSpacing.minimumTapTarget)
             .contentShape(Rectangle())
         }
-        .accessibilityHint("Activating shows this section's questions")
-        .accessibilityAddTraits(isExpanded ? [.isSelected] : [])
-        .accessibilityLabel(answered ? "\(group.title), answered" : group.title)
-    }
-
-    /// A section counts as answered once it has either a real selection or its own "None of
-    /// these apply" confirmation -- matching exactly what `TagDerivation`'s baseline-tag check
-    /// (RithamCore) treats as "this section is settled," so the badge here never disagrees with
-    /// what actually feeds tag derivation.
-    private static func isAnswered(_ group: Group, selection: ChecklistSelection) -> Bool {
-        if selection.noneConfirmedCategories.isSuperset(of: group.categories) {
-            return true
-        }
-        return !Set(group.items).isDisjoint(with: selection.items)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 }
