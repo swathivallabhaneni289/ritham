@@ -467,4 +467,18 @@ struct TagDerivationTests {
         let tags = TagDerivation.deriveTags(from: answers, ageDerivedTags: [])
         #expect(!tags.contains(.noneOfTheAboveBaseline))
     }
+
+    @Test("confirming none for every section except foodAllergies still yields the baseline tag")
+    func everySectionExceptFoodAllergiesStillYieldsBaselineTag() {
+        // `ConditionChecklistView` no longer renders a Food Allergies section at all (that
+        // question moved to `DietPlanView`), so nothing can ever confirm it none through the
+        // checklist screen -- the baseline check must not require it.
+        var checklist = ChecklistSelection()
+        for category in ChecklistCategory.allCases where category != .none && category != .foodAllergies {
+            checklist.toggleNoneForSection([category], sectionItems: [])
+        }
+        let answers = ScreeningAnswers(checklist: checklist)
+        let tags = TagDerivation.deriveTags(from: answers, ageDerivedTags: [])
+        #expect(tags == [.noneOfTheAboveBaseline])
+    }
 }

@@ -51,8 +51,12 @@ public enum TagDerivation {
         // `.noneOfTheAbove` sentinel itself stays in `ChecklistItem`, and this check's original
         // form stays alongside it for any other caller that still constructs a selection with it
         // directly.
+        // `.foodAllergies` is excluded: `ConditionChecklistView` no longer renders that section at
+        // all (live-review feedback, 2026-09-02 -- see that view's own header comment), so nothing
+        // can ever confirm it none through the screen this check is about. Requiring it anyway
+        // would make this branch permanently unreachable.
         let everySectionConfirmedNone = Set(ChecklistCategory.allCases)
-            .subtracting([.none])
+            .subtracting([.none, .foodAllergies])
             .isSubset(of: answers.checklist.noneConfirmedCategories)
         if checklistDerived.isEmpty && (answers.checklist.items == [.noneOfTheAbove] || everySectionConfirmedNone) {
             result.insert(.noneOfTheAboveBaseline)

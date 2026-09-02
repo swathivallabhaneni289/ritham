@@ -1,7 +1,15 @@
 import SwiftUI
 import RithamCore
 
-/// §1.3's nine-category condition checklist, shown to everyone. Every selection change routes
+/// §1.3's condition checklist, shown to everyone -- eight categories rendered here; Food
+/// Allergies is asked in full (whether the user has one, its severity, and which specific ones)
+/// from `DietPlanView` (Settings) instead, per further live-review feedback (2026-09-02): asking
+/// only a bare "I have one or more food allergies" here, with no way to say which ones, read as
+/// pointless once the detail lived somewhere else entirely. `DietPlanView`'s own header comment
+/// covers the full story and why `TagDerivation`/`GateEscalation`'s food-allergy safety tags are
+/// unaffected -- only where the question is asked moved, not what it means once answered.
+///
+/// Every selection change routes
 /// through `ChecklistSelection.toggle` (via `checkRow`'s commit closure) rather than a second,
 /// view-local reimplementation of the exclusive-option rule -- a second implementation could
 /// drift and feed the resolver a contradictory selection (T-01-99).
@@ -75,9 +83,6 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         Group(id: "eatingDisorderHistory", title: "Eating Disorder History", items: [
             .eatingDisorderHistory,
         ], rationale: ScreeningCopy.eatingDisorderRationale),
-        Group(id: "foodAllergies", title: "Food Allergies", items: [
-            .foodAllergies,
-        ], rationale: nil),
         Group(id: "otherSeriousCondition", title: "Other Serious Condition", items: [
             .activeCancerTreatment, .otherSeriousOrComplexCondition,
         ], rationale: nil),

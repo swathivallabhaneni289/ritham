@@ -91,11 +91,18 @@ private func metabolicNeedsFollowUp(_ checklist: ChecklistSelection) -> Bool {
     return metabolicItems != [.prediabetes]
 }
 
-/// §1.4's severity/context follow-ups, covering all eight applicable category groups
-/// (cardiovascular, metabolic, musculoskeletal, pregnancy, postpartum, kidney, allergy, other
-/// serious condition -- eating-disorder-history's follow-up is the separate SCOFF screen, and
-/// the universal U-1 follow-up is `UniversalFollowUpView`, neither of which belongs here) as one
-/// data-driven screen rather than eight hand-built ones.
+/// §1.4's severity/context follow-ups, covering seven applicable category groups
+/// (cardiovascular, metabolic, musculoskeletal, pregnancy, postpartum, kidney, other serious
+/// condition -- eating-disorder-history's follow-up is the separate SCOFF screen, and the
+/// universal U-1 follow-up is `UniversalFollowUpView`, neither of which belongs here) as one
+/// data-driven screen rather than seven hand-built ones.
+///
+/// Food allergies' FA-1 severity question used to live here too. It moved to `DietPlanView`
+/// (Settings) alongside the rest of the allergy question set -- further live-review feedback
+/// (2026-09-02) -- since the checklist item that gated it (`ChecklistItem.foodAllergies`) no
+/// longer exists on the screening checklist at all; see `ConditionChecklistView`'s and
+/// `DietPlanView`'s own header comments for the full story. `fa1SevereAllergyOrEpinephrine` and
+/// the safety tag it feeds are unchanged, only asked from a different screen now.
 struct SeverityFollowUpView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .severityFollowUps
 
@@ -106,11 +113,11 @@ struct SeverityFollowUpView: View, OnboardingStepPresenting {
     let flow: OnboardingFlow
 
     /// Doc order, §1.4: cardiovascular, metabolic, musculoskeletal/joint, pregnancy, postpartum,
-    /// kidney/renal, food allergies, other serious condition. A plain array (not
-    /// `questionsByCategory.keys`, which has no stable order) so rendering order matches the doc.
+    /// kidney/renal, other serious condition. A plain array (not `questionsByCategory.keys`,
+    /// which has no stable order) so rendering order matches the doc.
     static let categoryOrder: [ChecklistCategory] = [
         .cardiovascular, .metabolic, .musculoskeletalJoint, .pregnancy, .postpartum,
-        .kidneyRenal, .foodAllergies, .otherSeriousCondition,
+        .kidneyRenal, .otherSeriousCondition,
     ]
 
     /// The question list, keyed by `ChecklistCategory` so the category-to-questions mapping is
@@ -215,13 +222,6 @@ struct SeverityFollowUpView: View, OnboardingStepPresenting {
                 id: "kr2", prompt: ScreeningCopy.FollowUp.kr2, options: YesNoUnsure.allCases,
                 optionTitle: yesNoUnsureTitle, keyPath: \.kr2SpecificDietaryLimits,
                 isApplicable: { hasAnyItem(in: .kidneyRenal, $0) }
-            ),
-        ],
-        .foodAllergies: [
-            severityQuestion(
-                id: "fa1", prompt: ScreeningCopy.FollowUp.fa1, options: YesNoUnsure.allCases,
-                optionTitle: yesNoUnsureTitle, keyPath: \.fa1SevereAllergyOrEpinephrine,
-                isApplicable: { $0.items.contains(.foodAllergies) }
             ),
         ],
         .otherSeriousCondition: [
