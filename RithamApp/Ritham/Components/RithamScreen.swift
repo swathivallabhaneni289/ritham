@@ -36,7 +36,17 @@ struct RithamScreen<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var hasAppeared = false
+
+    /// Mirrors `ScreenHeader.body`'s own condition for rendering `EmptyView()` exactly -- true
+    /// whenever `ScreenHeader` contributes zero height, whether because `surface` has no
+    /// decorative content at all or because an accessibility text size collapsed it regardless of
+    /// `surface`. Drives the extra top safe-area inset below; kept as one shared condition rather
+    /// than two separately-maintained copies so they can never drift out of sync with each other.
+    private var headerIsCollapsed: Bool {
+        dynamicTypeSize.isAccessibilitySize || !surface.hasVisibleContent
+    }
 
     init(
         surface: DecorativeSurface,
@@ -116,6 +126,30 @@ struct RithamScreen<Content: View>: View {
                             .animation(entranceAnimation(delay: 0.3), value: hasAppeared)
                     }
                     .padding(RithamSpacing.md)
+                }
+            }
+            // Live-review feedback (2026-09-02, condition checklist screenshot): when
+            // `ScreenHeader` collapses to zero height (`headerIsCollapsed`), the content below it
+            // only ever gets one-time top padding (`RithamSpacing.md`, applied once at the very
+            // start of the scrollable content) -- nothing stops a later section header from
+            // scrolling all the way up to the screen's very top edge once the user scrolls far
+            // enough down a long screen, landing directly behind the floating back button and
+            // status bar and becoming illegible there. The condition checklist is the first
+            // screen with enough content to make this visible; every other collapsed-header
+            // screen has the same zero persistent top inset, just not enough content to expose
+            // it. `.safeAreaInset` (applied to the `ScrollView`, not a view placed inside its
+            // content) reserves space no scroll position can ever intrude into, unlike
+            // `.padding`, which only affects where content starts.
+            //
+            // Gated on `headerIsCollapsed`, not applied unconditionally -- a first attempt at
+            // this fix added the inset for every screen and shifted the Welcome hero band down
+            // by exactly this amount, breaking its pixel-perfect flush-top-left-corner port
+            // (`HeroBandMotif`'s own doc comment). A screen with a real decorative header already
+            // has far more than this clearance from that header alone; this inset exists only to
+            // backstop the screens that have none.
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if headerIsCollapsed {
+                    Color.clear.frame(height: RithamSpacing.xl)
                 }
             }
         }

@@ -128,22 +128,24 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
     private func sectionHeader(for group: Group) -> some View {
         let noneApplies = checklistBinding.wrappedValue.noneConfirmedCategories.isSuperset(of: group.categories)
 
-        return HStack(spacing: RithamSpacing.sm) {
+        return HStack(alignment: .top, spacing: RithamSpacing.sm) {
             Text(group.title)
                 .font(RithamType.heading)
                 .foregroundStyle(RithamColor.paper)
+                .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
             Button {
                 checklistBinding.wrappedValue.toggleNoneForSection(group.categories, sectionItems: Set(group.items))
             } label: {
-                HStack(spacing: RithamSpacing.xs) {
+                HStack(alignment: .top, spacing: RithamSpacing.xs) {
                     Image(systemName: noneApplies ? "checkmark.square.fill" : "square")
                         .foregroundStyle(noneApplies ? RithamColor.hot : RithamColor.paper)
                     Text("None apply")
                         .font(RithamType.label)
                         .foregroundStyle(RithamColor.paper)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(minHeight: RithamSpacing.minimumTapTarget)
                 .contentShape(Rectangle())
@@ -153,9 +155,19 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         }
     }
 
+    /// `alignment: .top` on the HStack -- not the default `.center` -- so the checkbox glyph
+    /// aligns with the first line of a wrapped, multi-line option (e.g. "Heart disease
+    /// (including a prior heart attack, heart failure, coronary artery disease, or a cardiac
+    /// surgery/procedure)") instead of floating in the vertical middle of the whole wrapped
+    /// block. Live-review feedback (2026-09-02): with `.center` (the default), a short one-line
+    /// option and a long three-line option placed their checkboxes at visibly different relative
+    /// positions, reading as inconsistent ("options all over the place") rather than as one
+    /// uniform list. `.frame(minHeight:)` below keeps its own default `.center` alignment, so a
+    /// short single-line row still sits centered within its full tap-target height -- only the
+    /// icon-to-text relationship changes, not the row's own placement in that taller frame.
     private func checkRow(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: RithamSpacing.sm) {
+            HStack(alignment: .top, spacing: RithamSpacing.sm) {
                 Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     .foregroundStyle(isSelected ? RithamColor.hot : RithamColor.paper)
                 Text(title)
