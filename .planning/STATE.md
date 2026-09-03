@@ -136,6 +136,9 @@ Recent decisions affecting current work:
   should survive a device change (its parental-consent-continuity motivation is now moot, but the
   general question for all users was never resolved — see the Option A/B/C discussion in the
   2026-08-23/24 session). Not yet decided or built.
+- Workout plan frequency selection (3/5/7 days a week) and experience-level scaling
+  (beginner through daily exerciser) for Phase 2 — connects to ONBOARD-01's triggered
+  calibration pre-assessment. See `.planning/todos/pending/2026-09-03-workout-plan-frequency-selection-and-experience-scaling.md`.
 
 ### Blockers/Concerns
 
