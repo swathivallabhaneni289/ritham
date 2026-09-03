@@ -40,6 +40,22 @@ import RithamCore
 /// line above the group's row list, at the `label` role (full weight, not `fineprint`'s
 /// reduced-opacity treatment) -- these lines explain why Ritham asks, and treating them as a
 /// footnote would misrepresent what the user is consenting to by omission (T-01-100).
+///
+/// Live-review feedback (2026-09-03): for the common path (no severity/SCOFF follow-ups
+/// triggered), §1.4's universal follow-up (U-1, "are you returning to exercise after being
+/// inactive...") landed on its own screen holding nothing but that one question -- "a wasted
+/// slide." This view now renders U-1 inline, after the last category, for exactly that common
+/// path (`showsInlineUniversalFollowUp` below). A user who *does* need severity/SCOFF follow-ups
+/// still answers U-1 on its own screen afterward, same as before -- merging it here unconditionally
+/// would mean asking it twice for that path, once inline and once again on `UniversalFollowUpView`.
+/// `showsInlineUniversalFollowUp` queries `OnboardingRouter.nextStep` (the single branching
+/// authority, CROSSGEN-05) rather than reimplementing "does this selection need follow-ups" --
+/// this view decides what to *render* from that query, never what to *route to*; the CTA below
+/// still calls the unchanged `flow.advance(from: .conditionChecklist)` regardless of which case
+/// this is, so `EditAnswerFlow`'s edit-and-pop-back mechanism (which only watches for `flow.advance`
+/// having been called, not what it routed to) is untouched. `UniversalFollowUpView`'s own header
+/// comment covers the other half: detecting an already-answered U-1 and auto-completing instead of
+/// re-asking it.
 struct ConditionChecklistView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .conditionChecklist
 
@@ -99,6 +115,23 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         )
     }
 
+    /// True when this user's current checklist selection needs no severity/SCOFF follow-ups --
+    /// the common path, where U-1 renders inline below instead of on its own screen. Re-evaluated
+    /// live against `flow.answers` on every render (a `Binding`-backed computed property, not
+    /// cached `@State`), so ticking a box that newly triggers a follow-up (e.g. "Currently
+    /// pregnant") makes this section disappear immediately rather than staying stale until the
+    /// next screen.
+    private var showsInlineUniversalFollowUp: Bool {
+        OnboardingRouter.nextStep(after: .conditionChecklist, answers: flow.answers) == .universalFollowUp
+    }
+
+    private var universalFollowUpBinding: Binding<Set<YesNo>> {
+        Binding(
+            get: { flow.answers.screening.u1ReturningAfterInactivity.map { [$0] } ?? [] },
+            set: { flow.answers.screening.u1ReturningAfterInactivity = $0.first }
+        )
+    }
+
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, bodyText: ScreeningCopy.conditionChecklistIntro) {
             ForEach(Self.groups) { group in
@@ -125,9 +158,27 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
                 .padding(.bottom, RithamSpacing.md)
             }
 
+            if showsInlineUniversalFollowUp {
+                ChoiceQuestionView(
+                    prompt: ScreeningCopy.universalFollowUp,
+                    options: YesNo.allCases,
+                    mode: .single,
+                    selection: universalFollowUpBinding,
+                    optionTitle: yesNoTitle
+                )
+                .padding(.bottom, RithamSpacing.md)
+            }
+
             PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
                 flow.advance(from: .conditionChecklist)
             }
+        }
+    }
+
+    private func yesNoTitle(_ option: YesNo) -> String {
+        switch option {
+        case .yes: return "Yes"
+        case .no: return "No"
         }
     }
 

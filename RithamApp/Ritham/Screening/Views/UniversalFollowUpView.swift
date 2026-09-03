@@ -18,6 +18,18 @@ import RithamCore
 /// crashing -- the router only reaches this step for a user who already passed the age floor (a
 /// profile already exists by construction), so a failure here means something else upstream (a
 /// storage error) is wrong, not a missing profile.
+///
+/// Live-review feedback (2026-09-03): for a user who needed no severity/SCOFF follow-ups,
+/// `ConditionChecklistView` now asks U-1 inline on the checklist screen itself instead of leaving
+/// it to be asked here, on its own near-empty screen (see that view's own header comment for the
+/// full reasoning). `wasAlreadyAnswered` (captured once, at `init`, before this screen renders)
+/// detects exactly that case: `u1ReturningAfterInactivity` is only ever non-nil this early if the
+/// checklist screen already set it, since this view itself doesn't write that field until its own
+/// CTA fires. When true, this screen renders nothing and auto-completes via the same
+/// `resolveAndSave()` every path already goes through -- transparent to the user, and the one
+/// finalize-and-persist call stays here, not duplicated on the checklist screen. A user who *does*
+/// need severity/SCOFF follow-ups still reaches this screen with `u1ReturningAfterInactivity` unset
+/// and answers it normally, exactly as before this change.
 struct UniversalFollowUpView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .universalFollowUp
 
@@ -26,36 +38,55 @@ struct UniversalFollowUpView: View, OnboardingStepPresenting {
     }
 
     let flow: OnboardingFlow
+    let wasAlreadyAnswered: Bool
     @Environment(\.modelContext) private var modelContext
     @State private var selection: Set<YesNo>
     @State private var showSaveError = false
+    @State private var hasAutoCompleted = false
 
     init(flow: OnboardingFlow) {
         self.flow = flow
-        _selection = State(initialValue: flow.answers.screening.u1ReturningAfterInactivity.map { [$0] } ?? [])
+        let existingAnswer = flow.answers.screening.u1ReturningAfterInactivity
+        wasAlreadyAnswered = existingAnswer != nil
+        _selection = State(initialValue: existingAnswer.map { [$0] } ?? [])
     }
 
     var body: some View {
-        RithamScreen(surface: DecorativeSurface.flat) {
-            ChoiceQuestionView(
-                prompt: ScreeningCopy.universalFollowUp,
-                options: YesNo.allCases,
-                mode: .single,
-                selection: $selection,
-                optionTitle: yesNoTitle
-            )
+        Group {
+            if wasAlreadyAnswered {
+                RithamScreen(surface: DecorativeSurface.flat) { EmptyView() }
+            } else {
+                RithamScreen(surface: DecorativeSurface.flat) {
+                    ChoiceQuestionView(
+                        prompt: ScreeningCopy.universalFollowUp,
+                        options: YesNo.allCases,
+                        mode: .single,
+                        selection: $selection,
+                        optionTitle: yesNoTitle
+                    )
 
-            if showSaveError {
-                Text(OnboardingCopy.Errors.savingFailed)
-                    .font(RithamType.label)
-                    .foregroundStyle(RithamColor.hot)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+                    if showSaveError {
+                        Text(OnboardingCopy.Errors.savingFailed)
+                            .font(RithamType.label)
+                            .foregroundStyle(RithamColor.hot)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
 
-            PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
-                flow.answers.screening.u1ReturningAfterInactivity = selection.first
-                resolveAndSave()
+                    PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
+                        flow.answers.screening.u1ReturningAfterInactivity = selection.first
+                        resolveAndSave()
+                    }
+                }
             }
+        }
+        .onAppear {
+            // Guarded by `hasAutoCompleted`, not just `wasAlreadyAnswered`, in case SwiftUI
+            // re-fires `onAppear` for this same instance (e.g. a navigation transition) --
+            // without the guard, a second call would push `.screeningComplete` onto `flow.path`
+            // twice.
+            guard wasAlreadyAnswered, !hasAutoCompleted else { return }
+            hasAutoCompleted = true
+            resolveAndSave()
         }
     }
 
