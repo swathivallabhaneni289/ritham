@@ -144,8 +144,7 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
             checkRow(
                 title: ScreeningCopy.conditionChecklistNoneRowTitle,
                 isSelected: noneApplies,
-                accessibilityLabel: "None of these \(group.title) conditions apply",
-                isMuted: true
+                accessibilityLabel: "None of these \(group.title) conditions apply"
             ) {
                 let willConfirmNone = !noneApplies
                 checklistBinding.wrappedValue.toggleNoneForSection(group.categories, sectionItems: Set(group.items))
@@ -160,8 +159,7 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
                 checkRow(
                     title: item.displayName,
                     isSelected: checklistBinding.wrappedValue.items.contains(item),
-                    accessibilityLabel: nil,
-                    isMuted: false
+                    accessibilityLabel: nil
                 ) {
                     checklistBinding.wrappedValue.toggle(item)
                 }
@@ -177,22 +175,24 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
     /// not the default `.center`, matching the same fix already applied to this row shape before
     /// (live-review feedback, 2026-09-02).
     ///
-    /// `isMuted` renders the label at reduced opacity for the "None" row only -- distinguishing
-    /// it from the condition rows above/below it without a smaller font size (`RithamType` has no
-    /// role below the 16pt `label` floor) and without a different glyph shape, so it still reads
-    /// as one more row in the same list, per Variant B's whole point.
+    /// The "None" row renders identically to every condition row (same weight, same full-opacity
+    /// paper color) -- live-review feedback (2026-09-03): an earlier version dimmed its label to
+    /// distinguish it, and at reduced opacity against the charcoal background it read as a
+    /// rendering glitch/wrong font rather than an intentional style, not the subtle de-emphasis
+    /// it was going for. It's already distinguished by being first in the list and by its own
+    /// distinct text -- no separate treatment needed, per Variant B's whole point of it being one
+    /// more ordinary row.
     private func checkRow(
         title: String,
         isSelected: Bool,
         accessibilityLabel: String?,
-        isMuted: Bool,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
             HStack(alignment: .top, spacing: RithamSpacing.md) {
                 Text(title)
                     .font(RithamType.body)
-                    .foregroundStyle(isMuted ? RithamColor.paper.opacity(0.75) : RithamColor.paper)
+                    .foregroundStyle(RithamColor.paper)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
