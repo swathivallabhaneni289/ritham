@@ -22,7 +22,7 @@ before public App Store submission per the project's success metric.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Onboarding & Safety Intake** - New users complete real calibration and a fixed-choice safety screening that gates every later feature's condition-aware guidance
+- [x] **Phase 1: Onboarding & Safety Intake** - New users complete a fixed-choice safety screening that gates every later feature's condition-aware guidance (calibration deferred to Phase 2's triggered pre-assessment, see Key Decisions)
 - [ ] **Phase 2: Core Tracking & Adjusted Guidance** - Free-forever cardio and strength tracking, with condition-tag-adjusted workout/nutrition guidance and dietary-pattern swaps
 - [ ] **Phase 3: Momentum & Recovery** - A single fair, forgiving cross-modality weekly streak that adapts to sleep without ever punishing rest
 - [ ] **Phase 4: Household & Home** - Cross-generational households share one app with a simple home screen and structurally non-comparative encouragement
@@ -66,7 +66,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
   6. A user sees privacy/sharing explained on one screen, in plain language, before being asked to
      opt in — nothing is shared or synced with anyone by default.
-**Plans**: 13/14 plans executed
+**Plans**: 14/14 plans executed — Phase complete 2026-09-03
 
 Plans:
 
@@ -83,7 +83,10 @@ Plans:
 - [x] 01-15-PLAN.md — Calibration screens with pedometer and stopwatch sources
 - [x] 01-16-PLAN.md — The screening questionnaire: disclaimer, gate section, interstitials, checklist, follow-ups
 - [x] 01-17-PLAN.md — Disclaimer surfaces, health profile, Settings and re-screen
-- [ ] 01-18-PLAN.md — Step bootstrap, phase coverage assertions, end-to-end human verification
+- [x] 01-18-PLAN.md — Step bootstrap, phase coverage assertions, end-to-end human verification
+  (Task 2's physical-device calibration walk superseded by the 2026-09-01 decision below —
+  only the AX3/AX5 accessibility pass was required; disclaimer-tag check deferred to Phase 4,
+  see deferred-items.md)
 
 *2026-08-23: four plans removed entirely (01-02 Go consent service, 01-04 consent domain, 01-08*
 *consent HTTP API, 01-14 consent screens/client) after D-14 replaced tiered parental consent with a*
