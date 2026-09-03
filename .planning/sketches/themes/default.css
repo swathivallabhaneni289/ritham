@@ -1,0 +1,67 @@
+/*
+  Ritham's locked default theme (01-UI-SPEC.md). Sketches 003/004 established and used this
+  palette/scale but never actually wrote it to themes/default.css -- they inlined their own
+  :root as a fallback for the (silently) broken <link>. Written here for real so future sketches
+  get it via the link rather than re-typing it, and so hex/scale values can't drift between
+  sketches. Mirrors RithamColor/RithamType/RithamSpacing exactly -- see RithamApp/Ritham/DesignSystem/.
+*/
+
+:root {
+  /* Colors -- exact hex from RithamColor.swift. Do not adjust for "nicer" web rendering. */
+  --color-bg: #0E100D;        /* ink -- charcoal, dominant 60% base field */
+  --color-surface: #0E100D;   /* no separate surface color in this system -- everything sits on ink */
+  --color-border: #F5F3EC;    /* paper, used at reduced opacity for outlines (see --border-subtle below) */
+  --color-text: #F5F3EC;      /* paper -- primary text on charcoal, 17.2:1 contrast */
+  --color-text-muted: rgba(245, 243, 236, 0.6); /* paper at 60% opacity -- the ONLY sanctioned way to
+                                                    de-emphasize text. RithamType has no smaller font
+                                                    size below the 16pt label floor -- fine print is
+                                                    opacity-only, never a smaller size. */
+  --color-primary: #FF5C39;   /* hot -- coral. Primary accent/signal: CTA fill, active selection. */
+  --color-primary-hover: #E64F2F;
+  --color-accent: #C6F24E;    /* volt -- acid lime. Reserved for the ring-and-dot brand ornament and
+                                  gate-pass micro-accent. NEVER a progress indicator, NEVER a selection
+                                  fill -- do not reach for this as a second "selected" color. */
+  --color-danger: #FF3B30;    /* iOS system red, reserved for a future destructive action (unused in
+                                  Phase 1 -- no destructive action exists yet) */
+  --color-success: #C6F24E;   /* no distinct success color in this system -- volt if ever needed */
+
+  /* Label-on-fill: paper on hot = 2.8:1 (FAIL), paper on volt = 1.2:1 (FAIL). Any element filled
+     with --color-primary or --color-accent MUST use --color-label-on-fill for its text, never
+     --color-text. This mirrors RithamColor.label(on:), which makes the failing choice unreachable
+     in Swift -- do the same discipline by hand here. */
+  --color-label-on-fill: #0E100D;
+
+  /* Typography -- SF Pro via system-ui stack; four roles only, nothing below the 16px floor. This
+     is a deliberate cross-generational accessibility rule (teens through grandparents share one
+     type track), not an oversight -- do not add a 5th, smaller role. */
+  --font-sans: -apple-system, 'SF Pro Text', system-ui, sans-serif;
+  --text-label: 16px;   /* .callout, Regular -- the floor. Fine print = this size at reduced opacity. */
+  --text-body: 17px;    /* .body, Regular */
+  --text-heading: 22px; /* .title2, Semibold */
+  --text-display: 28px; /* .title, Semibold */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+
+  /* Spacing -- RithamSpacing's 7-step scale, every value a multiple of 4. Use these tokens, not
+     arbitrary pixel values, so a sketch's spacing rhythm ports 1:1 to SwiftUI. */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-xxxl: 64px;
+
+  /* Apple HIG minimum interactive control size -- every tappable element (button, checkbox row,
+     chip, icon-only control) must be at least this in both dimensions. Non-negotiable. */
+  --tap-target-min: 44px;
+
+  /* Shapes -- RithamSpacing.sm (8px) is the app's one established corner radius (ChoiceChip). */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-full: 9999px;
+
+  /* No shadows/glows/gradients anywhere in this system -- flat fills only (band-motif spec,
+     sketch 003). Do not introduce --shadow-* tokens; if a sketch wants elevation, use an outline
+     or a fill-color change instead. */
+}

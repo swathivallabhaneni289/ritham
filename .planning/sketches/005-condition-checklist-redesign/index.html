@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 005 — Condition Checklist Redesign</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #050604;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+  body { padding-top: 52px; }
+
+  /* ---------- variant nav ---------- */
+  #variant-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+    background: #16180F; border-bottom: 1px solid rgba(245,243,236,0.14);
+    padding: 8px 16px; display: flex; gap: 8px; align-items: center;
+    font-family: var(--font-sans);
+  }
+  #variant-nav .label { color: rgba(245,243,236,0.5); font-size: 12px; margin-right: 4px; }
+  .variant-tab {
+    background: transparent; color: var(--color-text); border: 1px solid rgba(245,243,236,0.25);
+    border-radius: var(--radius-sm); padding: 6px 12px; font-size: 13px; cursor: pointer;
+    transition: all 0.15s ease; font-family: var(--font-sans);
+  }
+  .variant-tab:hover { border-color: rgba(245,243,236,0.6); }
+  .variant-tab.active { background: var(--color-primary); color: var(--color-label-on-fill); border-color: var(--color-primary); font-weight: 600; }
+
+  .variant { display: none; padding: 32px 24px 96px; }
+  .variant.active { display: block; }
+
+  /* ---------- layout: phone + notes ---------- */
+  .stage {
+    display: flex; gap: 40px; align-items: flex-start; justify-content: center;
+    flex-wrap: wrap; max-width: 1100px; margin: 0 auto;
+  }
+  .phone-wrap { flex: none; }
+  .phone-caption { text-align: center; font-size: 13px; color: rgba(245,243,236,0.5); margin-bottom: 12px; }
+  .phone {
+    width: 402px; max-width: 92vw;
+    background: var(--color-bg);
+    border: 1px solid rgba(245,243,236,0.18);
+    border-radius: 44px;
+    padding: 14px;
+    box-shadow: none;
+  }
+  .screen {
+    background: var(--color-bg);
+    border-radius: 32px;
+    overflow: hidden;
+    height: 874px; max-height: 78vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .statusbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 24px 0; font-size: 15px; font-weight: 600; color: var(--color-text);
+  }
+  .back-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(60,60,60,0.55);
+    display: flex; align-items: center; justify-content: center;
+    margin: 16px 0 0 20px; font-size: 18px; color: var(--color-text);
+  }
+  .screen-content { padding: 0 var(--space-md) var(--space-xxl); }
+  .intro {
+    font-size: var(--text-body); line-height: 1.4; color: var(--color-text);
+    margin: var(--space-lg) 0 var(--space-xl);
+  }
+
+  .notes {
+    flex: 1 1 320px; max-width: 420px; font-size: 14px; line-height: 1.55;
+    color: rgba(245,243,236,0.85);
+  }
+  .notes h3 { font-size: 15px; margin: 0 0 8px; color: var(--color-text); }
+  .notes ul { margin: 0 0 20px; padding-left: 18px; }
+  .notes li { margin-bottom: 8px; }
+  .notes .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--radius-full);
+    border: 1px solid rgba(245,243,236,0.3); color: rgba(245,243,236,0.7); margin-right: 6px;
+  }
+  .notes .tag.native { border-color: var(--color-primary); color: var(--color-primary); }
+
+  /* ---------- Variant A: leading checkbox, refined spacing ---------- */
+  .a-section { margin-bottom: var(--space-xxl); }
+  .a-section-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+  }
+  .a-section-title { font-size: var(--text-heading); font-weight: var(--weight-semibold); color: var(--color-text); }
+  .a-none-btn {
+    display: flex; align-items: center; gap: var(--space-xs); min-height: var(--tap-target-min);
+    background: none; border: none; color: var(--color-text); font-family: var(--font-sans);
+    font-size: var(--text-label); cursor: pointer; padding: 0; flex-shrink: 0;
+  }
+  .a-none-btn .box { width: 20px; height: 20px; flex-shrink: 0; }
+  .a-rationale { font-size: var(--text-label); color: var(--color-text); margin-bottom: var(--space-sm); line-height: 1.4; }
+  .a-row {
+    display: flex; align-items: flex-start; gap: var(--space-sm);
+    min-height: var(--tap-target-min); padding: 6px 0; cursor: pointer;
+    background: none; border: none; width: 100%; text-align: left; font-family: var(--font-sans);
+  }
+  .a-row .box { width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px; }
+  .a-row .label { font-size: var(--text-body); color: var(--color-text); line-height: 1.35; }
+
+  /* ---------- Variant B: trailing checkmark, native list rows, "None" as a row ---------- */
+  .b-section { margin-bottom: var(--space-xxl); }
+  .b-section-title {
+    font-size: var(--text-heading); font-weight: var(--weight-semibold); color: var(--color-text);
+    margin-bottom: 2px;
+  }
+  .b-rationale { font-size: var(--text-label); color: var(--color-text); margin: 4px 0 var(--space-sm); line-height: 1.4; }
+  .b-list { border-top: 1px solid rgba(245,243,236,0.14); }
+  .b-row {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-md);
+    min-height: var(--tap-target-min); padding: 13px 2px;
+    border-bottom: 1px solid rgba(245,243,236,0.14);
+    cursor: pointer; background: none; border-left: none; border-right: none; border-top: none;
+    width: 100%; text-align: left; font-family: var(--font-sans);
+  }
+  .b-row .label { font-size: var(--text-body); color: var(--color-text); line-height: 1.35; flex: 1; }
+  .b-row .check { width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px; opacity: 0; transition: opacity 0.12s ease; }
+  .b-row.selected .check { opacity: 1; }
+  .b-row.none-row .label { color: rgba(245,243,236,0.75); }
+
+  /* ---------- Variant C: same as B, wrapped in outlined cards ---------- */
+  .c-section {
+    margin-bottom: var(--space-xl);
+    border: 1px solid rgba(245,243,236,0.16);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+  }
+  .c-section-title {
+    font-size: var(--text-heading); font-weight: var(--weight-semibold); color: var(--color-text);
+    margin-bottom: 2px;
+  }
+  .c-rationale { font-size: var(--text-label); color: var(--color-text); margin: 4px 0 var(--space-sm); line-height: 1.4; }
+  .c-list { margin: 0 calc(-1 * var(--space-md)); }
+  .c-row {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-md);
+    min-height: var(--tap-target-min); padding: 13px var(--space-md);
+    cursor: pointer; background: none; border: none;
+    width: 100%; text-align: left; font-family: var(--font-sans);
+  }
+  .c-row + .c-row { border-top: 1px solid rgba(245,243,236,0.12); }
+  .c-row .label { font-size: var(--text-body); color: var(--color-text); line-height: 1.35; flex: 1; }
+  .c-row .check { width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px; opacity: 0; transition: opacity 0.12s ease; }
+  .c-row.selected .check { opacity: 1; }
+  .c-row.none-row .label { color: rgba(245,243,236,0.75); }
+
+  .cta {
+    display: block; width: 100%; min-height: var(--tap-target-min);
+    background: var(--color-primary); color: var(--color-label-on-fill);
+    border: none; border-radius: var(--radius-sm); font-size: var(--text-body); font-weight: 700;
+    margin-top: var(--space-lg); cursor: pointer; font-family: var(--font-sans);
+  }
+
+  svg.icon { display: block; }
+
+  /* ---------- sketch toolbar ---------- */
+  #sketch-tools {
+    position: fixed; bottom: 12px; right: 12px; z-index: 9999; font-family: system-ui; font-size: 12px;
+    background: rgba(0,0,0,0.75); color: white; padding: 10px 14px; border-radius: 10px;
+    opacity: 0.45; transition: opacity 0.2s; display: flex; gap: 10px; align-items: center;
+  }
+  #sketch-tools:hover { opacity: 1; }
+  #sketch-tools button {
+    background: #222; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 4px 8px;
+    cursor: pointer; font-size: 11px;
+  }
+  #sketch-tools .state { color: #aaa; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <span class="label">Sketch 005 — Condition Checklist</span>
+  <button class="variant-tab active" onclick="showVariant('a', event)">A: Refined Current</button>
+  <button class="variant-tab" onclick="showVariant('b', event)">B: Native iOS List ★ Selected</button>
+  <button class="variant-tab" onclick="showVariant('c', event)">C: Grouped Cards</button>
+</div>
+
+<!-- ============================= VARIANT A ============================= -->
+<div id="variant-a" class="variant active">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-caption">A: Refined Current — leading checkbox glyph (today's pattern), fixed whitespace ratio</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span></span></div>
+        <div class="back-btn">&#8249;</div>
+        <div class="screen-content">
+          <div class="intro">Do any of these apply to you? Select every option that fits in each section, or choose "None of these apply" if nothing does.</div>
+          <div id="a-groups"></div>
+          <button class="cta">Continue</button>
+        </div>
+      </div></div>
+    </div>
+    <div class="notes">
+      <h3>What changed vs. today's shipped screen</h3>
+      <span class="tag">whitespace ratio</span><span class="tag">same interaction model</span>
+      <ul>
+        <li>Same leading checkbox glyph and "None apply" control placement as the current app — this is a <em>spacing/typography-only</em> refinement, not a new interaction model, so it isolates one variable against B/C.</li>
+        <li><strong>Gap between sections is now ~4x the gap between rows within a section</strong> (48px vs. ~8-14px) — NN/g's finding that whitespace ratio alone can signal grouping without dividers. Today's shipped version has almost no differentiation here, which is a real candidate for why it reads "clumsy."</li>
+        <li>Checkbox aligns to the first line of wrapped labels (already a fixed bug in the real code — kept here since long condition names like "Heart disease (including a prior heart attack…)" need it).</li>
+        <li>Rationale lines (pregnancy, eating disorder) stay full body weight, never dimmed — unchanged, this was already a deliberate choice.</li>
+      </ul>
+      <h3>Open question</h3>
+      <ul>
+        <li>Research finding: <strong>iOS has no native checkbox control</strong> — every iOS list this pattern resembles (Settings, Mail, Reminders) uses a trailing checkmark instead. This variant is the safe/incremental option; B and C test the more platform-native alternative.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= VARIANT B ============================= -->
+<div id="variant-b" class="variant" style="display:none">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-caption">B: Native iOS List — trailing checkmark, "None" is a row inside each section</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span></span></div>
+        <div class="back-btn">&#8249;</div>
+        <div class="screen-content">
+          <div class="intro">Do any of these apply to you? Select every option that fits in each section, or choose "None of these apply" if nothing does.</div>
+          <div id="b-groups"></div>
+          <button class="cta">Continue</button>
+        </div>
+      </div></div>
+    </div>
+    <div class="notes">
+      <h3>What this tests</h3>
+      <span class="tag native">platform-native</span><span class="tag">variant axis: divider grouping</span>
+      <ul>
+        <li><strong>Trailing checkmark, not a leading checkbox square.</strong> Apple's HIG has no native iOS checkbox at all — the idiomatic multi-select list (Settings, Mail's mailbox picker, Reminders' list-selection) shows a trailing checkmark SF Symbol on the selected row. This is the single biggest research-backed change from what's shipped today.</li>
+        <li><strong>"None of these apply" is the first row in the section's own list</strong>, not a separate control next to the header — this directly implements the HIG-derived pattern of treating "none" as one more mutually-exclusive row rather than a bespoke widget. Tap it and watch every other row in that section clear.</li>
+        <li>Rows separated by a 1px hairline divider (paper at ~12% opacity) rather than the vertical gap alone — the "variant axis" this sketch isolates against C.</li>
+        <li>Section headers keep normal case at the app's <code>heading</code> role (22px semibold) — deliberately <em>not</em> uppercase/tracked. Research flagged that as legacy plain-style-List behavior; today's inset-grouped default doesn't do that.</li>
+      </ul>
+      <h3>Accessibility note (not simulated in HTML)</h3>
+      <ul>
+        <li>Selecting "None" silently clears other rows in that section — a real build needs a VoiceOver announcement on that state change, not just a visual one.</li>
+        <li>Each "None" row's accessibility label should name its section ("None of these Cardiovascular conditions apply"), not a generic string repeated seven times.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= VARIANT C ============================= -->
+<div id="variant-c" class="variant" style="display:none">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-caption">C: Grouped Cards — same rows as B, sections chunked into outlined cards</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span></span></div>
+        <div class="back-btn">&#8249;</div>
+        <div class="screen-content">
+          <div class="intro">Do any of these apply to you? Select every option that fits in each section, or choose "None of these apply" if nothing does.</div>
+          <div id="c-groups"></div>
+          <button class="cta">Continue</button>
+        </div>
+      </div></div>
+    </div>
+    <div class="notes">
+      <h3>What this tests</h3>
+      <span class="tag native">platform-native</span><span class="tag">variant axis: card boundary</span>
+      <ul>
+        <li>Identical row/checkmark/None-as-row treatment to B — the only variable here is <strong>each section wrapped in an outlined card</strong> (1px paper-at-16%-opacity stroke, 12px radius) instead of whitespace/dividers alone.</li>
+        <li>No fill/tint on the card — outline only. This screen is one of the nine locked to flat charcoal decoration (health/consent data); a filled card would be a new, unverified color pairing. An outline reuses the existing paper token at reduced opacity, so no new contrast pair needs checking.</li>
+        <li>This is the strongest chunking option for a <em>long</em> scroll — seven sections stacked — worth checking whether the card boundaries help scannability more than B's dividers, or just add visual noise.</li>
+      </ul>
+      <h3>Risk</h3>
+      <ul>
+        <li>Cards read as more "form-y" / boxed — closer to the "wall of boxes" chip-grid direction this screen already tried and rejected once, just with rows instead of chips inside each box. Worth a hard look at whether that association reappears here.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="sketch-tools">
+  <span>Sketch 005</span>
+  <button onclick="resetAll()">Reset selections</button>
+  <span class="state" id="state-readout"></span>
+</div>
+
+<script>
+/* ---------------- real data (RithamCore ScreeningAnswers.ChecklistItem, verbatim) ---------------- */
+const GROUPS = [
+  { id: 'cardiovascular', title: 'Cardiovascular', rationale: null, items: [
+    { id: 'highBloodPressure', label: 'High blood pressure' },
+    { id: 'heartDisease', label: 'Heart disease (including a prior heart attack, heart failure, coronary artery disease, or a cardiac surgery/procedure)' },
+    { id: 'irregularHeartbeat', label: 'Irregular heartbeat (arrhythmia, e.g., atrial fibrillation)' },
+    { id: 'otherHeartOrCirculatoryCondition', label: 'Another heart or circulatory condition' },
+  ]},
+  { id: 'metabolic', title: 'Metabolic', rationale: null, items: [
+    { id: 'type1Diabetes', label: 'Type 1 diabetes' },
+    { id: 'type2Diabetes', label: 'Type 2 diabetes' },
+    { id: 'prediabetes', label: 'Prediabetes' },
+    { id: 'otherMetabolicCondition', label: 'Another metabolic condition' },
+  ]},
+  { id: 'musculoskeletalJoint', title: 'Musculoskeletal / Joint', rationale: null, items: [
+    { id: 'osteoarthritis', label: 'Osteoarthritis (knee, hip, or other joint)' },
+    { id: 'osteoporosisOrOsteopenia', label: 'Osteoporosis or osteopenia (low bone density)' },
+    { id: 'chronicLowBackPain', label: 'Chronic or ongoing low back pain' },
+    { id: 'priorInjuryOrSurgery', label: 'A prior injury or surgery (e.g., joint replacement, ACL repair, rotator cuff repair)' },
+  ]},
+  { id: 'pregnancyPostpartum', title: 'Pregnancy / Postpartum', rationale: 'We ask this because pregnancy and the months after birth change what activity and eating guidance is safe to personalize, not for any other reason.', items: [
+    { id: 'currentlyPregnant', label: 'Currently pregnant' },
+    { id: 'postpartum', label: 'Postpartum (gave birth within the last 12 months)' },
+  ]},
+  { id: 'kidneyRenal', title: 'Kidney / Renal', rationale: null, items: [
+    { id: 'kidneyDiseaseCKD', label: 'Diagnosed kidney disease (CKD)' },
+    { id: 'currentlyOnDialysis', label: 'Currently on dialysis' },
+  ]},
+  { id: 'eatingDisorderHistory', title: 'Eating Disorder History', rationale: 'We ask so we can turn off calorie- and weight-focused features that could be unhelpful for some people, not to label or judge anything.', items: [
+    { id: 'eatingDisorderHistory', label: 'Current or past eating disorder, disordered eating, or a difficult relationship with food or exercise' },
+  ]},
+  { id: 'otherSeriousCondition', title: 'Other Serious Condition', rationale: null, items: [
+    { id: 'activeCancerTreatment', label: 'Currently undergoing treatment for cancer (e.g., chemotherapy or radiation)' },
+    { id: 'otherSeriousOrComplexCondition', label: 'Another serious or complex condition not listed above' },
+  ]},
+];
+
+const state = {
+  a: { selected: new Set(), none: new Set() },
+  b: { selected: new Set(), none: new Set() },
+  c: { selected: new Set(), none: new Set() },
+};
+
+function boxIcon(selected) {
+  if (selected) {
+    return '<svg class="icon" viewBox="0 0 24 24" width="22" height="22"><rect x="1" y="1" width="22" height="22" rx="5" fill="#FF5C39"/><path d="M6.5 12.5l3.5 3.5 7.5-8" stroke="#0E100D" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  return '<svg class="icon" viewBox="0 0 24 24" width="22" height="22"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="none" stroke="#F5F3EC" stroke-width="1.6"/></svg>';
+}
+function checkIcon() {
+  return '<svg class="icon check" viewBox="0 0 24 24" width="22" height="22"><path d="M4 12.5l5.5 5.5L20 6.5" stroke="#FF5C39" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+function toggleItem(variant, groupId, itemId) {
+  const st = state[variant];
+  st.none.delete(groupId);
+  if (st.selected.has(itemId)) st.selected.delete(itemId); else st.selected.add(itemId);
+  render(variant);
+}
+function toggleNone(variant, group) {
+  const st = state[variant];
+  if (st.none.has(group.id)) {
+    st.none.delete(group.id);
+  } else {
+    st.none.add(group.id);
+    group.items.forEach(it => st.selected.delete(it.id));
+  }
+  render(variant);
+}
+
+/* ---------------- Variant A: leading checkbox ---------------- */
+function renderA() {
+  const st = state.a;
+  const html = GROUPS.map(g => {
+    const noneOn = st.none.has(g.id);
+    const rows = g.items.map(it => {
+      const sel = st.selected.has(it.id);
+      return `<button class="a-row" onclick="toggleItem('a','${g.id}','${it.id}')">
+        <span class="box">${boxIcon(sel)}</span><span class="label">${it.label}</span>
+      </button>`;
+    }).join('');
+    return `<div class="a-section">
+      <div class="a-section-header">
+        <div class="a-section-title">${g.title}</div>
+        <button class="a-none-btn" onclick="toggleNone('a', ${JSON.stringify(g).replace(/"/g,'&quot;')})">
+          <span class="box">${boxIcon(noneOn)}</span>None apply
+        </button>
+      </div>
+      ${g.rationale ? `<div class="a-rationale">${g.rationale}</div>` : ''}
+      ${rows}
+    </div>`;
+  }).join('');
+  document.getElementById('a-groups').innerHTML = html;
+}
+
+/* ---------------- Variant B: trailing checkmark, none-as-row, dividers ---------------- */
+function renderB() { renderListStyle('b'); }
+function renderC() { renderListStyle('c', true); }
+
+function renderListStyle(variant, cards) {
+  const st = state[variant];
+  const html = GROUPS.map(g => {
+    const noneOn = st.none.has(g.id);
+    const noneRow = `<button class="${variant}-row none-row${noneOn ? ' selected' : ''}" onclick="toggleNone('${variant}', ${JSON.stringify(g).replace(/"/g,'&quot;')})">
+        <span class="label">None of these apply</span><span class="check">${checkIcon()}</span>
+      </button>`;
+    const itemRows = g.items.map(it => {
+      const sel = st.selected.has(it.id);
+      return `<button class="${variant}-row${sel ? ' selected' : ''}" onclick="toggleItem('${variant}','${g.id}','${it.id}')">
+        <span class="label">${it.label}</span><span class="check">${checkIcon()}</span>
+      </button>`;
+    }).join('');
+    const body = `
+      <div class="${variant}-section-title">${g.title}</div>
+      ${g.rationale ? `<div class="${variant}-rationale">${g.rationale}</div>` : ''}
+      <div class="${variant}-list">${noneRow}${itemRows}</div>
+    `;
+    return cards ? `<div class="c-section">${body}</div>` : `<div class="b-section">${body}</div>`;
+  }).join('');
+  document.getElementById(variant + '-groups').innerHTML = html;
+}
+
+function render(variant) {
+  if (variant === 'a') renderA();
+  if (variant === 'b') renderB();
+  if (variant === 'c') renderC();
+  updateStateReadout();
+}
+function updateStateReadout() {
+  const parts = ['a','b','c'].map(v => `${v}:${state[v].selected.size}sel/${state[v].none.size}none`);
+  document.getElementById('state-readout').textContent = parts.join('  ');
+}
+function resetAll() {
+  ['a','b','c'].forEach(v => { state[v].selected.clear(); state[v].none.clear(); render(v); });
+}
+
+function showVariant(id, evt) {
+  document.querySelectorAll('.variant').forEach(v => { v.style.display = 'none'; v.classList.remove('active'); });
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  const el = document.getElementById('variant-' + id);
+  el.style.display = 'block'; el.classList.add('active');
+  if (evt && evt.target) evt.target.classList.add('active');
+}
+
+render('a'); render('b'); render('c');
+</script>
+
+</body>
+</html>
