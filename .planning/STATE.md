@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02
-current_phase_name: core-tracking-adjusted-guidance
-status: ready
-stopped_at: null
-last_updated: "2026-09-03T09:39:09Z"
+current_phase_name: Core Tracking & Adjusted Guidance
+status: All plans executed and summarized; Phase 1 closed 2026-09-03
+stopped_at: Phase 1 functionally complete (13/14 plans, all passing individually). Calibration
+last_updated: "2026-09-03T13:41:21.438Z"
 last_activity: 2026-09-03
-last_activity_desc: Phase 01 closed out (01-18-SUMMARY.md written); ready to discuss Phase 2
+last_activity_desc: Phase 01 complete, transitioned to Phase 02
 progress:
   total_phases: 5
   completed_phases: 1
@@ -30,10 +30,10 @@ comparison or ranking.
 
 ## Current Position
 
-Phase: 01 (onboarding-safety-intake) — COMPLETE
-Plan: 14 of 14
+Phase: 02 — Core Tracking & Adjusted Guidance
+Plan: Not started
 Status: All plans executed and summarized; Phase 1 closed 2026-09-03
-Last activity: 2026-09-03 — 01-18-SUMMARY.md written, phase closed out
+Last activity: 2026-09-03 — Phase 01 complete, transitioned to Phase 02
 
 Progress: [██░░░░░░░░] 20%
 
@@ -41,7 +41,7 @@ Progress: [██░░░░░░░░] 20%
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 14
 - Average duration: N/A
 - Total execution time: 0 hours
 
@@ -49,7 +49,7 @@ Progress: [██░░░░░░░░] 20%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 14 | - | - |
 
 **Recent Trend:**
 
@@ -136,6 +136,7 @@ Recent decisions affecting current work:
   should survive a device change (its parental-consent-continuity motivation is now moot, but the
   general question for all users was never resolved — see the Option A/B/C discussion in the
   2026-08-23/24 session). Not yet decided or built.
+
 - Workout plan frequency selection (3/5/7 days a week) and experience-level scaling
   (beginner through daily exerciser) for Phase 2 — connects to ONBOARD-01's triggered
   calibration pre-assessment. See `.planning/todos/pending/2026-09-03-workout-plan-frequency-selection-and-experience-scaling.md`.

@@ -239,7 +239,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Onboarding & Safety Intake | 13/14 | In Progress|  |
+| 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
 | 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
@@ -272,7 +272,7 @@ Originated from the 2026-08-24/25 session that also produced the permanent 13+ a
 (GitHub issue #1, closed) and a still-open, not-yet-captured device-continuity/account-sync idea.
 
 **Requirements:** TBD
-**Plans:** 0 plans
+**Plans:** 14/14 plans complete
 
 Plans:
 
