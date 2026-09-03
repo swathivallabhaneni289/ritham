@@ -105,6 +105,7 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
                 VStack(alignment: .leading, spacing: RithamSpacing.xs) {
                     Text(group.title)
                         .font(RithamType.heading)
+                        .fontWeight(.bold)
                         .foregroundStyle(RithamColor.paper)
                         .fixedSize(horizontal: false, vertical: true)
 
@@ -117,6 +118,11 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
 
                     rowList(for: group)
                 }
+                // Extra breathing room after each section, live-review feedback (2026-09-03) --
+                // on top of RithamScreen's own RithamSpacing.lg gap between top-level content()
+                // children, so the total gap after a section reads as clearly larger than the
+                // hairline-divider rhythm between rows within one.
+                .padding(.bottom, RithamSpacing.md)
             }
 
             PrimaryCTAButton(title: OnboardingCopy.Age.cta) {
