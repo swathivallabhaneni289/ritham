@@ -62,3 +62,19 @@ scope-boundary rule (only auto-fix issues directly caused by the current task's 
   Whichever plan wires Settings into real cross-launch app navigation must resolve this first,
   either by persisting raw `ScreeningAnswers` or by hydrating a fresh flow's answers from a
   durable source before presenting `EditAnswerFlow`.
+
+## From 01-18 (phase verification)
+
+- **Task 2's manual accessibility checklist (01-18-PLAN.md, Group A, items 6-7) could not be
+  exercised through real app navigation.** Both items live on `HealthProfileView`, reached via
+  `SettingsView`'s "Health profile" button — but nothing in the shipped app currently navigates
+  into `SettingsView` at all. `HomeStepView` (`.home`, where onboarding currently terminates) is
+  a deliberate dead end with no entry point into Settings; that navigation is Phase 4 scope (the
+  real home screen), not built yet. Verified everything else in Group A directly (default text
+  size, AX3/AX5 header dropout, flat charcoal on health-data screens, minimum text size, fill
+  contrast) and Group B (physical-device calibration) in full. Items 6-7 (disclaimer tag tap
+  target size, and confirming it reveals the full disclaimer) were spot-checked once via a
+  throwaway debug root-view swap (not shipped, reverted immediately after) rather than through
+  real navigation, and deferred for a full re-check once Phase 4 wires Settings into the real
+  home screen — checking a screen nobody can actually reach yet doesn't verify the shipped
+  experience.
