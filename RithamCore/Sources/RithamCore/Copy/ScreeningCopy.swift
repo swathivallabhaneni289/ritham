@@ -109,6 +109,12 @@ public enum ScreeningCopy {
     // `ConditionChecklistView`'s own header comment).
     public static let conditionChecklistIntro = "Do any of these apply to you? Select every option that fits in each section, or choose \"None of these apply\" if nothing does."
 
+    /// Visible row title for each section's "None of these apply" row (sketch 005, Variant B,
+    /// 2026-09-03) -- rendered as one more row in that section's own list, not a control next to
+    /// the header, so its wording matches the phrase `conditionChecklistIntro` already previews
+    /// rather than introducing a second way to say the same thing.
+    public static let conditionChecklistNoneRowTitle = "None of these apply"
+
     // MARK: - §1.4 SCOFF intro
 
     public static let scoffIntro = "These next questions are a standard, widely-used screening tool, not a diagnosis. We ask so we can turn off calorie- and weight-focused features that could be unhelpful, not to judge or label anything. Your individual answers are never shown to us as a score or a label, only used to turn certain features on or off."

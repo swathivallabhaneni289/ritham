@@ -21,21 +21,25 @@ import RithamCore
 /// enforces (`ChecklistSelection.toggle`) remain in RithamCore for any other caller; `TagDerivation`
 /// recognizes every section being confirmed none as the equivalent of that global sentinel.
 ///
-/// This has gone through two rounds of live-review feedback on layout alone (2026-09-02): the
-/// original chip grid read as "a wall of boxes," and a tap-to-expand-per-section follow-up added
-/// more interactive surface than it removed ("too complicated"). This version drops both: every
-/// section stays visible with no expand/collapse state at all, each condition is a compact
-/// single-line checkbox row rather than a boxed chip, and "None of these apply" sits inline next
-/// to the section title as one small toggle rather than a separate control down in the list --
-/// declining a whole section is one tap, not two. `checkRow`/the section header are local to this
-/// view (not `ChoiceQuestionView`/`ChoiceChip`, which stay the chip-grid presentation every other
-/// fixed-choice question in this phase uses) since this compact-row treatment is specific to a
-/// list this long, not a change to the shared component.
+/// This has gone through three rounds of live-review feedback on layout (2026-09-02/03): a chip
+/// grid read as "a wall of boxes"; a tap-to-expand-per-section follow-up added more interactive
+/// surface than it removed ("too complicated"); the compact-row version after that used a
+/// leading checkbox-square glyph and was flagged "clumsy" and "confusing" again. Sketch 005
+/// (`.planning/sketches/005-condition-checklist-redesign/`) researched why: iOS has no native
+/// checkbox control at all (Apple's own component set has nothing named checkbox/chip/tag), and
+/// every native iOS multi-select list (Settings, Mail, Reminders) uses a trailing checkmark on a
+/// plain list row instead. This version ports that pattern -- `checkRow`'s checkmark trails the
+/// label -- and moves each section's "None of these apply" into the row list itself as the
+/// section's first row (winning Variant B), rather than a small control bolted onto the section
+/// header, which is what made it read as confusing rather than as one more option. Hairline
+/// dividers between rows (not whitespace alone) signal grouping, chosen over Variant C's
+/// per-section outlined cards specifically because a boxed/carded look was the "wall of boxes"
+/// complaint this screen already reverted once.
 ///
 /// The pregnancy/postpartum and eating-disorder-history groups each render their §1.3 rationale
-/// line above the group, at the `label` role (full weight, not `fineprint`'s reduced-opacity
-/// treatment) -- these lines explain why Ritham asks, and treating them as a footnote would
-/// misrepresent what the user is consenting to by omission (T-01-100).
+/// line above the group's row list, at the `label` role (full weight, not `fineprint`'s
+/// reduced-opacity treatment) -- these lines explain why Ritham asks, and treating them as a
+/// footnote would misrepresent what the user is consenting to by omission (T-01-100).
 struct ConditionChecklistView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .conditionChecklist
 
@@ -99,7 +103,10 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         RithamScreen(surface: DecorativeSurface.flat, bodyText: ScreeningCopy.conditionChecklistIntro) {
             ForEach(Self.groups) { group in
                 VStack(alignment: .leading, spacing: RithamSpacing.xs) {
-                    sectionHeader(for: group)
+                    Text(group.title)
+                        .font(RithamType.heading)
+                        .foregroundStyle(RithamColor.paper)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     if let rationale = group.rationale {
                         Text(rationale)
@@ -108,14 +115,7 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
                             .fixedSize(horizontal: false, vertical: true)
                     }
 
-                    ForEach(group.items) { item in
-                        checkRow(
-                            title: item.displayName,
-                            isSelected: checklistBinding.wrappedValue.items.contains(item)
-                        ) {
-                            checklistBinding.wrappedValue.toggle(item)
-                        }
-                    }
+                    rowList(for: group)
                 }
             }
 
@@ -125,61 +125,84 @@ struct ConditionChecklistView: View, OnboardingStepPresenting {
         }
     }
 
-    private func sectionHeader(for group: Group) -> some View {
+    /// The section's row list: a top divider, the "None of these apply" row first (Variant B --
+    /// one more mutually-exclusive row, not a header-side control), then every condition row,
+    /// each followed by its own divider. `spacing: 0` because the divider itself is what
+    /// separates rows -- an additional VStack gap would double up with it.
+    private func rowList(for group: Group) -> some View {
         let noneApplies = checklistBinding.wrappedValue.noneConfirmedCategories.isSuperset(of: group.categories)
 
-        return HStack(alignment: .top, spacing: RithamSpacing.sm) {
-            Text(group.title)
-                .font(RithamType.heading)
-                .foregroundStyle(RithamColor.paper)
-                .fixedSize(horizontal: false, vertical: true)
+        return VStack(alignment: .leading, spacing: 0) {
+            Divider().overlay(RithamColor.paper.opacity(0.14))
 
-            Spacer()
-
-            Button {
+            checkRow(
+                title: ScreeningCopy.conditionChecklistNoneRowTitle,
+                isSelected: noneApplies,
+                accessibilityLabel: "None of these \(group.title) conditions apply",
+                isMuted: true
+            ) {
+                let willConfirmNone = !noneApplies
                 checklistBinding.wrappedValue.toggleNoneForSection(group.categories, sectionItems: Set(group.items))
-            } label: {
-                HStack(alignment: .top, spacing: RithamSpacing.xs) {
-                    Image(systemName: noneApplies ? "checkmark.square.fill" : "square")
-                        .foregroundStyle(noneApplies ? RithamColor.hot : RithamColor.paper)
-                    Text("None apply")
-                        .font(RithamType.label)
-                        .foregroundStyle(RithamColor.paper)
-                        .fixedSize(horizontal: false, vertical: true)
+                if willConfirmNone {
+                    AccessibilityNotification.Announcement(
+                        "None confirmed. Cleared any selections in \(group.title)."
+                    ).post()
                 }
-                .frame(minHeight: RithamSpacing.minimumTapTarget)
-                .contentShape(Rectangle())
             }
-            .accessibilityLabel("None of these apply")
-            .accessibilityAddTraits(noneApplies ? [.isSelected] : [])
+
+            ForEach(group.items) { item in
+                checkRow(
+                    title: item.displayName,
+                    isSelected: checklistBinding.wrappedValue.items.contains(item),
+                    accessibilityLabel: nil,
+                    isMuted: false
+                ) {
+                    checklistBinding.wrappedValue.toggle(item)
+                }
+            }
         }
     }
 
-    /// `alignment: .top` on the HStack -- not the default `.center` -- so the checkbox glyph
-    /// aligns with the first line of a wrapped, multi-line option (e.g. "Heart disease
-    /// (including a prior heart attack, heart failure, coronary artery disease, or a cardiac
-    /// surgery/procedure)") instead of floating in the vertical middle of the whole wrapped
-    /// block. Live-review feedback (2026-09-02): with `.center` (the default), a short one-line
-    /// option and a long three-line option placed their checkboxes at visibly different relative
-    /// positions, reading as inconsistent ("options all over the place") rather than as one
-    /// uniform list. `.frame(minHeight:)` below keeps its own default `.center` alignment, so a
-    /// short single-line row still sits centered within its full tap-target height -- only the
-    /// icon-to-text relationship changes, not the row's own placement in that taller frame.
-    private func checkRow(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+    /// A native-iOS-style list row: label leading, a trailing checkmark that only renders when
+    /// `isSelected` (opacity-toggled rather than conditionally inserted/removed, so the row's own
+    /// height never shifts when selection state flips). Checkmark aligns to the first line of a
+    /// wrapped, multi-line label (e.g. "Heart disease (including a prior heart attack, heart
+    /// failure, coronary artery disease, or a cardiac surgery/procedure)") via `alignment: .top`,
+    /// not the default `.center`, matching the same fix already applied to this row shape before
+    /// (live-review feedback, 2026-09-02).
+    ///
+    /// `isMuted` renders the label at reduced opacity for the "None" row only -- distinguishing
+    /// it from the condition rows above/below it without a smaller font size (`RithamType` has no
+    /// role below the 16pt `label` floor) and without a different glyph shape, so it still reads
+    /// as one more row in the same list, per Variant B's whole point.
+    private func checkRow(
+        title: String,
+        isSelected: Bool,
+        accessibilityLabel: String?,
+        isMuted: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
-            HStack(alignment: .top, spacing: RithamSpacing.sm) {
-                Image(systemName: isSelected ? "checkmark.square.fill" : "square")
-                    .foregroundStyle(isSelected ? RithamColor.hot : RithamColor.paper)
+            HStack(alignment: .top, spacing: RithamSpacing.md) {
                 Text(title)
                     .font(RithamType.body)
-                    .foregroundStyle(RithamColor.paper)
+                    .foregroundStyle(isMuted ? RithamColor.paper.opacity(0.75) : RithamColor.paper)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
+                Image(systemName: "checkmark")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(RithamColor.hot)
+                    .opacity(isSelected ? 1 : 0)
             }
+            .padding(.vertical, RithamSpacing.sm + 5)
             .frame(minHeight: RithamSpacing.minimumTapTarget)
             .contentShape(Rectangle())
         }
+        .accessibilityLabel(accessibilityLabel ?? title)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .overlay(alignment: .bottom) {
+            Divider().overlay(RithamColor.paper.opacity(0.14))
+        }
     }
 }
