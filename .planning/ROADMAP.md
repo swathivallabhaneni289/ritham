@@ -301,62 +301,57 @@ Plans:
 
 - [ ] TBD (promote with /gsd-review-backlog when ready)
 
-### Phase 999.3: Onboarding visual polish, round 2 (BACKLOG)
+### Phase 999.3: Onboarding visual polish, round 2 (RESOLVED 2026-09-02)
 
 **Goal:** [Captured for future planning] A grab-bag of live-review feedback from the 2026-08-29
 session, given explicitly as "write these down, don't implement now" — surfaced here so
 `/gsd-progress` picks it up as the starting point for a future session, not lost in chat history.
-Four separate items, not all resolved to the same level of clarity:
+All four items below were resolved via targeted fixes rather than a formal plan; no promotion to
+requirements/plans needed.
 
-1. **A "plain terms" concern was re-raised for onboarding question copy.** The product owner said
-   onboarding questions shouldn't use "plain terms" framing, but Ritham's dual explanation-register
-   system (plain-language vs. technical) was already fully removed earlier in this same session
-   (see PROJECT.md Key Decisions, 2026-08-28) — there is no register choice left anywhere in the
-   app. It's unclear whether this is: (a) stale feedback from before that removal, (b) a specific
-   screen's copy that still *reads* as deliberately simplified/dumbed-down even without a formal
-   register system behind it, or (c) something else entirely. Needs a follow-up conversation to
-   pin down which screen/copy this refers to before any change is made.
+1. ~~**A "plain terms" concern was re-raised for onboarding question copy.**~~ **RESOLVED
+   2026-09-02.** Confirmed (b): the opening disclaimer and gate section headlines read as
+   deliberately simplified. Already addressed by `936f25b` (reword the opening disclaimer headline
+   as a lead-in, not a label) and `6e8ec7f` (add a headline, tighten the intro paragraph, compact
+   the emergency notice on the gate section screen) — product owner confirmed current wording
+   looks good. No further action.
 
-2. **Calibration should state up front how long the walk/lift session will take**, and its
+2. ~~**Calibration should state up front how long the walk/lift session will take**, and its
    in-session progress indicator should change from a straight-line/linear bar to a circular,
-   clock-like radial timer — the fill or a hand sweeping around as time elapses, "like how the
-   clock works." **Important distinction for whoever picks this up**: this is a *functional session
-   timer* for `CalibrationSessionView`, not the same thing as the decorative ring-and-dot brand
-   motif (`RingAndDot.swift`). `01-UI-SPEC.md`'s binding rule locks the ring-and-dot as
-   permanently static/non-data-bearing specifically so it never reads as an Apple Activity
-   Rings-style progress widget — that rule stays untouched. A calibration timer showing real
-   elapsed-time progress is a legitimate, different UI element (closer to a stopwatch), and should
-   be built as its own component, not by relaxing the ring-and-dot's locked constraint.
+   clock-like radial timer.~~ **RESOLVED**, prior to this session, by `e522390` ("radial session
+   timer, upfront duration, and live-review copy fixes") — `RadialSessionTimer.swift` and
+   `CalibrationSessionView` now cover this; the decorative ring-and-dot motif (`RingAndDot.swift`)
+   was left untouched as intended.
 
-3. **`ScreeningOpeningDisclaimerView` (the "Ritham asks a few questions about your health..."
-   screen) has a large empty charcoal area above its text block** and reads as visually dense/
-   text-heavy once you do reach the content — screenshot from the live session attached to the
-   originating conversation turn. Requested fix: bring back decoration to fill that space,
-   specifically citing the arcs (`ArcOrnament`, removed from the Welcome hero treatment earlier
-   this session) combined with the ring-and-dot, similar to what Welcome now uses.
-   **Real tension to resolve before implementing, not decided here**: `01-UI-SPEC.md`'s Decorative
-   Surface Inventory closing rule locks nine specific screens to flat charcoal (no bands, no
-   halftone, no arcs, no mascot) because they collect, confirm, or block on health/consent data.
-   `screeningOpeningDisclaimer` is not one of the nine literally enumerated, but it *is* the
-   gateway screen directly before that exact data collection begins, and the current
-   implementation already treats it as flat (`DecorativeSurface.flat`) — possibly deliberately,
-   possibly just inherited caution. Whoever picks this up should check with the product owner
-   (or re-read `01-UI-SPEC.md`'s own stated intent) on whether this screen counts as the tenth
-   flat-locked screen before adding any decoration to it, rather than assuming either answer.
+3. ~~**`ScreeningOpeningDisclaimerView` has a large empty charcoal area above its text block.**~~
+   **RESOLVED**, prior to this session, by `5cbf5c4` ("add a headline and header decoration to the
+   opening disclaimer screen") — its own commit message explicitly resolves this item's flagged
+   tension: verified against `ScreenHeader.swift`'s enumerated nine-screen flat-locked list that
+   `screeningOpeningDisclaimer` isn't one of them (it collects no data itself), so switching to
+   `.boundedHeaderOnly` (band motif + ring-and-dot, same treatment as Privacy Explainer) doesn't
+   touch the locked set. Uses band motif + ring rather than the literally-requested arcs, but
+   fills the empty space as asked.
 
-4. Possible related concern (mentioned in passing, not confirmed as a real bug): the disclaimer
-   screen "not scrolling up or down" made it hard to review during the live session.
-   `RithamScreen`'s own contract is that every screen scrolls and no text region gets a
-   fixed-height frame — worth a direct re-check on a real device/simulator before assuming
-   anything is actually broken here, since this may just describe the screen *feeling* dense
-   rather than a real scroll failure.
+4. ~~Possible related concern: the disclaimer screen "not scrolling up or down."~~ **RESOLVED
+   2026-09-02**, confirmed non-issue: `RithamScreen` wraps all content in a `ScrollView`
+   unconditionally (`RithamScreen.swift:97`), so this screen always scrolls per contract — this
+   was, as the original note itself predicted, the screen *feeling* dense (fixed by item 3's
+   decoration) rather than an actual scroll failure.
 
-**Requirements:** TBD
+   A related regression surfaced and was fixed in the same session: `546716b` (same-day, earlier)
+   added a manual `collapsedHeaderTopInset` (110pt) to `RithamScreen`'s `ScrollView` to stop
+   content from scrolling behind the floating back button on the condition checklist screen. Live
+   review on the gate section screen showed this reintroduced a large dead gap above the headline
+   on every flat-surface screen at rest. Verified empirically in the simulator (`GateSectionView`,
+   screenshots at inset=110 vs. inset=0): with the custom inset removed entirely, content already
+   sits with correct, comfortable clearance below the back button — `NavigationStack`'s own safe
+   area handles this on its own, `546716b`'s inset was pure redundant double-reservation, not a
+   real fix. Removed the whole mechanism (`collapsedHeaderTopInset`, `headerIsCollapsed`, the
+   `.safeAreaInset` block) rather than re-tuning the constant, restoring `RithamScreen` to rely on
+   the system's own back-button safe-area guarantee.
+
+**Requirements:** N/A — resolved without a formal plan.
 **Plans:** 0 plans
-
-Plans:
-
-- [ ] TBD (promote with /gsd-review-backlog when ready)
 
 ### Phase 999.4: Full app vision — recommendations, home summary, friend/family events (BACKLOG)
 

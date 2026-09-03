@@ -1,13 +1,5 @@
 import SwiftUI
 
-/// Enough to clear the floating back button and status bar on a collapsed-header screen (see
-/// `RithamScreen`'s own `.safeAreaInset` for where this is used) -- measured directly against a
-/// live screenshot on the reference device, 402pt wide (see `HeroBandMotif`'s own doc comment for
-/// that device and why constants here are measured, not assumed), with a little margin rather
-/// than the exact minimum. A plain top-level constant, not a member of `RithamScreen` itself --
-/// Swift does not allow a stored `static let` on a generic type.
-private let collapsedHeaderTopInset: CGFloat = 110
-
 /// The screen scaffold every onboarding/screening screen in this phase composes, binding the
 /// design system (`RithamColor`/`RithamType`/`RithamSpacing`) to the decorative surface
 /// inventory (01-UI-SPEC.md, Decorative Surface Inventory).
@@ -44,18 +36,7 @@ struct RithamScreen<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var hasAppeared = false
-
-    /// Mirrors `ScreenHeader.body`'s own condition for rendering `EmptyView()` exactly -- true
-    /// whenever `ScreenHeader` contributes zero height, whether because `surface` has no
-    /// decorative content at all or because an accessibility text size collapsed it regardless of
-    /// `surface`. Drives the extra top safe-area inset below; kept as one shared condition rather
-    /// than two separately-maintained copies so they can never drift out of sync with each other.
-    private var headerIsCollapsed: Bool {
-        dynamicTypeSize.isAccessibilitySize || !surface.hasVisibleContent
-    }
-
 
     init(
         surface: DecorativeSurface,
@@ -135,37 +116,6 @@ struct RithamScreen<Content: View>: View {
                             .animation(entranceAnimation(delay: 0.3), value: hasAppeared)
                     }
                     .padding(RithamSpacing.md)
-                }
-            }
-            // Live-review feedback (2026-09-02, condition checklist screenshot): when
-            // `ScreenHeader` collapses to zero height (`headerIsCollapsed`), the content below it
-            // only ever gets one-time top padding (`RithamSpacing.md`, applied once at the very
-            // start of the scrollable content) -- nothing stops a later section header from
-            // scrolling all the way up to the screen's very top edge once the user scrolls far
-            // enough down a long screen, landing directly behind the floating back button and
-            // status bar and becoming illegible there. The condition checklist is the first
-            // screen with enough content to make this visible; every other collapsed-header
-            // screen has the same zero persistent top inset, just not enough content to expose
-            // it. `.safeAreaInset` (applied to the `ScrollView`, not a view placed inside its
-            // content) reserves space no scroll position can ever intrude into, unlike
-            // `.padding`, which only affects where content starts.
-            //
-            // Gated on `headerIsCollapsed`, not applied unconditionally -- a first attempt at
-            // this fix added the inset for every screen and shifted the Welcome hero band down
-            // by exactly this amount, breaking its pixel-perfect flush-top-left-corner port
-            // (`HeroBandMotif`'s own doc comment). A screen with a real decorative header already
-            // has far more than this clearance from that header alone; this inset exists only to
-            // backstop the screens that have none.
-            //
-            // `collapsedHeaderTopInset`, not `RithamSpacing.xl` -- a first pass at the *size* of
-            // this inset used `RithamSpacing.xl` (32pt) and a follow-up screenshot on the
-            // condition checklist showed content still scrolling behind the back button, barely
-            // moved from before the fix. Measured directly against that screenshot, the floating
-            // back button's own bottom edge sits roughly 100pt down the screen -- `xl` covered
-            // under a third of the space actually needed.
-            .safeAreaInset(edge: .top, spacing: 0) {
-                if headerIsCollapsed {
-                    Color.clear.frame(height: collapsedHeaderTopInset)
                 }
             }
         }
