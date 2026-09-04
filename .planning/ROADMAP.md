@@ -135,10 +135,14 @@ Plans:
      their dietary pattern when the underlying gate allows it, and a required-blocking nutrition
      tag shows zero personalized quantity of any kind for that domain.
 
-  6. In Settings, a visible "always free" list confirms that GPS/manual-stopwatch tracking
-     (heart-rate display when a device is paired, never required), full history, plate/1RM
-     calculators, supersets, and movement-pattern tagging are never paywalled — matching what's
-     actually gated (or not) elsewhere in the app.
+  6. In Settings, a visible "always free" list confirms that GPS/manual-stopwatch tracking, full
+     history, plate/1RM calculators, supersets, and movement-pattern tagging are never paywalled —
+     matching what's actually gated (or not) elsewhere in the app. *Corrected 2026-09-04 (plan
+     checker finding): the original wording also named "heart-rate display when a device is
+     paired," but this phase builds no wearable-pairing capability at all — that's WEAR-01 (v2).
+     Listing an unbuilt capability would violate this same criterion's own "matches what's
+     actually gated (or not) elsewhere" test. Heart-rate display returns to this list whenever
+     WEAR-01 ships.*
 
   7. A user can set a dietary pattern (none/vegetarian/vegan) whenever they choose to — never a
      mandatory onboarding step — and it never changes a clearance-gate outcome.
@@ -162,33 +166,47 @@ Plans:
 
 - [ ] 02-01-PLAN.md — Cardio domain: activity types, session/split value types, accuracy-filtered
   track accumulator, grade-adjusted pace with elevation-confidence gating
+
 - [ ] 02-02-PLAN.md — Strength lookups: equipment, plate calculator, 1RM estimator,
   movement-pattern catalog
+
 - [ ] 02-03-PLAN.md — Lift session domain: stable set identity, auto-fill lookup, superset
   grouping, retroactive merge/split
+
 - [ ] 02-04-PLAN.md — Content-permission layer and the workout guidance catalog (§2 transcription)
 - [ ] 02-05-PLAN.md — `RithamService`: Go workout-plan service, stdlib-only, one loopback-bound
   endpoint (D-06/D-07)
+
 - [ ] 02-06-PLAN.md — Phase 2 navigation contract and the interim home hub; makes Settings (and
   DIET-01's diet plan) reachable for the first time (D-05)
+
 - [ ] 02-07-PLAN.md — Nutrition guidance catalog (§3) plus dietary swaps and nutrient-education
   blocks (DIET-02/DIET-03)
+
 - [ ] 02-08-PLAN.md — Complete Phase 2 persistence surface: session/set records and every new
   `HealthDataStore` accessor
+
 - [ ] 02-09-PLAN.md — Cardio capture adapters: manual stopwatch, first-class GPS session,
   foreground-only motion auto-detect
+
 - [ ] 02-10-PLAN.md — Cardio UI: activity picker, live session with visible confidence, history,
   opt-in single-user route comparison
+
 - [ ] 02-11-PLAN.md — Strength logging UI: set entry with auto-fill, plate/1RM calculator,
   superset building
+
 - [ ] 02-12-PLAN.md — Guidance UI: inline adjusted guidance at logging time plus the dedicated
   guidance screen (HEALTH-03/04, DIET-02/03)
+
 - [ ] 02-13-PLAN.md — Recommendations surface, the triggered walk-or-light-lift pre-assessment,
   and the Go plan client (ONBOARD-01)
+
 - [ ] 02-14-PLAN.md — Settings: visible always-free list and the weekly workout-frequency
   preference (MONETIZE-01)
+
 - [ ] 02-15-PLAN.md — Strength history: movement-pattern filter, year-jump navigation, retroactive
   edit/merge/split (STRENGTH-04/05)
+
 - [ ] 02-16-PLAN.md — Phase close-out: fix the `StepRegistry` cross-suite race, assert Phase 2 step
   coverage, on-device sensor and Go round-trip checkpoints, AX3/AX5 pass
 
