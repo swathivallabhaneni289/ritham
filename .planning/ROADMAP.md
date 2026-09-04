@@ -156,7 +156,42 @@ Plans:
      navigation hub so its own features (tracking, recommendations, diet plan) are reachable in
      the running app — not Phase 4's polished 3-item CROSSGEN-01 home design, just enough real
      navigation to replace Phase 1's `.home` stub until Phase 4 ships.
-**Plans**: TBD
+**Plans**: 16 plans across 5 waves
+
+Plans:
+
+- [ ] 02-01-PLAN.md — Cardio domain: activity types, session/split value types, accuracy-filtered
+  track accumulator, grade-adjusted pace with elevation-confidence gating
+- [ ] 02-02-PLAN.md — Strength lookups: equipment, plate calculator, 1RM estimator,
+  movement-pattern catalog
+- [ ] 02-03-PLAN.md — Lift session domain: stable set identity, auto-fill lookup, superset
+  grouping, retroactive merge/split
+- [ ] 02-04-PLAN.md — Content-permission layer and the workout guidance catalog (§2 transcription)
+- [ ] 02-05-PLAN.md — `RithamService`: Go workout-plan service, stdlib-only, one loopback-bound
+  endpoint (D-06/D-07)
+- [ ] 02-06-PLAN.md — Phase 2 navigation contract and the interim home hub; makes Settings (and
+  DIET-01's diet plan) reachable for the first time (D-05)
+- [ ] 02-07-PLAN.md — Nutrition guidance catalog (§3) plus dietary swaps and nutrient-education
+  blocks (DIET-02/DIET-03)
+- [ ] 02-08-PLAN.md — Complete Phase 2 persistence surface: session/set records and every new
+  `HealthDataStore` accessor
+- [ ] 02-09-PLAN.md — Cardio capture adapters: manual stopwatch, first-class GPS session,
+  foreground-only motion auto-detect
+- [ ] 02-10-PLAN.md — Cardio UI: activity picker, live session with visible confidence, history,
+  opt-in single-user route comparison
+- [ ] 02-11-PLAN.md — Strength logging UI: set entry with auto-fill, plate/1RM calculator,
+  superset building
+- [ ] 02-12-PLAN.md — Guidance UI: inline adjusted guidance at logging time plus the dedicated
+  guidance screen (HEALTH-03/04, DIET-02/03)
+- [ ] 02-13-PLAN.md — Recommendations surface, the triggered walk-or-light-lift pre-assessment,
+  and the Go plan client (ONBOARD-01)
+- [ ] 02-14-PLAN.md — Settings: visible always-free list and the weekly workout-frequency
+  preference (MONETIZE-01)
+- [ ] 02-15-PLAN.md — Strength history: movement-pattern filter, year-jump navigation, retroactive
+  edit/merge/split (STRENGTH-04/05)
+- [ ] 02-16-PLAN.md — Phase close-out: fix the `StepRegistry` cross-suite race, assert Phase 2 step
+  coverage, on-device sensor and Go round-trip checkpoints, AX3/AX5 pass
+
 **UI hint**: yes
 **Backend**: Go (`RithamService/`) — new for this phase, workout-plan generation only. See
 `PROJECT.md` Key Decisions and `02-CONTEXT.md` D-06/D-07 for scope and rationale (a job-search
@@ -250,7 +285,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
-| 2. Core Tracking & Adjusted Guidance | 0/0 | Not started | - |
+| 2. Core Tracking & Adjusted Guidance | 0/16 | Planned | - |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
