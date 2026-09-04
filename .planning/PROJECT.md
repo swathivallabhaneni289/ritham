@@ -91,7 +91,9 @@ ranking.
 
 ## Context
 
-- **Target runtime**: iOS native, Swift/SwiftUI (user-specified).
+- **Target runtime**: iOS native client, Swift/SwiftUI (user-specified) — plus a Go backend
+  service starting in Phase 2 for new server-side logic (see Key Decisions). The client stays
+  Swift; Go is never a candidate for the app's UI layer (no native iOS UI framework exists in Go).
 - **Origin**: Requirements synthesized from a 6-document ingest batch (2 PRDs, 3 SPECs, 1 DOC) —
   no ADRs existed in the batch, so several architecture-flavored statements are captured below as
   Key Decisions and flagged as candidates for promotion to formal ADRs.
@@ -109,7 +111,10 @@ ranking.
 
 ## Constraints
 
-- **Tech stack**: iOS native, Swift/SwiftUI — user-specified target runtime.
+- **Tech stack**: iOS native client, Swift/SwiftUI (user-specified target runtime) plus a Go
+  backend service for new Phase 2+ business logic (workout-plan generation first). Phase 1's
+  existing Swift domain logic (screening, gate-resolution, calibration, dietary-pattern rules in
+  `RithamCore`) is NOT ported — it stays client-side, untouched, exactly as shipped and verified.
 - **Compliance**: Public App Store launch requires PAR-Q+ gate-question wording counsel review,
   SCOFF wording/scoring clinician confirmation, protein-swap-table dietitian sign-off, and a
   GDPR/CCPA privacy review covering intake health data — before public submission, not deferred
@@ -134,7 +139,8 @@ ranking.
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Local-first data storage; cloud sync is backup, not source of truth | Keeps a user's training data available offline and under their control; matches `docs/roadmap.md`'s storage model | — Pending |
+| Local-first data storage; cloud sync is backup, not source of truth | Keeps a user's training data available offline and under their control; matches `docs/roadmap.md`'s storage model | — Superseded (see below) |
+| Starting Phase 2, new server-side logic (beginning with workout-plan generation) runs behind a Go backend API rather than staying purely on-device; Phase 1's already-shipped Swift domain logic is not touched or ported | Direct product decision (2026-09-04): the user wants real Go experience in this project for general-software-engineering job applications, not iOS-specific roles. Go cannot build native iOS UI, so the client stays Swift; the backend is where Go fits. This revises the local-first-only design above for whichever new features route through the backend — plan-generation inputs (condition tags relevant to the plan, frequency/experience level) will leave the device, which widens the GDPR/CCPA review surface (LAUNCH-04) beyond what Phase 1 assumed. Scope, hosting, and exactly what crosses the API boundary are decided per-feature as Phase 2 is planned, not all at once here | Decided |
 | Ritham will never build a cross-user aggregate location visualization (no heatmap, no "most active area" feature) | Permanent privacy commitment from `docs/group-events.md` §3; protects users even after group features ship in v2 | — Pending |
 | Server-side EXIF stripping is unconditional and never relies on client-side stripping alone | Photo-metadata location/identity leaks are a hard privacy failure mode; a server-side guarantee closes gaps a client bug could open | — Pending |
 | Forgiveness mechanics (shields, comeback repair, injury guardrail) are never monetized, permanently | Keeps the Momentum streak's fairness promise credible — a purchasable shield would undermine "earned, never sold" | — Pending |
@@ -145,7 +151,11 @@ ranking.
 | ONBOARD-01's calibration (guided walk-or-light-lift session) is no longer onboarding's first mandatory session; it moves to a triggered pre-assessment inside a later exercise-recommendation feature (provisionally Phase 2), factoring in age and the condition tags the safety screening already collects. Onboarding itself now ends after the safety screening — welcome, age floor, privacy explainer, then the full screening straight through to home. The "never a self-reported fitness-level dropdown" half of ONBOARD-01 is unchanged; only "first session" is reversed. The calibration domain and UI (`CalibrationIntroView`/`CalibrationSessionView`/`CalibrationCompleteView`, pedometer/stopwatch sources, `RadialSessionTimer`) are kept intact, router-unreachable from onboarding rather than deleted, for the future flow to reuse unmodified | Direct product feedback (2026-09-01): calibration felt better positioned as something a user opts into when they actually ask for exercise recommendations, alongside a broader vision (diet section, exercise recommendations, home summary, friend/family events) — see the new Backlog entry this same update adds. Also removes Phase 1's only remaining physical-device-dependent verification task (01-18's GPS calibration walk), since calibration is no longer part of onboarding's closure criteria | Decided |
 
 ---
-*Last updated: 2026-09-01 — moved calibration (ONBOARD-01) out of onboarding entirely; it's now a
-future triggered pre-assessment inside the exercise-recommendation feature, provisionally scoped
-to Phase 2. See Key Decisions, `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s
+*Last updated: 2026-09-04 — added a Go backend for new Phase 2+ server-side logic (workout-plan
+generation first), superseding the local-first-only storage decision for whichever features route
+through it. Phase 1's Swift domain logic is untouched. See Key Decisions and Context.*
+
+*Previously updated: 2026-09-01 — moved calibration (ONBOARD-01) out of onboarding entirely; it's
+now a future triggered pre-assessment inside the exercise-recommendation feature, provisionally
+scoped to Phase 2. See Key Decisions, `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s
 updated Phase 1 success criterion 1 and new Backlog entry for the full reasoning.*
