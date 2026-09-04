@@ -1,7 +1,7 @@
 # Phase 2: Core Tracking & Adjusted Guidance - Research
 
 **Researched:** 2026-08-28
-**Domain:** Native iOS (SwiftUI/SwiftData/CoreLocation/CoreMotion) cardio + strength session logging, condition-tag-adjusted workout/nutrition guidance content, plate-math and superset domain logic
+**Domain:** Native iOS (SwiftUI/SwiftData/CoreLocation/CoreMotion) cardio + strength session logging, condition-tag-adjusted workout/nutrition guidance content, plate-math and superset domain logic, plus a Go backend service for workout-plan generation
 **Confidence:** MEDIUM — the RithamCore API surface this phase builds on (`ConditionTag`, `ClearanceGate`, `GateResolution`, `GateEscalation` including `weightLossFeatureGate`, `DietaryPattern`) was read directly from the committed source, not inferred (HIGH for that part specifically). The Apple-framework technical findings (CoreMotion auto-detect, CoreLocation accuracy/battery practice, Swift Charts, plate-math, grade-adjusted pace) are WebSearch cross-referenced across 2+ independent sources per finding (MEDIUM per the `classify-confidence` seam), not compiled/run this session — no MCP documentation providers (Context7, Ref, Exa) were available in this environment, so every non-codebase finding below is `[CITED: websearch]`, never `[VERIFIED]`.
 
 > **No CONTEXT.md exists for this phase yet.** This research runs before `/gsd-discuss-phase 2`, per this task's own instructions. There is therefore no `<user_constraints>` section — nothing has been locked by the user for this phase. Every gray area below is written up in **Open Questions for Discussion**, not decided. Do not read the absence of that section as an oversight.
@@ -553,3 +553,367 @@ WebSearch results cross-referenced across 2+ independent sources per `classify-c
 
 **Research date:** 2026-08-28
 **Valid until:** 30 days for the Apple-framework technical findings (stable, slow-moving guidance) — same as Phase 1's stated validity window. The App Store Review Guideline citations (1.4.1, 5.1.1) should be re-checked against the live `developer.apple.com/app-store/review/guidelines/` page closer to submission, since Apple revises these guidelines more frequently than framework APIs change; treat this research's guideline citations as directional, not a substitute for a pre-submission re-read.
+
+---
+
+## Go Backend Research (added 2026-09-04)
+
+**Trigger:** `02-CONTEXT.md` D-06/D-07 (gathered 2026-09-04, after the research above was written)
+locked a new architectural decision the research above never anticipated: starting Phase 2, new
+server-side logic — beginning with workout-plan generation — runs behind a Go backend API. This
+section researches that one feature only. It does not touch, redo, or supersede anything above;
+everything above (cardio/strength tracking, condition-adjusted guidance content, plate calculator)
+remains 100% client-side Swift, unchanged by this decision (D-06 is explicit that Phase 1's Swift
+domain logic is not ported).
+
+**Framing carried over from `02-CONTEXT.md`:** this decision is a resume/job-search goal (real Go
+experience for general software-engineering roles), not a Ritham product or technical requirement
+— see `PROJECT.md` Key Decisions and D-06's own text. The user's explicit instruction — *"just
+build it, make it fast, i dont want to spend too much time on this project"* — governs every
+recommendation below: smallest dependency footprint, smallest project structure, no
+infrastructure not directly justified by this one feature's needs (no message queue, no
+microservices split, no container orchestration, no framework heavier than the job requires).
+
+### 1. Go web framework/library choice
+
+**Recommendation: standard-library `net/http` only, using Go 1.22+'s enhanced `http.ServeMux`
+(method + wildcard path patterns, e.g. `mux.HandleFunc("POST /v1/workout-plan", handler)`). Add
+no third-party router or framework.**
+
+- `go version` run in this repo's environment this session confirms **Go 1.26.4** is installed
+  locally `[VERIFIED: local environment, this session]` — far above the Go 1.22 floor this
+  recommendation needs, so the enhanced `ServeMux` is available with no compatibility concern.
+- Go 1.22 added HTTP-method matching and `{wildcard}` path-parameter patterns directly to
+  `net/http.ServeMux`, closing the two biggest historical reasons projects reached for a
+  third-party router (method routing, path parameters) `[CITED: websearch]`. Multiple
+  independent 2025-era sources converge on the same conclusion for a project this size: "for new
+  work, the recommendation is to use the standard library" now that Go 1.22+ covers most routing
+  needs that previously required a third-party library, with `chi` positioned as an alternative
+  only once a project needs advanced middleware composition or route grouping beyond what stdlib
+  offers `[CITED: websearch — calhoun.io "Go's 1.22+ ServeMux vs Chi Router", alexedwards.net
+  "Which Go Router Should I Use?"]`.
+- This service has exactly **one endpoint** (`POST /v1/workout-plan`, see §3). There is no route
+  grouping, no nested resource hierarchy, and no middleware stack beyond perhaps a single logging
+  wrapper — the exact scenario stdlib's enhanced `ServeMux` was extended to cover. Reaching for
+  `chi`/`gin`/`echo`/`fiber` here would add a dependency (and, for `gin`/`echo`/`fiber`, a
+  non-trivial one with their own middleware/binding conventions to learn) for zero functional
+  gain on a single-route service.
+- **This also matches the codebase's own precedent in spirit**, not just by analogy: the existing
+  research above (line 34/36) documents that `RithamCore`/`RithamApp` ship with **zero
+  third-party Swift packages** as a deliberate discipline, and `RithamCore/Package.swift` was
+  read directly this session and confirms it — the `targets:` array has no `dependencies:` on
+  any external package, only the in-repo `RithamCore`/`RithamCoreTests` targets
+  `[VERIFIED: RithamCore/Package.swift, read this session]`. Standard-library-only Go is the
+  direct Go equivalent of that same discipline, not a new precedent invented for this section.
+- **Alternative considered and rejected:** `chi` (github.com/go-chi/chi) — genuinely minimal
+  (under 1,000 LOC per its own docs `[CITED: websearch]`) and a reasonable second choice if this
+  service ever grows past a handful of routes. Not recommended now because it adds a dependency
+  this single-endpoint service doesn't need yet; revisit only if a second/third route with real
+  middleware needs appears.
+- **Alternative considered and rejected:** `gin`/`echo`/`fiber` — full frameworks with their own
+  request-binding, validation, and middleware ecosystems. None of that surface area is justified
+  by one JSON request/response endpoint, and each pulls in a larger dependency tree than this
+  "make it fast, don't over-invest" feature calls for.
+
+### 2. Project structure
+
+**Recommendation: a sibling top-level directory, `RithamService/`, alongside the existing
+`RithamApp/` and `RithamCore/` — not nested inside either.**
+
+Verified this session: the repo root already holds `RithamApp/`, `RithamCore/`, `Scripts/`, and
+`docs/` as top-level siblings `[VERIFIED: `ls` on repo root, this session]`. A new Go service
+follows that same flat, sibling-directory convention rather than being nested inside the Swift
+tree (which would wrongly imply it's part of the Swift build) or invented as a deeply nested
+monorepo layout the project doesn't otherwise use.
+
+Suggested internal layout, sized to "one service, one endpoint, ship it," not a generic template:
+
+```
+RithamService/
+├── go.mod                    # module github.com/<user>/ritham-service (or similar)
+├── cmd/
+│   └── ritham-service/
+│       └── main.go           # entry point: wires router, starts http.ListenAndServe
+├── internal/
+│   ├── plan/
+│   │   ├── generate.go       # workout-plan generation logic (pure function, no HTTP)
+│   │   └── generate_test.go
+│   └── httpapi/
+│       ├── handler.go        # POST /v1/workout-plan handler: decode -> call plan.Generate -> encode
+│       └── handler_test.go   # httptest-based handler tests, see §6
+└── README.md                 # how to `go run` it locally, see §5
+```
+
+- `cmd/<binary-name>/main.go` + `internal/` is the widely-cited convention
+  (`golang-standards/project-layout`) for exactly this shape: a `cmd/` entrypoint that "imports
+  and invokes the code from `/internal`... and nothing else," and `internal/` for private
+  application logic the Go compiler itself refuses to let other modules import
+  `[CITED: websearch — golang-standards/project-layout, go-cookbook.com]`.
+- Deliberately **no `/pkg` directory** — 2025-era guidance is explicit that `/pkg` only earns its
+  keep when other projects will import this code as a library, and "many projects don't need
+  `pkg/` at all" `[CITED: websearch — glukhov.org "Go Project Structure: Practices & Patterns"]`.
+  Nothing else in this repo will ever import this Go module (the iOS client talks to it over
+  HTTP, not as a Go dependency), so `/pkg` would be pure ceremony here.
+- `internal/plan` (pure generation logic, no HTTP concerns) is kept separate from
+  `internal/httpapi` (the thin HTTP decode/call/encode layer) so the plan-generation logic can be
+  unit-tested directly without spinning up a server — see §6. This is the one structural split
+  worth keeping even at this small scale; collapsing everything into a single `main.go` would
+  make the generation logic harder to test in isolation for no real simplicity gain.
+- **Do not add a Dockerfile, CI config, or deployment manifest yet** — out of scope per §5 below
+  and per the user's own "don't spend too much time on this" framing; add it only when hosting is
+  actually decided.
+
+### 3. API contract shape
+
+**Confirmed: REST/JSON over a single `POST` endpoint is the right shape.** One request in, one
+response out, no streaming, no pagination, no sub-resources — there is nothing here that would
+justify GraphQL, gRPC, or any RPC framework; plain JSON over HTTP is the simplest thing that
+works and is trivially callable from `URLSession` on the iOS side with no client library needed.
+
+**Endpoint:** `POST /v1/workout-plan`
+
+**Request body** (field choices explained in §4 — the `guidancePermission` field is the D-07
+minimized signal, never raw condition tags):
+
+```json
+{
+  "frequencyPerWeek": 5,
+  "experienceLevel": "intermediate",
+  "guidancePermission": "recommended"
+}
+```
+
+| Field | Type | Values | Source (client-side) |
+|---|---|---|---|
+| `frequencyPerWeek` | int | `3`, `5`, or `7` (per `02-CONTEXT.md`'s Claude's Discretion: 3/5/7 days/week, a Settings preference) | The user's stored frequency preference |
+| `experienceLevel` | string enum | e.g. `"beginner"`, `"intermediate"`, `"advanced"`, `"dailyExerciser"` — exact case names are a planning-time decision; must match `02-CONTEXT.md`'s calibration-derived-with-self-report-fallback classification | Derived **client-side** from `CalibrationBaseline` when available (per D-04/D-03, `CalibrationBaseline` itself is never surfaced as a score/grade — only this coarse category crosses the wire, not the underlying pace-zone/starting-weight numbers), falling back to self-report if calibration was skipped |
+| `guidancePermission` | string enum | `"none"` \| `"recommended"` \| `"requiredBlocking"` — the exact three cases of `ClearanceGate` `[VERIFIED: RithamCore/Sources/RithamCore/Screening/ClearanceGate.swift, read this session]` | `DomainGates.workout` from the client's already-resolved `GateResolutionResult` (see §4) |
+
+**Response body:**
+
+```json
+{
+  "plan": {
+    "frequencyPerWeek": 5,
+    "sessions": [
+      {
+        "dayIndex": 1,
+        "focus": "upper-body push",
+        "exercises": [
+          { "name": "Barbell bench press", "sets": 3, "repRange": "8-10" }
+        ]
+      }
+    ],
+    "guidanceNote": "General strength-training guidance only — check with a professional before starting a new program."
+  }
+}
+```
+
+- When `guidancePermission` is `"requiredBlocking"`, the server should return only a generic,
+  non-personalized `guidanceNote` (or a plan with no numeric prescriptions at all) and a referral
+  message — this mirrors HEALTH-03's existing "required-blocking → generic + referral only" rule
+  that the Swift research above already established for on-device guidance (line 22); the Go
+  service must honor the same three-level semantics, not reinvent them.
+- Standard HTTP status codes: `200` success, `400` malformed/missing fields (e.g. invalid
+  `frequencyPerWeek`), `500` unexpected server error. No auth/session status codes needed — see
+  §7's note on auth being explicitly out of scope for this first pass.
+
+### 4. Data-boundary minimization pattern for D-07
+
+D-07 flags this explicitly: "prefer the smallest data surface that still lets the backend do its
+job," because whatever leaves the device widens the GDPR/CCPA review surface (LAUNCH-04) beyond
+what Phase 1 assumed under local-first-only storage. This is a concrete design point, not a
+suggestion — here is what should and should not cross the wire:
+
+**What the client sends (and why it's safe to send):**
+- `frequencyPerWeek` — a user preference with no health-sensitivity, already stored in Settings.
+- `experienceLevel` — a coarse category (4-ish buckets), **derived client-side** from either
+  `CalibrationBaseline` or self-report. The underlying `CalibrationBaseline` (pace zone in
+  seconds/km, exact starting weight in kg) never leaves the device — only the derived bucket
+  name does. This also protects D-04's own rule that `CalibrationBaseline` must never be
+  surfaced as a score/grade/level: keeping the derivation client-side and sending only a plan-
+  scaling category (not the raw numbers) means the Go service structurally cannot reconstruct or
+  redisplay a "fitness score," even by accident.
+- `guidancePermission` — the **already-resolved** `ClearanceGate` value for `.workout`
+  (`DomainGates.workout`, one of exactly three cases: `none`/`recommended`/`requiredBlocking`).
+  This is the concrete answer to "what replaces raw condition tags": the client already computes
+  this locally today via `GateResolution.resolve(...)` → `GateResolutionResult.gates.workout`
+  `[VERIFIED: RithamCore/Sources/RithamCore/Screening/GateResolution.swift, GateResolution.swift
+  §GateResolutionResult, read this session]` — Phase 2 does not need to invent a new minimized
+  signal, it already has one sitting in existing, tested Phase 1 infrastructure. Sending this
+  enum instead of the tags gives the Go service exactly enough information to decide "show a full
+  plan" vs. "show a generic-only plan with a referral note" (§3), with no way to reconstruct which
+  of the 31 `ConditionTag` cases produced that gate.
+
+**What never crosses the wire, under any circumstance:**
+- The raw `ConditionTag` set (`GateResolutionResult.matchedTags`) — condition names are exactly
+  the kind of special-category health data GDPR/CCPA treat most strictly; there is no
+  plan-generation need for the Go service to know *which* condition produced the gate, only
+  *how restrictive* the gate is.
+- SCOFF screening answers, or any other raw intake-questionnaire data.
+- Precise `CalibrationBaseline` numbers (pace zone, starting weight) — send the derived
+  `experienceLevel` bucket only, per above.
+- Any persistent user/device identifier tying a request to a specific person across calls,
+  unless a future feature genuinely requires it (this endpoint doesn't — see §7's note on
+  statelessness).
+
+**Net effect:** the request body in §3 already reflects this — three small, non-reversible
+fields (a preference, a coarse category, a three-value gate enum), nothing that is itself
+protected health information or individually re-identifying condition data. This is a design
+recommendation `[ASSUMED — reasoned from D-07's stated goal and this repo's existing
+`ClearanceGate`/`GateResolutionResult` types, not independently verified against a GDPR/CCPA
+legal source this session]`; flag for a real privacy/legal read before LAUNCH-04's actual
+compliance review, but it is the smallest-surface option available given what the feature needs
+to do.
+
+**Planning-time note:** an even smaller-surface variant is worth considering at plan time —
+when `guidancePermission` is `"requiredBlocking"`, the client could short-circuit locally and
+never call the endpoint at all (it already knows the answer is "generic-only" without asking the
+server), rather than sending the request and having the server return generic content. That
+sends strictly less data in the most sensitive case and removes a server code path. Not adopted
+as the recommendation above only because it wasn't independently researched this session — flag
+for the planner to decide, don't treat §3/§4's request/response shape as the only option.
+
+#### Assumptions (Go Backend Research)
+
+| # | Claim | Section | Risk if Wrong |
+|---|-------|---------|---------------|
+| A3 | The three-field request shape (`frequencyPerWeek`, `experienceLevel`, `guidancePermission`) is sufficient minimization to meaningfully reduce the GDPR/CCPA (LAUNCH-04) review surface, without a legal/privacy review confirming it this session | §4 | If a real privacy review later finds this insufficient (e.g. `experienceLevel` combined with other request metadata is judged re-identifying, or `guidancePermission` itself is judged to reveal health-condition information indirectly), the API contract in §3 would need to change after implementation, not before — costs a rework rather than a planning-time fix. Low likelihood given how coarse all three fields are, but not independently confirmed against an actual GDPR/CCPA source this session. |
+
+*(This is additive to, not a replacement for, the existing Assumptions Log (A1/A2) earlier in
+this document — that log covers the Swift-side research above and is untouched by this
+addition.)*
+
+### 5. Local dev + running it
+
+For day-to-day development, run the service directly with `go run ./cmd/ritham-service` on
+`localhost` (e.g. `:8080`), and point iOS Simulator debug builds at
+`http://localhost:8080` (Simulator shares the host Mac's network, so `localhost` resolves
+correctly with no special networking setup — a real device would need the Mac's LAN IP instead,
+but that's not needed for Simulator-only debug work). A `Debug`/`Release` build-configuration
+flag (already a pattern iOS projects use) can select this local base URL for `Debug` and a
+placeholder/staging URL for `Release` until real hosting exists.
+
+**Production hosting/cloud deployment is explicitly deferred** — not researched here, per the
+task's own scope note and the user's "don't spend too much time on this" framing; that's a
+separate decision for whenever this actually needs to run somewhere other than a developer's
+machine.
+
+### 6. Testing approach
+
+**Recommendation: Go's standard `testing` package plus `net/http/httptest` — no third-party test
+framework (no `testify`, no `ginkgo`).** This mirrors the same "native platform tooling, no
+exotic frameworks" discipline the existing research documents for the Swift side (XCTest, per
+the Test Framework table earlier in this document) and matches the zero-dependency framing from
+§1.
+
+- **Pure-logic tests** (`internal/plan/generate_test.go`): ordinary table-driven `testing`
+  functions calling `plan.Generate(frequencyPerWeek, experienceLevel, guidancePermission)`
+  directly — no HTTP involved, fast, no server needed. This is the majority of the meaningful
+  test surface (does a `requiredBlocking` permission actually suppress numeric prescriptions?
+  does frequency `7` produce 7 sessions?).
+- **Handler tests** (`internal/httpapi/handler_test.go`): `httptest.NewRequest` +
+  `httptest.NewRecorder()` to call the handler directly in-process, asserting on status code and
+  decoded JSON response body — the standard, dependency-free pattern for testing `net/http`
+  handlers without binding a real port. Confirmed directly this session by running
+  `go doc net/http/httptest` against the locally installed Go 1.26.4 toolchain: the package
+  exports exactly `NewRequest`/`NewRequestWithContext`/`ResponseRecorder`/`NewRecorder` for
+  this in-process pattern (plus `Server`/`NewServer` for full-server tests, not needed here)
+  `[VERIFIED: `go doc net/http/httptest` output, this session]`.
+- Run with plain `go test ./...` from `RithamService/` — no separate test runner or config file
+  needed, matching the "quick command, no setup" bar the rest of this project's testing already
+  holds itself to.
+
+### 7. Go-specific pitfalls to know before writing tasks
+
+Kept tight — only things that would actually bite a first-time-in-this-codebase Go service, not
+a general Go tutorial:
+
+- **JSON struct tags are load-bearing and easy to get subtly wrong.** Go's `encoding/json` matches
+  struct fields to JSON keys via the `json:"fieldName"` tag; if a tag is misspelled or omitted,
+  the field silently gets Go's default field-name-based matching instead of erroring — a typo'd
+  tag doesn't fail loudly, it just silently stops round-tripping that field
+  `[CITED: websearch]`. Concretely for this feature: `frequencyPerWeek`, `experienceLevel`, and
+  `guidancePermission` field names must be tagged explicitly on the Go structs and must match the
+  iOS side's `Codable`/`CodingKeys` exactly (camelCase both sides, per §3's examples) — a planner
+  task should include an explicit round-trip test (encode on one side's chosen shape, decode on
+  the other), not just eyeball that the names match.
+- **A JSON number sent as a string (or vice versa) fails at decode time, not at compile time.**
+  If the iOS side ever sends `"frequencyPerWeek": "5"` (string) where Go expects `int`,
+  `Unmarshal` returns a type error rather than coercing it `[CITED: websearch]` — worth an
+  explicit negative-path test in `handler_test.go` (malformed request → `400`, not a panic).
+- **Go errors are values, not exceptions — every returned error must be explicitly checked, and
+  it's easy to accidentally check/log the same error twice while missing a different one from an
+  adjacent call** `[CITED: websearch]`. For this feature's small handler (decode request → call
+  `plan.Generate` → encode response), each of those three steps returns its own error and each
+  needs its own distinct check-and-respond, not a single shared catch-all.
+- **`go.mod` has no user-settable "package version" field the way `package.json` does** — Go
+  versions modules via git tags, not a version line in the file itself
+  `[CITED: websearch — go.dev/ref/mod]`. This matters only if `RithamService/` is ever imported
+  by another Go module (unlikely per §2's reasoning that nothing else imports it) — but it's a
+  common point of confusion worth the planner/executor knowing up front so no one goes looking
+  for a version field that doesn't exist.
+- **No authentication/authorization exists on this endpoint in this first pass** — worth stating
+  explicitly rather than leaving implicit: `02-CONTEXT.md` doesn't scope an auth story for this
+  feature, and adding one (API keys, JWTs, etc.) is exactly the kind of scope-creep the user's
+  "just build it, make it fast" instruction is steering away from for a local-dev-only endpoint.
+  This is a real gap once real hosting happens (§5's deferred scope) — flag it for whoever plans
+  the eventual hosting decision, but do not build auth infrastructure as part of this feature.
+
+### Package Legitimacy Audit
+
+**N/A — no third-party packages are recommended anywhere in this section.** §1 recommends
+standard-library `net/http` only; §6 recommends the standard-library `testing` +
+`net/http/httptest` only. There is nothing to run `package-legitimacy check` against.
+
+### Sources (Go Backend Research)
+
+#### Secondary (MEDIUM confidence, WebSearch, official/canonical sources)
+- [Go's 1.22+ ServeMux vs Chi Router — calhoun.io](https://www.calhoun.io/go-servemux-vs-chi/)
+- [Which Go Router Should I Use? — alexedwards.net](https://www.alexedwards.net/blog/which-go-router-should-i-use)
+- [go-chi/chi — GitHub](https://github.com/go-chi/chi)
+- [golang-standards/project-layout — GitHub](https://github.com/golang-standards/project-layout)
+- [Go Project Structure: Practices & Patterns — glukhov.org](https://glukhov.org/post/2025/12/go-project-structure)
+- [encoding/json — pkg.go.dev](https://pkg.go.dev/encoding/json)
+- [Go Modules Reference — go.dev](https://go.dev/ref/mod)
+- [7 common pitfalls in JSON operations in Golang — dev.to](https://dev.to/brucedu521/7-common-pitfalls-in-json-operations-in-golang-3693)
+- [Error handling in Go: Common pitfalls — pvs-studio.com](https://pvs-studio.com/en/blog/posts/go/1371/)
+
+#### Primary (HIGH confidence, read directly this session)
+- `RithamCore/Sources/RithamCore/Screening/ClearanceGate.swift` — `ClearanceGate`,
+  `GuidanceDomain`, `DomainGates` (the D-07 minimized-signal source of truth)
+- `RithamCore/Sources/RithamCore/Screening/GateResolution.swift` — `GateResolutionResult`,
+  confirming `.gates.workout` is already computed client-side today
+- `RithamCore/Sources/RithamCore/Calibration/CalibrationBaseline.swift` — confirms D-04's
+  never-a-score constraint on `CalibrationBaseline`, informing the "send the derived bucket, not
+  the raw numbers" recommendation in §4
+- `RithamCore/Package.swift` — confirms the zero-third-party-dependency precedent cited in §1
+- Repo root directory listing — confirms `RithamApp/`/`RithamCore/` sibling-directory convention
+  cited in §2
+- `.planning/phases/02-core-tracking-adjusted-guidance/02-CONTEXT.md` (D-06, D-07, Claude's
+  Discretion section) and `.planning/PROJECT.md` Key Decisions — read in full this session, sole
+  source for the architectural decision this whole section researches
+- `go version` output in this session's environment (Go 1.26.4) — confirms the Go 1.22+ floor
+  this section's `net/http` recommendation depends on is met
+- `go doc net/http/httptest` output, run against the locally installed Go 1.26.4 toolchain this
+  session — confirms the `NewRequest`/`ResponseRecorder`/`NewRecorder` handler-testing pattern
+  cited in §6
+
+### Metadata (Go Backend Research)
+
+**Confidence breakdown:**
+- Framework choice (§1): HIGH for "Go 1.22+ is installed and enhanced `ServeMux` is available"
+  (directly verified this session); MEDIUM for the stdlib-over-chi recommendation itself
+  (WebSearch cross-referenced across 2+ independent sources, consistent with this document's
+  established confidence convention for non-codebase claims)
+- Project structure (§2): MEDIUM — WebSearch-sourced convention (`golang-standards/project-
+  layout`), applied to this repo's actual observed structure (HIGH for the sibling-directory
+  observation itself)
+- API contract (§3) and minimization pattern (§4): MEDIUM for the JSON shape (design judgment,
+  not independently compiled/run this session); HIGH for the `ClearanceGate`/`GateResolutionResult`
+  claims specifically (read directly from committed RithamCore source)
+- Pitfalls (§7): MEDIUM — standard WebSearch-sourced Go findings, not project-specific
+
+**Research date:** 2026-09-04
+**Valid until:** 30 days — Go stdlib routing/JSON/testing guidance is stable and slow-moving,
+consistent with this document's existing validity window for framework-level claims.
