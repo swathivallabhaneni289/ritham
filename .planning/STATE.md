@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: Core Tracking & Adjusted Guidance
 status: All plans executed and summarized; Phase 1 closed 2026-09-03
-stopped_at: Phase 1 functionally complete (13/14 plans, all passing individually). Calibration
-last_updated: "2026-09-03T13:41:21.438Z"
+stopped_at: Phase 02 context gathered (incl. Go backend + interim nav hub decisions)
+last_updated: "2026-09-04T08:41:48.316Z"
 last_activity: 2026-09-03
 last_activity_desc: Phase 01 complete, transitioned to Phase 02
 progress:
@@ -174,8 +174,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-01 (live design review + calibration moved out of onboarding)
-Stopped at: Phase 1 functionally complete (13/14 plans, all passing individually). Calibration
+Last session: 2026-09-04T08:41:48.301Z
+Stopped at: Phase 02 context gathered (incl. Go backend + interim nav hub decisions)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
@@ -199,4 +199,4 @@ is a placeholder, deliberately not settled). A real, pre-existing `StepRegistry`
 flake was found and documented in Blockers/Concerns but not fixed -- worth its own pass before
 trusting a full `xcodebuild test` run's pass/fail as-is.
 Resume file:
-None
+.planning/phases/02-core-tracking-adjusted-guidance/02-CONTEXT.md
