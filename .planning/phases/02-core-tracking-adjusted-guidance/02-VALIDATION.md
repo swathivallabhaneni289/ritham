@@ -36,37 +36,64 @@ created: 2026-09-04
 
 ## Per-Task Verification Map
 
-| Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| TBD | TBD | 0 | STRENGTH-01 | — | N/A | unit | `RithamCore/Scripts/test-core.sh` (`ExerciseLogTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | STRENGTH-02 | — | Numeric inputs bounded to plausible positive ranges (V5) | unit | `RithamCore/Scripts/test-core.sh` (`PlateCalculatorTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | STRENGTH-03 | — | N/A | unit | `RithamCore/Scripts/test-core.sh` (`SupersetTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | STRENGTH-04 | — | N/A | unit | `RithamCore/Scripts/test-core.sh` (`MovementPatternTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | STRENGTH-05 | — | N/A | unit | `RithamCore/Scripts/test-core.sh` or app-target SwiftData test | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | HEALTH-03 | T-02-01 | `ContentPermission` enforced inside `GuidanceCatalog`, not view-level (V4) | unit | `RithamCore/Scripts/test-core.sh` (`GuidanceCatalogTests`, exhaustive-switch) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | HEALTH-04 | T-02-01 | Under-18 resolves `.educationOnly` (never `.full`) for weight-management content (V4) | unit | `RithamCore/Scripts/test-core.sh` (`GuidanceCatalogTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | DIET-02 | — | Renders nothing under `.requiredBlocking` | unit | `RithamCore/Scripts/test-core.sh` (`DietarySwapCatalogTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | DIET-03 | — | Renders identically regardless of condition tag/gate | unit | `RithamCore/Scripts/test-core.sh` (`DietarySwapCatalogTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | CARDIO-02 | — | GPS/motion sanity-bounded; implausible jumps discarded (V5) | unit | `RithamCore/Scripts/test-core.sh` (`GradeAdjustedPaceTests`) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | Go: workout-plan generation | T-02-02 | Only the pre-resolved `ClearanceGate` value crosses the API — never raw `ConditionTag`/SCOFF answers (D-07) | unit | `RithamService`: `go test ./internal/plan/...` (table-driven) | ❌ W0 | ⬜ pending |
-| TBD | TBD | 0 | Go: `POST /v1/workout-plan` handler | T-02-02 | Malformed/out-of-range request JSON rejected with 4xx, never a panic | unit | `RithamService`: `go test ./internal/httpapi/...` (`httptest`) | ❌ W0 | ⬜ pending |
+Filled in from the 16 plans the planner produced (2026-09-04) — supersedes the pre-planning
+placeholder version of this table. Task-level IDs live inside each PLAN.md; this table maps at
+plan granularity, which is what the sampling rate above actually runs against.
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky. Task IDs filled in once the planner assigns them.*
+| Plan | Wave | Requirement(s) | Threat Ref | Secure Behavior | Test Type | Automated Command | Status |
+|------|------|----------------|------------|-----------------|-----------|--------------------|--------|
+| 02-01 | 1 | CARDIO-01, CARDIO-02 | — | GPS/motion sanity-bounded; implausible jumps discarded (V5) | unit | `RithamCore/Scripts/test-core.sh` (`CardioSessionTests`, `GradeAdjustedPaceTests`) | ⬜ pending |
+| 02-02 | 1 | STRENGTH-02, STRENGTH-04, MONETIZE-01 | — | Numeric inputs bounded to plausible positive ranges (V5) | unit | `RithamCore/Scripts/test-core.sh` (`PlateCalculatorTests`, `MovementPatternTests`) | ⬜ pending |
+| 02-03 | 1 | STRENGTH-01, STRENGTH-03, STRENGTH-05 | — | N/A | unit | `RithamCore/Scripts/test-core.sh` (`LiftSessionTests`, `SupersetTests`, `SessionRevisionTests`) | ⬜ pending |
+| 02-04 | 1 | HEALTH-03 | T-02-01 | `ContentPermission` enforced inside `GuidanceCatalog`, not view-level (V4) | unit | `RithamCore/Scripts/test-core.sh` (`GuidanceCatalogTests`, exhaustive-switch) | ⬜ pending |
+| 02-05 | 1 | ONBOARD-01 | T-02-02 | Only the pre-resolved `ClearanceGate`/permission value crosses the API — never raw `ConditionTag`/SCOFF answers (D-07); malformed/out-of-range JSON rejected with 4xx, never a panic | unit | `RithamService`: `go test ./...` (`internal/plan/generate_test.go`, `internal/httpapi/handler_test.go`) | ⬜ pending |
+| 02-06 | 1 | DIET-01 | — | Real navigation wires `DietPlanView` (already built in a prior session) into a reachable entry point — verify-only, not a re-implementation | unit + coverage | `RithamCore/Scripts/test-core.sh` (`OnboardingFlowStateTests`); app-target `-only-testing:RithamTests/HomeHubTests` | ⬜ pending |
+| 02-07 | 2 | HEALTH-04, DIET-02, DIET-03 | T-02-01 | Under-18 resolves `.educationOnly` (never `.full`) for weight-management content (V4); DIET-02 renders nothing under `.requiredBlocking`; DIET-03 renders identically regardless of condition tag/gate | unit | `RithamCore/Scripts/test-core.sh` (`NutritionGuidanceCatalogTests`, `DietarySwapCatalogTests`) | ⬜ pending |
+| 02-08 | 2 | CARDIO-01, CARDIO-03, STRENGTH-01, STRENGTH-05, ONBOARD-01, MONETIZE-01 | — | Persistence layer extends `HealthDataStore`'s existing facade pattern | unit | app-target `-only-testing:RithamTests/WorkoutStoreTests` | ⬜ pending |
+| 02-09 | 2 | CARDIO-01, CARDIO-02, CROSSGEN-02 | — | Auto-detect surfaces a confirmation prompt only while the app is open — no silent background logging (Claude's Discretion default) | unit | app-target `-only-testing:RithamTests/CardioCaptureTests` | ⬜ pending |
+| 02-10 | 3 | CARDIO-01, CARDIO-02, CARDIO-03, CROSSGEN-02 | — | Route/segment comparison stays single-user opt-in, defaulting off (planner discretion, bounded by PROJECT.md's no-heatmap prohibition) | unit + UI | app-target `-only-testing:RithamTests/CardioViewTests` | ⬜ pending |
+| 02-11 | 3 | STRENGTH-01, STRENGTH-02, STRENGTH-03, STRENGTH-04 | — | N/A | unit + UI | app-target `-only-testing:RithamTests/StrengthLoggingTests` | ⬜ pending |
+| 02-12 | 4 | HEALTH-03, HEALTH-04, DIET-02, DIET-03 | T-02-01 | Reuses Phase 1's disclaimer-tag pattern (`ConditionDisclaimerTag`, `RequiredBlockingMessageView`) rather than a new UI pattern (Claude's Discretion) | unit + UI | app-target `-only-testing:RithamTests/GuidanceViewTests` | ⬜ pending |
+| 02-13 | 3 | ONBOARD-01 | T-02-02 | Recommendations surface + pre-assessment call the Go client (`WorkoutPlanClient`), never bypass it to send raw health data | unit + UI | app-target `-only-testing:RithamTests/RecommendationsTests` | ⬜ pending |
+| 02-14 | 3 | MONETIZE-01 | — | "Always free" list names only shipped capabilities; heart-rate-display omission recorded in source (no wearable pairing this phase) | unit + UI | app-target `-only-testing:RithamTests/SettingsPhase2Tests` | ⬜ pending |
+| 02-15 | 4 | STRENGTH-04, STRENGTH-05 | — | `LiftSet` retains stable identity across session merge/split | unit + UI | app-target `-only-testing:RithamTests/StrengthHistoryTests` | ⬜ pending |
+| 02-16 | 5 | CARDIO-02, CROSSGEN-02, ONBOARD-01 | T-02-01, T-02-02 | Registry-race fix; full-suite coverage assertions; Go round-trip + on-device GPS/motion + AX3/AX5 manual checkpoints | coverage + manual | app-target `-only-testing:RithamTests/Phase2CoverageTests`; manual passes below | ⬜ pending |
+
+*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky. Updated during execution, not at plan time.*
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `RithamCoreTests/ExerciseLogTests.swift` — covers STRENGTH-01
-- [ ] `RithamCoreTests/PlateCalculatorTests.swift` — covers STRENGTH-02
-- [ ] `RithamCoreTests/SupersetTests.swift` — covers STRENGTH-03
-- [ ] `RithamCoreTests/MovementPatternTests.swift` — covers STRENGTH-04
-- [ ] `RithamCoreTests/GuidanceCatalogTests.swift` — covers HEALTH-03, HEALTH-04 (exhaustive-switch style, mirroring Phase 1's `GateResolutionTests`)
-- [ ] `RithamCoreTests/DietarySwapCatalogTests.swift` — covers DIET-02, DIET-03
-- [ ] `RithamCoreTests/GradeAdjustedPaceTests.swift` — covers CARDIO-02's confidence-gating behavior
-- [ ] `RithamService/go.mod` + `RithamService/cmd/ritham-service/`, `internal/plan/`, `internal/httpapi/` scaffold — new Go module, no existing infrastructure to build on
-- [ ] `RithamService/internal/plan/generate_test.go` — stubs for workout-plan generation logic
-- [ ] `RithamService/internal/httpapi/handler_test.go` — stubs for the `POST /v1/workout-plan` handler
+Corrected against the actual plan output (2026-09-04) — `LiftSessionTests.swift` replaces the
+placeholder `ExerciseLogTests.swift` name; every other new suite the 16 plans introduce is listed.
+
+**RithamCore (`RithamCore/Tests/RithamCoreTests/`):**
+- [ ] `LiftSessionTests.swift` — covers STRENGTH-01 (02-03)
+- [ ] `PlateCalculatorTests.swift` — covers STRENGTH-02, plus `OneRepMaxCalculatorTests` suite extension (02-02, 02-11)
+- [ ] `SupersetTests.swift` — covers STRENGTH-03 (02-03)
+- [ ] `MovementPatternTests.swift` — covers STRENGTH-04 (02-02)
+- [ ] `SessionRevisionTests.swift` — covers STRENGTH-05 (02-03)
+- [ ] `GuidanceCatalogTests.swift` — covers HEALTH-03, plus `WorkoutGuidanceCatalogTests` suite extension (02-04, 02-12), exhaustive-switch style mirroring Phase 1's `GateResolutionTests`
+- [ ] `NutritionGuidanceCatalogTests.swift` — covers HEALTH-04 (02-07)
+- [ ] `DietarySwapCatalogTests.swift` — covers DIET-02, DIET-03 (02-07)
+- [ ] `CardioSessionTests.swift`, `CardioTrackAccumulatorTests.swift`, `GradeAdjustedPaceTests.swift` — cover CARDIO-01/02's confidence-gating behavior (02-01)
+- [ ] `OnboardingFlowStateTests.swift` — extended (not new) for the nav-hub routing change (02-06)
+
+**RithamApp (`RithamApp/RithamTests/`):**
+- [ ] `CardioCaptureTests.swift`, `CardioViewTests.swift` — CROSSGEN-02, CARDIO-03 (02-09, 02-10)
+- [ ] `StrengthLoggingTests.swift`, `StrengthHistoryTests.swift` — STRENGTH UI + retroactive edit/merge/split (02-11, 02-15)
+- [ ] `GuidanceViewTests.swift` — inline guidance surfacing (02-12)
+- [ ] `RecommendationsTests.swift` — ONBOARD-01's Go-client + pre-assessment UI (02-13)
+- [ ] `SettingsPhase2Tests.swift` — MONETIZE-01's "always free" list + frequency preference (02-14)
+- [ ] `WorkoutStoreTests.swift`, `WorkoutPreferenceTests.swift` — persistence layer (02-08)
+- [ ] `HomeHubTests.swift` — the interim navigation hub (02-06)
+- [ ] `Phase2CoverageTests.swift` — phase-wide coverage assertions (02-16)
+
+**RithamService (Go — entirely new, no existing infrastructure to build on):**
+- [ ] `RithamService/go.mod` + `cmd/ritham-service/`, `internal/plan/`, `internal/httpapi/` scaffold (02-05)
+- [ ] `RithamService/internal/plan/generate_test.go` — workout-plan generation logic, table-driven (02-05)
+- [ ] `RithamService/internal/httpapi/handler_test.go` — `POST /v1/workout-plan` handler via `httptest` (02-05)
 
 *(Xcode scheme/destination already confirmed in research — see Test Framework table above; no Wave 0 action needed for that item. Go toolchain confirmed installed locally, Go 1.26.4.)*
 
