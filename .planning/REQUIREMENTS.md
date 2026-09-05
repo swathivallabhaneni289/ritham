@@ -106,7 +106,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **CROSSGEN-01**: Home screen shows exactly 3 things by default — today's target, current
   streak, last session summary; everything else is one tap deeper.
 
-- [ ] **CROSSGEN-02**: Passive-first capture (auto-detect walk/run from motion sensors) is
+- [x] **CROSSGEN-02**: Passive-first capture (auto-detect walk/run from motion sensors) is
   available, alongside full manual session configuration for power users.
 
 - [x] **CROSSGEN-03**: Privacy is explained on one screen, in plain language, before being
@@ -367,7 +367,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIET-02 | Phase 2 | Complete |
 | DIET-03 | Phase 2 | Complete |
 | MONETIZE-01 | Phase 2 | Complete |
-| CROSSGEN-02 | Phase 2 | Pending |
+| CROSSGEN-02 | Phase 2 | Complete |
 | MOMENTUM-01 | Phase 3 | Pending |
 | MOMENTUM-02 | Phase 3 | Pending |
 | MOMENTUM-03 | Phase 3 | Pending |
