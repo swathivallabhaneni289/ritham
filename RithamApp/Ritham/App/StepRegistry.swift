@@ -29,6 +29,17 @@ final class OnboardingFlow {
     /// branching logic this class's own header comment forbids.
     var calibrationMode: CalibrationMode = .walk
 
+    /// The activity type and capture mode chosen on `CardioActivityPickerView` (plan 02-10),
+    /// read by `CardioSessionView` to know which activity/capture adapter to run. Deliberately
+    /// NOT part of `OnboardingAnswers`, for the identical reason `calibrationMode` above is not:
+    /// neither field ever changes what `OnboardingRouter.nextStep` returns -- Phase 2's cardio
+    /// steps are reached only via `open(_:)`, never `advance`, and the router treats every one of
+    /// them as terminal (`OnboardingStep.swift`'s header comment) -- so this is a pure in-session
+    /// UI handoff between two screens this plan owns, not the branching logic this class's own
+    /// header comment forbids. Scoped to the same in-memory lifetime as `path`/`answers`.
+    var cardioActivityType: ActivityType = .run
+    var cardioCaptureMode: CardioCaptureMode = .manual
+
     init(answers: OnboardingAnswers = OnboardingAnswers(), path: [OnboardingStep] = []) {
         self.answers = answers
         self.path = path
@@ -55,6 +66,17 @@ final class OnboardingFlow {
     func goBack() {
         guard !path.isEmpty else { return }
         path.removeLast()
+    }
+
+    /// Pops back to the interim hub (`.home`) by removing every step pushed above it. For a
+    /// feature nested more than one level below the hub -- `CardioSessionView` is reached via
+    /// `.cardioActivityPicker` then `.cardioSession` -- finishing wants to return all the way to
+    /// the hub, not one level back like `goBack()`. A no-op when `.home` is not present in `path`.
+    /// Still a plain path mutation with no branching decision in it, matching `open(_:)`'s own
+    /// reasoning above.
+    func returnToHub() {
+        guard let homeIndex = path.lastIndex(of: .home) else { return }
+        path.removeLast(path.count - homeIndex - 1)
     }
 
     /// A user-initiated push to `step`, with no routing decision in it. Phase 2's interim hub
