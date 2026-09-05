@@ -44,6 +44,28 @@ final class StubURLProtocol: URLProtocol {
     override func stopLoading() {}
 }
 
+extension URLRequest {
+    /// `URLSession` frequently rewrites a small `httpBody` into `httpBodyStream` by the time
+    /// `URLProtocol` observes the request, so `httpBody` alone is not a reliable read -- this
+    /// drains the stream as a fallback so a test asserting on the encoded request body sees it
+    /// either way.
+    var bodyData: Data {
+        if let httpBody { return httpBody }
+        guard let stream = httpBodyStream else { return Data() }
+        stream.open()
+        defer { stream.close() }
+        var data = Data()
+        let bufferSize = 4096
+        var buffer = [UInt8](repeating: 0, count: bufferSize)
+        while stream.hasBytesAvailable {
+            let read = stream.read(&buffer, maxLength: bufferSize)
+            guard read > 0 else { break }
+            data.append(buffer, count: read)
+        }
+        return data
+    }
+}
+
 private func makeStubbedSession() -> URLSession {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [StubURLProtocol.self]
@@ -306,6 +328,7 @@ struct RecommendationsScreenTests {
     @Test("after the pre-assessment is complete, requesting a plan calls the client and renders the plan")
     func requestingPlanAfterPreAssessmentFetchesPlan() async throws {
         let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30))
         try store.markPreAssessmentCompleted()
         let client = makeStubbedClient { request in
             let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
@@ -375,6 +398,7 @@ struct RecommendationsScreenTests {
     @Test("the request sends the stored weekly frequency and derived experience bucket, not screen-typed values")
     func sendsStoredFrequencyAndDerivedExperienceBucket() async throws {
         let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30))
         try store.markPreAssessmentCompleted()
         try store.saveWeeklyFrequency(7)
         try store.saveCalibrationBaseline(CalibrationBaseline(
@@ -386,7 +410,7 @@ struct RecommendationsScreenTests {
 
         nonisolated(unsafe) var capturedRequest: WorkoutPlanRequest?
         let client = makeStubbedClient { request in
-            capturedRequest = try? JSONDecoder().decode(WorkoutPlanRequest.self, from: request.httpBody ?? Data())
+            capturedRequest = try? JSONDecoder().decode(WorkoutPlanRequest.self, from: request.bodyData)
             let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
             return (response, self.successResponseBody())
         }

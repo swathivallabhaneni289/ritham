@@ -19,10 +19,6 @@ import RithamCore
 // preference (plan 02-14) and the experience bucket is derived from the stored baseline --
 // letting a user type either value here would reintroduce exactly the self-reported dropdown
 // ONBOARD-01 forbids.
-//
-// STUB (TDD RED): `requestPlan` always opens the pre-assessment and never calls the client, so
-// `RecommendationsScreenTests` fails meaningfully before the real gating/fetch/render behavior
-// lands.
 
 /// The screen's rendering state, driven entirely by `RecommendationsModel` so
 /// `RecommendationsScreenTests` can assert every behavior without rendering the view.
@@ -38,10 +34,45 @@ enum RecommendationsState: Equatable {
 final class RecommendationsModel {
     private(set) var state: RecommendationsState = .idle
 
-    init(store: HealthDataStore, client: WorkoutPlanClient = WorkoutPlanClient()) {}
+    private let store: HealthDataStore
+    private let client: WorkoutPlanClient
 
+    init(store: HealthDataStore, client: WorkoutPlanClient = WorkoutPlanClient()) {
+        self.store = store
+        self.client = client
+    }
+
+    /// The single entry point for "request a plan." When the pre-assessment has not yet been
+    /// completed, this opens it and returns without touching the network at all -- the first
+    /// request must route to the pre-assessment before any plan is shown. Once the flag is true,
+    /// this proceeds straight to fetching a plan every time it is called, including on retry.
     func requestPlan(flow: OnboardingFlow, now: Date = Date()) async {
-        flow.open(.preAssessment)
+        guard (try? store.loadHasCompletedPreAssessment()) == true else {
+            flow.open(.preAssessment)
+            return
+        }
+        await fetchPlan(now: now)
+    }
+
+    private func fetchPlan(now: Date) async {
+        state = .loading
+        do {
+            let frequency = try store.loadWeeklyFrequency()
+            let experience = try store.experienceLevel()
+            let tags = try store.activeConditionTags(now: now)
+            let gates = GateEscalation.escalate(tags: Set(tags), answers: ScreeningAnswers())
+
+            let plan = try await client.fetchPlan(
+                frequencyPerWeek: frequency,
+                experienceLevel: experience,
+                workoutGate: gates.workout
+            )
+            state = .plan(plan)
+        } catch let error as WorkoutPlanClientError {
+            state = .error(error)
+        } catch {
+            state = .error(.transport)
+        }
     }
 }
 
@@ -54,10 +85,90 @@ struct RecommendationsView: View, OnboardingStepPresenting {
 
     let flow: OnboardingFlow
     @Environment(\.modelContext) private var modelContext
+    @State private var model: RecommendationsModel?
 
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Recommendations") {
-            EmptyView()
+            content
+        }
+        .onAppear {
+            if model == nil {
+                model = RecommendationsModel(store: HealthDataStore(context: modelContext))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if let model {
+            switch model.state {
+            case .idle:
+                idleContent(model)
+            case .loading:
+                ProgressView("Building your plan...")
+                    .foregroundStyle(RithamColor.paper)
+            case .plan(let plan):
+                planContent(plan)
+            case .error(let error):
+                errorContent(error, model: model)
+            }
+        } else {
+            ProgressView()
+        }
+    }
+
+    @ViewBuilder
+    private func idleContent(_ model: RecommendationsModel) -> some View {
+        VStack(alignment: .leading, spacing: RithamSpacing.md) {
+            Text("Get a plan built around your stored weekly frequency and starting point.")
+                .font(RithamType.body)
+                .foregroundStyle(RithamColor.paper)
+
+            PrimaryCTAButton(title: "Get my plan") {
+                request(model)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func planContent(_ plan: WorkoutPlan) -> some View {
+        VStack(alignment: .leading, spacing: RithamSpacing.md) {
+            ForEach(plan.sessions) { session in
+                VStack(alignment: .leading, spacing: RithamSpacing.xs) {
+                    Text("Day \(session.dayIndex): \(session.focus)")
+                        .font(RithamType.body.weight(.semibold))
+                    ForEach(session.exercises, id: \.name) { exercise in
+                        Text("\(exercise.name) -- \(exercise.sets) sets, \(exercise.repRange) reps")
+                    }
+                }
+                .font(RithamType.body)
+                .foregroundStyle(RithamColor.paper)
+            }
+
+            Text(plan.guidanceNote)
+                .font(RithamType.label)
+                .foregroundStyle(RithamColor.paper)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    @ViewBuilder
+    private func errorContent(_ error: WorkoutPlanClientError, model: RecommendationsModel) -> some View {
+        VStack(alignment: .leading, spacing: RithamSpacing.md) {
+            Text("We couldn't reach the plan service. Check your connection and try again.")
+                .font(RithamType.body)
+                .foregroundStyle(RithamColor.paper)
+                .fixedSize(horizontal: false, vertical: true)
+
+            PrimaryCTAButton(title: "Retry") {
+                request(model)
+            }
+        }
+    }
+
+    private func request(_ model: RecommendationsModel) {
+        Task {
+            await model.requestPlan(flow: flow)
         }
     }
 }
