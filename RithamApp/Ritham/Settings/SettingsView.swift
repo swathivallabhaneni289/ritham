@@ -45,6 +45,7 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var editingSection: EditableSection?
     @State private var isEditingDietPlan = false
+    @State private var isShowingAlwaysFreeList = false
     @State private var isReScreenDue = false
 
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
@@ -68,6 +69,12 @@ struct SettingsView: View {
 
             SecondaryCTAButton(title: "Health profile", action: onOpenHealthProfile)
 
+            // MONETIZE-01: the visible "always free" list -- reachable from Settings in one tap,
+            // per this plan's own requirement.
+            SecondaryCTAButton(title: "Always free") {
+                isShowingAlwaysFreeList = true
+            }
+
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
                 Text("Screening answers")
                     .font(RithamType.heading)
@@ -86,6 +93,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $isEditingDietPlan) {
             DietPlanView(flow: flow)
+        }
+        .sheet(isPresented: $isShowingAlwaysFreeList) {
+            AlwaysFreeListView()
         }
     }
 
