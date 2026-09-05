@@ -4,32 +4,20 @@ import RithamCore
 /// `.home` -- the onboarding flow's terminal step (`OnboardingRouter.nextStep(after: .home)`
 /// returns `nil`; nothing follows it).
 ///
-/// This is deliberately NOT the product's real home screen. Phase 1 is onboarding and safety
-/// intake only -- PROJECT.md's "3-item default home screen with progressive disclosure" is
-/// Phase 4's CROSSGEN/HOUSEHOLD work, which does not exist yet. Rendering something that
-/// looked like the finished home screen here would misrepresent what this phase actually
-/// built; this view instead states plainly that onboarding is complete and says nothing about
-/// what a later phase will add, so it never claims to be a screen it isn't. It carries no CTA:
-/// `OnboardingFlow.advance(from: .home)` is already a no-op (`OnboardingRouter.nextStep`
-/// returns `nil` here, per `AppShellTests.advanceIsNoOpAfterHome`), so a "Continue" button
-/// with nowhere to route to would be a dead control.
+/// D-05's deliberately interim hub, not CROSSGEN-01's polished three-item home -- that remains
+/// Phase 4's scope. This view exists so Phase 2's own features (cardio, strength, guidance,
+/// recommendations, and -- via Settings -- the diet plan screen) are reachable and testable in
+/// the running app now, rather than staying unreachable outside debug routing until Phase 4.
+/// Phase 4 is expected to replace `HomeHubView` outright rather than extend it.
 ///
 /// Registered by `OnboardingCompletionRegistration` alongside `.screeningComplete` -- see that
-/// file's header comment for why this plan owns both.
-struct HomeStepView: View, OnboardingStepPresenting {
+/// file's header comment for why that plan owns both. `HomeHubView` itself carries the
+/// navigation contract (see its own header comment); this type is only the `StepRegistry`
+/// factory binding `.home` to it.
+struct HomeStepView: OnboardingStepPresenting {
     static let step: OnboardingStep = .home
 
     static func makeView(flow: OnboardingFlow) -> AnyView {
-        AnyView(HomeStepView())
-    }
-
-    var body: some View {
-        RithamScreen(
-            surface: DecorativeSurface.flat,
-            headline: OnboardingCopy.Home.headline,
-            bodyText: OnboardingCopy.Home.body
-        ) {
-            EmptyView()
-        }
+        AnyView(HomeHubView(flow: flow))
     }
 }
