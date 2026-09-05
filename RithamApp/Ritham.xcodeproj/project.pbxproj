@@ -38,6 +38,7 @@
 		507ED14AF0F3BDB019DE15FF /* AgeValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */; };
 		5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D89BB7A3DD06DB23570E75 /* RithamType.swift */; };
 		5095A4F4DA0A7410735424A4 /* LocationEnrichment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49AD7002CE2D97EA29E3FB4 /* LocationEnrichment.swift */; };
+		521A05C54ADD94135CF162B2 /* RouteComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED692B282873FCA9DB4020 /* RouteComparisonView.swift */; };
 		53F41F6E3E6DF32C8BFF886D /* RequiredBlockingMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D7159E624FC249EF284C14 /* RequiredBlockingMessageView.swift */; };
 		5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5D3C503846C096E9A8713 /* BandMotif.swift */; };
 		5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D475288D596A167095155 /* ConditionTagRecord.swift */; };
@@ -178,6 +179,7 @@
 		AD5D3C5BA15E31E8760C0741 /* CardioSessionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioSessionRecord.swift; sourceTree = "<group>"; };
 		ADFFBFA5F220C3A206E70F8E /* CalibrationSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSourceTests.swift; sourceTree = "<group>"; };
 		B040926DC5083605CE450DEF /* GlossaryTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTerm.swift; sourceTree = "<group>"; };
+		B1ED692B282873FCA9DB4020 /* RouteComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteComparisonView.swift; sourceTree = "<group>"; };
 		B3B8B78315E265C9CEE285C0 /* ClearanceInterstitialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearanceInterstitialView.swift; sourceTree = "<group>"; };
 		B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioHistoryView.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
@@ -474,6 +476,7 @@
 				8973B69865744CC62FE8838E /* CardioActivityPickerView.swift */,
 				B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */,
 				233F028230C2AF5F5CDE0C14 /* CardioSessionView.swift */,
+				B1ED692B282873FCA9DB4020 /* RouteComparisonView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -650,6 +653,7 @@
 				1D6C3E93FCDE0349CEA86EB8 /* RithamScreen.swift in Sources */,
 				D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */,
 				5092A28E0F96AA3033BCCE29 /* RithamType.swift in Sources */,
+				521A05C54ADD94135CF162B2 /* RouteComparisonView.swift in Sources */,
 				1C3FA051B38281E9CDF81432 /* ScreenHeader.swift in Sources */,
 				949B3F05CDF426A4C9BB39E1 /* ScreeningCompleteStepView.swift in Sources */,
 				33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */,

@@ -196,3 +196,170 @@ struct CardioSessionScreenTests {
         #expect(adjusted != nil)
     }
 }
+
+// Task 3: training history and opt-in single-user route comparison.
+@MainActor
+@Suite("CardioHistoryTests")
+struct CardioHistoryTests {
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    private func makeCardioSession(
+        activityType: ActivityType = .run,
+        startedAt: Date,
+        distanceMeters: Double = 5_000,
+        source: CardioCaptureSource = .gps
+    ) -> CardioSession {
+        CardioSession(
+            activityType: activityType,
+            source: source,
+            startedAt: startedAt,
+            endedAt: startedAt.addingTimeInterval(1_800),
+            progress: CardioProgress(continuousDuration: 1_800, distanceMeters: distanceMeters)
+        )
+    }
+
+    @Test("registers as the cardio-history step")
+    func registersAsHistoryStep() {
+        #expect(CardioHistoryView.step == .cardioHistory)
+    }
+
+    @Test("an empty store yields the empty state rather than an empty list")
+    func emptyStoreYieldsEmptyState() throws {
+        let store = try makeStore()
+        let model = CardioHistoryModel(store: store)
+
+        model.load()
+
+        #expect(model.isEmpty)
+        #expect(model.sessions.isEmpty)
+    }
+
+    @Test("loading returns sessions most recent first with the store's own ordering")
+    func loadingReturnsSessionsMostRecentFirst() throws {
+        let store = try makeStore()
+        let earlier = makeCardioSession(startedAt: Date(timeIntervalSince1970: 1_000))
+        let later = makeCardioSession(startedAt: Date(timeIntervalSince1970: 2_000))
+        try store.saveCardioSession(earlier)
+        try store.saveCardioSession(later)
+
+        let model = CardioHistoryModel(store: store)
+        model.load()
+
+        #expect(model.sessions.first?.id == later.id)
+        #expect(model.isEmpty == false)
+    }
+
+    @Test("a manually entered session is distinguishable from a sensor-verified one via isSensorVerified")
+    func manualVersusSensorVerifiedIsDistinguishable() throws {
+        let store = try makeStore()
+        let manual = makeCardioSession(startedAt: Date(timeIntervalSince1970: 1_000), source: .manualStopwatch)
+        let sensor = makeCardioSession(startedAt: Date(timeIntervalSince1970: 2_000), source: .gps)
+        try store.saveCardioSession(manual)
+        try store.saveCardioSession(sensor)
+
+        let model = CardioHistoryModel(store: store)
+        model.load()
+
+        #expect(model.sessions.first(where: { $0.id == manual.id })?.source.isSensorVerified == false)
+        #expect(model.sessions.first(where: { $0.id == sensor.id })?.source.isSensorVerified == true)
+    }
+
+    @Test("with the route-comparison opt-in off, the history model produces no comparison entry point")
+    func optInOffProducesNoComparisonEntryPoint() throws {
+        let store = try makeStore()
+        try store.saveRouteComparisonOptIn(false)
+        let session = makeCardioSession(startedAt: Date(timeIntervalSince1970: 1_000))
+        try store.saveCardioSession(session)
+
+        let model = CardioHistoryModel(store: store)
+        model.load()
+
+        #expect(model.comparisonEntryPoint(for: session) == nil)
+    }
+
+    @Test("with the opt-in on, the history model produces a comparison entry point")
+    func optInOnProducesComparisonEntryPoint() throws {
+        let store = try makeStore()
+        try store.saveRouteComparisonOptIn(true)
+        let session = makeCardioSession(startedAt: Date(timeIntervalSince1970: 1_000))
+        try store.saveCardioSession(session)
+
+        let model = CardioHistoryModel(store: store)
+        model.load()
+
+        #expect(model.comparisonEntryPoint(for: session) != nil)
+    }
+
+    @Test("turning the opt-in off again immediately removes the comparison entry point")
+    func togglingOptInOffRemovesEntryPoint() throws {
+        let store = try makeStore()
+        try store.saveRouteComparisonOptIn(true)
+        let session = makeCardioSession(startedAt: Date(timeIntervalSince1970: 1_000))
+        try store.saveCardioSession(session)
+
+        let model = CardioHistoryModel(store: store)
+        model.load()
+        #expect(model.comparisonEntryPoint(for: session) != nil)
+
+        try store.saveRouteComparisonOptIn(false)
+        model.load()
+
+        #expect(model.comparisonEntryPoint(for: session) == nil)
+    }
+
+    @Test("route comparison lists only this user's own sessions of the same activity type within the distance band")
+    func routeComparisonListsOnlyMatchingOwnSessions() throws {
+        let store = try makeStore()
+        try store.saveRouteComparisonOptIn(true)
+        let sameRoute = makeCardioSession(activityType: .run, startedAt: Date(timeIntervalSince1970: 1_000), distanceMeters: 5_000)
+        let sameRouteAgain = makeCardioSession(activityType: .run, startedAt: Date(timeIntervalSince1970: 2_000), distanceMeters: 5_100)
+        let differentDistance = makeCardioSession(activityType: .run, startedAt: Date(timeIntervalSince1970: 3_000), distanceMeters: 12_000)
+        let differentActivity = makeCardioSession(activityType: .cycle, startedAt: Date(timeIntervalSince1970: 4_000), distanceMeters: 5_050)
+        for session in [sameRoute, sameRouteAgain, differentDistance, differentActivity] {
+            try store.saveCardioSession(session)
+        }
+
+        let model = RouteComparisonModel(activityType: .run, referenceDistanceMeters: 5_000, store: store)
+        model.loadMatches()
+
+        let matchedIDs = Set(model.matches.map(\.id))
+        #expect(matchedIDs.contains(sameRoute.id))
+        #expect(matchedIDs.contains(sameRouteAgain.id))
+        #expect(matchedIDs.contains(differentDistance.id) == false)
+        #expect(matchedIDs.contains(differentActivity.id) == false)
+    }
+
+    @Test("route comparison produces no matches while opted out, even if matching sessions exist")
+    func routeComparisonEmptyWhileOptedOut() throws {
+        let store = try makeStore()
+        try store.saveRouteComparisonOptIn(false)
+        let session = makeCardioSession(activityType: .run, startedAt: Date(timeIntervalSince1970: 1_000), distanceMeters: 5_000)
+        try store.saveCardioSession(session)
+
+        let model = RouteComparisonModel(activityType: .run, referenceDistanceMeters: 5_000, store: store)
+        model.loadMatches()
+
+        #expect(model.matches.isEmpty)
+    }
+
+    @Test("setting the opt-in on persists it and populates matches immediately")
+    func settingOptInOnPersistsAndPopulates() throws {
+        let store = try makeStore()
+        try store.saveRouteComparisonOptIn(false)
+        let session = makeCardioSession(activityType: .walk, startedAt: Date(timeIntervalSince1970: 1_000), distanceMeters: 3_000)
+        try store.saveCardioSession(session)
+
+        let model = RouteComparisonModel(activityType: .walk, referenceDistanceMeters: 3_000, store: store)
+        model.loadMatches()
+        #expect(model.matches.isEmpty)
+
+        model.setOptIn(true)
+
+        #expect(model.matches.contains { $0.id == session.id })
+        #expect(try store.loadRouteComparisonOptIn())
+    }
+}
