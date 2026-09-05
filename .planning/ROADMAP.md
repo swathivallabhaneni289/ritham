@@ -160,7 +160,7 @@ Plans:
      navigation hub so its own features (tracking, recommendations, diet plan) are reachable in
      the running app — not Phase 4's polished 3-item CROSSGEN-01 home design, just enough real
      navigation to replace Phase 1's `.home` stub until Phase 4 ships.
-**Plans**: 12/16 plans executed
+**Plans**: 13/16 plans executed
 
 Plans:
 
@@ -201,7 +201,7 @@ Plans:
 - [x] 02-13-PLAN.md — Recommendations surface, the triggered walk-or-light-lift pre-assessment,
   and the Go plan client (ONBOARD-01)
 
-- [ ] 02-14-PLAN.md — Settings: visible always-free list and the weekly workout-frequency
+- [x] 02-14-PLAN.md — Settings: visible always-free list and the weekly workout-frequency
   preference (MONETIZE-01)
 
 - [ ] 02-15-PLAN.md — Strength history: movement-pattern filter, year-jump navigation, retroactive
@@ -303,7 +303,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
-| 2. Core Tracking & Adjusted Guidance | 12/16 | In Progress|  |
+| 2. Core Tracking & Adjusted Guidance | 13/16 | In Progress|  |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
