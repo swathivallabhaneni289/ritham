@@ -40,7 +40,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   valid up to 12 months or until the user edits an answer; a re-screen is prompted at the
   12-month mark; the professional-clearance toggle re-prompts rather than persisting forever.
 
-- [ ] **HEALTH-03**: Workout guidance adjusts per applicable condition tag the moment a user logs
+- [x] **HEALTH-03**: Workout guidance adjusts per applicable condition tag the moment a user logs
   or plans a session. A `required-blocking` gate shows only generic info + referral, never a
   personalized intensity/modality suggestion. Rows marked "should never break the streak" (Heart
   Disease — Recent Event, Prior Injury Not Yet Cleared, Pregnancy — Complicated/Unsure,
@@ -361,7 +361,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRENGTH-03 | Phase 2 | Complete |
 | STRENGTH-04 | Phase 2 | Complete |
 | STRENGTH-05 | Phase 2 | Complete |
-| HEALTH-03 | Phase 2 | Pending |
+| HEALTH-03 | Phase 2 | Complete |
 | HEALTH-04 | Phase 2 | Pending |
 | DIET-01 | Phase 2 | Pending |
 | DIET-02 | Phase 2 | Pending |

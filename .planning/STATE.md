@@ -6,14 +6,14 @@ current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
 stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-09-05T09:10:55.059Z"
+last_updated: "2026-09-05T09:28:12.490Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 17
+  completed_plans: 18
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 4 of 16
+Plan: 5 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -73,6 +73,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P01 | 20min | 3 tasks | 7 files |
 | Phase 02 P02 | 4min | 3 tasks | 6 files |
 | Phase 02 P03 | 47min | 3 tasks | 6 files |
+| Phase 02 P04 | 25min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,9 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-02: PlateCalculator bounds target weight at 1000 kg as the ASVS V5 'absurdly large' ceiling (no plan-specified number existed)
 - [Phase 02]: 02-02: Equipment.stackMachine.defaultBarWeightKg is 0 (not optional), documented as unread by PlateCalculator's pinStack path
 - [Phase 02-03]: SupersetGroupID created a task early (in Superset.swift, Task 1 not Task 2) to break a genuine forward-dependency: LiftSet.supersetGroupID needs the type to compile, and SupersetGrouping's own functions take/return LiftSession, so reordering the other direction doesn't work either. — Stub-then-extend preserves Task 2's own acceptance greps against Superset.swift unchanged.
+- [Phase ?]: 02-04: mostRestrictive folds via .min() not .max() since ContentPermission's declaration order is ascending permissiveness (none<educationOnly<full), the inverse of ClearanceGate's ascending restrictiveness
+- [Phase ?]: 02-04: Nutrition recommended-gate rows are educationOnly only when the row's own prose forbids a personalized quantity; severeFoodAllergy, clinicianPrescribedDietOrMealPlan, and eatingDisorderSelfReportedNegativeScreen are full since their recommended gate is for an unrelated reason
+- [Phase ?]: 02-04: WorkoutGuidanceCatalog.referralMessage aliases ScreeningCopy.requiredBlockingMessage (section 4.6) rather than re-transcribing it, avoiding two divergent copies
 
 ### Pending Todos
 
@@ -182,7 +186,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T09:10:55.047Z
+Last session: 2026-09-05T09:27:27.861Z
 Stopped at: Completed 02-03-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
