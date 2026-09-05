@@ -6,7 +6,7 @@ current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
 stopped_at: Completed 02-06-PLAN.md
-last_updated: "2026-09-05T10:07:49.419Z"
+last_updated: "2026-09-05T10:10:44.993Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
@@ -181,6 +181,8 @@ Recent decisions affecting current work:
   (`-only-testing:RithamTests/<Suite>`); only the full concurrent run flakes. Not fixed --
   needs its own pass (likely: merge the `StepRegistry`-touching suites into one `.serialized`
   suite, or find swift-testing's real cross-suite serialization mechanism if one exists).
+
+- DIET-01 (Phase 2) stays Pending: 02-06's HomeHubView -> Settings -> DietPlanView route is wired and unit/integration-verified but the interactive spot-check (launch app, click through) was not run -- no touch-injection tool (idb/XCUITest) is available in this environment, only simctl. Next interactive UAT pass on Phase 2 should run this click-through and mark DIET-01 complete if it renders.
 
 ## Deferred Items
 
