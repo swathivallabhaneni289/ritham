@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
-stopped_at: Phase 02 planning complete; requirements (16/16) and decision (7/7) coverage gates passed
-last_updated: "2026-09-05T08:15:47.874Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-09-05T09:10:55.059Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 16
+  completed_plans: 17
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 3 of 16
+Plan: 4 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -72,6 +72,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 01-onboarding-safety-intake P17 | 50min | 3 tasks | 12 files |
 | Phase 02 P01 | 20min | 3 tasks | 7 files |
 | Phase 02 P02 | 4min | 3 tasks | 6 files |
+| Phase 02 P03 | 47min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,7 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-01: GradeAdjustedPace.adjustedSecondsPerKm divides raw pace by a grade-derived effort factor (not multiplies) -- uphill yields a faster/smaller number, downhill benefit peaks at -10% and reverses past it due to eccentric-braking cost
 - [Phase 02]: 02-02: PlateCalculator bounds target weight at 1000 kg as the ASVS V5 'absurdly large' ceiling (no plan-specified number existed)
 - [Phase 02]: 02-02: Equipment.stackMachine.defaultBarWeightKg is 0 (not optional), documented as unread by PlateCalculator's pinStack path
+- [Phase 02-03]: SupersetGroupID created a task early (in Superset.swift, Task 1 not Task 2) to break a genuine forward-dependency: LiftSet.supersetGroupID needs the type to compile, and SupersetGrouping's own functions take/return LiftSession, so reordering the other direction doesn't work either. — Stub-then-extend preserves Task 2's own acceptance greps against Superset.swift unchanged.
 
 ### Pending Todos
 
@@ -180,8 +182,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T08:14:56.972Z
-Stopped at: Phase 02 context gathered (incl. Go backend + interim nav hub decisions)
+Last session: 2026-09-05T09:10:55.047Z
+Stopped at: Completed 02-03-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification

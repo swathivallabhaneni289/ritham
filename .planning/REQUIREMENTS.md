@@ -133,15 +133,15 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Strength Tracking
 
-- [ ] **STRENGTH-01**: Set logging with auto-fill of the previous session's weight/reps.
+- [x] **STRENGTH-01**: Set logging with auto-fill of the previous session's weight/reps.
 - [x] **STRENGTH-02**: Free plate calculator (standard barbell, EZ bar, trap bar, Smith machine,
   stack machines) with nearest-loadable-weight display.
 
-- [ ] **STRENGTH-03**: Built-in supersets/circuits.
+- [x] **STRENGTH-03**: Built-in supersets/circuits.
 - [x] **STRENGTH-04**: Auto-tagged movement pattern (push/pull/squat/hinge/carry), filterable in
   history/progress.
 
-- [ ] **STRENGTH-05**: Full retroactive editing with date-picker/year-jump navigation and session
+- [x] **STRENGTH-05**: Full retroactive editing with date-picker/year-jump navigation and session
   merge/split.
 
 ### Monetization Boundary
@@ -356,11 +356,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CARDIO-01 | Phase 2 | Complete |
 | CARDIO-02 | Phase 2 | Complete |
 | CARDIO-03 | Phase 2 | Pending |
-| STRENGTH-01 | Phase 2 | Pending |
+| STRENGTH-01 | Phase 2 | Complete |
 | STRENGTH-02 | Phase 2 | Complete |
-| STRENGTH-03 | Phase 2 | Pending |
+| STRENGTH-03 | Phase 2 | Complete |
 | STRENGTH-04 | Phase 2 | Complete |
-| STRENGTH-05 | Phase 2 | Pending |
+| STRENGTH-05 | Phase 2 | Complete |
 | HEALTH-03 | Phase 2 | Pending |
 | HEALTH-04 | Phase 2 | Pending |
 | DIET-01 | Phase 2 | Pending |
