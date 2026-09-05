@@ -99,11 +99,11 @@ coverage:
     requirement: "ONBOARD-01"
     verification:
       - kind: unit
-        ref: "RithamApp/RithamTests/WorkoutPreferenceTests.swift#WorkoutPreferenceTests (experienceLevelFromMeasuredBaselineReturnsABucket, experienceLevelFromProvisionalBaselineReturnsLeastExperienced)"
+        ref: "RithamApp/RithamTests/WorkoutPreferenceTests.swift#WorkoutPreferenceTests (experienceLevelFromMeasuredBaselineReturnsABucket asserts level != .beginner, experienceLevelFromProvisionalBaselineReturnsLeastExperienced asserts == .beginner)"
         status: pass
     human_judgment: false
 
-duration: 45min
+duration: 50min
 completed: 2026-09-05
 status: complete
 ---
@@ -114,9 +114,9 @@ status: complete
 
 ## Performance
 
-- **Duration:** 45 min
+- **Duration:** 50 min
 - **Started:** 2026-09-05T10:24:26Z
-- **Completed:** 2026-09-05T16:30:04+05:30
+- **Completed:** 2026-09-05T16:34:58+05:30
 - **Tasks:** 3
 - **Files modified:** 8 (4 created record files, 2 created test files, HealthDataStore.swift and RithamModelContainer.swift modified) plus Ritham.xcodeproj/project.pbxproj regenerated
 
@@ -133,6 +133,7 @@ Each task was committed atomically:
 1. **Task 1: SwiftData record models and container registration** - `3e6bf2d` (feat)
 2. **Task 2: Session persistence accessors on HealthDataStore** - `cb37d34` (feat)
 3. **Task 3: Workout preference accessors, gate-isolated** - `da3af44` (feat)
+4. **Post-task hardening (advisor review, pre-completion):** `baeb5ac` (test) — strengthened a tautological `experienceLevel()` assertion and added a re-save test for `saveLiftSession`; see Deviations below
 
 _No TDD RED/GREEN split — plan tasks are `tdd="true"` at the "write behavior + tests together, verify, commit" level rather than a strict test-first-fails-then-passes cycle; all behaviors and their tests were authored and verified together per task before each commit._
 
@@ -154,10 +155,26 @@ _No TDD RED/GREEN split — plan tasks are `tdd="true"` at the "write behavior +
 
 ## Deviations from Plan
 
-None - plan executed exactly as written. The `experienceLevel()` measured-baseline mapping and the weekly-frequency default value (both noted above under Decisions) fill genuine specification gaps left open by 02-CONTEXT.md's "Claude's Discretion" section and PROJECT.md's "just build it fast" directive, rather than deviating from any stated instruction.
+### Auto-fixed Issues
+
+**1. [Rule 2 - Missing Critical] Filled two specification gaps the plan left to discretion, with no numeric default or bucket-mapping algorithm stated anywhere in 02-CONTEXT.md/REQUIREMENTS.md/ROADMAP.md**
+- **Found during:** Task 3 (workout preference accessors, gate-isolated)
+- **Issue:** `saveWeeklyFrequency`/`loadWeeklyFrequency` needed a concrete "no record exists yet" default, and `experienceLevel()` needed a concrete mapping from a `.measured` `CalibrationBaseline` to one of the four `ExperienceLevel` buckets — the plan's action text and 02-CONTEXT.md's "Claude's Discretion" section establish the general approach (frequency is a Settings preference like DIET-01; experience derives from calibration with a conservative self-report fallback) but neither specifies the actual default value or a pace/weight-threshold classification algorithm.
+- **Fix:** Weekly frequency defaults to 3 (the least-frequent supported option), matching the codebase's established conservative-default discipline (provisional calibration baseline, least-experienced bucket). `experienceLevel()` maps a provisional (skipped-calibration) baseline to `.beginner` (explicitly required by the plan) and a `.measured` baseline to `.intermediate` — a documented placeholder crediting a completed assessment one step above the no-assessment default, without inventing unreviewed clinical/coaching thresholds across all four buckets. Both choices are recorded in doc comments on the methods themselves so a future phase that adds real graduated scaling can find and revise them without a signature change.
+- **Files modified:** `RithamApp/Ritham/Persistence/HealthDataStore.swift`
+- **Verification:** `WorkoutPreferenceTests.loadWeeklyFrequencyReturnsStatedDefaultWhenNothingStored`, `.experienceLevelFromProvisionalBaselineReturnsLeastExperienced`, and `.experienceLevelFromMeasuredBaselineReturnsABucket` (strengthened post-review to assert `level != .beginner`, not merely that it's some enum case)
+- **Committed in:** `da3af44` (Task 3 commit); test strengthened in `baeb5ac`
+
+---
+
+**Total deviations:** 1 auto-fixed (1 missing-critical / underspecified-default)
+**Impact on plan:** Both filled gaps are documented, conservative, and reversible without touching call sites. No scope creep — no new files, no architectural change.
 
 ## Issues Encountered
-None.
+
+Advisor review before completion caught two weaknesses, both closed before this SUMMARY was finalized:
+- The `experienceLevel()` measured-baseline test originally asserted `ExperienceLevel.allCases.contains(level)`, which is true for any enum value and therefore not real evidence of the derivation working. Replaced with `level != .beginner`, which does distinguish the measured path from the provisional path.
+- The plan's Task 3 acceptance criterion "the full app suite passes when its suites are run individually" had not been explicitly re-verified against the two pre-existing suites this plan's new `HealthDataStoreError` cases could plausibly affect (`HealthDataStoreTests`, `EditAnswerFlowTests`). Ran `-only-testing:RithamTests/HealthDataStoreTests -only-testing:RithamTests/EditAnswerFlowTests`: both pass (23 tests, 2 suites) — no regression from this plan's additive error cases.
 
 ## User Setup Required
 
@@ -165,9 +182,10 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-- All eight of this plan's `-only-testing:` gates pass individually (`WorkoutStoreTests`: 6 tests, `WorkoutSessionStoreTests`: 7 tests, `WorkoutPreferenceTests`: 8 tests) and together (21 tests, 3 suites) in one run.
+- All three of this plan's `-only-testing:` gates pass individually (`WorkoutStoreTests`: 6 tests, `WorkoutSessionStoreTests`: 8 tests, `WorkoutPreferenceTests`: 8 tests) and together (22 tests, 3 suites) in one run.
+- The two pre-existing suites this plan's new `HealthDataStoreError` cases could plausibly affect also pass individually and together, confirming no regression: `HealthDataStoreTests` + `EditAnswerFlowTests` (23 tests, 2 suites).
 - `RithamModelContainer` still constructs exactly one `ModelContainer` over one schema, now carrying eight models — verified via `grep -c 'ModelContainer('` (1) and the four new `.self` registrations (4).
-- Plans 02-10 through 02-15 can now build their cardio-tracking, strength-tracking, auto-fill, merge/split UI, and preference-editing features against this store without ever touching `HealthDataStore.swift` or `RithamModelContainer.swift` themselves — this plan is their sole Phase 2 editor, confirmed by `git log` showing only this plan's three commits against those two files so far.
+- Plans 02-10 through 02-15 can now build their cardio-tracking, strength-tracking, auto-fill, merge/split UI, and preference-editing features against this store without ever touching `HealthDataStore.swift` or `RithamModelContainer.swift` themselves — this plan is their sole Phase 2 editor, confirmed by `git log` showing only this plan's commits against those two files so far.
 - No blockers. The pre-existing `StepRegistry` cross-suite concurrency flake (documented in STATE.md Blockers) is orthogonal to this plan's `-only-testing:`-scoped gates and was not triggered.
 
 ---
@@ -176,4 +194,4 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-All 7 created files found on disk; all 3 task commit hashes (3e6bf2d, cb37d34, da3af44) found in git log.
+All 7 created files found on disk; all 4 commit hashes (3e6bf2d, cb37d34, da3af44, baeb5ac) found in git log.
