@@ -6,7 +6,7 @@ current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
 stopped_at: Completed 02-11-PLAN.md
-last_updated: "2026-09-05T12:28:41.676Z"
+last_updated: "2026-09-05T15:47:16.766Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
@@ -80,7 +80,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P08 | 45min | 3 tasks | 8 files |
 | Phase 02 P09 | 15min | 3 tasks | 5 files |
 | Phase 02 P10 | 90min | 3 tasks | 6 files |
-| Phase 02 P11 | 45min | 3 tasks | 5 files |
+| Phase 02 P11 | 3h44m | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -166,6 +166,7 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-11: Pre-fill seeding reads HealthDataStore.autoFillSet(forExercise:) alone, never the in-progress unsaved session's own newly-logged sets, per the plan's explicit no-filter/no-fallback instruction
 - [Phase ?]: 02-11: PlateCalculatorModel.isInvalidInput is true whenever result == nil (including an empty target field), matching the plan's literal behavior list rather than special-casing an untouched field
 - [Phase ?]: 02-11: Superset join/ungroup and the plate-calculator sheet were wired into StrengthSessionView.swift during Task 3 (not Task 2), since Task 2's file list omitted StrengthSessionView.swift but the plan's success criteria required the calculator to be reachable from set entry
+- [Phase ?]: 02-11 (post-review fix): Gated the superset join action on both exercises already having a working set, and branched the section renderer on group membership rather than group.count > 1, since SupersetGrouping.join only assigns a group to a set (not a bare exercise-order entry) -- caught by advisor review
 
 ### Pending Todos
 

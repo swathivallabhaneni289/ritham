@@ -73,11 +73,11 @@ coverage:
         status: pass
     human_judgment: false
   - id: D5
-    description: "Two consecutive exercises join into one superset in a single step (no separate creation flow), render as one visually grouped block, ungroup restores standalone exercises, and every set's identifier is unchanged across a join followed by an ungroup"
+    description: "Two consecutive exercises join into one superset in a single step (no separate creation flow), render as one visually grouped block, ungroup restores standalone exercises, every set's identifier is unchanged across a join followed by an ungroup, and joining against an exercise with no working sets yet neither no-ops silently nor leaves an orphaned, ungroupable group"
     requirement: "STRENGTH-03"
     verification:
       - kind: unit
-        ref: "RithamApp/RithamTests/StrengthLoggingTests.swift#SupersetBuilderTests (joiningTwoExercisesGroupsThemInOneStep, ungroupingRestoresStandalone, joinThenUngroupLeavesSetIdentifiersUnchanged)"
+        ref: "RithamApp/RithamTests/StrengthLoggingTests.swift#SupersetBuilderTests (joiningTwoExercisesGroupsThemInOneStep, ungroupingRestoresStandalone, joinThenUngroupLeavesSetIdentifiersUnchanged, hasWorkingSetsReflectsLoggedSets, joiningAgainstAnExerciseWithNoWorkingSetsStaysUngroupable)"
         status: pass
     human_judgment: false
   - id: D6
@@ -92,7 +92,7 @@ coverage:
         status: pass
     human_judgment: false
 
-duration: 45min
+duration: 3h44m
 completed: 2026-09-05
 status: complete
 ---
@@ -103,18 +103,18 @@ status: complete
 
 ## Performance
 
-- **Duration:** 45 min
-- **Started:** 2026-09-05T11:56:00Z
-- **Completed:** 2026-09-05T12:41:00Z
-- **Tasks:** 3
+- **Duration:** 3h 44m (wall-clock, first task commit to post-review fix commit; most of this was research/context-reading before code was written, not active coding time)
+- **Started:** 2026-09-05T12:01:14Z
+- **Completed:** 2026-09-05T15:45:05Z
+- **Tasks:** 3 (plus one post-review fix)
 - **Files modified:** 5 (3 new views, 1 new test file, 1 rewritten registrar) plus `Ritham.xcodeproj/project.pbxproj` regenerated
 
 ## Accomplishments
 - `ExercisePickerView` -- sheet-presented, name-searchable picker over `ExerciseCatalog.all`, showing each exercise's auto-assigned movement pattern(s) as read-only labels (STRENGTH-04), with no control that lets a user pick or change one
-- `StrengthSessionView`/`StrengthSessionModel` -- per-exercise set entry pre-filled from `HealthDataStore.autoFillSet(forExercise:)` (empty for a never-logged exercise, warm-ups excluded from the auto-fill source per T-02-11), one-step superset join/ungroup rendered as a visually grouped block, qualification read from `LiftQualification.evaluate`, and finish saving through `HealthDataStore.saveLiftSession`
+- `StrengthSessionView`/`StrengthSessionModel` -- per-exercise set entry pre-filled from `HealthDataStore.autoFillSet(forExercise:)` (empty for a never-logged exercise, warm-ups excluded from the auto-fill source per T-02-11), one-step superset join/ungroup rendered as a visually grouped block (gated so the action never silently no-ops and never leaves an orphaned, ungroupable group -- see Deviations), qualification read from `LiftQualification.evaluate`, and finish saving through `HealthDataStore.saveLiftSession`
 - `PlateCalculatorView`/`PlateCalculatorModel` -- covers all five `Equipment` kinds, routes pin-stack equipment away from plate arithmetic, renders `PlateCalculator.nearestLoadable`'s `nil` return as an explicit invalid-input state (never a force-unwrap, never a substituted zero -- T-02-06), shows a plainly-labelled one-rep-max estimate with no score/level/percentile/rating/tier framing (T-02-33), and applies the achievable weight -- never the typed target -- back to the set being logged
 - `StrengthLoggingRegistration.swift` rewritten in place to register the real `StrengthSessionView` for `.strengthSession`, retiring plan 02-06's placeholder
-- `StrengthLoggingTests.swift`: 29 tests across three suites (`StrengthSetEntryTests`, `PlateCalculatorScreenTests`, `SupersetBuilderTests`), all passing individually and together; full `xcodebuild build` succeeds
+- `StrengthLoggingTests.swift`: 31 tests across three suites (`StrengthSetEntryTests`, `PlateCalculatorScreenTests`, `SupersetBuilderTests`), all passing individually and together; full `xcodebuild build` succeeds
 
 ## Task Commits
 
@@ -123,6 +123,7 @@ Each task was committed atomically:
 1. **Task 1: Exercise picker and set entry with previous-session auto-fill** - `4879049` (feat)
 2. **Task 2: Plate calculator and one-rep-max surface** - `a23866f` (feat)
 3. **Task 3: Superset building, session save, and registrar rewrite** - `8ef1011` (feat)
+4. **Post-task fix (advisor review, pre-completion):** `53f26be` (fix) -- see Deviations below
 
 _No TDD RED/GREEN split -- plan tasks are `tdd="true"` at the "write behavior + tests together, verify, commit" level (the same discipline plan 02-08 used), not a strict test-first-fails-then-passes cycle; all behaviors and their tests were authored and verified together per task before each commit._
 
@@ -131,7 +132,7 @@ _No TDD RED/GREEN split -- plan tasks are `tdd="true"` at the "write behavior + 
 - `RithamApp/Ritham/Strength/Views/StrengthSessionView.swift` - `StrengthSessionModel` (auto-fill, superset join/ungroup, qualification, finish) plus the rendering screen
 - `RithamApp/Ritham/Strength/Views/PlateCalculatorView.swift` - `PlateCalculatorModel` (equipment selection, nearest-loadable result, invalid-input state, 1RM estimate) plus the rendering screen
 - `RithamApp/Ritham/Strength/StrengthLoggingRegistration.swift` - Rewritten to register `StrengthSessionView` for `.strengthSession`
-- `RithamApp/RithamTests/StrengthLoggingTests.swift` - `StrengthSetEntryTests` (11 tests), `PlateCalculatorScreenTests` (11 tests), `SupersetBuilderTests` (7 tests)
+- `RithamApp/RithamTests/StrengthLoggingTests.swift` - `StrengthSetEntryTests` (11 tests), `PlateCalculatorScreenTests` (11 tests), `SupersetBuilderTests` (9 tests, including 2 added by the post-task fix)
 - `RithamApp/Ritham.xcodeproj/project.pbxproj` - Regenerated via `xcodegen generate` so the new Strength/Views files and test additions are picked up (established Phase 2 pattern from 02-06/02-08)
 
 ## Decisions Made
@@ -142,11 +143,24 @@ _No TDD RED/GREEN split -- plan tasks are `tdd="true"` at the "write behavior + 
 
 ## Deviations from Plan
 
-None - plan executed exactly as written, with the one file-assignment interpretation noted above (plate-calculator wiring landing in Task 3 rather than Task 2, since Task 2's file list didn't include `StrengthSessionView.swift`) documented as a Decision rather than a deviation, since it fulfills the plan's own stated success criteria without touching any file outside the plan's declared `files_modified` set.
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] Superset join could silently no-op and could leave an orphaned, ungroupable group**
+- **Found during:** Advisor review after Task 3's commit (before this SUMMARY was finalized)
+- **Issue:** `SupersetGrouping.join` (RithamCore) only assigns a group ID to a *set*, never to a bare exercise-order entry. The Task 3 "Join with next exercise" button was reachable the instant two exercises were added via the picker, before either had a logged set -- tapping it then called `join` with nothing for it to actually mark, so the action silently did nothing with no feedback. Separately, the section renderer branched on `group.count > 1` rather than group membership: if one side of a join already had a working set and the other didn't (or a join later stole one member out of an existing pair), the surviving lone grouped exercise rendered through the plain `exerciseSection` view, which has no Ungroup control -- leaving a real, orphaned `supersetGroupID` on that exercise's sets with no UI path to clear it. This also incidentally violated Task 3's own "no inline comparison of a set or exercise count against a numeric literal" acceptance criterion (`group.count > 1` is exactly that).
+- **Fix:** Added `StrengthSessionModel.hasWorkingSets(forExercise:)` and gated the join action on both exercises already having a working set, so the action never no-ops. Changed the section renderer to branch on `model.groupID(forExercise:) != nil` instead of `group.count > 1`, so a lone-member group still renders with its Ungroup action.
+- **Files modified:** `RithamApp/Ritham/Strength/Views/StrengthSessionView.swift`, `RithamApp/RithamTests/StrengthLoggingTests.swift`
+- **Verification:** New tests `hasWorkingSetsReflectsLoggedSets` and `joiningAgainstAnExerciseWithNoWorkingSetsStaysUngroupable` (both pass); re-ran `-only-testing:RithamTests/SupersetBuilderTests` (9 tests) and a full `xcodebuild build` -- both succeed. Confirmed `StepBootstrap.swift`/`HealthDataStore.swift`/`RithamModelContainer.swift` remained untouched across the full committed range (`git diff --name-only <pre-plan-commit>..HEAD` for those three paths returns empty).
+- **Committed in:** `53f26be` (separate fix commit, not amended into Task 3's commit)
+
+---
+
+**Total deviations:** 1 auto-fixed (1 bug, caught by advisor review before completion)
+**Impact on plan:** Necessary correctness fix for STRENGTH-03's stated single-step join behavior; no scope creep, no new files, no architectural change.
 
 ## Issues Encountered
 
-None. All three `-only-testing:` gates passed on first run, both individually and together (29 tests, 3 suites), and the full `xcodebuild build` succeeded without warnings related to this plan's files.
+An advisor review after Task 3's own commit (but before this SUMMARY was finalized) surfaced the superset join/ungroup bug documented above. All three `-only-testing:` gates pass on the corrected code, both individually and together (31 tests, 3 suites), and the full `xcodebuild build` succeeds without warnings related to this plan's files.
 
 ## User Setup Required
 
@@ -155,7 +169,7 @@ None - no external service configuration required.
 ## Next Phase Readiness
 
 - `StrengthSessionView` is a real, reachable screen (`HomeHubView`'s "Log strength" button already routed to `.strengthSession` before this plan; the step now resolves to real content instead of a placeholder).
-- All three of this plan's `-only-testing:` gates pass individually and together (`StrengthSetEntryTests`: 11, `PlateCalculatorScreenTests`: 11, `SupersetBuilderTests`: 7 -- 29 tests, 3 suites).
+- All three of this plan's `-only-testing:` gates pass individually and together (`StrengthSetEntryTests`: 11, `PlateCalculatorScreenTests`: 11, `SupersetBuilderTests`: 9 -- 31 tests, 3 suites).
 - `xcodebuild build` succeeds for the whole app target.
 - Neither `StepBootstrap.swift`, `HealthDataStore.swift`, nor `RithamModelContainer.swift` was touched by any task in this plan (confirmed via `git diff --name-only` per task).
 - No numeric qualifying threshold and no plate arithmetic appears in any view file this plan created or modified -- both stay in `RithamCore`, read via `LiftQualification.evaluate` and `PlateCalculator.nearestLoadable`.
@@ -168,4 +182,4 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-All 4 created files found on disk (`ExercisePickerView.swift`, `StrengthSessionView.swift`, `PlateCalculatorView.swift`, `StrengthLoggingTests.swift`); the 1 modified file (`StrengthLoggingRegistration.swift`) confirmed rewritten; all 3 task commit hashes (`4879049`, `a23866f`, `8ef1011`) found in `git log`.
+All 4 created files found on disk (`ExercisePickerView.swift`, `StrengthSessionView.swift`, `PlateCalculatorView.swift`, `StrengthLoggingTests.swift`); the 1 modified file (`StrengthLoggingRegistration.swift`) confirmed rewritten; all 4 commit hashes (`4879049`, `a23866f`, `8ef1011`, `53f26be`) found in `git log`.
