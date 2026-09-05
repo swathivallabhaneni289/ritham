@@ -62,3 +62,79 @@ struct GuidanceCatalogTests {
         #expect(ContentPermission.mostRestrictive([]) == .none)
     }
 }
+
+@Suite("WorkoutGuidanceCatalogTests")
+struct WorkoutGuidanceCatalogTests {
+
+    @Test("every tag whose workout row carries adjustment prose returns non-empty adjustment text")
+    func everyTagReturnsNonEmptyAdjustmentText() {
+        for tag in ConditionTag.allCases {
+            let adjustment = WorkoutGuidanceCatalog.adjustment(for: tag)
+            #expect(adjustment != nil)
+            #expect(!(adjustment ?? "").isEmpty)
+        }
+    }
+
+    @Test("a tag whose contraindicated column is an em dash in the source table returns nil, not an empty string")
+    func emDashColumnsReturnNilNotEmptyString() {
+        let nilTags: [ConditionTag] = [
+            .under18Minor,
+            .diabetesNotOnHypoglycemiaRiskMedication,
+            .prediabetes,
+            .severeFoodAllergy,
+            .nonSevereFoodAllergy,
+            .clinicianPrescribedDietOrMealPlan,
+            .noneOfTheAboveBaseline,
+        ]
+        for tag in nilTags {
+            #expect(WorkoutGuidanceCatalog.contraindicated(for: tag) == nil)
+        }
+    }
+
+    @Test("heartDiseaseRecentEventOrSymptomatic presents the referral message, matching its none workout permission")
+    func heartDiseaseRecentEventPresentsReferral() {
+        #expect(
+            WorkoutGuidanceCatalog.presentableAdjustment(for: .heartDiseaseRecentEventOrSymptomatic)
+                == WorkoutGuidanceCatalog.referralMessage
+        )
+        #expect(GuidanceCatalog.contentPermission(for: .heartDiseaseRecentEventOrSymptomatic, domain: .workout) == .none)
+    }
+
+    @Test("presentableAdjustment returns the referral message, not row prose, for every none-permission workout tag")
+    func noneePermissionTagsAlwaysPresentReferral() {
+        for tag in ConditionTag.allCases where GuidanceCatalog.contentPermission(for: tag, domain: .workout) == .none {
+            #expect(WorkoutGuidanceCatalog.presentableAdjustment(for: tag) == WorkoutGuidanceCatalog.referralMessage)
+        }
+    }
+
+    @Test("presentableAdjustment returns row prose, not the referral message, for a full-permission workout tag")
+    func fullPermissionTagPresentsRowProse() {
+        let presented = WorkoutGuidanceCatalog.presentableAdjustment(for: .noneOfTheAboveBaseline)
+        #expect(presented != WorkoutGuidanceCatalog.referralMessage)
+        #expect(presented == WorkoutGuidanceCatalog.adjustment(for: .noneOfTheAboveBaseline))
+    }
+
+    @Test("exactly five tags never trigger streak loss, matching section 2's named set")
+    func exactlyFiveTagsNeverTriggerStreakLoss() {
+        let flagged = ConditionTag.allCases.filter(WorkoutGuidanceCatalog.neverTriggersStreakLoss)
+        #expect(flagged.count == 5)
+        #expect(Set(flagged) == Set<ConditionTag>([
+            .heartDiseaseRecentEventOrSymptomatic,
+            .priorInjuryOrSurgeryNotCleared,
+            .pregnancyComplicatedOrUnsure,
+            .postpartumCSectionOrComplications,
+            .eatingDisorderPositiveScreen,
+        ]))
+    }
+
+    @Test("no accessor traps across every ConditionTag")
+    func noAccessorTrapsAcrossEveryTag() {
+        for tag in ConditionTag.allCases {
+            _ = WorkoutGuidanceCatalog.adjustment(for: tag)
+            _ = WorkoutGuidanceCatalog.contraindicated(for: tag)
+            _ = WorkoutGuidanceCatalog.presentableAdjustment(for: tag)
+            _ = WorkoutGuidanceCatalog.neverTriggersStreakLoss(tag)
+        }
+        #expect(!WorkoutGuidanceCatalog.referralMessage.isEmpty)
+    }
+}
