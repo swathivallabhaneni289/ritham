@@ -19,9 +19,9 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Ritham uses motion data to measure your steps, distance, and pace during the calibration walk.</string>
+	<string>Ritham uses motion data to measure your movement during a workout you start, and to detect when you begin walking or running so it can offer to log it. Nothing is logged automatically -- you always confirm first.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Location is optional and only improves the accuracy of your pace and distance. Declining it never blocks any part of the app.</string>
+	<string>Location is used to measure your pace, distance, elevation, and splits during a workout you start, and only while that workout is running. Declining it leaves manual timing fully available.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
