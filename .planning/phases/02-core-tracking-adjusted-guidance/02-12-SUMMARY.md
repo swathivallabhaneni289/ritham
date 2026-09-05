@@ -173,3 +173,8 @@ None - no external service configuration required.
 ---
 *Phase: 02-core-tracking-adjusted-guidance*
 *Completed: 2026-09-05*
+
+## Self-Check: PASSED
+
+All 8 created/modified source files and the SUMMARY.md itself verified present on disk; all
+4 commits (`a26cdfb`, `36b3b3c`, `f2387bb`, `7339b02`) verified present in `git log`.

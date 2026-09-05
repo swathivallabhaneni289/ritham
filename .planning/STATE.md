@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
-stopped_at: Completed 02-14-PLAN.md
-last_updated: "2026-09-05T16:40:42.162Z"
+stopped_at: Completed 02-12-PLAN.md
+last_updated: "2026-09-05T17:10:16.058Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 27
+  completed_plans: 28
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 14 of 16
+Plan: 15 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -83,6 +83,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P11 | 3h44m | 3 tasks | 5 files |
 | Phase 02 P13 | 45min | 3 tasks | 5 files |
 | Phase 02 P14 | 35min | 2 tasks | 4 files |
+| Phase 02 P12 | 25min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -173,6 +174,8 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-13: WorkoutPlanClient's local referral plan reuses WorkoutGuidanceCatalog.referralMessage rather than a second transcription — Prevents the on-device short-circuit and the Go service's own required-blocking note from ever drifting into two different messages
 - [Phase ?]: 02-14: Heart-rate display deliberately omitted from the always-free list (no wearable pairing exists in this build); WEAR-01 (v2) is the requirement that restores it — Naming an unbuilt capability would break MONETIZE-01's own 'matches what's actually gated (or not) elsewhere' property
 - [Phase ?]: 02-14: WeeklyFrequencyOption.all is a hardcoded [3,5,7] literal, not derived from HealthDataStore.supportedWeeklyFrequencies at declaration time — HealthDataStore is @MainActor; the option type must stay nonisolated to satisfy Identifiable generically for ChoiceQuestionView. A dedicated test pins the two lists together
+- [Phase 02]: 02-12: AdjustedGuidanceBanner surfaces neverTriggersStreakLoss independent of the permission branch, since heartDiseaseRecentEventOrSymptomatic carries a zero-content workout permission and would otherwise lose that framing behind the referral message — Keeps HEALTH-03's streak-safety framing visible even under a required-blocking workout gate
+- [Phase 02]: 02-12: NutritionGuidanceSection treats a nil stored dietaryPattern (profile never visited DietPlanView) as the one input suppressing both swaps and education, distinct from an explicitly-chosen DietaryPattern.none which still shows baseline swaps — Avoids silently defaulting an unanswered dietary preference to an omnivore swap list
 
 ### Pending Todos
 
@@ -220,8 +223,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T16:40:42.151Z
-Stopped at: Completed 02-14-PLAN.md
+Last session: 2026-09-05T17:10:16.047Z
+Stopped at: Completed 02-12-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
