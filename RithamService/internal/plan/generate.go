@@ -36,26 +36,28 @@ const (
 	PermissionRequiredBlocking GuidancePermission = "requiredBlocking"
 )
 
-// Exercise is one prescribed movement within a Session.
+// Exercise is one prescribed movement within a Session. JSON tags are explicit (never left to
+// Go's default field-name matching) since this type is serialized into the httpapi response body
+// -- see 02-RESEARCH.md's Go Backend Research §3 for the exact wire shape.
 type Exercise struct {
-	Name     string
-	Sets     int
-	RepRange string
+	Name     string `json:"name"`
+	Sets     int    `json:"sets"`
+	RepRange string `json:"repRange"`
 }
 
 // Session is one training day within a Plan.
 type Session struct {
-	DayIndex  int
-	Focus     string
-	Exercises []Exercise
+	DayIndex  int        `json:"dayIndex"`
+	Focus     string     `json:"focus"`
+	Exercises []Exercise `json:"exercises"`
 }
 
 // Plan is a full weekly workout plan, or -- under the most restrictive permission -- an empty
 // plan carrying only a referral note and no numeric field populated anywhere.
 type Plan struct {
-	FrequencyPerWeek int
-	Sessions         []Session
-	GuidanceNote     string
+	FrequencyPerWeek int       `json:"frequencyPerWeek"`
+	Sessions         []Session `json:"sessions"`
+	GuidanceNote     string    `json:"guidanceNote"`
 }
 
 // generalGuidanceNote, consultationGuidanceNote and referralGuidanceNote are the three guidance
