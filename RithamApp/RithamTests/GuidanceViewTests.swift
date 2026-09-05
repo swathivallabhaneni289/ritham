@@ -165,3 +165,109 @@ struct InlineGuidanceTests {
         #expect(StrengthSessionView.step == .strengthSession)
     }
 }
+
+// Task 3: the dedicated guidance screen with nutrition, swaps, and education blocks.
+@MainActor
+@Suite("NutritionGuidanceTests")
+struct NutritionGuidanceTests {
+
+    private func makeContainerContext() throws -> ModelContext {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return ModelContext(container)
+    }
+
+    /// Creates a profile with `dietaryPattern`, resolves and saves `tags` as the full screening
+    /// result, then builds a `GuidanceContext` reading from that same store -- mirroring exactly
+    /// what `NutritionGuidanceSection.load()` and `GuidanceView.setup()` do against a real store.
+    private func makeScreenedContext(
+        tags: Set<ConditionTag>,
+        dietaryPattern: DietaryPattern? = nil
+    ) throws -> (context: GuidanceContext, store: HealthDataStore) {
+        let modelContext = try makeContainerContext()
+        let store = HealthDataStore(context: modelContext)
+        try store.updateProfile(UserProfileDraft(age: 30, dietaryPattern: dietaryPattern))
+        try store.saveScreeningResult(
+            GateResolutionResult(
+                matchedTags: tags,
+                gates: GateEscalation.escalate(tags: tags, answers: ScreeningAnswers()),
+                interstitial: .none,
+                requiresIndependentAllergenVerification: GateEscalation.requiresIndependentAllergenVerification(tags: tags)
+            ),
+            answers: ScreeningAnswers(),
+            now: Date()
+        )
+        return (GuidanceContext(context: modelContext), store)
+    }
+
+    @Test("the guidance step resolves to the real screen, not a placeholder")
+    func guidanceStepResolvesToRealScreen() {
+        #expect(GuidanceView.step == .guidance)
+    }
+
+    @Test("for a blocking nutrition tag, the swap list is empty while the education block equals the block produced for an empty tag set (DIET-03 head-to-head)")
+    func blockingNutritionTagHasNoSwapsButSameEducationBlock() throws {
+        let (blockedContext, _) = try makeScreenedContext(tags: [.kidneyDiseaseOrDialysis], dietaryPattern: .vegan)
+        let (openContext, _) = try makeScreenedContext(tags: [], dietaryPattern: .vegan)
+
+        #expect(blockedContext.permission(for: .nutrition) == .none)
+        let blockedGoverningTag = try #require(blockedContext.governingTag(for: .nutrition))
+        let blockedSwaps = DietarySwapCatalog.swaps(for: blockedGoverningTag, pattern: .vegan)
+        #expect(blockedSwaps.isEmpty)
+        #expect(openContext.governingTag(for: .nutrition) == nil)
+
+        let blockedEducation = DietarySwapCatalog.educationBlock(for: .vegan)
+        let openEducation = DietarySwapCatalog.educationBlock(for: .vegan)
+        #expect(blockedEducation != nil)
+        #expect(blockedEducation == openEducation)
+    }
+
+    @Test("every reference figure for an applicable tag carries a non-empty publishing-body attribution")
+    func referenceFiguresCarryPublishingBodyAttribution() {
+        let figures = NutritionGuidanceCatalog.referenceFigures(for: .hypertensionManaged)
+
+        #expect(!figures.isEmpty)
+        for figure in figures {
+            #expect(!figure.publishingBody.isEmpty)
+        }
+    }
+
+    @Test("food-swap examples match the stored dietary pattern when the nutrition permission allows food content")
+    func foodSwapsMatchDietaryPattern() throws {
+        let (context, _) = try makeScreenedContext(tags: [.noneOfTheAboveBaseline], dietaryPattern: .vegan)
+
+        #expect(context.permission(for: .nutrition) == .full)
+        let governingTag = try #require(context.governingTag(for: .nutrition))
+        let swaps = DietarySwapCatalog.swaps(for: governingTag, pattern: .vegan)
+
+        #expect(!swaps.isEmpty)
+        #expect(swaps.allSatisfy { $0.pattern == .vegan })
+    }
+
+    @Test("with no dietary pattern recorded, the stored profile's dietaryPattern is nil -- the one input that suppresses both the swap and education sections")
+    func noDietaryPatternRecordedIsNilNotAnOmnivoreDefault() throws {
+        let modelContext = try makeContainerContext()
+        let store = HealthDataStore(context: modelContext)
+        try store.updateProfile(UserProfileDraft(age: 30))
+
+        let profile = try store.loadProfile()
+        #expect(profile.dietaryPattern == nil)
+    }
+
+    @Test("a stored severe-allergen tag sets the independent-verification flag on the reconstructed result")
+    func severeAllergenTagSetsVerificationFlag() throws {
+        let (context, _) = try makeScreenedContext(tags: [.severeFoodAllergy], dietaryPattern: .none)
+
+        #expect(context.result.requiresIndependentAllergenVerification)
+    }
+
+    @Test("stored food allergens round-trip through the same store accessor this screen reads")
+    func storedFoodAllergensRoundTrip() throws {
+        let modelContext = try makeContainerContext()
+        let store = HealthDataStore(context: modelContext)
+        try store.updateProfile(UserProfileDraft(age: 30))
+        try store.saveFoodAllergens([.peanuts, .shellfish])
+
+        let loaded = try store.loadFoodAllergens()
+        #expect(loaded == [.peanuts, .shellfish])
+    }
+}

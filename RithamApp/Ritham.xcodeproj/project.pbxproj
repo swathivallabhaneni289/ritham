@@ -99,6 +99,7 @@
 		D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074665026698CCD2C09002E0 /* RithamSpacing.swift */; };
 		D75BD4974656ABBDDE7EE6E3 /* ExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */; };
 		DE0D7678CF91D1FE5F62F433 /* HealthProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACF7E8027D66DF7D2961B82 /* HealthProfileView.swift */; };
+		E08CE99E8BBF48AA7975E7F1 /* GuidanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5398A0EBE3232277DF47F768 /* GuidanceView.swift */; };
 		E1FB7E5F23927CD2367FF429 /* HomeHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3947E82C5A5C050CB361C4 /* HomeHubView.swift */; };
 		E237B8D80685930DCEDBF0D0 /* CardioRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DA5833C338691FF38300B0 /* CardioRegistration.swift */; };
 		E9B451301BBB32186D650E4F /* StopwatchSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899994571E54AFD8D9247EEA /* StopwatchSession.swift */; };
@@ -109,6 +110,7 @@
 		F2D92D03FE9DFF6F7CBEA792 /* DietPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE077BE439739DC0651FC91E /* DietPlanView.swift */; };
 		F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226CB34F3DE1E1C5B984771E /* RingAndDot.swift */; };
 		F4C75D98191CB477E9CF26C2 /* ChoiceQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */; };
+		F4EE2649683C66FE6B4D9EB6 /* NutritionGuidanceSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 783D74C2F7A5EA96FE04CB23 /* NutritionGuidanceSection.swift */; };
 		F6532E61D986F81B17C40876 /* UniversalFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B066C106553C75535FFE65 /* UniversalFollowUpView.swift */; };
 		F75EEF71AE6FBC08D77FE119 /* GPSTrackingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F160DD9753BE8D014961267C /* GPSTrackingSession.swift */; };
 		F874FB2134A24BF9B64F2A05 /* LiftSessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A540323B6DBDE9C87D9AEF3A /* LiftSessionRecorder.swift */; };
@@ -160,6 +162,7 @@
 		479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTermTests.swift; sourceTree = "<group>"; };
 		4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataStore.swift; sourceTree = "<group>"; };
 		4FFC7B214A715271F098A892 /* EditAnswerFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAnswerFlow.swift; sourceTree = "<group>"; };
+		5398A0EBE3232277DF47F768 /* GuidanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceView.swift; sourceTree = "<group>"; };
 		552A5F0274532CE45416EB69 /* PreAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreAssessmentView.swift; sourceTree = "<group>"; };
 		56204CF43FAEB1A870F9470A /* PedometerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSession.swift; sourceTree = "<group>"; };
 		5A2AD191D9C5E690B659EBA5 /* AlwaysFreeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysFreeListView.swift; sourceTree = "<group>"; };
@@ -173,6 +176,7 @@
 		6C622C40022EFD69AF8FDD26 /* CardioCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioCaptureTests.swift; sourceTree = "<group>"; };
 		7326799926C7C75029BF3A31 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
 		74D89BB7A3DD06DB23570E75 /* RithamType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamType.swift; sourceTree = "<group>"; };
+		783D74C2F7A5EA96FE04CB23 /* NutritionGuidanceSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionGuidanceSection.swift; sourceTree = "<group>"; };
 		7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlateCalculatorView.swift; sourceTree = "<group>"; };
 		7ACF7E8027D66DF7D2961B82 /* HealthProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthProfileView.swift; sourceTree = "<group>"; };
 		7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamScreen.swift; sourceTree = "<group>"; };
@@ -263,6 +267,8 @@
 			isa = PBXGroup;
 			children = (
 				25A55CB932A493AD0EED3B70 /* AdjustedGuidanceBanner.swift */,
+				5398A0EBE3232277DF47F768 /* GuidanceView.swift */,
+				783D74C2F7A5EA96FE04CB23 /* NutritionGuidanceSection.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -696,6 +702,7 @@
 				3B38A96C15C0B2ACC05FD7C3 /* GlossaryTerm.swift in Sources */,
 				4E5C516F5949297C5F9935E2 /* GuidanceContext.swift in Sources */,
 				9EF4288FE7E51335250C8397 /* GuidanceRegistration.swift in Sources */,
+				E08CE99E8BBF48AA7975E7F1 /* GuidanceView.swift in Sources */,
 				BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */,
 				DE0D7678CF91D1FE5F62F433 /* HealthProfileView.swift in Sources */,
 				E1FB7E5F23927CD2367FF429 /* HomeHubView.swift in Sources */,
@@ -705,6 +712,7 @@
 				FAC67EBCA7A58642957FE497 /* LiftSetRecord.swift in Sources */,
 				5095A4F4DA0A7410735424A4 /* LocationEnrichment.swift in Sources */,
 				6A84B0F8DC471684A46E0482 /* MotionActivityDetector.swift in Sources */,
+				F4EE2649683C66FE6B4D9EB6 /* NutritionGuidanceSection.swift in Sources */,
 				4623D5B2CE5480BAF72A7109 /* OnboardingCompletionRegistration.swift in Sources */,
 				162CA9544931C737318AD2AA /* OnboardingRootView.swift in Sources */,
 				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
