@@ -2,7 +2,7 @@ import SwiftUI
 import RithamCore
 
 // App-side wrapper around the flow's in-progress answers and navigation path (01-RESEARCH.md's
-// Pattern 1). `advance` and `goBack` are the ONLY ways the path changes.
+// Pattern 1). `advance`, `goBack`, and `open` are the ONLY ways the path changes.
 //
 // This class must contain no branching logic of its own. Adding an `if` on age, tier, or consent
 // state to this class is a defect: it would place a routing decision outside the one function
@@ -55,6 +55,19 @@ final class OnboardingFlow {
     func goBack() {
         guard !path.isEmpty else { return }
         path.removeLast()
+    }
+
+    /// A user-initiated push to `step`, with no routing decision in it. Phase 2's interim hub
+    /// (`HomeHubView`) navigates to surfaces `OnboardingRouter` deliberately never routes into --
+    /// cardio, strength, guidance, recommendations -- by calling this rather than `advance`,
+    /// which only ever delegates to the router. This class's own header comment forbids
+    /// branching logic; this method contains none, since it takes its destination as a parameter
+    /// rather than deciding one from `answers`, age, or any other stored state. Appends `step`
+    /// only when it is not already the last element, so repeatedly invoking the same hub action
+    /// does not grow the path unboundedly.
+    func open(_ step: OnboardingStep) {
+        guard path.last != step else { return }
+        path.append(step)
     }
 }
 

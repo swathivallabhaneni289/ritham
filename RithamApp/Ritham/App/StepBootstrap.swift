@@ -27,5 +27,6 @@ enum StepBootstrap {
         CalibrationRegistration.registerAll()
         ScreeningRegistration.registerAll()
         OnboardingCompletionRegistration.registerAll()
+        Phase2StepRegistration.registerAll()
     }
 }
