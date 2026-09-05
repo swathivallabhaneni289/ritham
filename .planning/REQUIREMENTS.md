@@ -47,7 +47,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   Postpartum — C-Section/Complications, Eating Disorder History — Positive Screen) never trigger
   streak-loss messaging.
 
-- [ ] **HEALTH-04**: Nutrition guidance adjusts per applicable condition tag. A
+- [x] **HEALTH-04**: Nutrition guidance adjusts per applicable condition tag. A
   `required-blocking` gate shows zero personalized quantity of any kind (no calorie/macro/portion/
   weight-loss number) — generic education only, or nothing. All numeric reference figures shown
   are published population-level figures, never individually calculated. Under 18 (Minor) is
@@ -91,13 +91,13 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   (its actual consumers) live, though the specific "diet plan" screen this eventually surfaces in
   is not yet scoped.
 
-- [ ] **DIET-02**: When the Nutrition Adjustment Rule Table's gate resolves to `none` or
+- [x] **DIET-02**: When the Nutrition Adjustment Rule Table's gate resolves to `none` or
   `recommended`, a dietary-pattern-keyed lookup decides which example foods populate the already-
   permitted slot (mapped rows: Baseline, Diabetes Plate Method, Hypertension DASH-style, Heart
   Disease AHA pattern). A `required-blocking` gate stays unchanged and shows zero food content
   regardless of dietary pattern.
 
-- [ ] **DIET-03**: Vegan and vegetarian nutrient-awareness education blocks (B12, iron, zinc,
+- [x] **DIET-03**: Vegan and vegetarian nutrient-awareness education blocks (B12, iron, zinc,
   omega-3, calcium, vitamin D, iodine for vegan; B12/iron/zinc/omega-3 for vegetarian) are shown
   once, as general education, identical regardless of any condition tag also present.
 
@@ -362,10 +362,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRENGTH-04 | Phase 2 | Complete |
 | STRENGTH-05 | Phase 2 | Complete |
 | HEALTH-03 | Phase 2 | Complete |
-| HEALTH-04 | Phase 2 | Pending |
+| HEALTH-04 | Phase 2 | Complete |
 | DIET-01 | Phase 2 | Pending |
-| DIET-02 | Phase 2 | Pending |
-| DIET-03 | Phase 2 | Pending |
+| DIET-02 | Phase 2 | Complete |
+| DIET-03 | Phase 2 | Complete |
 | MONETIZE-01 | Phase 2 | Complete |
 | CROSSGEN-02 | Phase 2 | Pending |
 | MOMENTUM-01 | Phase 3 | Pending |
