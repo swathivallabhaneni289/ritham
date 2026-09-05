@@ -81,10 +81,13 @@ struct WorkoutPreferenceTests {
             establishedAt: Date()
         ))
 
-        // Any of the four buckets is acceptable here -- Phase 2 does not specify a graduated
-        // pace/weight-threshold mapping across all four.
+        // Phase 2 does not specify a graduated pace/weight-threshold mapping across all four
+        // buckets for a real measurement (see `experienceLevel()`'s own doc comment) -- the
+        // behavior this test actually pins down is that a measured baseline is credited above
+        // the no-assessment default, not collapsed into the same `.beginner` bucket a skipped
+        // calibration returns.
         let level = try store.experienceLevel()
-        #expect(ExperienceLevel.allCases.contains(level))
+        #expect(level != .beginner)
     }
 
     @Test("deriving the experience bucket from a provisional baseline returns the least experienced bucket")

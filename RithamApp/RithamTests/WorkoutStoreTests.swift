@@ -224,6 +224,30 @@ struct WorkoutSessionStoreTests {
         #expect(Set(loaded.sets.map(\.id)) == Set(sets.map(\.id)))
     }
 
+    @Test("re-saving an unmodified lift session never mints new set identities or duplicates sets")
+    func reSavingLiftSessionNeverMintsNewIdentities() throws {
+        let (store, context) = try makeStore()
+        let base = Date(timeIntervalSince1970: 20_000)
+        let sets = [
+            makeLiftSet(exercise: "deadlift", orderIndex: 0, completedAt: base),
+            makeLiftSet(exercise: "deadlift", orderIndex: 1, completedAt: base.addingTimeInterval(60)),
+        ]
+        let session = LiftSession(startedAt: base, sets: sets)
+
+        try store.saveLiftSession(session)
+        try store.saveLiftSession(session)
+
+        let allSessions = try store.loadLiftSessions()
+        #expect(allSessions.count == 1)
+        #expect(allSessions[0].sets.count == 2)
+        #expect(Set(allSessions[0].sets.map(\.id)) == Set(sets.map(\.id)))
+
+        let sessionRecords = try context.fetch(FetchDescriptor<LiftSessionRecord>())
+        #expect(sessionRecords.count == 1)
+        let setRecords = try context.fetch(FetchDescriptor<LiftSetRecord>())
+        #expect(setRecords.count == 2)
+    }
+
     @Test("autoFillSet returns the most recent working set for an exercise, and nil when never logged")
     func autoFillSetReturnsMostRecentWorkingSet() throws {
         let (store, _) = try makeStore()
