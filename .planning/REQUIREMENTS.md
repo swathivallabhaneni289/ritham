@@ -11,7 +11,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Onboarding
 
-- [ ] **ONBOARD-01**: The first time a user requests exercise recommendations, they complete a
+- [x] **ONBOARD-01**: The first time a user requests exercise recommendations, they complete a
   short, guided walk-or-light-lift pre-assessment (never a self-reported fitness-level dropdown)
   that sets their actual starting baseline, factoring in age and applicable condition tags from
   the safety screening. Revised 2026-09-01: no longer onboarding's first mandatory session (see
@@ -128,7 +128,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **CARDIO-02**: GPS pace/distance/elevation/splits/grade-adjusted pace, shown with a visible
   accuracy/confidence indicator rather than a silently varying number.
 
-- [ ] **CARDIO-03**: Route/segment comparison is available but opt-in only — no default public
+- [x] **CARDIO-03**: Route/segment comparison is available but opt-in only — no default public
   KOM/leaderboard.
 
 ### Strength Tracking
@@ -355,7 +355,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CROSSGEN-05 | Phase 1 | Complete |
 | CARDIO-01 | Phase 2 | Complete |
 | CARDIO-02 | Phase 2 | Complete |
-| CARDIO-03 | Phase 2 | Pending |
+| CARDIO-03 | Phase 2 | Complete |
 | STRENGTH-01 | Phase 2 | Complete |
 | STRENGTH-02 | Phase 2 | Complete |
 | STRENGTH-03 | Phase 2 | Complete |
