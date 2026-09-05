@@ -83,6 +83,56 @@ final class StrengthSessionModel {
         session.sets.append(set)
         return set
     }
+
+    // MARK: - Superset building (Task 3)
+
+    /// The superset group, if any, every *working* set for `identifier` currently shares. `join`
+    /// always assigns the same group ID to every matching working set in one call, so reading the
+    /// first working set's group is sufficient -- there is never a mixed-membership exercise.
+    func groupID(forExercise identifier: String) -> SupersetGroupID? {
+        session.sets.first { $0.exerciseIdentifier == identifier && !$0.isWarmUp }?.supersetGroupID
+    }
+
+    /// Joins `exerciseIdentifiers` into one superset in a single step -- STRENGTH-03's stated
+    /// interaction, with no separate create-a-superset flow. Delegates entirely to
+    /// `SupersetGrouping.join`, which never recreates a set: every set's `id` is unchanged.
+    func joinIntoSuperset(_ exerciseIdentifiers: [String]) {
+        session = SupersetGrouping.join(exerciseIdentifiers: exerciseIdentifiers, in: session, groupID: SupersetGroupID())
+    }
+
+    /// Restores every set in `groupID` to standalone. Delegates entirely to
+    /// `SupersetGrouping.ungroup`, which never recreates a set.
+    func ungroup(_ groupID: SupersetGroupID) {
+        session = SupersetGrouping.ungroup(groupID, in: session)
+    }
+
+    func supersetGroups() -> [SupersetGroup] {
+        SupersetGrouping.groups(in: session)
+    }
+
+    // MARK: - Qualification and finish (Task 3)
+
+    /// Reads the shared domain evaluation rather than counting sets or exercises itself -- the
+    /// qualifying-bar thresholds live in exactly one place (`CalibrationThreshold`, via
+    /// `LiftQualification.evaluate`).
+    var qualification: LiftQualification {
+        LiftQualification.evaluate(session)
+    }
+
+    /// Applies the plate calculator's achievable weight to one specific already-logged set --
+    /// never the raw typed target, per `PlateCalculatorView`'s own contract.
+    func updateWeight(forSetID id: UUID, to weightKg: Double) {
+        guard let index = session.sets.firstIndex(where: { $0.id == id }) else { return }
+        session.sets[index].weightKg = weightKg
+    }
+
+    /// Saves the in-progress session through the shared store accessor plan 02-08 added. Performs
+    /// no persistence logic of its own beyond the single `saveLiftSession` call.
+    @discardableResult
+    func finish() throws -> LiftSession {
+        try store.saveLiftSession(session)
+        return session
+    }
 }
 
 struct StrengthSessionView: View, OnboardingStepPresenting {
@@ -107,12 +157,23 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
     @State private var model: StrengthSessionModel?
     @State private var isPresentingPicker = false
     @State private var drafts: [String: SetDraft] = [:]
+    @State private var presentedPlateCalculatorSet: LiftSet?
 
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Strength session") {
             if let model {
-                ForEach(model.exerciseOrder, id: \.self) { identifier in
-                    exerciseSection(identifier, model: model)
+                qualificationBanner(model)
+
+                ForEach(Array(displaySections(model).enumerated()), id: \.offset) { _, group in
+                    if group.count > 1 {
+                        supersetBlock(group, model: model)
+                    } else if let identifier = group.first {
+                        exerciseSection(identifier, model: model)
+                    }
+                }
+
+                PrimaryCTAButton(title: "Finish") {
+                    finish(model)
                 }
             }
 
@@ -126,6 +187,15 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
                 model?.addExercise(exercise.identifier)
             }
         }
+        .sheet(item: $presentedPlateCalculatorSet) { set in
+            PlateCalculatorView(
+                equipment: set.equipment ?? .standardBarbell,
+                currentWeightKg: set.weightKg,
+                currentReps: set.reps
+            ) { achievableWeightKg in
+                model?.updateWeight(forSetID: set.id, to: achievableWeightKg)
+            }
+        }
     }
 
     private func setup() {
@@ -133,10 +203,104 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
         model = StrengthSessionModel(store: HealthDataStore(context: modelContext))
     }
 
+    private func finish(_ model: StrengthSessionModel) {
+        try? model.finish()
+        flow.returnToHub()
+    }
+
+    // MARK: - Qualification
+
+    private func qualificationBanner(_ model: StrengthSessionModel) -> some View {
+        Text(
+            model.qualification == .complete
+                ? "This session meets the qualifying bar."
+                : "Keep going -- this session doesn't meet the qualifying bar yet."
+        )
+        .font(RithamType.label)
+        .foregroundStyle(RithamColor.paper)
+    }
+
+    // MARK: - Section grouping
+
+    /// Every displayed section, in `exerciseOrder`: a single-element array for a standalone
+    /// exercise, or a multi-element array (in `exerciseOrder`'s own relative order) for every
+    /// exercise sharing one superset group -- the "one visually grouped block" STRENGTH-03 asks
+    /// for, derived purely from `groupID(forExercise:)` reads, never a separate grouping model of
+    /// this view's own.
+    private func displaySections(_ model: StrengthSessionModel) -> [[String]] {
+        var sections: [[String]] = []
+        var visited = Set<String>()
+
+        for identifier in model.exerciseOrder where !visited.contains(identifier) {
+            if let groupID = model.groupID(forExercise: identifier) {
+                let members = model.exerciseOrder.filter { model.groupID(forExercise: $0) == groupID }
+                sections.append(members)
+                visited.formUnion(members)
+            } else {
+                sections.append([identifier])
+                visited.insert(identifier)
+            }
+        }
+        return sections
+    }
+
+    private func nextExerciseIdentifier(after identifier: String, model: StrengthSessionModel) -> String? {
+        guard
+            let index = model.exerciseOrder.firstIndex(of: identifier),
+            model.exerciseOrder.indices.contains(index + 1)
+        else { return nil }
+        return model.exerciseOrder[index + 1]
+    }
+
     // MARK: - Exercise section
 
     @ViewBuilder
     private func exerciseSection(_ identifier: String, model: StrengthSessionModel) -> some View {
+        VStack(alignment: .leading, spacing: RithamSpacing.sm) {
+            exerciseContent(identifier, model: model)
+
+            if let next = nextExerciseIdentifier(after: identifier, model: model) {
+                SecondaryCTAButton(title: "Join with next exercise") {
+                    model.joinIntoSuperset([identifier, next])
+                }
+            }
+        }
+        .padding(RithamSpacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: RithamSpacing.sm)
+                .stroke(RithamColor.paper.opacity(0.3), lineWidth: 1)
+        )
+    }
+
+    /// One visually grouped block for every exercise sharing a superset group -- STRENGTH-03's
+    /// "no separate creation step" also means this is the same `exerciseContent` a standalone
+    /// section renders, just gathered under one bordered container with a single ungroup action.
+    @ViewBuilder
+    private func supersetBlock(_ identifiers: [String], model: StrengthSessionModel) -> some View {
+        VStack(alignment: .leading, spacing: RithamSpacing.sm) {
+            Text("Superset")
+                .font(RithamType.label)
+                .foregroundStyle(RithamColor.hot)
+
+            ForEach(identifiers, id: \.self) { identifier in
+                exerciseContent(identifier, model: model)
+            }
+
+            SecondaryCTAButton(title: "Ungroup") {
+                if let groupID = identifiers.first.flatMap(model.groupID(forExercise:)) {
+                    model.ungroup(groupID)
+                }
+            }
+        }
+        .padding(RithamSpacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: RithamSpacing.sm)
+                .stroke(RithamColor.hot, lineWidth: 2)
+        )
+    }
+
+    @ViewBuilder
+    private func exerciseContent(_ identifier: String, model: StrengthSessionModel) -> some View {
         VStack(alignment: .leading, spacing: RithamSpacing.sm) {
             Text(exerciseDisplayName(identifier))
                 .font(RithamType.body.weight(.semibold))
@@ -152,11 +316,6 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
 
             setEntryForm(identifier, model: model)
         }
-        .padding(RithamSpacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: RithamSpacing.sm)
-                .stroke(RithamColor.paper.opacity(0.3), lineWidth: 1)
-        )
     }
 
     @ViewBuilder
@@ -167,6 +326,10 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
             if set.isWarmUp {
                 Text("Warm-up")
                     .font(RithamType.label)
+            }
+
+            SecondaryCTAButton(title: "Plate calculator") {
+                presentedPlateCalculatorSet = set
             }
         }
         .font(RithamType.body)

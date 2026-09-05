@@ -258,3 +258,107 @@ struct PlateCalculatorScreenTests {
         #expect(result?.achievedWeightKg == 45)
     }
 }
+
+// Task 3: superset building, session save, and registrar rewrite.
+@MainActor
+@Suite("SupersetBuilderTests")
+struct SupersetBuilderTests {
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    @Test("the strength-session step resolves to the real screen, not a placeholder")
+    func registersAsStrengthSessionStep() {
+        #expect(StrengthSessionView.step == .strengthSession)
+    }
+
+    @Test("joining two consecutive exercises groups them into one superset in a single step")
+    func joiningTwoExercisesGroupsThemInOneStep() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        model.addSet(exerciseIdentifier: "benchPress", weightKg: 60, reps: 8, isWarmUp: false)
+        model.addSet(exerciseIdentifier: "overheadPress", weightKg: 40, reps: 8, isWarmUp: false)
+
+        model.joinIntoSuperset(["benchPress", "overheadPress"])
+
+        let groups = model.supersetGroups()
+        #expect(groups.count == 1)
+        #expect(model.groupID(forExercise: "benchPress") == model.groupID(forExercise: "overheadPress"))
+    }
+
+    @Test("ungrouping restores both exercises to standalone")
+    func ungroupingRestoresStandalone() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        model.addSet(exerciseIdentifier: "benchPress", weightKg: 60, reps: 8, isWarmUp: false)
+        model.addSet(exerciseIdentifier: "overheadPress", weightKg: 40, reps: 8, isWarmUp: false)
+        model.joinIntoSuperset(["benchPress", "overheadPress"])
+        let groupID = try #require(model.groupID(forExercise: "benchPress"))
+
+        model.ungroup(groupID)
+
+        #expect(model.groupID(forExercise: "benchPress") == nil)
+        #expect(model.groupID(forExercise: "overheadPress") == nil)
+        #expect(model.supersetGroups().isEmpty)
+    }
+
+    @Test("joining then ungrouping leaves every set's identifier unchanged")
+    func joinThenUngroupLeavesSetIdentifiersUnchanged() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        let benchSet = model.addSet(exerciseIdentifier: "benchPress", weightKg: 60, reps: 8, isWarmUp: false)
+        let pressSet = model.addSet(exerciseIdentifier: "overheadPress", weightKg: 40, reps: 8, isWarmUp: false)
+        let idsBefore = Set(model.session.sets.map(\.id))
+
+        model.joinIntoSuperset(["benchPress", "overheadPress"])
+        let groupID = try #require(model.groupID(forExercise: "benchPress"))
+        model.ungroup(groupID)
+
+        let idsAfter = Set(model.session.sets.map(\.id))
+        #expect(idsAfter == idsBefore)
+        #expect(idsAfter == Set([benchSet.id, pressSet.id]))
+    }
+
+    @Test("finishing saves one lift session whose stored set count equals the in-progress count")
+    func finishingSavesSessionWithMatchingSetCount() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        model.addSet(exerciseIdentifier: "backSquat", weightKg: 80, reps: 5, isWarmUp: false)
+        model.addSet(exerciseIdentifier: "backSquat", weightKg: 80, reps: 5, isWarmUp: false)
+        model.addSet(exerciseIdentifier: "deadlift", weightKg: 100, reps: 5, isWarmUp: false)
+        let inProgressCount = model.session.sets.count
+
+        try model.finish()
+
+        let saved = try #require(try store.loadLiftSession(id: model.session.id))
+        #expect(saved.sets.count == inProgressCount)
+    }
+
+    @Test("the session reports whether it meets the qualifying bar by reading the domain evaluation")
+    func reportsQualificationFromDomainEvaluation() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+
+        #expect(model.qualification == .incomplete)
+
+        model.addSet(exerciseIdentifier: "backSquat", weightKg: 80, reps: 5, isWarmUp: false)
+        model.addSet(exerciseIdentifier: "backSquat", weightKg: 80, reps: 5, isWarmUp: false)
+        model.addSet(exerciseIdentifier: "deadlift", weightKg: 100, reps: 5, isWarmUp: false)
+
+        #expect(model.qualification == LiftQualification.evaluate(model.session))
+        #expect(model.qualification == .complete)
+    }
+
+    @Test("applying the plate calculator's result to a specific set writes the achievable weight there")
+    func applyingPlateCalculatorResultUpdatesTheTargetedSet() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        let set = model.addSet(exerciseIdentifier: "backSquat", weightKg: 61, reps: 5, isWarmUp: false)
+
+        model.updateWeight(forSetID: set.id, to: 60)
+
+        #expect(model.sets(for: "backSquat").first?.weightKg == 60)
+    }
+}
