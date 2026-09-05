@@ -76,6 +76,7 @@
 		BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */; };
 		BEAD3466EE45B0FFE621F497 /* ConditionChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */; };
 		BF441CA8CFFC7BFE0A7FA83D /* HomeHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB60B6780E7077E5D21BF8DE /* HomeHubTests.swift */; };
+		C1AF2ADF5B66142103586431 /* PlateCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */; };
 		C3E725D13FFCE9D9F7EB838D /* GateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DFCFA1AACDDDED577DD44F /* GateSectionView.swift */; };
 		C5ED6464CA6021F92C9E2BE4 /* CardioSessionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5D3C5BA15E31E8760C0741 /* CardioSessionRecord.swift */; };
 		C60BFC429A35E55EB67C164A /* WorkoutPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CDE0AB02415762195655A3 /* WorkoutPreferenceTests.swift */; };
@@ -155,6 +156,7 @@
 		6C622C40022EFD69AF8FDD26 /* CardioCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioCaptureTests.swift; sourceTree = "<group>"; };
 		7326799926C7C75029BF3A31 /* OnboardingRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingRootView.swift; sourceTree = "<group>"; };
 		74D89BB7A3DD06DB23570E75 /* RithamType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamType.swift; sourceTree = "<group>"; };
+		7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlateCalculatorView.swift; sourceTree = "<group>"; };
 		7ACF7E8027D66DF7D2961B82 /* HealthProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthProfileView.swift; sourceTree = "<group>"; };
 		7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamScreen.swift; sourceTree = "<group>"; };
 		7D161EF261290000542D3672 /* CalibrationRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationRegistration.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */,
+				7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */,
 				44D2B20330A58A12991D6AE8 /* StrengthSessionView.swift */,
 			);
 			path = Views;
@@ -658,6 +661,7 @@
 				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
 				F03CD5A2D32F1E0BCBAA37F5 /* PedometerSession.swift in Sources */,
 				8AE5EF7DFD295F7364E397D8 /* Phase2StepRegistration.swift in Sources */,
+				C1AF2ADF5B66142103586431 /* PlateCalculatorView.swift in Sources */,
 				9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */,
 				246E6790BDB65CFCEB25A333 /* PrivacyExplainerStepView.swift in Sources */,
 				0356DBBFB1CD2B527E15D1E6 /* RadialSessionTimer.swift in Sources */,

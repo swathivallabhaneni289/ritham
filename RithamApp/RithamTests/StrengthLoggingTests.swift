@@ -144,3 +144,117 @@ struct StrengthSetEntryTests {
         #expect(model.sets(for: "backSquat").map(\.id) == [added.id])
     }
 }
+
+// Task 2: the plate calculator and one-rep-max surface.
+@MainActor
+@Suite("PlateCalculatorScreenTests")
+struct PlateCalculatorScreenTests {
+
+    @Test("choosing an equipment kind sets its default bar weight")
+    func choosingEquipmentSetsDefaultBarWeight() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+
+        model.selectEquipment(.trapBar)
+
+        #expect(model.barWeightKg == Equipment.trapBar.defaultBarWeightKg)
+    }
+
+    @Test("choosing a pin-stack kind reports itself as a pin-stack, hiding plate-specific controls")
+    func choosingPinStackReportsPinStack() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+
+        model.selectEquipment(.stackMachine)
+
+        #expect(model.isPinStack)
+    }
+
+    @Test("an exactly loadable target reports the plates per side and marks itself an exact match")
+    func exactlyLoadableTargetReportsExactMatch() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+        model.targetWeightKg = "60"
+
+        let result = model.result
+
+        #expect(result?.isExactMatch == true)
+        #expect(result?.platesPerSideKg.isEmpty == false)
+        #expect(result?.achievedWeightKg == 60)
+    }
+
+    @Test("a non-loadable target reports an achievable weight different from the requested value, marked as nearest")
+    func nonLoadableTargetReportsNearestAchievable() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+        model.targetWeightKg = "61"
+
+        let result = model.result
+
+        #expect(result?.isExactMatch == false)
+        #expect(result?.achievedWeightKg != 61)
+    }
+
+    @Test("a negative target shows an invalid-input state with no plate list")
+    func negativeTargetIsInvalidInput() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+        model.targetWeightKg = "-5"
+
+        #expect(model.isInvalidInput)
+        #expect(model.result == nil)
+    }
+
+    @Test("an empty target shows an invalid-input state")
+    func emptyTargetIsInvalidInput() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+        model.targetWeightKg = ""
+
+        #expect(model.isInvalidInput)
+    }
+
+    @Test("a non-numeric target shows an invalid-input state")
+    func nonNumericTargetIsInvalidInput() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+        model.targetWeightKg = "not a number"
+
+        #expect(model.isInvalidInput)
+    }
+
+    @Test("the one-rep-max estimate appears for a supported rep count")
+    func oneRepMaxAppearsForSupportedRepCount() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+
+        #expect(model.oneRepMaxEstimate(weightKg: 100, reps: 5) != nil)
+    }
+
+    @Test("the one-rep-max estimate is absent for an unsupported rep count")
+    func oneRepMaxAbsentForUnsupportedRepCount() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+
+        #expect(model.oneRepMaxEstimate(weightKg: 100, reps: 50) == nil)
+    }
+
+    @Test("applying the result writes the achievable weight to the set, not the typed target")
+    func applyingWritesAchievableWeightNotTypedTarget() {
+        let model = PlateCalculatorModel(equipment: .standardBarbell)
+        model.targetWeightKg = "61"
+        var appliedWeight: Double?
+
+        // Mirrors what the view's "Apply to set" action does: hands `achievableWeightToApply`
+        // (never the raw typed target) to the caller-supplied closure.
+        if let achievable = model.achievableWeightToApply {
+            appliedWeight = achievable
+        }
+
+        #expect(appliedWeight != nil)
+        #expect(appliedWeight != 61)
+        #expect(appliedWeight == model.result?.achievedWeightKg)
+    }
+
+    @Test("a pin-stack target rounds to the nearest increment with an empty plate list")
+    func pinStackRoundsToNearestIncrementWithNoPlateList() {
+        let model = PlateCalculatorModel(equipment: .stackMachine)
+        model.targetWeightKg = "47"
+
+        let result = model.result
+
+        #expect(result?.platesPerSideKg.isEmpty == true)
+        #expect(result?.achievedWeightKg == 45)
+    }
+}
