@@ -134,11 +134,11 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 ### Strength Tracking
 
 - [ ] **STRENGTH-01**: Set logging with auto-fill of the previous session's weight/reps.
-- [ ] **STRENGTH-02**: Free plate calculator (standard barbell, EZ bar, trap bar, Smith machine,
+- [x] **STRENGTH-02**: Free plate calculator (standard barbell, EZ bar, trap bar, Smith machine,
   stack machines) with nearest-loadable-weight display.
 
 - [ ] **STRENGTH-03**: Built-in supersets/circuits.
-- [ ] **STRENGTH-04**: Auto-tagged movement pattern (push/pull/squat/hinge/carry), filterable in
+- [x] **STRENGTH-04**: Auto-tagged movement pattern (push/pull/squat/hinge/carry), filterable in
   history/progress.
 
 - [ ] **STRENGTH-05**: Full retroactive editing with date-picker/year-jump navigation and session
@@ -146,7 +146,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Monetization Boundary
 
-- [ ] **MONETIZE-01**: The "always free" feature list (core GPS/manual-stopwatch tracking, with
+- [x] **MONETIZE-01**: The "always free" feature list (core GPS/manual-stopwatch tracking, with
   heart-rate display when a device is paired but never required, full training history, plate/1RM
   calculators, superset support, movement-pattern tagging, all streak-forgiveness mechanics) is
   stated visibly in-app (e.g., Settings), not just as internal policy, and matches what is
@@ -357,16 +357,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CARDIO-02 | Phase 2 | Complete |
 | CARDIO-03 | Phase 2 | Pending |
 | STRENGTH-01 | Phase 2 | Pending |
-| STRENGTH-02 | Phase 2 | Pending |
+| STRENGTH-02 | Phase 2 | Complete |
 | STRENGTH-03 | Phase 2 | Pending |
-| STRENGTH-04 | Phase 2 | Pending |
+| STRENGTH-04 | Phase 2 | Complete |
 | STRENGTH-05 | Phase 2 | Pending |
 | HEALTH-03 | Phase 2 | Pending |
 | HEALTH-04 | Phase 2 | Pending |
 | DIET-01 | Phase 2 | Pending |
 | DIET-02 | Phase 2 | Pending |
 | DIET-03 | Phase 2 | Pending |
-| MONETIZE-01 | Phase 2 | Pending |
+| MONETIZE-01 | Phase 2 | Complete |
 | CROSSGEN-02 | Phase 2 | Pending |
 | MOMENTUM-01 | Phase 3 | Pending |
 | MOMENTUM-02 | Phase 3 | Pending |

@@ -6,14 +6,14 @@ current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
 stopped_at: Phase 02 planning complete; requirements (16/16) and decision (7/7) coverage gates passed
-last_updated: "2026-09-05T08:04:12.923Z"
+last_updated: "2026-09-05T08:15:47.874Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 15
+  completed_plans: 16
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 2 of 16
+Plan: 3 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -71,6 +71,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 01-onboarding-safety-intake P16 | 90min | 3 tasks | 13 files |
 | Phase 01-onboarding-safety-intake P17 | 50min | 3 tasks | 12 files |
 | Phase 02 P01 | 20min | 3 tasks | 7 files |
+| Phase 02 P02 | 4min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-17: Added HealthDataStore.conditionTagStatuses(now:) (Rule 2) -- no existing accessor exposed per-tag validity, which D-08's overdue-tag display requires
 - [Phase ?]: 02-01: CardioProgress.recordInterruption() zeroes only continuousDuration, never distanceMeters/elevationGainMeters -- ground already covered during a cardio session stays recorded, unlike WalkProgress's calibration-specific full reset
 - [Phase ?]: 02-01: GradeAdjustedPace.adjustedSecondsPerKm divides raw pace by a grade-derived effort factor (not multiplies) -- uphill yields a faster/smaller number, downhill benefit peaks at -10% and reverses past it due to eccentric-braking cost
+- [Phase 02]: 02-02: PlateCalculator bounds target weight at 1000 kg as the ASVS V5 'absurdly large' ceiling (no plan-specified number existed)
+- [Phase 02]: 02-02: Equipment.stackMachine.defaultBarWeightKg is 0 (not optional), documented as unread by PlateCalculator's pinStack path
 
 ### Pending Todos
 
@@ -177,7 +180,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T08:03:45.106Z
+Last session: 2026-09-05T08:14:56.972Z
 Stopped at: Phase 02 context gathered (incl. Go backend + interim nav hub decisions)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
