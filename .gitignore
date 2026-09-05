@@ -20,3 +20,7 @@ out/
 
 # GSD research tool cache (ephemeral API responses, not source content)
 .planning/research/.cache/
+
+# RithamService (Go) build output only -- all Go source stays tracked
+/ritham-service
+/RithamService/ritham-service
