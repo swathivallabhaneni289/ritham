@@ -16,6 +16,13 @@
 // Conforms to `Codable` so an interrupted onboarding can resume at the same step. The raw
 // values are the persisted form — treat them as stable identifiers and do not rename them
 // casually.
+//
+// Phase 2's eight surfaces (`cardioActivityPicker` through `preAssessment` below) are ordinary
+// members of this same enum for the same CROSSGEN-05 reason as the paragraph above: exactly one
+// step vocabulary and one navigation container for every user regardless of age. They are
+// reached by explicit user choice from the interim hub (`.home`'s registered screen,
+// `OnboardingFlow.open(_:)`), never by `OnboardingRouter` advancing into them — which is why the
+// router treats every one of them as terminal, exactly like `.home` itself.
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -35,4 +42,12 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case universalFollowUp
     case screeningComplete
     case home
+    case cardioActivityPicker
+    case cardioSession
+    case cardioHistory
+    case strengthSession
+    case strengthHistory
+    case guidance
+    case recommendations
+    case preAssessment
 }

@@ -109,6 +109,15 @@ public enum OnboardingRouter {
 
         case .home:
             return nil
+
+        case .cardioActivityPicker, .cardioSession, .cardioHistory,
+             .strengthSession, .strengthHistory,
+             .guidance, .recommendations, .preAssessment:
+            // Phase 2's surfaces are entered by explicit user choice from the hub
+            // (`OnboardingFlow.open(_:)`), never by this router advancing into them -- terminal
+            // exactly like `.home`, with no branching on answers, age, or any other state. See
+            // this file's header comment for the full record.
+            return nil
         }
     }
 

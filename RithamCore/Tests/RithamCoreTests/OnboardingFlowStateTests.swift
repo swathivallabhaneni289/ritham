@@ -212,6 +212,34 @@ struct OnboardingFlowStateTests {
         #expect(OnboardingStep.allCases.count == 24)
     }
 
+    @Test("every new Phase 2 case is terminal: OnboardingRouter.nextStep returns nil for each")
+    func phase2StepsAreTerminal() {
+        let subject = answers(age: 30)
+        let newSteps: [OnboardingStep] = [
+            .cardioActivityPicker, .cardioSession, .cardioHistory,
+            .strengthSession, .strengthHistory,
+            .guidance, .recommendations, .preAssessment,
+        ]
+        for step in newSteps {
+            #expect(OnboardingRouter.nextStep(after: step, answers: subject) == nil)
+        }
+    }
+
+    @Test("OnboardingRouter.nextStep(after: .recommendations, answers:) is nil for a fully answered set of answers")
+    func recommendationsIsTerminalForFullyAnsweredUser() {
+        var subject = answers(age: 40)
+        subject.screening.g1HeartConditionOrHighBP = .no
+        subject.screening.g2ChestPainOrBreathlessness = .no
+        subject.screening.g3DizzinessOrLossOfConsciousness = .no
+        subject.screening.g4OtherOngoingCondition = .no
+        subject.screening.g5MedicationOrPrescribedDiet = .no
+        subject.screening.g6BoneJointSoftTissueProblem = .no
+        subject.screening.g7MedicallySupervisedOnly = .no
+        subject.screening.checklist.toggle(.eatingDisorderHistory)
+
+        #expect(OnboardingRouter.nextStep(after: .recommendations, answers: subject) == nil)
+    }
+
     @Test("the welcome-through-home step sequence is unchanged by the addition of Phase 2 steps")
     func welcomeThroughHomeSequenceUnchangedByPhase2Steps() {
         let visited = traverse(answers: answers(age: 40))
