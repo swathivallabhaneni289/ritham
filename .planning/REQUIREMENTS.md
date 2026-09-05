@@ -344,7 +344,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ONBOARD-01 | Phase 2 | In progress -- Go plan-generation service (02-05) and persistence (02-08) built; the user-facing Recommendations surface + triggered pre-assessment (02-13) and phase close-out verification (02-16) still pending |
+| ONBOARD-01 | Phase 2 | In progress -- Go plan-generation service (02-05), persistence (02-08), and the user-facing Recommendations surface + triggered pre-assessment (02-13) built; phase close-out verification (02-16, including cross-process check against a running Go service) still pending |
 | EXPLAIN-01 | Phase 1 | Complete |
 | HEALTH-01 | Phase 1 | Complete |
 | HEALTH-02 | Phase 1 | Complete |
