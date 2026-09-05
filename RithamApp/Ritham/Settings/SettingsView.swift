@@ -46,6 +46,7 @@ struct SettingsView: View {
     @State private var editingSection: EditableSection?
     @State private var isEditingDietPlan = false
     @State private var isShowingAlwaysFreeList = false
+    @State private var isEditingWorkoutFrequency = false
     @State private var isReScreenDue = false
 
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
@@ -75,6 +76,12 @@ struct SettingsView: View {
                 isShowingAlwaysFreeList = true
             }
 
+            // Claude's Discretion (`02-CONTEXT.md`): the weekly workout-frequency preference,
+            // same sheet-presented pattern as the diet plan.
+            SecondaryCTAButton(title: "Workout frequency") {
+                isEditingWorkoutFrequency = true
+            }
+
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
                 Text("Screening answers")
                     .font(RithamType.heading)
@@ -97,6 +104,9 @@ struct SettingsView: View {
         .sheet(isPresented: $isShowingAlwaysFreeList) {
             AlwaysFreeListView()
         }
+        .sheet(isPresented: $isEditingWorkoutFrequency) {
+            WorkoutFrequencyView(initialFrequency: currentWeeklyFrequency())
+        }
     }
 
     private func sectionEntryPoint(_ section: EditableSection, title: String) -> some View {
@@ -108,5 +118,14 @@ struct SettingsView: View {
     private func refreshReScreenDue() {
         let store = HealthDataStore(context: modelContext)
         isReScreenDue = (try? store.isReScreenDue(now: Date())) ?? false
+    }
+
+    /// Loaded fresh at sheet-presentation time (not cached in `SettingsView`'s own state) so a
+    /// reopen always reflects whatever was persisted the last time this sheet was dismissed.
+    /// `HealthDataStore.loadWeeklyFrequency` already supplies the stated default (3) when nothing
+    /// is stored yet.
+    private func currentWeeklyFrequency() -> Int {
+        let store = HealthDataStore(context: modelContext)
+        return (try? store.loadWeeklyFrequency()) ?? 3
     }
 }

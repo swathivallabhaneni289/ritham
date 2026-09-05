@@ -111,6 +111,7 @@
 		F874FB2134A24BF9B64F2A05 /* LiftSessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A540323B6DBDE9C87D9AEF3A /* LiftSessionRecorder.swift */; };
 		F884E2083E9D0F087CFCC102 /* CardioViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E042D4ECE70F89401D7D36 /* CardioViewTests.swift */; };
 		FAC67EBCA7A58642957FE497 /* LiftSetRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7106F3171C2691292CD68A5 /* LiftSetRecord.swift */; };
+		FE23BDF8A1831A14B0F98EB3 /* WorkoutFrequencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA2C00B50E27B822C89CC13 /* WorkoutFrequencyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,6 +188,7 @@
 		980B74D1594DF6375B0B13C7 /* ScreeningRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningRegistration.swift; sourceTree = "<group>"; };
 		9B61ACD89789D585BDF4FFE4 /* PrivacyExplainerStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyExplainerStepView.swift; sourceTree = "<group>"; };
 		9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometry.swift; sourceTree = "<group>"; };
+		9CA2C00B50E27B822C89CC13 /* WorkoutFrequencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFrequencyView.swift; sourceTree = "<group>"; };
 		A49AD7002CE2D97EA29E3FB4 /* LocationEnrichment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEnrichment.swift; sourceTree = "<group>"; };
 		A540323B6DBDE9C87D9AEF3A /* LiftSessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftSessionRecorder.swift; sourceTree = "<group>"; };
 		A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeStepView.swift; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 				4FFC7B214A715271F098A892 /* EditAnswerFlow.swift */,
 				CE0B9B71125480D87A8BF2F5 /* ReScreenBanner.swift */,
 				35DDF9B0827C7ACB6CFF49C2 /* SettingsView.swift */,
+				9CA2C00B50E27B822C89CC13 /* WorkoutFrequencyView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -722,6 +725,7 @@
 				F6532E61D986F81B17C40876 /* UniversalFollowUpView.swift in Sources */,
 				013581EA2FA2E3097156C900 /* UserProfile.swift in Sources */,
 				87808DE1AEE493D4C2504F34 /* WelcomeStepView.swift in Sources */,
+				FE23BDF8A1831A14B0F98EB3 /* WorkoutFrequencyView.swift in Sources */,
 				423469E8BCF8000A3E93DCBF /* WorkoutPlanClient.swift in Sources */,
 				A2239FD2F7130F8EE7CF50AF /* WorkoutPreferenceRecord.swift in Sources */,
 			);

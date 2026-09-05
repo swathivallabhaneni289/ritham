@@ -66,3 +66,79 @@ struct AlwaysFreeListTests {
         #expect(statement.contains("never monetized"))
     }
 }
+
+// The weekly workout-frequency preference (`WorkoutFrequencyView`). Asserted against
+// `HealthDataStore` directly, in-memory, the same data-level approach `EditAnswerFlowTests`/
+// `WorkoutPreferenceTests` use rather than rendering the view -- `WorkoutFrequencyView`'s own
+// `persist`/`currentWeeklyFrequency` both defer entirely to the store accessors these tests
+// exercise directly.
+@MainActor
+@Suite("WorkoutFrequencyTests")
+struct WorkoutFrequencyTests {
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    private func makeGateResolutionResult(matchedTags: Set<ConditionTag>) -> GateResolutionResult {
+        GateResolutionResult(
+            matchedTags: matchedTags,
+            gates: DomainGates(workout: .none, nutrition: .none),
+            interstitial: .none,
+            requiresIndependentAllergenVerification: false
+        )
+    }
+
+    @Test("WeeklyFrequencyOption.all matches HealthDataStore.supportedWeeklyFrequencies exactly, ascending")
+    func weeklyFrequencyOptionsMatchSupportedFrequencies() throws {
+        let expected = HealthDataStore.supportedWeeklyFrequencies.sorted()
+        #expect(WeeklyFrequencyOption.all.map(\.daysPerWeek) == expected)
+    }
+
+    @Test("opening with no stored preference selects the stated default")
+    func openingWithNoStoredValueSelectsStatedDefault() throws {
+        let store = try makeStore()
+        // `SettingsView.currentWeeklyFrequency()` -- the value `WorkoutFrequencyView` is
+        // initialized with -- is exactly `HealthDataStore.loadWeeklyFrequency()`'s own result.
+        let loaded = try store.loadWeeklyFrequency()
+        #expect(loaded == 3)
+        #expect(WeeklyFrequencyOption(daysPerWeek: loaded) == WeeklyFrequencyOption(daysPerWeek: 3))
+    }
+
+    @Test("selecting a value persists it and reloads as selected on reopen")
+    func selectingAValuePersistsAndReloadsAsSelectedOnReopen() throws {
+        let store = try makeStore()
+        try store.saveWeeklyFrequency(5)
+        #expect(try store.loadWeeklyFrequency() == 5)
+    }
+
+    @Test("changing the value later persists the new value, with no confirmation step involved")
+    func changingTheValueLaterPersistsTheNewValue() throws {
+        let store = try makeStore()
+        try store.saveWeeklyFrequency(5)
+        #expect(try store.loadWeeklyFrequency() == 5)
+
+        try store.saveWeeklyFrequency(7)
+        #expect(try store.loadWeeklyFrequency() == 7)
+    }
+
+    @Test("a frequency write leaves stored condition tags and the stored dietary pattern byte-identical")
+    func frequencyWriteLeavesConditionTagsAndDietaryPatternUnchanged() throws {
+        let store = try makeStore()
+        try store.updateProfile(UserProfileDraft(age: 30, dietaryPattern: .vegan))
+        let now = Date()
+        let seededTags: Set<ConditionTag> = [.osteoarthritis, .kidneyDiseaseOrDialysis]
+        try store.saveScreeningResult(makeGateResolutionResult(matchedTags: seededTags), answers: ScreeningAnswers(), now: now)
+
+        let tagsBefore = Set(try store.activeConditionTags(now: now))
+        let dietaryPatternBefore = try store.loadProfile().dietaryPattern
+
+        try store.saveWeeklyFrequency(7)
+
+        let tagsAfter = Set(try store.activeConditionTags(now: now))
+        let dietaryPatternAfter = try store.loadProfile().dietaryPattern
+        #expect(tagsAfter == tagsBefore)
+        #expect(dietaryPatternAfter == dietaryPatternBefore)
+    }
+}
