@@ -50,7 +50,11 @@ private func makeStubbedSession() -> URLSession {
     return URLSession(configuration: config)
 }
 
-@Suite("WorkoutPlanClientTests")
+// `.serialized` because every test in this suite reads/writes `StubURLProtocol`'s shared static
+// `requestHandler`/`requestCount` state -- the same reason `AppShellTests` serializes around
+// `StepRegistry`'s shared static state (STATE.md's Blockers/Concerns documents the cross-suite
+// version of this same race).
+@Suite("WorkoutPlanClientTests", .serialized)
 struct WorkoutPlanClientTests {
 
     init() {

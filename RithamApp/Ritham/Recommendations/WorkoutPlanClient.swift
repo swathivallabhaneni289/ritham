@@ -78,17 +78,18 @@ enum WorkoutPlanClientError: Error, Equatable {
 /// (`RithamService/cmd/ritham-service/main.go`); a Release build points at a placeholder host
 /// until real hosting and an authentication story are decided (see that file's own header
 /// comment on the absent-auth gap).
-///
-/// STUB (TDD RED): always fails with `.transport` and never performs the local short-circuit --
-/// `WorkoutPlanClientTests` should fail meaningfully against this stub before the real
-/// implementation lands.
 struct WorkoutPlanClient {
     private let session: URLSession
     private let baseURL: URL
 
     #if DEBUG
+    /// The loopback address `ritham-service` binds to by default (`PORT` unset -> `:8080`).
+    /// Simulator shares the host Mac's network, so this resolves with no extra networking setup.
     static let defaultBaseURL = URL(string: "http://127.0.0.1:8080")!
     #else
+    /// A placeholder only -- real hosting has not been decided yet. Shipping a Release build
+    /// against this host is a decision that still needs to happen, not something this client
+    /// should silently default around.
     static let defaultBaseURL = URL(string: "https://api.ritham.invalid")!
     #endif
 
@@ -97,11 +98,74 @@ struct WorkoutPlanClient {
         self.baseURL = baseURL
     }
 
+    /// Produces a plan for the given weekly frequency, experience bucket and already-resolved
+    /// workout gate.
+    ///
+    /// When `workoutGate` is the most restrictive value, this returns a generic referral plan
+    /// built entirely on device and constructs no request at all -- the planning-time note in
+    /// 02-RESEARCH.md's Go Backend Research §4: the client already knows the answer is
+    /// "generic-only" without asking the service, and skipping the call sends strictly less data
+    /// in exactly the most sensitive case.
     func fetchPlan(
         frequencyPerWeek: Int,
         experienceLevel: ExperienceLevel,
         workoutGate: ClearanceGate
     ) async throws -> WorkoutPlan {
-        throw WorkoutPlanClientError.transport
+        guard workoutGate != .requiredBlocking else {
+            return Self.localReferralPlan
+        }
+
+        let requestBody = WorkoutPlanRequest(
+            frequencyPerWeek: frequencyPerWeek,
+            experienceLevel: experienceLevel.rawValue,
+            guidancePermission: Self.wireValue(for: workoutGate)
+        )
+
+        var urlRequest = URLRequest(url: baseURL.appendingPathComponent("v1/workout-plan"))
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let body = try? JSONEncoder().encode(requestBody) else {
+            throw WorkoutPlanClientError.transport
+        }
+        urlRequest.httpBody = body
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: urlRequest)
+        } catch {
+            throw WorkoutPlanClientError.transport
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw WorkoutPlanClientError.transport
+        }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw WorkoutPlanClientError.httpStatus(httpResponse.statusCode)
+        }
+
+        do {
+            return try JSONDecoder().decode(WorkoutPlanResponse.self, from: data).plan
+        } catch {
+            throw WorkoutPlanClientError.decoding
+        }
+    }
+
+    /// A generic, non-personalized plan with no numeric prescription anywhere, mirroring the
+    /// service's own required-blocking shape (`RithamService/internal/plan/generate.go`).
+    /// `frequencyPerWeek` is left at its zero value deliberately, the same "no numeric field
+    /// populated anywhere" reading that file's own generation function applies. The guidance note
+    /// reuses `WorkoutGuidanceCatalog.referralMessage` rather than a second transcription, so the
+    /// on-device and server-driven referral paths can never read as two different messages.
+    private static var localReferralPlan: WorkoutPlan {
+        WorkoutPlan(frequencyPerWeek: 0, sessions: [], guidanceNote: WorkoutGuidanceCatalog.referralMessage)
+    }
+
+    private static func wireValue(for gate: ClearanceGate) -> String {
+        switch gate {
+        case .none: return "none"
+        case .recommended: return "recommended"
+        case .requiredBlocking: return "requiredBlocking"
+        }
     }
 }
