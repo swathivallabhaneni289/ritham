@@ -496,11 +496,105 @@ public final class HealthDataStore {
         return records.filter { $0.sessionID == sessionID }
     }
 
+    // MARK: - Workout preferences
+
+    /// The weekly workout frequencies this preference supports. `saveWeeklyFrequency` throws
+    /// rather than persisting any value outside this set.
+    public static let supportedWeeklyFrequencies: Set<Int> = [3, 5, 7]
+
+    /// Preference data no gate resolution or tag derivation ever reads -- the same isolation
+    /// `saveFoodAllergens`/`loadFoodAllergens` already establish. Defaults to 3 (the least
+    /// frequent supported option, the conservative choice) when nothing is stored yet, the same
+    /// "never a blank state" discipline `loadCalibrationBaseline` applies.
+    public func loadWeeklyFrequency() throws -> Int {
+        try loadWorkoutPreferenceRecord()?.weeklyFrequency ?? 3
+    }
+
+    /// Throws `HealthDataStoreError.unsupportedWeeklyFrequency` and persists nothing when
+    /// `frequency` is outside `supportedWeeklyFrequencies` -- an unsupported value must never
+    /// reach the stored preference, not even partially.
+    public func saveWeeklyFrequency(_ frequency: Int) throws {
+        guard Self.supportedWeeklyFrequencies.contains(frequency) else {
+            throw HealthDataStoreError.unsupportedWeeklyFrequency
+        }
+        try upsertWorkoutPreference { $0.weeklyFrequency = frequency }
+    }
+
+    /// Same isolation as `loadWeeklyFrequency`. Defaults to `false`: a fresh install has not
+    /// yet run ONBOARD-01's triggered pre-assessment.
+    public func loadHasCompletedPreAssessment() throws -> Bool {
+        try loadWorkoutPreferenceRecord()?.hasCompletedPreAssessment ?? false
+    }
+
+    public func markPreAssessmentCompleted() throws {
+        try upsertWorkoutPreference { $0.hasCompletedPreAssessment = true }
+    }
+
+    /// Defaults to `false` with no stored record, so CARDIO-03's route-comparison surface is
+    /// opt-in, never default-on -- the storage-level expression of the project's permanent
+    /// prohibition on any cross-user aggregate location visualization.
+    public func loadRouteComparisonOptIn() throws -> Bool {
+        try loadWorkoutPreferenceRecord()?.routeComparisonOptIn ?? false
+    }
+
+    public func saveRouteComparisonOptIn(_ optIn: Bool) throws {
+        try upsertWorkoutPreference { $0.routeComparisonOptIn = optIn }
+    }
+
+    /// Derives the on-device experience bucket from the stored calibration baseline. Per
+    /// 02-CONTEXT.md's Claude's Discretion, a skipped calibration (a `.provisional` baseline)
+    /// always yields `.beginner`, the least experienced bucket, so a user who skipped
+    /// calibration gets a conservative starting point rather than a blank state. A `.measured`
+    /// baseline yields `.intermediate` -- Phase 2 does not specify a pace/weight-threshold
+    /// mapping across all four buckets for a real measurement, so this credits a completed
+    /// assessment one step above the no-assessment default without inventing unreviewed
+    /// clinical/coaching thresholds; a future phase that adds real graduated scaling can refine
+    /// this without changing this method's signature.
+    ///
+    /// D-04/D-07: this coarse bucket is derived on device and is the only classification that
+    /// may leave it -- the underlying pace zone and starting weight are never surfaced as a
+    /// score, grade or level and never cross the API boundary.
+    public func experienceLevel() throws -> ExperienceLevel {
+        let baseline = try loadCalibrationBaseline()
+        return baseline?.source == .measured ? .intermediate : .beginner
+    }
+
+    private func loadWorkoutPreferenceRecord() throws -> WorkoutPreferenceRecord? {
+        try context.fetch(FetchDescriptor<WorkoutPreferenceRecord>()).first
+    }
+
+    /// Creates the single preference row on first write, otherwise mutates the existing one --
+    /// never a delete-then-reinsert, since this is one row with independently-settable fields,
+    /// not a replaceable set.
+    private func upsertWorkoutPreference(_ mutate: (WorkoutPreferenceRecord) -> Void) throws {
+        if let existing = try loadWorkoutPreferenceRecord() {
+            mutate(existing)
+        } else {
+            let record = WorkoutPreferenceRecord(weeklyFrequency: 3)
+            mutate(record)
+            context.insert(record)
+        }
+        try context.save()
+    }
+
     // MARK: - Private
 
     private func fetchProfile() throws -> UserProfile? {
         try context.fetch(FetchDescriptor<UserProfile>()).first
     }
+}
+
+/// A coarse, on-device-only training-experience bucket used to scale workout-plan generation.
+/// Per D-04/D-07 (see `HealthDataStore.experienceLevel()`), this is the only classification
+/// derived from `CalibrationBaseline` that may ever leave the device -- the pace zone and
+/// starting weight it is derived from never do. Raw values match the wire values plan 02-05's Go
+/// service declares (`RithamService/internal/plan/generate.go`'s `ExperienceLevel` constants),
+/// character for character.
+public enum ExperienceLevel: String, CaseIterable, Sendable, Equatable {
+    case beginner
+    case intermediate
+    case advanced
+    case dailyExerciser
 }
 
 /// The writable fields `HealthDataStore.updateProfile` accepts. A plain, non-persisted struct
@@ -542,4 +636,7 @@ public enum HealthDataStoreError: Error, Equatable {
     /// Thrown by `deleteCardioSession`/`deleteLiftSession` when no stored session matches the
     /// given identifier.
     case sessionNotFound
+    /// Thrown by `saveWeeklyFrequency` when the incoming value is outside
+    /// `HealthDataStore.supportedWeeklyFrequencies` -- nothing is persisted when this throws.
+    case unsupportedWeeklyFrequency
 }

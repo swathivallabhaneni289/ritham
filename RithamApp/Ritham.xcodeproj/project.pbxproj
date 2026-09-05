@@ -69,6 +69,7 @@
 		BF441CA8CFFC7BFE0A7FA83D /* HomeHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB60B6780E7077E5D21BF8DE /* HomeHubTests.swift */; };
 		C3E725D13FFCE9D9F7EB838D /* GateSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DFCFA1AACDDDED577DD44F /* GateSectionView.swift */; };
 		C5ED6464CA6021F92C9E2BE4 /* CardioSessionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5D3C5BA15E31E8760C0741 /* CardioSessionRecord.swift */; };
+		C60BFC429A35E55EB67C164A /* WorkoutPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CDE0AB02415762195655A3 /* WorkoutPreferenceTests.swift */; };
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
 		C94BE80B05E101C50F2E2F52 /* HomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E8647274BFC9B0186D1250 /* HomeStepView.swift */; };
 		C98EEFA090BC93D3D278F3EC /* CalibrationRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D161EF261290000542D3672 /* CalibrationRegistration.swift */; };
@@ -188,6 +189,7 @@
 		EA6AD193A95EFC8C360C8DD4 /* GuidanceRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceRegistration.swift; sourceTree = "<group>"; };
 		EF3947E82C5A5C050CB361C4 /* HomeHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHubView.swift; sourceTree = "<group>"; };
 		F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatingPatternFollowUpView.swift; sourceTree = "<group>"; };
+		F0CDE0AB02415762195655A3 /* WorkoutPreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPreferenceTests.swift; sourceTree = "<group>"; };
 		F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepPresenting.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -442,6 +444,7 @@
 				1024D116B21BD85232045566 /* PersistenceTests.swift */,
 				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
 				AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */,
+				F0CDE0AB02415762195655A3 /* WorkoutPreferenceTests.swift */,
 				6BD83382F4A004233E02833B /* WorkoutStoreTests.swift */,
 			);
 			path = RithamTests;
@@ -647,6 +650,7 @@
 				69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */,
 				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
 				4EDF881FDE663F23A30F29CE /* ScreeningFlowTests.swift in Sources */,
+				C60BFC429A35E55EB67C164A /* WorkoutPreferenceTests.swift in Sources */,
 				45D76A02920D151CA76B3D6C /* WorkoutStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
