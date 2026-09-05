@@ -62,7 +62,11 @@ key-decisions:
     subdirectories and files are invisible to xcodebuild until the project is regenerated
     (Rule 3 deviation, not in this plan's declared files_modified)"
 
-requirements-completed: [DIET-01]
+requirements-completed: []  # DIET-01 is wired and unit/integration-verified (see D1-D3, D4's
+  # "requirement" field) but stays Pending in REQUIREMENTS.md: D4's own interactive spot-check
+  # (launch app, finish onboarding, Settings -> Diet plan) was not run this session -- no
+  # tap-injection tool (idb, XCUITest) is available in this environment, only simctl, which
+  # cannot drive touches. Do not mark DIET-01 complete until that spot-check runs.
 
 coverage:
   - id: D1
@@ -246,10 +250,16 @@ None - no external service configuration required.
   no `StepBootstrap` edits needed.
 - `HomeHubView` is a stable extension point: each later plan's real screen replaces the
   corresponding placeholder in its own registrar without touching `HomeHubView` itself.
-- DIET-01's end-to-end interactive spot-check (launch app -> finish onboarding -> Settings ->
-  Diet plan) was not run interactively this session (see coverage D4); source-level wiring is
-  unchanged and verified by passing unit/integration tests, but a manual click-through remains
-  open before this can be marked fully verified in UAT.
+- **DIET-01 stays `Pending` in REQUIREMENTS.md, deliberately not marked complete by this
+  plan.** Its end-to-end interactive spot-check (launch app -> finish onboarding -> Settings ->
+  Diet plan) was not run this session (see coverage D4): this environment has `xcodebuild` and
+  `simctl` but no touch-injection tool (`idb`, XCUITest), so no button in the running app could
+  actually be tapped. Source-level wiring is unchanged and correct (`HomeHubView` presents
+  `SettingsView`, which already presents `DietPlanView` via `.sheet`, both reviewed directly),
+  and every piece tests green individually (`PhaseCoverageTests`, `HomeHubTests`, full
+  `RithamCore` suite, full app build). Whoever runs the next interactive UAT pass on this phase
+  should perform this specific click-through and, if it renders correctly, mark DIET-01
+  complete then -- not before.
 - The documented `StepRegistry` cross-suite test-concurrency race (STATE.md Blockers/Concerns)
   is unaffected by this plan -- all gates here ran via `-only-testing:` single-suite
   invocations, as the plan's own verification section directs. Plan 02-16 still owns fixing it

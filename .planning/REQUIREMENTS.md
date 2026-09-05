@@ -78,7 +78,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Dietary Pattern
 
-- [x] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) whenever
+- [ ] **DIET-01**: User sets a `dietary_pattern` (none/vegetarian/vegan, single-select) whenever
   they choose to, in Settings — not a mandatory onboarding step. Editable anytime, no
   expiry/re-screen. Never changes a Clearance Gate value, never triggers `required-blocking`,
   never blocks/unlocks/softens a condition-specific suggestion. A user who never sets one simply
@@ -363,7 +363,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRENGTH-05 | Phase 2 | Complete |
 | HEALTH-03 | Phase 2 | Complete |
 | HEALTH-04 | Phase 2 | Pending |
-| DIET-01 | Phase 2 | Complete |
+| DIET-01 | Phase 2 | Pending |
 | DIET-02 | Phase 2 | Pending |
 | DIET-03 | Phase 2 | Pending |
 | MONETIZE-01 | Phase 2 | Complete |
