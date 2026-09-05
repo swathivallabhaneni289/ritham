@@ -79,6 +79,7 @@
 		A1E029A8D88EC2C0042634F9 /* StrengthHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */; };
 		A2239FD2F7130F8EE7CF50AF /* WorkoutPreferenceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */; };
 		A9C84BFFC26CFA89FC2B7AAE /* CalibrationIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89E4D8F0456F5D8ACD8674A /* CalibrationIntroView.swift */; };
+		AA56751EAFAE131DF9D59DE5 /* YearJumpDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641360D1FB8CED54DB256482 /* YearJumpDatePicker.swift */; };
 		B4937617E59E6662F5D61750 /* ConditionDisclaimerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D87CE175663250CFAE8720 /* ConditionDisclaimerTag.swift */; };
 		B699CA6F0194F93D60914DBE /* HealthDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF1FE8182F9431C9184C34 /* HealthDataStoreTests.swift */; };
 		B79730E927043D1B94D41757 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DDF9B0827C7ACB6CFF49C2 /* SettingsView.swift */; };
@@ -174,6 +175,7 @@
 		6202A72738414384DAE6A08D /* AppShellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellTests.swift; sourceTree = "<group>"; };
 		63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRegistry.swift; sourceTree = "<group>"; };
 		6401A5B4F844C3B3B3E2EB5E /* StrengthHistoryRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthHistoryRegistration.swift; sourceTree = "<group>"; };
+		641360D1FB8CED54DB256482 /* YearJumpDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearJumpDatePicker.swift; sourceTree = "<group>"; };
 		6A46068A0F7C391E80EA313C /* StandingFooterDisclaimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingFooterDisclaimer.swift; sourceTree = "<group>"; };
 		6BD83382F4A004233E02833B /* WorkoutStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStoreTests.swift; sourceTree = "<group>"; };
 		6C622C40022EFD69AF8FDD26 /* CardioCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioCaptureTests.swift; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 				7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */,
 				B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */,
 				44D2B20330A58A12991D6AE8 /* StrengthSessionView.swift */,
+				641360D1FB8CED54DB256482 /* YearJumpDatePicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -762,6 +765,7 @@
 				FE23BDF8A1831A14B0F98EB3 /* WorkoutFrequencyView.swift in Sources */,
 				423469E8BCF8000A3E93DCBF /* WorkoutPlanClient.swift in Sources */,
 				A2239FD2F7130F8EE7CF50AF /* WorkoutPreferenceRecord.swift in Sources */,
+				AA56751EAFAE131DF9D59DE5 /* YearJumpDatePicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

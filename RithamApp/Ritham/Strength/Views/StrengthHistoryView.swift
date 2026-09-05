@@ -23,6 +23,15 @@ final class StrengthHistoryModel {
     private(set) var sessions: [LiftSession] = []
     var selectedPatterns: Set<MovementPattern> = []
 
+    /// Every stored session's `startedAt`, refreshed only by `load()` -- the single full-store
+    /// read this model ever performs. `YearJumpDatePicker` derives its offered years and months
+    /// from this list, never by loading the whole store again itself.
+    private(set) var allSessionStartDates: [Date] = []
+
+    /// The date range currently narrowing `sessions`, or `nil` when unfiltered. Tracked so a
+    /// caller can tell whether a date jump is active.
+    private(set) var selectedDateRange: ClosedRange<Date>?
+
     private let store: HealthDataStore
 
     init(store: HealthDataStore) {
@@ -46,9 +55,25 @@ final class StrengthHistoryModel {
         !sessions.isEmpty && filteredSessions.isEmpty
     }
 
-    /// Loads every stored lift session, most recent first.
+    /// Loads every stored lift session, most recent first, and refreshes the date list
+    /// `YearJumpDatePicker` offers years and months from. This is the only path in this model
+    /// that reads the whole store -- `loadDateRange` below never does.
     func load() {
         sessions = (try? store.loadLiftSessions()) ?? []
+        allSessionStartDates = sessions.map(\.startedAt)
+        selectedDateRange = nil
+    }
+
+    /// Loads sessions within `range` through the store's date-range accessor -- never the
+    /// full-store accessor -- so jumping to one month never pulls the whole history into memory.
+    /// Passing `nil` clears the date selection and restores the unfiltered list via `load()`.
+    func loadDateRange(_ range: ClosedRange<Date>?) {
+        guard let range else {
+            load()
+            return
+        }
+        selectedDateRange = range
+        sessions = (try? store.loadLiftSessions(in: range)) ?? []
     }
 
     func togglePattern(_ pattern: MovementPattern) {
@@ -79,6 +104,10 @@ struct StrengthHistoryView: View, OnboardingStepPresenting {
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Strength history") {
             if let model {
+                YearJumpDatePicker(availableDates: model.allSessionStartDates) { range in
+                    model.loadDateRange(range)
+                }
+
                 patternFilter(model)
 
                 if model.isEmpty {

@@ -149,3 +149,132 @@ struct StrengthHistoryFilterTests {
         #expect(model.filteredSessions.isEmpty)
     }
 }
+
+@MainActor
+@Suite("YearJumpNavigationTests")
+struct YearJumpNavigationTests {
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    private func makeSet(
+        exercise: String,
+        orderIndex: Int = 0,
+        completedAt: Date
+    ) -> LiftSet {
+        LiftSet(exerciseIdentifier: exercise, reps: 5, orderIndex: orderIndex, completedAt: completedAt)
+    }
+
+    private func date(year: Int, month: Int, day: Int = 15) -> Date {
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = day
+        return Calendar.current.date(from: components)!
+    }
+
+    @Test("only years containing stored sessions are offered")
+    func onlyYearsWithSessionsAreOffered() {
+        let dates = [date(year: 2024, month: 3), date(year: 2026, month: 1)]
+        let years = YearJumpDatePicker.availableYears(in: dates)
+        #expect(years == [2026, 2024])
+    }
+
+    @Test("with no stored sessions, no years are offered")
+    func noSessionsOffersNoYears() {
+        #expect(YearJumpDatePicker.availableYears(in: []).isEmpty)
+    }
+
+    @Test("only months containing stored sessions within the selected year are offered")
+    func onlyMonthsWithSessionsAreOffered() {
+        let dates = [date(year: 2025, month: 2), date(year: 2025, month: 7), date(year: 2024, month: 7)]
+        let months = YearJumpDatePicker.availableMonths(in: dates, year: 2025)
+        #expect(months == [2, 7])
+    }
+
+    @Test("selecting a month loads that month's sessions through the date-range accessor")
+    func selectingMonthLoadsThroughDateRangeAccessor() throws {
+        let store = try makeStore()
+        let inMonth = LiftSession(
+            startedAt: date(year: 2025, month: 5, day: 10),
+            sets: [makeSet(exercise: "backSquat", completedAt: date(year: 2025, month: 5, day: 10))]
+        )
+        let outsideMonth = LiftSession(
+            startedAt: date(year: 2025, month: 6, day: 1),
+            sets: [makeSet(exercise: "benchPress", completedAt: date(year: 2025, month: 6, day: 1))]
+        )
+        try store.saveLiftSession(inMonth)
+        try store.saveLiftSession(outsideMonth)
+
+        let model = StrengthHistoryModel(store: store)
+        model.load()
+
+        let range = try #require(YearJumpDatePicker.range(forYear: 2025, month: 5))
+        model.loadDateRange(range)
+
+        #expect(model.sessions.map(\.id) == [inMonth.id])
+    }
+
+    @Test("clearing the date selection restores the unfiltered most-recent-first list")
+    func clearingDateSelectionRestoresFullList() throws {
+        let store = try makeStore()
+        let earlier = LiftSession(
+            startedAt: date(year: 2025, month: 5, day: 10),
+            sets: [makeSet(exercise: "backSquat", completedAt: date(year: 2025, month: 5, day: 10))]
+        )
+        let later = LiftSession(
+            startedAt: date(year: 2025, month: 6, day: 1),
+            sets: [makeSet(exercise: "benchPress", completedAt: date(year: 2025, month: 6, day: 1))]
+        )
+        try store.saveLiftSession(earlier)
+        try store.saveLiftSession(later)
+
+        let model = StrengthHistoryModel(store: store)
+        model.load()
+        let range = try #require(YearJumpDatePicker.range(forYear: 2025, month: 5))
+        model.loadDateRange(range)
+        #expect(model.sessions.count == 1)
+
+        model.loadDateRange(nil)
+        #expect(model.sessions.count == 2)
+    }
+
+    @Test("a date selection and a pattern filter applied together return their intersection")
+    func dateSelectionAndPatternFilterCompose() throws {
+        let store = try makeStore()
+        let squatInMay = LiftSession(
+            startedAt: date(year: 2025, month: 5, day: 10),
+            sets: [makeSet(exercise: "backSquat", completedAt: date(year: 2025, month: 5, day: 10))]
+        )
+        let pullInMay = LiftSession(
+            startedAt: date(year: 2025, month: 5, day: 20),
+            sets: [makeSet(exercise: "pullUp", completedAt: date(year: 2025, month: 5, day: 20))]
+        )
+        let squatInJune = LiftSession(
+            startedAt: date(year: 2025, month: 6, day: 5),
+            sets: [makeSet(exercise: "backSquat", completedAt: date(year: 2025, month: 6, day: 5))]
+        )
+        try store.saveLiftSession(squatInMay)
+        try store.saveLiftSession(pullInMay)
+        try store.saveLiftSession(squatInJune)
+
+        let model = StrengthHistoryModel(store: store)
+        model.load()
+        model.loadDateRange(YearJumpDatePicker.range(forYear: 2025, month: 5))
+        model.togglePattern(.squat)
+
+        #expect(model.filteredSessions.map(\.id) == [squatInMay.id])
+    }
+
+    @Test("with no stored sessions, the picker offers nothing and the empty-history state applies")
+    func noStoredSessionsOffersNothing() throws {
+        let store = try makeStore()
+        let model = StrengthHistoryModel(store: store)
+        model.load()
+
+        #expect(YearJumpDatePicker.availableYears(in: model.allSessionStartDates).isEmpty)
+        #expect(model.isEmpty)
+    }
+}
