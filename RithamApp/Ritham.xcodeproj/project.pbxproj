@@ -92,6 +92,7 @@
 		C5ED6464CA6021F92C9E2BE4 /* CardioSessionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5D3C5BA15E31E8760C0741 /* CardioSessionRecord.swift */; };
 		C60BFC429A35E55EB67C164A /* WorkoutPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CDE0AB02415762195655A3 /* WorkoutPreferenceTests.swift */; };
 		C87638F14A7A077650B52332 /* RithamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4438C355A19887EE4B879F /* RithamApp.swift */; };
+		C88F5F1B84A047903C1E8F96 /* SessionEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0663617691B6A30CE7723C6 /* SessionEditView.swift */; };
 		C94BE80B05E101C50F2E2F52 /* HomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E8647274BFC9B0186D1250 /* HomeStepView.swift */; };
 		C98EEFA090BC93D3D278F3EC /* CalibrationRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D161EF261290000542D3672 /* CalibrationRegistration.swift */; };
 		CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A018DD943E342E021CC548 /* RithamColor.swift */; };
@@ -222,6 +223,7 @@
 		BDFFECF3591AFEB66F20B54C /* FoodAllergenRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAllergenRecord.swift; sourceTree = "<group>"; };
 		BF2E2BBC0CDB85F157164BD1 /* ScreeningCompleteStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningCompleteStepView.swift; sourceTree = "<group>"; };
 		C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		C0663617691B6A30CE7723C6 /* SessionEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEditView.swift; sourceTree = "<group>"; };
 		C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationBaselineRecord.swift; sourceTree = "<group>"; };
 		C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionChecklistView.swift; sourceTree = "<group>"; };
 		C632509F9A89990336A60AA9 /* Phase2StepRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2StepRegistration.swift; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 			children = (
 				44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */,
 				7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */,
+				C0663617691B6A30CE7723C6 /* SessionEditView.swift */,
 				B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */,
 				44D2B20330A58A12991D6AE8 /* StrengthSessionView.swift */,
 				641360D1FB8CED54DB256482 /* YearJumpDatePicker.swift */,
@@ -748,6 +751,7 @@
 				949B3F05CDF426A4C9BB39E1 /* ScreeningCompleteStepView.swift in Sources */,
 				33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */,
 				3D4FC3E5BFBFC5EB757AD1FE /* ScreeningRegistration.swift in Sources */,
+				C88F5F1B84A047903C1E8F96 /* SessionEditView.swift in Sources */,
 				B79730E927043D1B94D41757 /* SettingsView.swift in Sources */,
 				36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */,
 				ED5112BF358AF9FD675F531F /* StandingFooterDisclaimer.swift in Sources */,

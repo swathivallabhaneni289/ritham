@@ -278,3 +278,189 @@ struct YearJumpNavigationTests {
         #expect(model.isEmpty)
     }
 }
+
+@MainActor
+@Suite("SessionRevisionScreenTests")
+struct SessionRevisionScreenTests {
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    private func makeSet(
+        exercise: String,
+        orderIndex: Int = 0,
+        completedAt: Date
+    ) -> LiftSet {
+        LiftSet(exerciseIdentifier: exercise, reps: 5, orderIndex: orderIndex, completedAt: completedAt)
+    }
+
+    private func date(day: Int = 1) -> Date {
+        Date(timeIntervalSince1970: TimeInterval(day) * 86_400)
+    }
+
+    private func totalSetCount(in store: HealthDataStore) throws -> Int {
+        try store.loadLiftSessions().reduce(0) { $0 + $1.sets.count }
+    }
+
+    @Test("editing a set's fields mutates values on the existing set, preserving its id")
+    func editingSetPreservesIdentity() throws {
+        let store = try makeStore()
+        let originalSetID = UUID()
+        let session = LiftSession(
+            startedAt: date(),
+            sets: [LiftSet(id: originalSetID, exerciseIdentifier: "backSquat", weightKg: 60, reps: 5, orderIndex: 0, completedAt: date())]
+        )
+        try store.saveLiftSession(session)
+
+        let model = SessionEditModel(session: session, store: store)
+        model.updateSet(at: 0, weightKg: 70, reps: 8, isWarmUp: true)
+
+        #expect(model.session.sets[0].id == originalSetID)
+        #expect(model.session.sets[0].weightKg == 70)
+        #expect(model.session.sets[0].reps == 8)
+        #expect(model.session.sets[0].isWarmUp == true)
+    }
+
+    @Test("saving an edit persists the changed values")
+    func savingEditPersistsChangedValues() throws {
+        let store = try makeStore()
+        let session = LiftSession(
+            startedAt: date(),
+            sets: [LiftSet(exerciseIdentifier: "benchPress", weightKg: 40, reps: 5, orderIndex: 0, completedAt: date())]
+        )
+        try store.saveLiftSession(session)
+
+        let model = SessionEditModel(session: session, store: store)
+        model.updateSet(at: 0, weightKg: 45, reps: 6, isWarmUp: false)
+        try model.save()
+
+        let reloaded = try #require(try store.loadLiftSession(id: session.id))
+        #expect(reloaded.sets[0].weightKg == 45)
+        #expect(reloaded.sets[0].reps == 6)
+        #expect(reloaded.sets[0].id == session.sets[0].id)
+    }
+
+    @Test("merging two sessions produces one session containing every set from both, each once")
+    func mergingProducesUnionOfSets() throws {
+        let store = try makeStore()
+        let first = LiftSession(startedAt: date(day: 1), sets: [makeSet(exercise: "backSquat", completedAt: date(day: 1))])
+        let second = LiftSession(startedAt: date(day: 2), sets: [makeSet(exercise: "benchPress", completedAt: date(day: 2))])
+        try store.saveLiftSession(first)
+        try store.saveLiftSession(second)
+
+        let model = SessionEditModel(session: first, store: store)
+        model.requestMerge(with: second)
+        try model.confirmRevision()
+
+        let remaining = try store.loadLiftSessions()
+        #expect(remaining.count == 1)
+        let mergedSetIDs = Set(remaining[0].sets.map(\.id))
+        #expect(mergedSetIDs == Set(first.sets.map(\.id) + second.sets.map(\.id)))
+    }
+
+    @Test("splitting a session partitions its sets exactly across the two results")
+    func splittingPartitionsSetsExactly() throws {
+        let store = try makeStore()
+        let sets = (0..<4).map { i in makeSet(exercise: "backSquat", orderIndex: i, completedAt: date(day: i + 1)) }
+        let session = LiftSession(startedAt: date(day: 1), sets: sets)
+        try store.saveLiftSession(session)
+
+        let model = SessionEditModel(session: session, store: store)
+        model.requestSplit(atSetIndex: 2)
+        try model.confirmRevision()
+
+        let remaining = try store.loadLiftSessions()
+        #expect(remaining.count == 2)
+        let allIDs = Set(remaining.flatMap { $0.sets.map(\.id) })
+        #expect(allIDs == Set(sets.map(\.id)))
+        #expect(remaining.reduce(0) { $0 + $1.sets.count } == sets.count)
+    }
+
+    @Test("splitting at the first set is refused and writes nothing")
+    func splittingAtFirstSetIsRefused() throws {
+        let store = try makeStore()
+        let sets = (0..<3).map { i in makeSet(exercise: "backSquat", orderIndex: i, completedAt: date(day: i + 1)) }
+        let session = LiftSession(startedAt: date(day: 1), sets: sets)
+        try store.saveLiftSession(session)
+
+        let model = SessionEditModel(session: session, store: store)
+        model.requestSplit(atSetIndex: 0)
+
+        #expect(model.pendingRevision == nil)
+        #expect(model.refusalMessage != nil)
+
+        let remaining = try store.loadLiftSessions()
+        #expect(remaining.count == 1)
+        #expect(remaining[0].sets.count == 3)
+    }
+
+    @Test("splitting past the last set is refused")
+    func splittingPastLastSetIsRefused() throws {
+        let store = try makeStore()
+        let sets = (0..<3).map { i in makeSet(exercise: "backSquat", orderIndex: i, completedAt: date(day: i + 1)) }
+        let session = LiftSession(startedAt: date(day: 1), sets: sets)
+        try store.saveLiftSession(session)
+
+        let model = SessionEditModel(session: session, store: store)
+        model.requestSplit(atSetIndex: sets.count)
+
+        #expect(model.pendingRevision == nil)
+        #expect(model.refusalMessage != nil)
+    }
+
+    @Test("merging a session with itself is refused")
+    func mergingSessionWithItselfIsRefused() throws {
+        let store = try makeStore()
+        let session = LiftSession(startedAt: date(), sets: [makeSet(exercise: "backSquat", completedAt: date())])
+        try store.saveLiftSession(session)
+
+        let model = SessionEditModel(session: session, store: store)
+        model.requestMerge(with: session)
+
+        #expect(model.pendingRevision == nil)
+        #expect(model.refusalMessage != nil)
+    }
+
+    @Test("abandoning the merge confirmation leaves the stored session count unchanged")
+    func abandoningMergeConfirmationWritesNothing() throws {
+        let store = try makeStore()
+        let first = LiftSession(startedAt: date(day: 1), sets: [makeSet(exercise: "backSquat", completedAt: date(day: 1))])
+        let second = LiftSession(startedAt: date(day: 2), sets: [makeSet(exercise: "benchPress", completedAt: date(day: 2))])
+        try store.saveLiftSession(first)
+        try store.saveLiftSession(second)
+
+        let model = SessionEditModel(session: first, store: store)
+        model.requestMerge(with: second)
+        #expect(model.pendingRevision != nil)
+
+        model.abandonRevision()
+        #expect(model.pendingRevision == nil)
+
+        let remaining = try store.loadLiftSessions()
+        #expect(remaining.count == 2)
+    }
+
+    @Test("the total stored set count is unchanged before and after a merge, and before and after a split")
+    func totalSetCountUnchangedAcrossRevisions() throws {
+        let store = try makeStore()
+        let first = LiftSession(startedAt: date(day: 1), sets: [makeSet(exercise: "backSquat", completedAt: date(day: 1))])
+        let second = LiftSession(startedAt: date(day: 2), sets: [makeSet(exercise: "benchPress", completedAt: date(day: 2))])
+        try store.saveLiftSession(first)
+        try store.saveLiftSession(second)
+
+        let beforeMerge = try totalSetCount(in: store)
+        let mergeModel = SessionEditModel(session: first, store: store)
+        mergeModel.requestMerge(with: second)
+        try mergeModel.confirmRevision()
+        #expect(try totalSetCount(in: store) == beforeMerge)
+
+        let merged = try #require(try store.loadLiftSessions().first)
+        let beforeSplit = try totalSetCount(in: store)
+        let splitModel = SessionEditModel(session: merged, store: store)
+        splitModel.requestSplit(atSetIndex: 1)
+        try splitModel.confirmRevision()
+        #expect(try totalSetCount(in: store) == beforeSplit)
+    }
+}
