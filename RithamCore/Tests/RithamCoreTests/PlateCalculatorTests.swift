@@ -70,3 +70,42 @@ struct PlateCalculatorTests {
         #expect(Equipment.trapBar.defaultBarWeightKg != Equipment.standardBarbell.defaultBarWeightKg)
     }
 }
+
+@Suite("OneRepMaxCalculatorTests")
+struct OneRepMaxCalculatorTests {
+
+    @Test("a single-rep input returns the input weight unchanged")
+    func singleRepReturnsInputUnchanged() {
+        #expect(OneRepMaxCalculator.estimate(weightKg: 100, reps: 1) == 100)
+    }
+
+    @Test("a 100 kg x 5 reps input returns an estimate strictly greater than 100 kg")
+    func fiveRepEstimateExceedsWeight() {
+        let estimate = OneRepMaxCalculator.estimate(weightKg: 100, reps: 5)
+        #expect(estimate != nil)
+        #expect((estimate ?? 0) > 100)
+    }
+
+    @Test("estimates increase monotonically with rep count at a fixed weight")
+    func estimatesIncreaseMonotonically() {
+        let estimates = (1...12).compactMap { OneRepMaxCalculator.estimate(weightKg: 100, reps: $0) }
+        #expect(estimates.count == 12)
+        for index in 1..<estimates.count {
+            #expect(estimates[index] > estimates[index - 1])
+        }
+    }
+
+    @Test("a rep count outside the supported range returns nil")
+    func repCountOutsideRangeReturnsNil() {
+        #expect(OneRepMaxCalculator.estimate(weightKg: 100, reps: 13) == nil)
+        #expect(OneRepMaxCalculator.estimate(weightKg: 100, reps: 0) == nil)
+    }
+
+    @Test("a non-positive or non-finite weight returns nil")
+    func invalidWeightReturnsNil() {
+        #expect(OneRepMaxCalculator.estimate(weightKg: 0, reps: 5) == nil)
+        #expect(OneRepMaxCalculator.estimate(weightKg: -10, reps: 5) == nil)
+        #expect(OneRepMaxCalculator.estimate(weightKg: .infinity, reps: 5) == nil)
+        #expect(OneRepMaxCalculator.estimate(weightKg: .nan, reps: 5) == nil)
+    }
+}
