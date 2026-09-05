@@ -15,6 +15,10 @@ public enum RithamModelContainer {
         ConditionTagRecord.self,
         CalibrationBaselineRecord.self,
         FoodAllergenRecord.self,
+        CardioSessionRecord.self,
+        LiftSessionRecord.self,
+        LiftSetRecord.self,
+        WorkoutPreferenceRecord.self,
     ]
 
     /// Builds a `ModelContainer`. `inMemory: true` is used by tests — an in-memory store has no
