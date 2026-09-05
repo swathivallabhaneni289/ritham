@@ -121,6 +121,13 @@ struct CardioSessionView: View, OnboardingStepPresenting {
 
     @State private var model: CardioSessionModel
 
+    /// HEALTH-03's inline workout guidance for this session, loaded once `modelContext` is
+    /// available in `onAppear` -- `GuidanceContext`'s own initializer reads the store immediately,
+    /// so this is never rebuilt mid-session; a screening edit made elsewhere while a session is
+    /// already running is picked up the next time this screen appears, matching every other
+    /// store-driven read on this screen (T-02-34).
+    @State private var guidanceContext: GuidanceContext?
+
     init(flow: OnboardingFlow) {
         self.flow = flow
         let activityType = flow.cardioActivityType
@@ -153,6 +160,7 @@ struct CardioSessionView: View, OnboardingStepPresenting {
                     confidenceSection
                     gradeAdjustedPaceSection
                     splitsSection
+                    guidanceSection
                     controls
                 }
                 .onChange(of: context.date) { _, _ in
@@ -160,7 +168,29 @@ struct CardioSessionView: View, OnboardingStepPresenting {
                 }
             }
         }
-        .onAppear { model.start() }
+        .onAppear {
+            model.start()
+            setupGuidance()
+        }
+    }
+
+    // MARK: - Guidance
+
+    /// HEALTH-03's workout guidance, shown inline above `controls` so the adjustment is visible
+    /// at the moment this session is being logged, not on a separate screen. Never gates any
+    /// control on this screen -- `AdjustedGuidanceBanner` renders a referral message in place of
+    /// personalized text under a required-blocking permission, but timing, pausing, and finishing
+    /// all keep working regardless (HEALTH-06's domain-scoped-never-app-wide rule).
+    @ViewBuilder
+    private var guidanceSection: some View {
+        if let guidanceContext {
+            AdjustedGuidanceBanner(context: guidanceContext, domain: .workout)
+        }
+    }
+
+    private func setupGuidance() {
+        guard guidanceContext == nil else { return }
+        guidanceContext = GuidanceContext(context: modelContext)
     }
 
     // MARK: - Status / controls

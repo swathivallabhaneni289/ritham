@@ -167,8 +167,14 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
     @State private var drafts: [String: SetDraft] = [:]
     @State private var presentedPlateCalculatorSet: LiftSet?
 
+    /// HEALTH-03's inline workout guidance for this screen -- see `CardioSessionView`'s identical
+    /// field for the full rationale on when this is (re)built.
+    @State private var guidanceContext: GuidanceContext?
+
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Strength session") {
+            guidanceSection
+
             if let model {
                 qualificationBanner(model)
 
@@ -212,8 +218,23 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
     }
 
     private func setup() {
-        guard model == nil else { return }
-        model = StrengthSessionModel(store: HealthDataStore(context: modelContext))
+        if model == nil {
+            model = StrengthSessionModel(store: HealthDataStore(context: modelContext))
+        }
+        if guidanceContext == nil {
+            guidanceContext = GuidanceContext(context: modelContext)
+        }
+    }
+
+    // MARK: - Guidance
+
+    /// HEALTH-03's workout guidance, shown inline above every logging control on this screen --
+    /// exercise picker, set entry, superset actions, and finish -- never gating any of them.
+    @ViewBuilder
+    private var guidanceSection: some View {
+        if let guidanceContext {
+            AdjustedGuidanceBanner(context: guidanceContext, domain: .workout)
+        }
     }
 
     private func finish(_ model: StrengthSessionModel) {

@@ -89,3 +89,79 @@ struct GuidanceContextTests {
         #expect(context.permission(for: .nutrition) == .educationOnly)
     }
 }
+
+// Task 2: inline guidance at logging time in both session screens.
+@MainActor
+@Suite("InlineGuidanceTests")
+struct InlineGuidanceTests {
+
+    private func makeContainerContext() throws -> ModelContext {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return ModelContext(container)
+    }
+
+    private func saveScreening(_ tags: Set<ConditionTag>, store: HealthDataStore) throws {
+        try store.updateProfile(UserProfileDraft(age: 40))
+        try store.saveScreeningResult(
+            GateResolutionResult(
+                matchedTags: tags,
+                gates: GateEscalation.escalate(tags: tags, answers: ScreeningAnswers()),
+                interstitial: .none,
+                requiresIndependentAllergenVerification: GateEscalation.requiresIndependentAllergenVerification(tags: tags)
+            ),
+            answers: ScreeningAnswers(),
+            now: Date()
+        )
+    }
+
+    @Test("a cardio session can be finished and saved while the workout permission is the zero-content value, increasing the stored count by exactly one")
+    func cardioSessionSavesUnderZeroContentWorkoutPermission() throws {
+        let modelContext = try makeContainerContext()
+        let store = HealthDataStore(context: modelContext)
+        try saveScreening([.kidneyDiseaseOrDialysis], store: store)
+
+        let guidanceContext = GuidanceContext(context: modelContext)
+        #expect(guidanceContext.permission(for: .workout) == .none)
+
+        let countBefore = try store.loadCardioSessions().count
+        let sessionModel = CardioSessionModel(activityType: .run, gpsSession: nil)
+        sessionModel.start()
+        let session = sessionModel.finish()
+        try store.saveCardioSession(session)
+
+        let countAfter = try store.loadCardioSessions().count
+        #expect(countAfter == countBefore + 1)
+    }
+
+    @Test("a strength session can be finished and saved while the workout permission is the zero-content value, increasing the stored count by exactly one")
+    func strengthSessionSavesUnderZeroContentWorkoutPermission() throws {
+        let modelContext = try makeContainerContext()
+        let store = HealthDataStore(context: modelContext)
+        try saveScreening([.otherSeriousConditionOrActiveCancerTreatment], store: store)
+
+        let guidanceContext = GuidanceContext(context: modelContext)
+        #expect(guidanceContext.permission(for: .workout) == .none)
+
+        let countBefore = try store.loadLiftSessions().count
+        let sessionModel = StrengthSessionModel(store: store)
+        sessionModel.addSet(exerciseIdentifier: "backSquat", weightKg: 60, reps: 5, isWarmUp: false)
+        try sessionModel.finish()
+
+        let countAfter = try store.loadLiftSessions().count
+        #expect(countAfter == countBefore + 1)
+    }
+
+    @Test("a tag flagged as never-triggers-streak-loss reads true even though its own workout permission is zero-content")
+    func neverTriggersStreakLossReadsTrueUnderZeroContentPermission() throws {
+        let tag = ConditionTag.heartDiseaseRecentEventOrSymptomatic
+
+        #expect(WorkoutGuidanceCatalog.neverTriggersStreakLoss(tag))
+        #expect(GuidanceCatalog.contentPermission(for: tag, domain: .workout) == .none)
+    }
+
+    @Test("both session screens resolve to their real registered steps, not a placeholder")
+    func sessionScreensResolveToRealSteps() {
+        #expect(CardioSessionView.step == .cardioSession)
+        #expect(StrengthSessionView.step == .strengthSession)
+    }
+}
