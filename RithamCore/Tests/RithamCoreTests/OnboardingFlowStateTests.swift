@@ -197,6 +197,30 @@ struct OnboardingFlowStateTests {
         #expect(!OnboardingRouter.isReachable(.privacyExplainer, answers: ineligible))
     }
 
+    // MARK: - Phase 2 step vocabulary (T-02-18): eight new terminal cases
+
+    @Test("OnboardingStep gains exactly eight new Phase 2 raw values, each round-tripping through rawValue")
+    func phase2StepsRoundTripThroughRawValue() {
+        let newRawValues = [
+            "cardioActivityPicker", "cardioSession", "cardioHistory",
+            "strengthSession", "strengthHistory",
+            "guidance", "recommendations", "preAssessment",
+        ]
+        for raw in newRawValues {
+            #expect(OnboardingStep(rawValue: raw) != nil, "expected a case for raw value \(raw)")
+        }
+        #expect(OnboardingStep.allCases.count == 24)
+    }
+
+    @Test("the welcome-through-home step sequence is unchanged by the addition of Phase 2 steps")
+    func welcomeThroughHomeSequenceUnchangedByPhase2Steps() {
+        let visited = traverse(answers: answers(age: 40))
+        #expect(visited == [
+            .welcome, .age, .privacyExplainer, .screeningOpeningDisclaimer, .gateSection,
+            .conditionChecklist, .universalFollowUp, .screeningComplete, .home,
+        ])
+    }
+
     // MARK: - invalidate
 
     @Test("invalidating .dietaryPattern clears allergens along with the pattern itself")
