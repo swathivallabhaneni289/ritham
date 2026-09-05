@@ -160,7 +160,7 @@ Plans:
      navigation hub so its own features (tracking, recommendations, diet plan) are reachable in
      the running app — not Phase 4's polished 3-item CROSSGEN-01 home design, just enough real
      navigation to replace Phase 1's `.home` stub until Phase 4 ships.
-**Plans**: 8/16 plans executed
+**Plans**: 9/16 plans executed
 
 Plans:
 
@@ -186,7 +186,7 @@ Plans:
 - [x] 02-08-PLAN.md — Complete Phase 2 persistence surface: session/set records and every new
   `HealthDataStore` accessor
 
-- [ ] 02-09-PLAN.md — Cardio capture adapters: manual stopwatch, first-class GPS session,
+- [x] 02-09-PLAN.md — Cardio capture adapters: manual stopwatch, first-class GPS session,
   foreground-only motion auto-detect
 
 - [ ] 02-10-PLAN.md — Cardio UI: activity picker, live session with visible confidence, history,
@@ -303,7 +303,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
-| 2. Core Tracking & Adjusted Guidance | 8/16 | In Progress|  |
+| 2. Core Tracking & Adjusted Guidance | 9/16 | In Progress|  |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |

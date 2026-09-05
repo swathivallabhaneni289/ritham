@@ -162,3 +162,7 @@ None - no external service configuration required.
 ---
 *Phase: 02-core-tracking-adjusted-guidance*
 *Completed: 2026-09-05*
+
+## Self-Check: PASSED
+
+All created files confirmed present on disk; all four commit hashes (`b6ea99f`, `532325b`, `63a7586`, `33079be`) confirmed present in `git log --all`.

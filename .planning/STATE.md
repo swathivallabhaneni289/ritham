@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
-stopped_at: Completed 02-08-PLAN.md
-last_updated: "2026-09-05T11:02:54.424Z"
+stopped_at: Completed 02-09-PLAN.md
+last_updated: "2026-09-05T11:21:35.068Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 22
+  completed_plans: 23
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 9 of 16
+Plan: 10 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -78,6 +78,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P06 | 55min | 3 tasks | 14 files |
 | Phase 02 P07 | 30min | 2 tasks | 4 files |
 | Phase 02 P08 | 45min | 3 tasks | 8 files |
+| Phase 02 P09 | 15min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -155,6 +156,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-07: all three dietary-pattern.md footnotes (flag1/2/3) treated as Ritham-own-construction flags on their swap cells, matching the plan's stated count of three flagged inference footnotes
 - [Phase ?]: 02-08: Splits stored via a file-local Codable DTO (EncodedSplit) rather than adding Codable to RithamCore's CardioSplit, keeping this plan's edits confined to its own file list
 - [Phase ?]: 02-08: experienceLevel() maps a provisional baseline to .beginner and a measured baseline to .intermediate -- Phase 2 has no specified pace/weight-threshold mapping across all four buckets for a real measurement, documented placeholder for a future phase to refine
+- [Phase ?]: 02-09: GPSTrackingSession requests when-in-use authorization only, never always authorization, and confines startUpdatingLocation to session start with a matching stop on pause/end -- exposes authorizationStatus/requiresManualFallback so the view layer (02-10) can fall back to StopwatchCardioSession on denial without this type presenting UI itself
+- [Phase ?]: 02-09: MotionActivityDetector's foreground/background lifecycle is left to the caller (plan 02-10's view) via startObserving/stopObserving, matching PedometerSession's precedent of not self-managing app lifecycle; running wins over walking when CMMotionActivityManager reports both above threshold confidence
 
 ### Pending Todos
 
@@ -202,8 +205,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T11:02:54.415Z
-Stopped at: Completed 02-08-PLAN.md
+Last session: 2026-09-05T11:21:14.357Z
+Stopped at: Completed 02-09-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
