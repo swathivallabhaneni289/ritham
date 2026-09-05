@@ -121,11 +121,11 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Cardio & Activity Tracking
 
-- [ ] **CARDIO-01**: Activity-type selector (Run/Walk/Cycle/Hike/Swim/Elliptical, extensible),
+- [x] **CARDIO-01**: Activity-type selector (Run/Walk/Cycle/Hike/Swim/Elliptical, extensible),
   manual stopwatch for non-GPS sessions, and full training history — all free at launch,
   permanently, stored local-first with cloud sync as backup only.
 
-- [ ] **CARDIO-02**: GPS pace/distance/elevation/splits/grade-adjusted pace, shown with a visible
+- [x] **CARDIO-02**: GPS pace/distance/elevation/splits/grade-adjusted pace, shown with a visible
   accuracy/confidence indicator rather than a silently varying number.
 
 - [ ] **CARDIO-03**: Route/segment comparison is available but opt-in only — no default public
@@ -353,8 +353,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HEALTH-06 | Phase 1 | Complete |
 | CROSSGEN-03 | Phase 1 | Complete |
 | CROSSGEN-05 | Phase 1 | Complete |
-| CARDIO-01 | Phase 2 | Pending |
-| CARDIO-02 | Phase 2 | Pending |
+| CARDIO-01 | Phase 2 | Complete |
+| CARDIO-02 | Phase 2 | Complete |
 | CARDIO-03 | Phase 2 | Pending |
 | STRENGTH-01 | Phase 2 | Pending |
 | STRENGTH-02 | Phase 2 | Pending |

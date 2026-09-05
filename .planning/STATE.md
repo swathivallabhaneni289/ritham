@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02
-current_phase_name: Core Tracking & Adjusted Guidance
-status: Ready to execute — Phase 02 planned (16 plans, 5 waves), checker passed
+current_phase_name: core-tracking-adjusted-guidance
+status: executing
 stopped_at: Phase 02 planning complete; requirements (16/16) and decision (7/7) coverage gates passed
-last_updated: "2026-09-04T09:45:00.000Z"
-last_activity: 2026-09-04
-last_activity_desc: Phase 02 planned — 16 plans across 5 waves, ready for /gsd-execute-phase 02
+last_updated: "2026-09-05T08:04:12.923Z"
+last_activity: 2026-09-05
+last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 14
+  completed_plans: 15
   percent: 20
 ---
 
@@ -26,14 +26,14 @@ See: .planning/PROJECT.md (updated 2026-08-19)
 **Core value:** Every user 13 or older, any health background — can safely track real training and
 keep a fair, forgiving consistency streak, with core tracking always free and never subject to
 comparison or ranking.
-**Current focus:** Phase 02 — core-tracking-adjusted-guidance (not yet discussed/planned)
+**Current focus:** Phase 02 — core-tracking-adjusted-guidance
 
 ## Current Position
 
-Phase: 02 — Core Tracking & Adjusted Guidance
-Plan: Not started
-Status: All plans executed and summarized; Phase 1 closed 2026-09-03
-Last activity: 2026-09-03 — Phase 01 complete, transitioned to Phase 02
+Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
+Plan: 2 of 16
+Status: Ready to execute
+Last activity: 2026-09-05 — Phase 02 execution started
 
 Progress: [██░░░░░░░░] 20%
 
@@ -70,6 +70,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 01-onboarding-safety-intake P15 | 50min | 3 tasks | 13 files |
 | Phase 01-onboarding-safety-intake P16 | 90min | 3 tasks | 13 files |
 | Phase 01-onboarding-safety-intake P17 | 50min | 3 tasks | 12 files |
+| Phase 02 P01 | 20min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -129,6 +130,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-17: HealthProfileView is store-driven (reconstructs GateResolutionResult from persisted tags via GateEscalation.escalate), not OnboardingFlow-driven, so it works reachable-anytime after onboarding ends
 - [Phase ?]: 01-17: EditAnswerFlow reuses plan 01-16's registered screening screens via StepRegistry, neutralizing their flow.advance side effect by popping flow.path back after each edit, rather than forking a second copy of any question
 - [Phase ?]: 01-17: Added HealthDataStore.conditionTagStatuses(now:) (Rule 2) -- no existing accessor exposed per-tag validity, which D-08's overdue-tag display requires
+- [Phase ?]: 02-01: CardioProgress.recordInterruption() zeroes only continuousDuration, never distanceMeters/elevationGainMeters -- ground already covered during a cardio session stays recorded, unlike WalkProgress's calibration-specific full reset
+- [Phase ?]: 02-01: GradeAdjustedPace.adjustedSecondsPerKm divides raw pace by a grade-derived effort factor (not multiplies) -- uphill yields a faster/smaller number, downhill benefit peaks at -10% and reverses past it due to eccentric-braking cost
 
 ### Pending Todos
 
@@ -174,7 +177,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-04T08:41:48.301Z
+Last session: 2026-09-05T08:03:45.106Z
 Stopped at: Phase 02 context gathered (incl. Go backend + interim nav hub decisions)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
@@ -199,4 +202,4 @@ is a placeholder, deliberately not settled). A real, pre-existing `StepRegistry`
 flake was found and documented in Blockers/Concerns but not fixed -- worth its own pass before
 trusting a full `xcodebuild test` run's pass/fail as-is.
 Resume file:
-.planning/phases/02-core-tracking-adjusted-guidance/02-CONTEXT.md
+None
