@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
-stopped_at: Completed 02-10-PLAN.md
-last_updated: "2026-09-05T11:53:04.807Z"
+stopped_at: Completed 02-11-PLAN.md
+last_updated: "2026-09-05T12:28:41.676Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 24
+  completed_plans: 25
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 11 of 16
+Plan: 12 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -80,6 +80,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P08 | 45min | 3 tasks | 8 files |
 | Phase 02 P09 | 15min | 3 tasks | 5 files |
 | Phase 02 P10 | 90min | 3 tasks | 6 files |
+| Phase 02 P11 | 45min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -162,6 +163,9 @@ Recent decisions affecting current work:
 - [Phase 02-10]: OnboardingFlow (inside StepRegistry.swift) gained transient cardioActivityType/cardioCaptureMode carriers and returnToHub(), matching the existing calibrationMode precedent, to hand the picker's choice to the session screen and pop two levels back to the hub on finish.
 - [Phase 02-10]: CardioSessionModel.pause() calls StopwatchCardioSession.stop() rather than .pause(), since .pause() zeroes continuousDuration (calibration's break-continuity semantics) while .stop() freezes it -- caught by a failing unit test before commit.
 - [Phase 02-10]: No coordinate/location-trail data is persisted anywhere in the codebase (CardioProgress/CardioSessionRecord/GPSTrackingSession all discard per-sample coordinates). CardioHistoryView's MapKit route map is real code gated on empty input (called with [] today); RouteComparisonView's 'same route' is approximated as same-activity-type-within-a-250m-distance-band rather than real polyline matching.
+- [Phase ?]: 02-11: Pre-fill seeding reads HealthDataStore.autoFillSet(forExercise:) alone, never the in-progress unsaved session's own newly-logged sets, per the plan's explicit no-filter/no-fallback instruction
+- [Phase ?]: 02-11: PlateCalculatorModel.isInvalidInput is true whenever result == nil (including an empty target field), matching the plan's literal behavior list rather than special-casing an untouched field
+- [Phase ?]: 02-11: Superset join/ungroup and the plate-calculator sheet were wired into StrengthSessionView.swift during Task 3 (not Task 2), since Task 2's file list omitted StrengthSessionView.swift but the plan's success criteria required the calculator to be reachable from set entry
 
 ### Pending Todos
 
@@ -209,8 +213,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T11:53:04.798Z
-Stopped at: Completed 02-10-PLAN.md
+Last session: 2026-09-05T12:28:33.087Z
+Stopped at: Completed 02-11-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification

@@ -160,7 +160,7 @@ Plans:
      navigation hub so its own features (tracking, recommendations, diet plan) are reachable in
      the running app — not Phase 4's polished 3-item CROSSGEN-01 home design, just enough real
      navigation to replace Phase 1's `.home` stub until Phase 4 ships.
-**Plans**: 10/16 plans executed
+**Plans**: 11/16 plans executed
 
 Plans:
 
@@ -192,7 +192,7 @@ Plans:
 - [x] 02-10-PLAN.md — Cardio UI: activity picker, live session with visible confidence, history,
   opt-in single-user route comparison
 
-- [ ] 02-11-PLAN.md — Strength logging UI: set entry with auto-fill, plate/1RM calculator,
+- [x] 02-11-PLAN.md — Strength logging UI: set entry with auto-fill, plate/1RM calculator,
   superset building
 
 - [ ] 02-12-PLAN.md — Guidance UI: inline adjusted guidance at logging time plus the dedicated
@@ -303,7 +303,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
-| 2. Core Tracking & Adjusted Guidance | 10/16 | In Progress|  |
+| 2. Core Tracking & Adjusted Guidance | 11/16 | In Progress|  |
 | 3. Momentum & Recovery | 0/0 | Not started | - |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
