@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
 status: executing
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-09-05T09:28:12.490Z"
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-09-05T09:51:04.285Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 30
-  completed_plans: 18
+  completed_plans: 19
   percent: 20
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 5 of 16
+Plan: 6 of 16
 Status: Ready to execute
 Last activity: 2026-09-05 — Phase 02 execution started
 
@@ -74,6 +74,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P02 | 4min | 3 tasks | 6 files |
 | Phase 02 P03 | 47min | 3 tasks | 6 files |
 | Phase 02 P04 | 25min | 2 tasks | 3 files |
+| Phase 02 P05 | 20min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -141,6 +142,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-04: mostRestrictive folds via .min() not .max() since ContentPermission's declaration order is ascending permissiveness (none<educationOnly<full), the inverse of ClearanceGate's ascending restrictiveness
 - [Phase ?]: 02-04: Nutrition recommended-gate rows are educationOnly only when the row's own prose forbids a personalized quantity; severeFoodAllergy, clinicianPrescribedDietOrMealPlan, and eatingDisorderSelfReportedNegativeScreen are full since their recommended gate is for an unrelated reason
 - [Phase ?]: 02-04: WorkoutGuidanceCatalog.referralMessage aliases ScreeningCopy.requiredBlockingMessage (section 4.6) rather than re-transcribing it, avoiding two divergent copies
+- [Phase ?]: 02-05: requiredBlocking zeroes Plan.FrequencyPerWeek too, not just Sessions -- the stricter reading of the action text's 'no numeric field populated anywhere' requirement — No consumer exists yet; costs nothing and closes a gap between the acceptance criteria and the action text
+- [Phase ?]: 02-05: Added a third sentinel error (ErrUnknownGuidancePermission) so an unrecognized permission value fails closed with 400 rather than silently defaulting to a full plan — The plan only specified sentinels for frequency and experience level; an unhandled fall-through is the wrong failure mode for a health-adjacent gate
 
 ### Pending Todos
 
@@ -186,8 +189,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T09:27:27.861Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-09-05T09:51:04.275Z
+Stopped at: Completed 02-05-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
