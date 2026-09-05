@@ -361,4 +361,39 @@ struct SupersetBuilderTests {
 
         #expect(model.sets(for: "backSquat").first?.weightKg == 60)
     }
+
+    @Test("hasWorkingSets is false for an exercise with no sets yet and true once one is logged")
+    func hasWorkingSetsReflectsLoggedSets() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        model.addExercise("benchPress")
+
+        #expect(model.hasWorkingSets(forExercise: "benchPress") == false)
+
+        model.addSet(exerciseIdentifier: "benchPress", weightKg: 60, reps: 8, isWarmUp: false)
+
+        #expect(model.hasWorkingSets(forExercise: "benchPress"))
+    }
+
+    @Test("joining an exercise with no working sets against one that has some leaves the sole grouped exercise still ungroupable")
+    func joiningAgainstAnExerciseWithNoWorkingSetsStaysUngroupable() throws {
+        let store = try makeStore()
+        let model = StrengthSessionModel(store: store)
+        model.addSet(exerciseIdentifier: "benchPress", weightKg: 60, reps: 8, isWarmUp: false)
+        model.addExercise("overheadPress") // no sets logged yet -- nothing for `join` to mark
+
+        model.joinIntoSuperset(["benchPress", "overheadPress"])
+
+        // `overheadPress` has no set to carry a group ID, so it never actually joins.
+        #expect(model.groupID(forExercise: "overheadPress") == nil)
+        // `benchPress` is still assigned a real group ID -- a state the view must render with an
+        // Ungroup action (not silently as a plain, ungroupable exercise section).
+        let groupID = try #require(model.groupID(forExercise: "benchPress"))
+        #expect(model.supersetGroups().map(\.id) == [groupID])
+
+        // And it is, in fact, still ungroupable.
+        model.ungroup(groupID)
+        #expect(model.groupID(forExercise: "benchPress") == nil)
+        #expect(model.supersetGroups().isEmpty)
+    }
 }

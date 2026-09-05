@@ -93,6 +93,14 @@ final class StrengthSessionModel {
         session.sets.first { $0.exerciseIdentifier == identifier && !$0.isWarmUp }?.supersetGroupID
     }
 
+    /// Whether `identifier` has at least one working (non-warm-up) set. `SupersetGrouping.join`
+    /// only ever assigns a group to a *set*, never to a bare exercise-order entry -- so joining an
+    /// exercise with no working sets yet would silently do nothing (no set exists to receive the
+    /// group ID). The view gates its join action on this so the action never no-ops.
+    func hasWorkingSets(forExercise identifier: String) -> Bool {
+        session.workingSets.contains { $0.exerciseIdentifier == identifier }
+    }
+
     /// Joins `exerciseIdentifiers` into one superset in a single step -- STRENGTH-03's stated
     /// interaction, with no separate create-a-superset flow. Delegates entirely to
     /// `SupersetGrouping.join`, which never recreates a set: every set's `id` is unchanged.
@@ -165,7 +173,12 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
                 qualificationBanner(model)
 
                 ForEach(Array(displaySections(model).enumerated()), id: \.offset) { _, group in
-                    if group.count > 1 {
+                    // Branches on group *membership* (a non-nil group ID), not on `group.count`:
+                    // a superset can transiently hold just one remaining member after an earlier
+                    // member is re-joined elsewhere, and that lone member must still render with
+                    // its Ungroup action rather than falling back to the plain exercise section,
+                    // which offers no way to clear its group ID.
+                    if let first = group.first, model.groupID(forExercise: first) != nil {
                         supersetBlock(group, model: model)
                     } else if let identifier = group.first {
                         exerciseSection(identifier, model: model)
@@ -252,6 +265,19 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
         return model.exerciseOrder[index + 1]
     }
 
+    /// The next exercise to join with, only when *both* sides already have a working set to carry
+    /// the group ID -- `SupersetGrouping.join` assigns a group to sets, never to a bare
+    /// exercise-order entry, so offering the action before either side has logged one would be a
+    /// tap that silently does nothing.
+    private func joinableNextExerciseIdentifier(after identifier: String, model: StrengthSessionModel) -> String? {
+        guard
+            model.hasWorkingSets(forExercise: identifier),
+            let next = nextExerciseIdentifier(after: identifier, model: model),
+            model.hasWorkingSets(forExercise: next)
+        else { return nil }
+        return next
+    }
+
     // MARK: - Exercise section
 
     @ViewBuilder
@@ -259,7 +285,7 @@ struct StrengthSessionView: View, OnboardingStepPresenting {
         VStack(alignment: .leading, spacing: RithamSpacing.sm) {
             exerciseContent(identifier, model: model)
 
-            if let next = nextExerciseIdentifier(after: identifier, model: model) {
+            if let next = joinableNextExerciseIdentifier(after: identifier, model: model) {
                 SecondaryCTAButton(title: "Join with next exercise") {
                     model.joinIntoSuperset([identifier, next])
                 }
