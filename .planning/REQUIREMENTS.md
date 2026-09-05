@@ -11,7 +11,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Onboarding
 
-- [x] **ONBOARD-01**: The first time a user requests exercise recommendations, they complete a
+- [ ] **ONBOARD-01**: The first time a user requests exercise recommendations, they complete a
   short, guided walk-or-light-lift pre-assessment (never a self-reported fitness-level dropdown)
   that sets their actual starting baseline, factoring in age and applicable condition tags from
   the safety screening. Revised 2026-09-01: no longer onboarding's first mandatory session (see
@@ -344,7 +344,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ONBOARD-01 | Phase 2 (provisional) | Not started -- domain/UI built in Phase 1, kept for reuse; trigger not yet built |
+| ONBOARD-01 | Phase 2 | In progress -- Go plan-generation service (02-05) and persistence (02-08) built; the user-facing Recommendations surface + triggered pre-assessment (02-13) and phase close-out verification (02-16) still pending |
 | EXPLAIN-01 | Phase 1 | Complete |
 | HEALTH-01 | Phase 1 | Complete |
 | HEALTH-02 | Phase 1 | Complete |
