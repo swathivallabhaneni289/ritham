@@ -326,6 +326,176 @@ public final class HealthDataStore {
         return baseline
     }
 
+    // MARK: - Cardio sessions
+
+    /// Full-replace on the matching identifier, same discipline as `saveFoodAllergens`: if a
+    /// session with this `id` is already stored, it is deleted and reinserted rather than
+    /// patched field-by-field, so a re-save can never leave stale fields behind.
+    public func saveCardioSession(_ session: CardioSession) throws {
+        if let existing = try fetchCardioSessionRecord(id: session.id) {
+            context.delete(existing)
+        }
+        context.insert(CardioSessionRecord(session: session))
+        try context.save()
+    }
+
+    /// Every stored cardio session, most recent first. A record whose raw values no longer
+    /// decode (T-01-64's pattern) is silently dropped rather than surfaced as a partial or
+    /// trapping value.
+    public func loadCardioSessions() throws -> [CardioSession] {
+        let records = try context.fetch(FetchDescriptor<CardioSessionRecord>(
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+        ))
+        return records.compactMap(\.session)
+    }
+
+    /// Cardio sessions whose `startedAt` falls within `range`, most recent first — lets a
+    /// caller filter to a date range without loading the whole store.
+    public func loadCardioSessions(in range: ClosedRange<Date>) throws -> [CardioSession] {
+        let lowerBound = range.lowerBound
+        let upperBound = range.upperBound
+        let predicate = #Predicate<CardioSessionRecord> { record in
+            record.startedAt >= lowerBound && record.startedAt <= upperBound
+        }
+        let records = try context.fetch(FetchDescriptor<CardioSessionRecord>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+        ))
+        return records.compactMap(\.session)
+    }
+
+    public func loadCardioSession(id: UUID) throws -> CardioSession? {
+        try fetchCardioSessionRecord(id: id)?.session
+    }
+
+    public func deleteCardioSession(id: UUID) throws {
+        guard let record = try fetchCardioSessionRecord(id: id) else {
+            throw HealthDataStoreError.sessionNotFound
+        }
+        context.delete(record)
+        try context.save()
+    }
+
+    private func fetchCardioSessionRecord(id: UUID) throws -> CardioSessionRecord? {
+        let records = try context.fetch(FetchDescriptor<CardioSessionRecord>())
+        return records.first { $0.id == id }
+    }
+
+    // MARK: - Lift sessions
+
+    /// Writes one `LiftSetRecord` per set, reusing each set's own `id` (never minting a new
+    /// one), and full-replaces the session shell and its set records on the matching
+    /// identifier — the same "delete then reinsert" discipline `saveCardioSession` uses, so a
+    /// re-save of an unmodified session can never duplicate or drop a set.
+    public func saveLiftSession(_ session: LiftSession) throws {
+        if let existing = try fetchLiftSessionRecord(id: session.id) {
+            context.delete(existing)
+        }
+        for record in try fetchLiftSetRecords(sessionID: session.id) {
+            context.delete(record)
+        }
+
+        context.insert(LiftSessionRecord(
+            id: session.id, startedAt: session.startedAt, endedAt: session.endedAt, notes: session.notes
+        ))
+        for set in session.sets {
+            context.insert(LiftSetRecord(set: set, sessionID: session.id))
+        }
+
+        try context.save()
+    }
+
+    /// Every stored lift session with its sets attached, most recent first.
+    public func loadLiftSessions() throws -> [LiftSession] {
+        let sessionRecords = try context.fetch(FetchDescriptor<LiftSessionRecord>(
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+        ))
+        return try sessionRecords.map(assembleLiftSession)
+    }
+
+    /// Lift sessions whose `startedAt` falls within `range`, most recent first.
+    public func loadLiftSessions(in range: ClosedRange<Date>) throws -> [LiftSession] {
+        let lowerBound = range.lowerBound
+        let upperBound = range.upperBound
+        let predicate = #Predicate<LiftSessionRecord> { record in
+            record.startedAt >= lowerBound && record.startedAt <= upperBound
+        }
+        let sessionRecords = try context.fetch(FetchDescriptor<LiftSessionRecord>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+        ))
+        return try sessionRecords.map(assembleLiftSession)
+    }
+
+    public func loadLiftSession(id: UUID) throws -> LiftSession? {
+        guard let record = try fetchLiftSessionRecord(id: id) else { return nil }
+        return try assembleLiftSession(from: record)
+    }
+
+    /// Deletes the session shell and every one of its set records — no orphaned
+    /// `LiftSetRecord` survives a delete.
+    public func deleteLiftSession(id: UUID) throws {
+        guard let record = try fetchLiftSessionRecord(id: id) else {
+            throw HealthDataStoreError.sessionNotFound
+        }
+        for setRecord in try fetchLiftSetRecords(sessionID: id) {
+            context.delete(setRecord)
+        }
+        context.delete(record)
+        try context.save()
+    }
+
+    /// STRENGTH-01's auto-fill source: delegates the actual "most recent" selection rule to
+    /// `LiftSession.mostRecentSet(forExercise:in:)` (RithamCore, already unit-tested) — this
+    /// method only supplies the stored data, it never reimplements the rule.
+    public func autoFillSet(forExercise identifier: String) throws -> LiftSet? {
+        let sessions = try loadLiftSessions()
+        return LiftSession.mostRecentSet(forExercise: identifier, in: sessions)
+    }
+
+    /// Persists the result of a retroactive `SessionRevision.merge` or `.split`: deletes
+    /// `originalIDs`' session and set records, then writes `revised` in the same save. This
+    /// method performs no merge or split arithmetic of its own — the revision arrives
+    /// already-computed, so the identity-partition invariant `SessionRevision` proves cannot
+    /// drift here (T-02-09).
+    public func applyRevision(_ revised: [LiftSession], replacing originalIDs: [UUID]) throws {
+        for id in originalIDs {
+            guard let record = try fetchLiftSessionRecord(id: id) else { continue }
+            for setRecord in try fetchLiftSetRecords(sessionID: id) {
+                context.delete(setRecord)
+            }
+            context.delete(record)
+        }
+
+        for session in revised {
+            context.insert(LiftSessionRecord(
+                id: session.id, startedAt: session.startedAt, endedAt: session.endedAt, notes: session.notes
+            ))
+            for set in session.sets {
+                context.insert(LiftSetRecord(set: set, sessionID: session.id))
+            }
+        }
+
+        try context.save()
+    }
+
+    private func assembleLiftSession(from record: LiftSessionRecord) throws -> LiftSession {
+        let sets = try fetchLiftSetRecords(sessionID: record.id)
+            .sorted { $0.orderIndex < $1.orderIndex }
+            .map(\.liftSet)
+        return LiftSession(id: record.id, startedAt: record.startedAt, endedAt: record.endedAt, sets: sets, notes: record.notes)
+    }
+
+    private func fetchLiftSessionRecord(id: UUID) throws -> LiftSessionRecord? {
+        let records = try context.fetch(FetchDescriptor<LiftSessionRecord>())
+        return records.first { $0.id == id }
+    }
+
+    private func fetchLiftSetRecords(sessionID: UUID) throws -> [LiftSetRecord] {
+        let records = try context.fetch(FetchDescriptor<LiftSetRecord>())
+        return records.filter { $0.sessionID == sessionID }
+    }
+
     // MARK: - Private
 
     private func fetchProfile() throws -> UserProfile? {
@@ -369,4 +539,7 @@ public enum HealthDataStoreError: Error, Equatable {
     /// Thrown by `updateProfile` when an incoming age under 13 is compared against an existing
     /// 13-or-older stored profile — see that method's doc comment (T-01-66).
     case ageBelowFloor
+    /// Thrown by `deleteCardioSession`/`deleteLiftSession` when no stored session matches the
+    /// given identifier.
+    case sessionNotFound
 }
