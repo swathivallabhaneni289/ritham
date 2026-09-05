@@ -146,3 +146,113 @@ struct WorkoutPlanClientTests {
         #expect(mirror.children.count == 3)
     }
 }
+
+// Task 2: the triggered walk-or-light-lift pre-assessment.
+@MainActor
+@Suite("PreAssessmentTests")
+struct PreAssessmentTests {
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    @Test("registers as the pre-assessment step")
+    func registersAsPreAssessmentStep() {
+        #expect(PreAssessmentView.step == .preAssessment)
+    }
+
+    @Test("a walk that reaches the qualifying duration derives a measured baseline")
+    func walkReachingQualifyingDurationDerivesBaseline() {
+        var now = Date(timeIntervalSince1970: 0)
+        let model = PreAssessmentModel(now: { now })
+        model.selectMode(.walk)
+        model.start()
+        now = now.addingTimeInterval(CalibrationThreshold.qualifyingWalkDuration)
+
+        #expect(model.isComplete)
+        let baseline = CalibrationBaseline.derive(from: model.progress, establishedAt: now)
+        #expect(baseline?.source == .measured)
+    }
+
+    @Test("a walk that falls short of the qualifying duration does not derive a baseline")
+    func walkFallingShortDoesNotDeriveBaseline() {
+        var now = Date(timeIntervalSince1970: 0)
+        let model = PreAssessmentModel(now: { now })
+        model.selectMode(.walk)
+        model.start()
+        now = now.addingTimeInterval(CalibrationThreshold.qualifyingWalkDuration - 60)
+
+        #expect(model.isComplete == false)
+        let baseline = CalibrationBaseline.derive(from: model.progress, establishedAt: now)
+        #expect(baseline == nil)
+    }
+
+    @Test("a lift that reaches both the working-set and distinct-exercise thresholds derives a measured baseline")
+    func liftReachingBothThresholdsDerivesBaseline() {
+        let model = PreAssessmentModel()
+        model.selectMode(.lift)
+        model.start()
+        model.recordWorkingSet(exercise: "Squat", loadKg: 40)
+        model.recordWorkingSet(exercise: "Squat", loadKg: 40)
+        model.recordWorkingSet(exercise: "Bench press", loadKg: 30)
+
+        #expect(model.isComplete)
+        let baseline = CalibrationBaseline.derive(from: model.progress, establishedAt: Date())
+        #expect(baseline?.source == .measured)
+    }
+
+    @Test("a lift short of either threshold does not derive a baseline")
+    func liftShortOfThresholdDoesNotDeriveBaseline() {
+        let model = PreAssessmentModel()
+        model.selectMode(.lift)
+        model.start()
+        model.recordWorkingSet(exercise: "Squat", loadKg: 40)
+
+        #expect(model.isComplete == false)
+        let baseline = CalibrationBaseline.derive(from: model.progress, establishedAt: Date())
+        #expect(baseline == nil)
+    }
+
+    @Test("completing the assessment marks the pre-assessment complete and stores the derived baseline")
+    func completingMarksCompleteAndStoresBaseline() throws {
+        let store = try makeStore()
+        var now = Date(timeIntervalSince1970: 0)
+        let model = PreAssessmentModel(now: { now })
+        model.selectMode(.walk)
+        model.start()
+        now = now.addingTimeInterval(CalibrationThreshold.qualifyingWalkDuration)
+
+        let didComplete = model.complete(store: store)
+
+        #expect(didComplete)
+        #expect(try store.loadHasCompletedPreAssessment())
+        #expect(try store.loadCalibrationBaseline()?.source == .measured)
+    }
+
+    @Test("completing the assessment adds no cardio session and no lift session to training history")
+    func completingAddsNoTrainingHistory() throws {
+        let store = try makeStore()
+        var now = Date(timeIntervalSince1970: 0)
+        let model = PreAssessmentModel(now: { now })
+        model.selectMode(.walk)
+        model.start()
+        now = now.addingTimeInterval(CalibrationThreshold.qualifyingWalkDuration)
+
+        _ = model.complete(store: store)
+
+        #expect(try store.loadCardioSessions().count == 0)
+        #expect(try store.loadLiftSessions().count == 0)
+    }
+
+    @Test("skipping stores no measured baseline, marks the pre-assessment complete, and leaves the provisional baseline in place")
+    func skippingLeavesProvisionalBaselineInPlace() throws {
+        let store = try makeStore()
+        let model = PreAssessmentModel()
+
+        model.skip(store: store)
+
+        #expect(try store.loadHasCompletedPreAssessment())
+        #expect(try store.loadCalibrationBaseline()?.source == .provisional)
+    }
+}
