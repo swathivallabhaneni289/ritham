@@ -90,6 +90,7 @@
 		CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */; };
 		D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */; };
 		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
+		D56882DC7CE1313B4A28320F /* RecommendationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F30FF2712BABA41FDE11FD /* RecommendationsView.swift */; };
 		D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074665026698CCD2C09002E0 /* RithamSpacing.swift */; };
 		D75BD4974656ABBDDE7EE6E3 /* ExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */; };
 		DE0D7678CF91D1FE5F62F433 /* HealthProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACF7E8027D66DF7D2961B82 /* HealthProfileView.swift */; };
@@ -221,6 +222,7 @@
 		F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatingPatternFollowUpView.swift; sourceTree = "<group>"; };
 		F0CDE0AB02415762195655A3 /* WorkoutPreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPreferenceTests.swift; sourceTree = "<group>"; };
 		F160DD9753BE8D014961267C /* GPSTrackingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSTrackingSession.swift; sourceTree = "<group>"; };
+		F4F30FF2712BABA41FDE11FD /* RecommendationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsView.swift; sourceTree = "<group>"; };
 		F9AB89C534EB0EED6F4A1ACB /* StrengthLoggingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthLoggingTests.swift; sourceTree = "<group>"; };
 		F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepPresenting.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -346,6 +348,7 @@
 			isa = PBXGroup;
 			children = (
 				552A5F0274532CE45416EB69 /* PreAssessmentView.swift */,
+				F4F30FF2712BABA41FDE11FD /* RecommendationsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -685,6 +688,7 @@
 				0356DBBFB1CD2B527E15D1E6 /* RadialSessionTimer.swift in Sources */,
 				2FFF9D0FA7BC7D8F75DF9DB2 /* ReScreenBanner.swift in Sources */,
 				8B3837980F3C805054099A91 /* RecommendationsRegistration.swift in Sources */,
+				D56882DC7CE1313B4A28320F /* RecommendationsView.swift in Sources */,
 				53F41F6E3E6DF32C8BFF886D /* RequiredBlockingMessageView.swift in Sources */,
 				F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */,
 				C87638F14A7A077650B52332 /* RithamApp.swift in Sources */,
