@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
-status: blocked
-stopped_at: 02-16-PLAN.md Task 1 complete; Tasks 2-3 blocked on physical-device/AX3-AX5 checkpoint
-last_updated: "2026-09-06T05:05:00.000Z"
+status: verification deferred (by user decision) — build continues
+stopped_at: Phase 02 code-complete (15/16 plans + 02-16 Task 1); Tasks 2-3's physical-device/AX3-AX5 checkpoint deferred to a single batched pass at the end of the whole project, per PROJECT.md Key Decisions (2026-09-06)
+last_updated: "2026-09-06T05:20:00.000Z"
 last_activity: 2026-09-06
-last_activity_desc: Phase 02 plan 16 Task 1 (registry-race fix, Phase 2 coverage gate) complete; checkpoint pending for Tasks 2-3
+last_activity_desc: User decided to batch all physical-device/AX3-AX5 verification until the entire project (Phases 2-5) is built, rather than per-phase. Proceeding to Phase 3.
 progress:
   total_phases: 5
   completed_phases: 1
@@ -30,9 +30,12 @@ comparison or ranking.
 
 ## Current Position
 
-Phase: 02 (core-tracking-adjusted-guidance) — BLOCKED
-Plan: 16 of 16 — Task 1 complete, Tasks 2-3 blocked on a physical-device/AX3-AX5 checkpoint
-Status: Awaiting human verification (see 02-16-SUMMARY.md's Checkpoint section)
+Phase: 02 (core-tracking-adjusted-guidance) — CODE-COMPLETE, verification deferred
+Plan: 16 of 16 — Task 1 complete and verified; Tasks 2-3 (physical-device + AX3/AX5 checkpoint,
+see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
+user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
+Status: Proceeding to Phase 3 planning/build; Phase 2 stays unchecked in ROADMAP.md until the
+batched verification pass runs
 Last activity: 2026-09-06 — 02-16 Task 1 (StepRegistry cross-suite race fix, Phase2CoverageTests) committed and verified over ten consecutive full-target runs
 
 Progress: [██░░░░░░░░] 20%
