@@ -10,19 +10,29 @@ import SwiftData
 /// what supplies the stated default (3) when no row exists yet, following
 /// `loadCalibrationBaseline`'s "never return a blank state" discipline rather than baking a
 /// default into this model.
+///
+/// `movementSnapshotOptIn` (MOMENTUM-07) defaults to `false`: the Daily Movement Snapshot is
+/// optional and opt-in, never on by default. It lives on this general preference row rather than
+/// on `MomentumStateRecord` deliberately -- D-09 requires the snapshot to carry no association
+/// with streak, shield or target state, and putting its preference on the Momentum row would be
+/// exactly that association. `WorkoutPreferenceRecord` has no relationship or foreign key to any
+/// Momentum record, so this column keeps that separation intact.
 @Model
 public final class WorkoutPreferenceRecord {
     public var weeklyFrequency: Int
     public var hasCompletedPreAssessment: Bool
     public var routeComparisonOptIn: Bool
+    public var movementSnapshotOptIn: Bool
 
     public init(
         weeklyFrequency: Int,
         hasCompletedPreAssessment: Bool = false,
-        routeComparisonOptIn: Bool = false
+        routeComparisonOptIn: Bool = false,
+        movementSnapshotOptIn: Bool = false
     ) {
         self.weeklyFrequency = weeklyFrequency
         self.hasCompletedPreAssessment = hasCompletedPreAssessment
         self.routeComparisonOptIn = routeComparisonOptIn
+        self.movementSnapshotOptIn = movementSnapshotOptIn
     }
 }

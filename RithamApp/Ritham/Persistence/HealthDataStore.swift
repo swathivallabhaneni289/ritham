@@ -762,6 +762,99 @@ public final class HealthDataStore {
         try context.save()
     }
 
+    // MARK: - Sleep check-in
+
+    /// RECOVERY-01's daily self-report. Normalizes `day` to the start of day using this store's
+    /// own injected `calendar` before fetching -- callers may pass any instant within the target
+    /// day. Never read by any Momentum reconciliation or guardrail method in this file (D-04):
+    /// no method above this one reads a `SleepCheckInRecord` and writes a Momentum ledger,
+    /// milestone, comeback, Recovery Week or injury freeze field.
+    public func loadSleepCheckIn(on day: Date) throws -> SleepCheckIn? {
+        let normalizedDay = calendar.startOfDay(for: day)
+        return try fetchSleepCheckInRecord(day: normalizedDay)?.checkIn
+    }
+
+    /// Upserts by normalized day: a second entry for the same calendar day replaces the first
+    /// rather than accumulating rows, the same "delete then reinsert" discipline
+    /// `saveCardioSession` uses for a matching identifier.
+    public func saveSleepCheckIn(_ checkIn: SleepCheckIn) throws {
+        let normalizedDay = calendar.startOfDay(for: checkIn.day)
+        if let existing = try fetchSleepCheckInRecord(day: normalizedDay) {
+            context.delete(existing)
+        }
+        context.insert(SleepCheckInRecord(
+            id: checkIn.id, day: normalizedDay, qualityRaw: checkIn.quality.rawValue, note: checkIn.note
+        ))
+        try context.save()
+    }
+
+    private func fetchSleepCheckInRecord(day: Date) throws -> SleepCheckInRecord? {
+        let records = try context.fetch(FetchDescriptor<SleepCheckInRecord>())
+        return records.first { calendar.isDate($0.day, inSameDayAs: day) }
+    }
+
+    // MARK: - Movement Snapshot
+    //
+    // Locked deviation from 03-RESEARCH.md's Data Model Shape: research proposed an append-only
+    // `MovementSnapshotEntryRecord` with freeform fields, but 03-UI-SPEC.md Component 8 and its
+    // own copy row ("fills in as you log activity") describe a plain calendar derived from logged
+    // activity, not a separately authored journal. Deriving the day cells from existing session
+    // records removes a whole record type, removes any possibility of a foreign key to Momentum
+    // state, and makes MOMENTUM-07's "no streak, shield or target attached" structurally true
+    // rather than merely asserted. Only the opt-in preference below is persisted.
+
+    /// MOMENTUM-07's opt-in preference. Defaults to `false`: the Daily Movement Snapshot is
+    /// optional and opt-in, never on by default.
+    public func loadMovementSnapshotOptIn() throws -> Bool {
+        try loadWorkoutPreferenceRecord()?.movementSnapshotOptIn ?? false
+    }
+
+    public func saveMovementSnapshotOptIn(_ optIn: Bool) throws {
+        try upsertWorkoutPreference { $0.movementSnapshotOptIn = optIn }
+    }
+
+    /// One calendar day's Movement Snapshot state (MOMENTUM-07): a date and whether any activity
+    /// was logged on it. Deliberately carries exactly these two members beyond its identifier
+    /// requirement -- no streak, shield, target or milestone member exists on it, matching D-09
+    /// exactly, the same way `ConditionTagStatus`/`UserProfileDraft` sit beside their own
+    /// accessors in this file rather than in a dedicated file.
+    public struct MovementSnapshotDay: Sendable, Equatable, Identifiable {
+        public var date: Date
+        public var hasLoggedActivity: Bool
+
+        public var id: Date { date }
+
+        public init(date: Date, hasLoggedActivity: Bool) {
+            self.date = date
+            self.hasLoggedActivity = hasLoggedActivity
+        }
+    }
+
+    /// Derives one `MovementSnapshotDay` per calendar day in `range` from already-stored cardio
+    /// and lift sessions, using the existing date-range queries -- no new record type, no new
+    /// stored field. A day is marked as having logged activity whenever a cardio or lift session
+    /// with a matching `startedAt` calendar day is stored, regardless of whether that session
+    /// clears the Momentum qualification bar: this snapshot reflects logged activity, not
+    /// qualifying activity, since it carries no target of its own (MOMENTUM-07).
+    public func movementSnapshotDays(in range: ClosedRange<Date>) throws -> [MovementSnapshotDay] {
+        let cardio = try loadCardioSessions(in: range)
+        let lift = try loadLiftSessions(in: range)
+        let activeDays = Set(
+            cardio.map { calendar.startOfDay(for: $0.startedAt) }
+                + lift.map { calendar.startOfDay(for: $0.startedAt) }
+        )
+
+        var days: [MovementSnapshotDay] = []
+        var cursor = calendar.startOfDay(for: range.lowerBound)
+        let endDay = calendar.startOfDay(for: range.upperBound)
+        while cursor <= endDay {
+            days.append(MovementSnapshotDay(date: cursor, hasLoggedActivity: activeDays.contains(cursor)))
+            guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
+            cursor = next
+        }
+        return days
+    }
+
     private func loadMomentumStateRecord() throws -> MomentumStateRecord? {
         try context.fetch(FetchDescriptor<MomentumStateRecord>()).first
     }

@@ -80,6 +80,7 @@
 		9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */; };
 		96B8827D551BC79B929DB6C7 /* BandGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */; };
 		9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */; };
+		9D432CC298F3C4869882CD38 /* MovementSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC386A79787043DBCBCDD18 /* MovementSnapshotTests.swift */; };
 		9EF4288FE7E51335250C8397 /* GuidanceRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6AD193A95EFC8C360C8DD4 /* GuidanceRegistration.swift */; };
 		A1E029A8D88EC2C0042634F9 /* StrengthHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */; };
 		A2239FD2F7130F8EE7CF50AF /* WorkoutPreferenceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */; };
@@ -102,6 +103,7 @@
 		C98EEFA090BC93D3D278F3EC /* CalibrationRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D161EF261290000542D3672 /* CalibrationRegistration.swift */; };
 		CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A018DD943E342E021CC548 /* RithamColor.swift */; };
 		CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */; };
+		CFDECDFE2EAE59916DF92C3D /* SleepCheckInRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9BB8D7CBC56CF6B75FFB13F /* SleepCheckInRecord.swift */; };
 		D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */; };
 		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
 		D56882DC7CE1313B4A28320F /* RecommendationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F30FF2712BABA41FDE11FD /* RecommendationsView.swift */; };
@@ -170,6 +172,7 @@
 		35DDF9B0827C7ACB6CFF49C2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		384060D1603588777B8A5894 /* CalibrationSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSessionView.swift; sourceTree = "<group>"; };
 		3C81838575239D10BBB4B51A /* StrengthHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthHistoryTests.swift; sourceTree = "<group>"; };
+		3CC386A79787043DBCBCDD18 /* MovementSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementSnapshotTests.swift; sourceTree = "<group>"; };
 		43F4A3D6EF4FF31BA0587C42 /* SeverityFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeverityFollowUpView.swift; sourceTree = "<group>"; };
 		44D2B20330A58A12991D6AE8 /* StrengthSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSessionView.swift; sourceTree = "<group>"; };
 		44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePickerView.swift; sourceTree = "<group>"; };
@@ -230,6 +233,7 @@
 		B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioHistoryView.swift; sourceTree = "<group>"; };
 		B6659E2E2F67CEC959ACCD02 /* RithamCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RithamCore; path = ../RithamCore; sourceTree = SOURCE_ROOT; };
 		B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthHistoryView.swift; sourceTree = "<group>"; };
+		B9BB8D7CBC56CF6B75FFB13F /* SleepCheckInRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepCheckInRecord.swift; sourceTree = "<group>"; };
 		BDFFECF3591AFEB66F20B54C /* FoodAllergenRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAllergenRecord.swift; sourceTree = "<group>"; };
 		BF2E2BBC0CDB85F157164BD1 /* ScreeningCompleteStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningCompleteStepView.swift; sourceTree = "<group>"; };
 		C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -443,6 +447,7 @@
 				A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */,
 				1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */,
 				7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */,
+				B9BB8D7CBC56CF6B75FFB13F /* SleepCheckInRecord.swift */,
 				C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */,
 				8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */,
 			);
@@ -557,6 +562,7 @@
 				CB60B6780E7077E5D21BF8DE /* HomeHubTests.swift */,
 				081EC87233855904DB9C8EFC /* MomentumStoreTests.swift */,
 				D78DFBC328CACEAE0C82CB19 /* MomentumSuiteSerialization.swift */,
+				3CC386A79787043DBCBCDD18 /* MovementSnapshotTests.swift */,
 				1024D116B21BD85232045566 /* PersistenceTests.swift */,
 				C51ABE5043F692DA8E79302F /* Phase2CoverageTests.swift */,
 				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
@@ -774,6 +780,7 @@
 				C88F5F1B84A047903C1E8F96 /* SessionEditView.swift in Sources */,
 				B79730E927043D1B94D41757 /* SettingsView.swift in Sources */,
 				36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */,
+				CFDECDFE2EAE59916DF92C3D /* SleepCheckInRecord.swift in Sources */,
 				ED5112BF358AF9FD675F531F /* StandingFooterDisclaimer.swift in Sources */,
 				94DDA35A59D98E641168FE28 /* StepBootstrap.swift in Sources */,
 				9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */,
@@ -813,6 +820,7 @@
 				BF441CA8CFFC7BFE0A7FA83D /* HomeHubTests.swift in Sources */,
 				5F6AF00162B0EA447E75C145 /* MomentumStoreTests.swift in Sources */,
 				6DFC373C452962BB4B99237F /* MomentumSuiteSerialization.swift in Sources */,
+				9D432CC298F3C4869882CD38 /* MovementSnapshotTests.swift in Sources */,
 				69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */,
 				D86A6B3C4900E249C0A26882 /* Phase2CoverageTests.swift in Sources */,
 				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
