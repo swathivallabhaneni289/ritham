@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 3
 current_phase_name: Momentum & Recovery
-status: executing
-stopped_at: Completed 03-08-PLAN.md (sleep check-in screen + client-side RECOVERY-01 lighter-plan adjustment, 12-test invariant suite)
-last_updated: "2026-09-06T13:29:21.252Z"
+status: verifying
+stopped_at: "Completed 03-10-PLAN.md (Phase 3 close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06 deferral annotation, full-target suite green)"
+last_updated: "2026-09-06T13:50:09.765Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 40
-  completed_plans: 39
-  percent: 40
+  completed_plans: 40
+  percent: 60
 ---
 
 # Project State
@@ -34,7 +34,7 @@ Phase: 3 (Momentum & Recovery) — EXECUTING
 Plan: 10 of 10
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Ready to execute
+Status: Phase complete — ready for verification
 batched verification pass runs
 Last activity: 2026-09-06 — Phase 3 execution started
 
@@ -95,6 +95,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 03-momentum-recovery P07 | 40min | 3 tasks | 6 files |
 | Phase 03-momentum-recovery P08 | 50min | 3 tasks | 8 files |
 | Phase 03-momentum-recovery P09 | 65min | 3 tasks | 11 files |
+| Phase 03-momentum-recovery P10 | 25min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -207,6 +208,8 @@ Recent decisions affecting current work:
 - [Phase 03-momentum-recovery]: 03-08: Added .sleepCheckIn to OnboardingRouter.nextStep's terminal-steps switch and updated OnboardingFlowStateTests' hardcoded step count (25->26) as a Rule 3 compile/test-gate fix, not in the plan's stated file list.
 - [Phase ?]: 03-09: MovementSnapshotToggleView uses the app's existing two-option ChoiceQuestionView chip control instead of a first-ever native SwiftUI.Toggle, per 03-UI-SPEC.md Component 9's measured-contrast rationale.
 - [Phase ?]: 03-09: MovementSnapshotView/MovementSnapshotToggleView/MovementSnapshotRegistration live in their own MovementSnapshot/ directory (not Momentum/), so MOMENTUM-07's 'no streak, shield or target' requirement is a directory-scoped, mechanically checkable constraint rather than a per-file reading.
+- [Phase ?]: 03-10: Directory-walk source-scan (FileManager.enumerator relative to #filePath) chosen over a checked-in file-name list for the MOMENTUM-06 no-sharing structural gate, guarded by a non-zero scanned-file-count assertion so it cannot pass vacuously.
+- [Phase ?]: 03-10: ROADMAP.md's Phase 3 criterion 5 carries a dated (2026-09-06) annotation recording MOMENTUM-06's household-sharing half as scoped-deferred to Phase 4's HOUSEHOLD-01, mirroring Phase 2 criterion 6's precedent.
 
 ### Pending Todos
 
@@ -273,8 +276,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T13:27:40.008Z
-Stopped at: Completed 03-08-PLAN.md (sleep check-in screen + client-side RECOVERY-01 lighter-plan adjustment, 12-test invariant suite)
+Last session: 2026-09-06T13:50:09.753Z
+Stopped at: Completed 03-10-PLAN.md (Phase 3 close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06 deferral annotation, full-target suite green)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification

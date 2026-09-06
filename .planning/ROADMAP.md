@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Onboarding & Safety Intake** - New users complete a fixed-choice safety screening that gates every later feature's condition-aware guidance (calibration deferred to Phase 2's triggered pre-assessment, see Key Decisions)
 - [ ] **Phase 2: Core Tracking & Adjusted Guidance** - Free-forever cardio and strength tracking, with condition-tag-adjusted workout/nutrition guidance and dietary-pattern swaps
-- [ ] **Phase 3: Momentum & Recovery** - A single fair, forgiving cross-modality weekly streak that adapts to sleep without ever punishing rest
+- [x] **Phase 3: Momentum & Recovery** - A single fair, forgiving cross-modality weekly streak that adapts to sleep without ever punishing rest (completed 2026-09-06)
 - [ ] **Phase 4: Household & Home** - Cross-generational households share one app with a simple home screen and structurally non-comparative encouragement
 - [ ] **Phase 5: Launch Readiness (Legal & Clinical Review)** - Clinical and legal sign-off plus a completed privacy review, clearing the app for public App Store submission
 
@@ -258,7 +258,7 @@ decision, not a Ritham product requirement — iOS client stays Swift).
      specifically stays deferred: that is HOUSEHOLD-02, already out of scope to v2 per
      PROJECT.md. The Momentum data model carries a visibility scope from day one (D-07), so
      Phase 4 can add a household scope with no data migration.*
-**Plans**: 9/10 plans executed
+**Plans**: 10/10 plans complete
 
 Plans:
 
@@ -289,7 +289,7 @@ Plans:
 - [x] 03-09-PLAN.md — Daily Movement Snapshot: opt-in Settings toggle and its own plain calendar
   screen, structurally free of Momentum state (MOMENTUM-07)
 
-- [ ] 03-10-PLAN.md — Phase close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06
+- [x] 03-10-PLAN.md — Phase close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06
   deferral annotation, full-target suite green
 
 **UI hint**: yes
@@ -347,7 +347,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
-| 3. Momentum & Recovery | 9/10 | In Progress|  |
+| 3. Momentum & Recovery | 10/10 | Complete   | 2026-09-06 |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
