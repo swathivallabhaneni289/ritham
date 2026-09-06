@@ -90,5 +90,157 @@ extension MomentumContainerTouchingSuites {
             try store.saveMovementSnapshotOptIn(false)
             #expect(try store.loadMovementSnapshotOptIn() == false)
         }
+
+        // MARK: - Task 2: MovementSnapshotView's calendar derivation
+
+        private func makeSession(day: Date) throws -> HealthDataStore {
+            let store = try makeStore()
+            try store.saveCardioSession(CardioSession(
+                activityType: .run,
+                source: .gps,
+                startedAt: day.addingTimeInterval(3_600),
+                endedAt: day.addingTimeInterval(5_400),
+                progress: CardioProgress(continuousDuration: 1_800, distanceMeters: 5_000)
+            ))
+            return store
+        }
+
+        @Test("a month whose days include a stored cardio session marks exactly that day")
+        func monthWithCardioSessionMarksExactlyThatDay() throws {
+            let day = calendar.startOfDay(for: Date())
+            let store = try makeSession(day: day)
+
+            guard let range = MovementSnapshotView.monthRange(containing: day, calendar: calendar) else {
+                Issue.record("expected a resolvable month range")
+                return
+            }
+            let days = try store.movementSnapshotDays(in: range)
+
+            let markedDays = days.filter(\.hasLoggedActivity)
+            #expect(markedDays.count == 1)
+            #expect(markedDays.first.map { calendar.isDate($0.date, inSameDayAs: day) } == true)
+        }
+
+        @Test("a month whose days include a stored lift session marks exactly that day")
+        func monthWithLiftSessionMarksExactlyThatDay() throws {
+            let day = calendar.startOfDay(for: Date())
+            let store = try makeStore()
+            try store.saveLiftSession(LiftSession(startedAt: day.addingTimeInterval(3_600), sets: []))
+
+            guard let range = MovementSnapshotView.monthRange(containing: day, calendar: calendar) else {
+                Issue.record("expected a resolvable month range")
+                return
+            }
+            let days = try store.movementSnapshotDays(in: range)
+
+            let markedDays = days.filter(\.hasLoggedActivity)
+            #expect(markedDays.count == 1)
+            #expect(markedDays.first.map { calendar.isDate($0.date, inSameDayAs: day) } == true)
+        }
+
+        @Test("a month with a stored session that does not clear the qualification bar still marks that day")
+        func monthWithNonQualifyingSessionStillMarksThatDay() throws {
+            let day = calendar.startOfDay(for: Date())
+            let store = try makeStore()
+            // Well under CalibrationThreshold.qualifyingWalkDuration (600s) -- logged, but not
+            // qualifying. The snapshot reflects logged activity, never qualifying activity.
+            try store.saveCardioSession(CardioSession(
+                activityType: .run,
+                source: .gps,
+                startedAt: day.addingTimeInterval(3_600),
+                endedAt: day.addingTimeInterval(3_720),
+                progress: CardioProgress(continuousDuration: 120, distanceMeters: 300)
+            ))
+
+            guard let range = MovementSnapshotView.monthRange(containing: day, calendar: calendar) else {
+                Issue.record("expected a resolvable month range")
+                return
+            }
+            let days = try store.movementSnapshotDays(in: range)
+
+            #expect(days.first(where: { calendar.isDate($0.date, inSameDayAs: day) })?.hasLoggedActivity == true)
+        }
+
+        @Test("a month with no stored session renders the catalog's no-entries empty state")
+        func monthWithNoSessionRendersEmptyState() throws {
+            let day = calendar.startOfDay(for: Date())
+            let store = try makeStore()
+
+            guard let range = MovementSnapshotView.monthRange(containing: day, calendar: calendar) else {
+                Issue.record("expected a resolvable month range")
+                return
+            }
+            let days = try store.movementSnapshotDays(in: range)
+
+            #expect(days.allSatisfy { !$0.hasLoggedActivity })
+            #expect(MomentumCopy.Empty.noSnapshotEntriesHeadline == "No entries yet")
+            #expect(MomentumCopy.Empty.noSnapshotEntriesBody == "Movement Snapshot fills in as you log activity.")
+        }
+
+        /// Form used: a comment-filtered directory scan, the same technique
+        /// `RecoveryAdjustmentTests.theSleepScreenMentionsNoMomentumState` already established
+        /// for an equivalent "this feature area references none of these tokens" assertion, here
+        /// generalized to every file under the feature's own directory rather than a single file
+        /// -- the directory-scoped structural boundary this whole feature is built around
+        /// (T-3-15's mitigation, see `MovementSnapshotView.swift`'s own header comment).
+        @Test("theSnapshotScreenReferencesNoMomentumType")
+        func theSnapshotScreenReferencesNoMomentumType() throws {
+            let bannedTokens = [
+                "MomentumSummary", "MomentumStateRecord", "MomentumProgressBlocks",
+                "ShieldRow", "MilestoneBadgeList", "currentStreak", "shieldCount", "weeklyTarget",
+            ]
+
+            let thisFile = URL(fileURLWithPath: #filePath)
+            // RithamApp/RithamTests/MovementSnapshotViewTests.swift ->
+            // RithamApp/Ritham/MovementSnapshot/
+            let featureDirectory = thisFile
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .appendingPathComponent("Ritham/MovementSnapshot")
+
+            let fileManager = FileManager.default
+            guard let enumerator = fileManager.enumerator(at: featureDirectory, includingPropertiesForKeys: nil) else {
+                Issue.record("could not enumerate \(featureDirectory.path)")
+                return
+            }
+
+            var scannedAtLeastOneFile = false
+            for case let fileURL as URL in enumerator where fileURL.pathExtension == "swift" {
+                scannedAtLeastOneFile = true
+                let source = try String(contentsOf: fileURL, encoding: .utf8)
+                let nonCommentSource = source
+                    .components(separatedBy: .newlines)
+                    .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+                    .joined(separator: "\n")
+                for token in bannedTokens {
+                    #expect(!nonCommentSource.contains(token), "\(fileURL.lastPathComponent)'s non-comment source mentions '\(token)'")
+                }
+            }
+            #expect(scannedAtLeastOneFile)
+        }
+    }
+}
+
+extension StepRegistryTouchingSuites {
+    @MainActor
+    @Suite("MovementSnapshotRegistrationTests", .serialized)
+    struct MovementSnapshotRegistrationTests {
+
+        init() {
+            StepRegistry.reset()
+            StepBootstrap.registerAllSteps()
+        }
+
+        @Test("the movementSnapshot step resolves to MovementSnapshotView after bootstrap")
+        func movementSnapshotResolvesToMovementSnapshotView() {
+            let registered = StepRegistry.registeredPresenterType(for: .movementSnapshot)
+            #expect(registered != nil)
+            #expect(registered == MovementSnapshotView.self)
+        }
+
+        @Test("the registry reports no unregistered steps after bootstrap")
+        func registryReportsNoUnregisteredSteps() {
+            #expect(StepRegistry.unregisteredSteps.isEmpty)
+        }
     }
 }

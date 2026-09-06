@@ -9,5 +9,6 @@ import Foundation
 enum Phase3StepRegistration {
     static func registerAll() {
         MomentumRegistration.registerAll()
+        MovementSnapshotRegistration.registerAll()
     }
 }

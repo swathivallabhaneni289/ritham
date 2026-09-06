@@ -24,8 +24,8 @@
 // `OnboardingFlow.open(_:)`), never by `OnboardingRouter` advancing into them — which is why the
 // router treats every one of them as terminal, exactly like `.home` itself.
 //
-// Phase 3's new surfaces (`momentum`, `sleepCheckIn` below, with more to follow from later
-// Phase 3 plans) are ordinary members of this same enum for the identical structural reason:
+// Phase 3's new surfaces (`momentum`, `sleepCheckIn`, `movementSnapshot` below) are ordinary
+// members of this same enum for the identical structural reason:
 // exactly one step vocabulary and one navigation container for every user regardless of age.
 // Like Phase 2's surfaces, they are reached by explicit user choice from the interim hub rather
 // than by `OnboardingRouter` advancing into them, which is why the router treats them as terminal
@@ -59,4 +59,5 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case preAssessment
     case momentum
     case sleepCheckIn
+    case movementSnapshot
 }

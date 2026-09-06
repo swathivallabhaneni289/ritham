@@ -211,7 +211,7 @@ struct OnboardingFlowStateTests {
         }
         // 24 through the end of Phase 2, +1 for Phase 3 plan 03-06's `.momentum` case, +1 for
         // plan 03-08's `.sleepCheckIn` case.
-        #expect(OnboardingStep.allCases.count == 26)
+        #expect(OnboardingStep.allCases.count == 27)
     }
 
     @Test("every new Phase 2 case is terminal: OnboardingRouter.nextStep returns nil for each")
