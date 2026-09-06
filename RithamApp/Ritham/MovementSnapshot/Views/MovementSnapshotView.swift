@@ -36,13 +36,27 @@ struct MovementSnapshotView: View, OnboardingStepPresenting {
     @State private var displayedMonth: Date = Calendar(identifier: .gregorian).startOfDay(for: Date())
     @State private var days: [HealthDataStore.MovementSnapshotDay] = []
 
+    // WR-03's fix: a genuine store-read failure previously rendered identically to the
+    // legitimately-empty "No entries yet" state (both left `days` empty). This flag lets `body`
+    // surface `OnboardingCopy.Errors.savingFailed` instead, matching `MomentumView`/
+    // `RecommendationsView`'s existing `loadError` pattern.
+    @State private var loadFailed = false
+
     private let calendar = Calendar(identifier: .gregorian)
 
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Daily Movement Snapshot") {
             monthNavigationRow
 
-            if days.contains(where: \.hasLoggedActivity) {
+            if loadFailed {
+                // WR-03: reuses `OnboardingCopy.Errors.savingFailed` verbatim, exactly as
+                // `MomentumView`/`RecommendationsView` already do for a Momentum/Recovery read
+                // failure, rather than silently rendering the "No entries yet" empty state.
+                Text(OnboardingCopy.Errors.savingFailed)
+                    .font(RithamType.body)
+                    .foregroundStyle(RithamColor.paper)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else if days.contains(where: \.hasLoggedActivity) {
                 dayGrid
             } else {
                 emptyState
@@ -138,9 +152,16 @@ struct MovementSnapshotView: View, OnboardingStepPresenting {
         let store = HealthDataStore(context: modelContext, calendar: calendar)
         guard let range = Self.monthRange(containing: displayedMonth, calendar: calendar) else {
             days = []
+            loadFailed = false
             return
         }
-        days = (try? store.movementSnapshotDays(in: range)) ?? []
+        do {
+            days = try store.movementSnapshotDays(in: range)
+            loadFailed = false
+        } catch {
+            days = []
+            loadFailed = true
+        }
     }
 }
 

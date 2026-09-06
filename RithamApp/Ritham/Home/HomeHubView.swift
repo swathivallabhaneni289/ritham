@@ -32,6 +32,13 @@ struct HomeHubView: View {
     // first -- not just by adding a line to this view.
     @State private var momentumSummary: MomentumSummary?
 
+    // WR-03's fix: a genuine store-read failure previously rendered identically to "no Momentum
+    // section" (both left `momentumSummary` at `nil`), making a real persistence problem
+    // indistinguishable from a legitimately empty state. This flag lets `momentumSection`
+    // surface `OnboardingCopy.Errors.savingFailed`, matching `MomentumView`/`RecommendationsView`'s
+    // existing `loadError` pattern, instead of collapsing the failure into silence.
+    @State private var momentumLoadFailed = false
+
     // MOMENTUM-07/D-09's opt-in-gated entry state: loaded alongside `momentumSummary` in this
     // view's one existing appearance handler below (never a second one). Off by default
     // (`HealthDataStore.loadMovementSnapshotOptIn`'s own default), which is what makes the CTA
@@ -106,7 +113,17 @@ struct HomeHubView: View {
         .onAppear {
             let store = HealthDataStore(context: modelContext)
             let reader = MomentumSummaryReader(store: store, calendar: .current)
-            momentumSummary = try? reader.summary(now: Date())
+            do {
+                momentumSummary = try reader.summary(now: Date())
+                momentumLoadFailed = false
+            } catch {
+                momentumSummary = nil
+                momentumLoadFailed = true
+            }
+            // Deliberately left as a silent `try?` fallback-to-off, unlike the summary load
+            // above: a failure here only hides one already-off-by-default CTA (WR-03's finding
+            // cites the summary read as the case that matters, since that one collapses a whole
+            // section's failure into "you haven't done anything yet").
             isMovementSnapshotEnabled = (try? store.loadMovementSnapshotOptIn()) ?? false
         }
         .sheet(isPresented: $isPresentingSettings) {
@@ -161,6 +178,14 @@ struct HomeHubView: View {
                     flow.open(.momentum)
                 }
             }
+        } else if momentumLoadFailed {
+            // WR-03: reuses `OnboardingCopy.Errors.savingFailed` verbatim, exactly as
+            // `MomentumView`/`RecommendationsView` already do for a Momentum/Recovery read
+            // failure, rather than silently rendering nothing.
+            Text(OnboardingCopy.Errors.savingFailed)
+                .font(RithamType.body)
+                .foregroundStyle(RithamColor.paper)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
