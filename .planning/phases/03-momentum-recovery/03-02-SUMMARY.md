@@ -77,7 +77,7 @@ coverage:
         status: pass
     human_judgment: false
   - id: D5
-    description: "MomentumCopy transcribes every row of 03-UI-SPEC.md's Verbatim shipped strings table into one reviewable catalog, plus RECOVERY-01's equal-weight showOriginalCTA/showLighterCTA"
+    description: "MomentumCopy's 47 shipped strings (transcribed by hand from every row of 03-UI-SPEC.md's Verbatim shipped strings table, plus RECOVERY-01's equal-weight showOriginalCTA/showLighterCTA) are enumerated in the test suite's shippedStrings array, guarded by a count assertion"
     requirement: "MOMENTUM-05"
     verification:
       - kind: unit
@@ -85,7 +85,7 @@ coverage:
         status: pass
     human_judgment: false
   - id: D6
-    description: "No shipped Momentum/Recovery string contains any 03-UI-SPEC.md banned-lexicon token, checked mechanically at the value level against all 46 shipped strings"
+    description: "No shipped Momentum/Recovery string contains any 03-UI-SPEC.md banned-lexicon token, checked mechanically at the value level against all 47 shipped strings"
     requirement: "MOMENTUM-05"
     verification:
       - kind: unit
@@ -110,7 +110,7 @@ status: complete
 
 # Phase 3 Plan 02: Sleep decision rule and Momentum copy catalog Summary
 
-**RECOVERY-01's pure sleep-quality-to-intensity-shift decision rule plus a 46-string MomentumCopy catalog with a mechanical, value-level banned-lexicon test suite enforcing MOMENTUM-05's framing rule.**
+**RECOVERY-01's pure sleep-quality-to-intensity-shift decision rule, plus a 46-string MomentumCopy catalog whose framing is mechanically enforced, value-level, against MOMENTUM-05's banned-lexicon table (47 test entries once the week-0 streak-rendering edge case is exercised).**
 
 ## Performance
 
@@ -121,8 +121,8 @@ status: complete
 
 ## Accomplishments
 - `SleepAdjustment.shift(for:)` and `adjustedSetCount(_:shift:)` implement RECOVERY-01's decision rule as a pure function; a skipped check-in is proven byte-for-byte identical in outcome to no check-in at all, and the domain type imports zero ledger/qualification-threshold symbols, making four of RECOVERY-01's seven invariants structurally (not just test-) enforced.
-- `MomentumCopy` transcribes 03-UI-SPEC.md's Copywriting Contract table (42 individual shipped strings across its rows) into one reviewable RithamCore file, plus the two planner-authored equal-weight CTAs (`showOriginalCTA`/`showLighterCTA`) RECOVERY-01 invariant 2 requires and the 2 verification labels reused verbatim from `CardioHistoryView` (Component 11) — 46 shipped strings total.
-- `MomentumCopyTests` mechanically checks every one of the catalog's 46 shipped string values against the UI-SPEC's banned-lexicon table at the value level (not a source grep, since two banned tokens collide with legitimate identifiers elsewhere in the codebase).
+- `MomentumCopy` transcribes 03-UI-SPEC.md's Copywriting Contract table (42 individual shipped strings across its rows) into one reviewable RithamCore file, plus the two planner-authored equal-weight CTAs (`showOriginalCTA`/`showLighterCTA`) RECOVERY-01 invariant 2 requires and the 2 verification labels reused verbatim from `CardioHistoryView` (Component 11)  — 46 catalog strings, exercised as 47 test entries once the week-0 streak rendering is included.
+- `MomentumCopyTests` mechanically checks every one of the suite's 47 shipped-string test entries against the UI-SPEC's banned-lexicon table at the value level (not a source grep, since two banned tokens collide with legitimate identifiers elsewhere in the codebase).
 
 ## Task Commits
 
@@ -131,6 +131,7 @@ Each task was committed atomically:
 1. **Task 1: Sleep check-in domain and the intensity-shift decision rule** - `e4f0102` (feat)
 2. **Task 2: Momentum and Recovery copy catalog** - `ea05124` (feat)
 3. **Task 3: Banned-lexicon and milestone-copy enforcement suite** - `713281f` (test)
+4. **Post-review follow-up: cover the week-0 streak-rendering edge case** - `8ae7c64` (test)
 
 **Plan metadata:** (this commit)
 
@@ -173,11 +174,12 @@ None - no external service configuration required.
 - `SleepAdjustment` is ready for plan 03-08's `RecommendationsModel` to call as the single RECOVERY-01 decision point.
 - `MomentumCopy` is ready for plans 03-06 through 03-09 to read from; no view in this phase should hand-author a second copy of any string here.
 - Three of RECOVERY-01's seven invariants (a lighter session still fully qualifies, declining it and doing the original session always qualifies, no penalty/asterisk differentiates the two paths) are UI-layer concerns and remain plan 03-08's responsibility, as scoped in this plan's `<success_criteria>`.
+- Flag for whichever plan renders `Streak.streak(weeks:)` (plan 03-06's `MomentumView`, per current phase mapping): `streak(weeks: 0)` renders as `"0-week streak"`. This passes the banned-lexicon gate mechanically (the table forbids the word "zero" describing the count, not the digit `0`), and it is now covered by a dedicated test entry so a future edit to that function is gated. Whether a 0-week state is ever actually reachable/rendered, or whether it should special-case to something else, is unspecified by 03-UI-SPEC.md's table and is 03-06's call, not this plan's.
 - No blockers for downstream plans in this wave or wave 2.
 
 ## Self-Check: PASSED
 
-All 5 created files verified present on disk; all 3 task commits (`e4f0102`, `ea05124`, `713281f`) verified present in git log.
+All 5 created files verified present on disk; all 4 commits (`e4f0102`, `ea05124`, `713281f`, `8ae7c64`) verified present in git log.
 
 ---
 *Phase: 03-momentum-recovery*
