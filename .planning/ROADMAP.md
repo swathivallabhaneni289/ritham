@@ -248,7 +248,7 @@ decision, not a Ritham product requirement — iOS client stays Swift).
      fully private with only opt-in household/accountability-contact sharing — never a public
      leaderboard — and a separate, optional Daily Movement Snapshot is available with no streak,
      shield, or target attached to it.
-**Plans**: 8/10 plans executed
+**Plans**: 9/10 plans executed
 
 Plans:
 
@@ -276,7 +276,7 @@ Plans:
 - [x] 03-08-PLAN.md — Sleep check-in screen and RECOVERY-01's client-side lighter-plan adjustment,
   with one named test per invariant
 
-- [ ] 03-09-PLAN.md — Daily Movement Snapshot: opt-in Settings toggle and its own plain calendar
+- [x] 03-09-PLAN.md — Daily Movement Snapshot: opt-in Settings toggle and its own plain calendar
   screen, structurally free of Momentum state (MOMENTUM-07)
 
 - [ ] 03-10-PLAN.md — Phase close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06
@@ -337,7 +337,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
-| 3. Momentum & Recovery | 8/10 | In Progress|  |
+| 3. Momentum & Recovery | 9/10 | In Progress|  |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
