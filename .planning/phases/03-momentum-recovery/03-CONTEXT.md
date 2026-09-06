@@ -131,8 +131,8 @@ implementation detail. Resolved here, fast, rather than looping back through dis
   week-one-only target adjustment — it must never be confused with or alter the per-session
   qualification bar itself (RECOVERY-01's own "bar never changes" invariant applies by the same
   logic).
-- **D-11 (Open Question 2 — RECOVERY-01 applies uniformly to the whole displayed plan, not a
-  specific day):** Since the Go-generated `WorkoutPlan.sessions[].dayIndex` is a plain ordinal
+- **D-11 (Open Question 2 — RECOVERY-01 applies uniformly to the whole plan, not one day):**
+  Since the Go-generated `WorkoutPlan.sessions[].dayIndex` is a plain ordinal
   with no calendar-weekday meaning (confirmed by reading `RithamService/internal/plan/generate.go`),
   and no per-plan-session completion state exists or is needed elsewhere in this phase, RECOVERY-01's
   lighter-suggestion adjustment applies uniformly across every session in the currently-displayed
