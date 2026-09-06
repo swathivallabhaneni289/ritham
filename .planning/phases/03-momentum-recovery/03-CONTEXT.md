@@ -118,6 +118,33 @@ None — no pending todo matched Phase 3's domain (the three open todos in
 already folded into Phase 2, unpersisted GPS coordinate trail, and `SessionEditView` not wired
 into history).
 
+### Post-research resolutions (03-RESEARCH.md Open Questions 1-3)
+`03-RESEARCH.md` surfaced three product-shape questions that couldn't be resolved as pure
+implementation detail. Resolved here, fast, rather than looping back through discuss-phase:
+
+- **D-10 (Open Question 1 — endowed 1/3 start is a genuine head start, not a display no-op):**
+  A brand-new user's first Momentum week's effective target is the normal target minus one
+  (floor of 1) after their first logged session — e.g., a default target of 3 needs only 2 more
+  qualifying sessions that week; an adjusted target of 5 needs only 4. This matches
+  `docs/roadmap.md` §4's explicit Nunes & Dreze (2006) citation, which only makes sense as a real
+  head start, not a display artifact every reading would already show. This is a one-time,
+  week-one-only target adjustment — it must never be confused with or alter the per-session
+  qualification bar itself (RECOVERY-01's own "bar never changes" invariant applies by the same
+  logic).
+- **D-11 (Open Question 2 — RECOVERY-01 applies uniformly to the whole displayed plan, not a
+  specific day):** Since the Go-generated `WorkoutPlan.sessions[].dayIndex` is a plain ordinal
+  with no calendar-weekday meaning (confirmed by reading `RithamService/internal/plan/generate.go`),
+  and no per-plan-session completion state exists or is needed elsewhere in this phase, RECOVERY-01's
+  lighter-suggestion adjustment applies uniformly across every session in the currently-displayed
+  plan whenever the day's sleep check-in is Poor — not a single "today's" session picked out by
+  day-matching. This satisfies all seven D-05 invariants without inventing new per-session
+  completion tracking. Lowest-implementation-risk option per research's own recommendation.
+- **D-12 (Open Question 3 — Recovery Week flag pauses the whole week retroactively):**
+  Flagging a Recovery Week at any point during a week fully pauses that entire week's target for
+  reconciliation purposes, regardless of what day of the week the flag was set — not just the
+  remainder of the week from the flag point forward. Simplest rule, matches the
+  forgiveness-first product philosophy already established for shields/comeback repair.
+
 </decisions>
 
 <canonical_refs>
