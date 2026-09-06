@@ -178,6 +178,76 @@ extension MomentumContainerTouchingSuites {
             #expect(stored.first?.claimingSessionID == claimingSessionID)
         }
 
+        @Test("a comeback window's resolvedAt marker persists across save/load, so an expired-unclaimed window stays resolved after a relaunch (CR-01)")
+        func resolvedAtSurvivesSaveAndReload() throws {
+            // CR-01's fix requires touching three layers (the domain struct, the SwiftData
+            // record, and saveMomentumLedger's update branch) -- the review's own Fix section
+            // warned that a `resolvedAt` field added only to the domain struct, without a
+            // matching persisted column and write path, "will not persist... and the bug returns
+            // immediately after the next app relaunch." This test proves the full round trip,
+            // not just the in-memory fold `MomentumReconciliationTests` already covers.
+            let (store, _) = try makeStore()
+            let now = Date()
+            let resolvedWindow = ComebackWindow(
+                id: UUID(),
+                missedWeekStart: now,
+                opensAt: now,
+                closesAt: now.addingTimeInterval(3 * 86_400),
+                claimedAt: nil,
+                claimingSessionID: nil,
+                streakBeforeMiss: 5,
+                resolvedAt: now.addingTimeInterval(4 * 86_400)
+            )
+            var ledger = MomentumLedger.empty
+            ledger.currentStreak = 0
+            ledger.streakLabelKind = .rebuilt
+            ledger.weeklyTarget = 1
+            ledger.comebackWindows = [resolvedWindow]
+            try store.saveMomentumLedger(ledger)
+
+            // Simulate the next app launch: a fresh `loadMomentumLedger()` call, not the
+            // in-memory `ledger` still held above.
+            let reloaded = try store.loadMomentumLedger()
+            #expect(reloaded.comebackWindows.first?.resolvedAt != nil)
+
+            // The real proof: reconciling the freshly *reloaded* ledger with a new met week must
+            // raise the streak to 1, never re-fire the expiry branch back down to 0. Pre-fix (or
+            // with `resolvedAt` persisted incorrectly), this would fail after a relaunch even
+            // though the in-process `MomentumReconciliationTests` suite would still pass.
+            let calendar = Calendar(identifier: .gregorian)
+            var utcCalendar = calendar
+            utcCalendar.timeZone = TimeZone(identifier: "UTC")!
+            let nextWeekStart = utcCalendar.date(byAdding: .day, value: 7, to: now)!
+            let nextWeekEnd = utcCalendar.date(byAdding: .day, value: 14, to: now)!
+            let qualifyingSession = CardioSession(
+                activityType: .walk,
+                source: .manualStopwatch,
+                startedAt: nextWeekStart.addingTimeInterval(3_600),
+                endedAt: nextWeekStart.addingTimeInterval(3_600 + CalibrationThreshold.qualifyingWalkDuration + 60),
+                progress: CardioProgress(continuousDuration: CalibrationThreshold.qualifyingWalkDuration + 60)
+            )
+            let metWeek = MomentumWeekInput(
+                weekStart: nextWeekStart,
+                weekEnd: nextWeekEnd,
+                cardio: [qualifyingSession],
+                lift: [],
+                endowedCredit: 0
+            )
+            let reconciled = MomentumReconciliation.reconcile(
+                ledger: reloaded,
+                elapsedWeeks: [metWeek],
+                currentWeek: MomentumWeekInput(
+                    weekStart: nextWeekEnd, weekEnd: nextWeekEnd.addingTimeInterval(7 * 86_400),
+                    cardio: [], lift: [], endowedCredit: 0
+                ),
+                guardrails: MomentumGuardrails(recoveryWeeks: [], injuryFreezes: [], streakLossProtected: false),
+                now: nextWeekEnd.addingTimeInterval(3_600),
+                calendar: utcCalendar
+            )
+
+            #expect(reconciled.currentStreak == 1)
+        }
+
         @Test("MomentumVisibility persists and reloads as private-to-device")
         func visibilityPersistsAsPrivateToDevice() throws {
             let (store, _) = try makeStore()
