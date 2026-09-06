@@ -50,6 +50,7 @@ struct MomentumCopyTests {
         ("Milestones.week12", MomentumCopy.Milestones.week12),
         ("Milestones.week26", MomentumCopy.Milestones.week26),
         ("Milestones.week52", MomentumCopy.Milestones.week52),
+        ("Milestones.bonusShieldNote", MomentumCopy.Milestones.bonusShieldNote),
         ("RecoveryWeek.flagButton", MomentumCopy.RecoveryWeek.flagButton),
         ("RecoveryWeek.alertTitle", MomentumCopy.RecoveryWeek.alertTitle),
         ("RecoveryWeek.alertBody", MomentumCopy.RecoveryWeek.alertBody),
@@ -92,7 +93,7 @@ struct MomentumCopyTests {
         // enum namespace's static members, so this cannot mechanically detect a new
         // MomentumCopy constant that was never added to shippedStrings. It does catch an
         // accidental duplicate or removal within this file.
-        #expect(Self.shippedStrings.count == 47)
+        #expect(Self.shippedStrings.count == 48)
     }
 
     @Test("no shipped Momentum or Recovery string contains a banned framing token")

@@ -88,6 +88,15 @@ public enum MomentumCopy {
             default: return nil
             }
         }
+
+        /// WR-01's fix: makes MOMENTUM-05's "badge + bonus shield" mechanism explicit. Without
+        /// this line, `Empty.noShieldsBody` states only the ordinary 4-week accrual mechanism
+        /// (MOMENTUM-02), so a milestone tier's bonus shield (independently required by
+        /// MOMENTUM-05) can land as an unexplained double grant -- e.g. two shields appearing the
+        /// moment a user first reaches week 4, since that week is the first tier of both
+        /// requirements at once. This is intentional, not a bug (confirmed against
+        /// REQUIREMENTS.md); the fix is to explain it, never to collapse the double grant.
+        public static let bonusShieldNote = "Reaching a milestone (4, 12, 26, or 52 weeks) also grants a bonus shield, on top of the shield you already earn every 4 consecutive weeks."
     }
 
     // MARK: - Recovery Week flag

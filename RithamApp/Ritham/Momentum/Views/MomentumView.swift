@@ -151,6 +151,16 @@ struct MomentumView: View, OnboardingStepPresenting {
                 MilestoneBadgeList(awarded: summary.milestones)
             }
 
+            // WR-01's fix: explains the milestone bonus shield mechanism (MOMENTUM-05) so a
+            // shield count that jumps by two at once (ordinary 4-week accrual plus a milestone
+            // tier landing on the same week, e.g. week 4) never reads as an unexplained double
+            // grant. Shown alongside milestones regardless of whether any are earned yet, since
+            // the mechanism applies to every future tier too.
+            Text(MomentumCopy.Milestones.bonusShieldNote)
+                .font(RithamType.label)
+                .foregroundStyle(RithamColor.paper.opacity(0.7))
+                .fixedSize(horizontal: false, vertical: true)
+
             if Self.showsComebackCard(for: summary), let window = summary.openComebackWindow {
                 comebackCard(window)
             }
