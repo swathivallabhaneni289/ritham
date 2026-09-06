@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02
-current_phase_name: core-tracking-adjusted-guidance
-status: verification deferred (by user decision) — build continues
+current_phase: 3
+current_phase_name: Momentum & Recovery
+status: executing
 stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-09-06T07:47:01.610Z"
+last_updated: "2026-09-06T08:42:19.142Z"
 last_activity: 2026-09-06
-last_activity_desc: 02-16 Task 1 (StepRegistry cross-suite race fix, Phase2CoverageTests) committed and verified over ten consecutive full-target runs
+last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 30
+  total_plans: 40
   completed_plans: 30
   percent: 40
 ---
@@ -26,17 +26,17 @@ See: .planning/PROJECT.md (updated 2026-08-19)
 **Core value:** Every user 13 or older, any health background — can safely track real training and
 keep a fair, forgiving consistency streak, with core tracking always free and never subject to
 comparison or ranking.
-**Current focus:** Phase 02 — core-tracking-adjusted-guidance
+**Current focus:** Phase 3 — Momentum & Recovery
 
 ## Current Position
 
-Phase: 02 (core-tracking-adjusted-guidance) — CODE-COMPLETE, verification deferred
-Plan: 16 of 16 — Task 1 complete and verified; Tasks 2-3 (physical-device + AX3/AX5 checkpoint,
+Phase: 3 (Momentum & Recovery) — EXECUTING
+Plan: 1 of 10
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Proceeding to Phase 3 planning/build; Phase 2 stays unchecked in ROADMAP.md until the
+Status: Executing Phase 3
 batched verification pass runs
-Last activity: 2026-09-06 — 02-16 Task 1 (StepRegistry cross-suite race fix, Phase2CoverageTests) committed and verified over ten consecutive full-target runs
+Last activity: 2026-09-06 — Phase 3 execution started
 
 Progress: [██░░░░░░░░] 20%
 
