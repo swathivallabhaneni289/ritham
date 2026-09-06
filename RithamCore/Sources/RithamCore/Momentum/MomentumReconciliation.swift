@@ -130,10 +130,17 @@ public enum MomentumReconciliation {
     /// skips any week at or before the ledger's own `lastReconciledWeekStart` anchor, and folds
     /// the rest in order.
     ///
-    /// This task implements only the `met`/`paused`/`frozen`/`protectedMiss` branches and the
-    /// anchor advance. Shield accrual/consumption (on `shielded`) and comeback-window handling
-    /// (on `missed`) are completed by plans' later tasks — see the TODO markers below; neither
-    /// branch may be stubbed with placeholder behavior a later task would have to unpick.
+    /// Shield accrual/consumption and milestone awards are implemented here, both append-only or
+    /// monotonic. Idempotence (03-RESEARCH.md Pitfall 2) is delivered by two mechanisms, neither
+    /// replaceable by recomputing state from the current streak: the anchor skip above, and the
+    /// contains-check against `ledger.milestones` before appending a new award. A milestone is
+    /// never retracted even if a retroactive session edit (STRENGTH-05) later changes a past
+    /// week's derived qualifying count — reconciliation only ever asks whether a milestone has
+    /// already been awarded, never whether it should currently be true.
+    ///
+    /// Comeback-window handling (on `missed`) is completed by a later task — see the TODO marker
+    /// below; that branch is not stubbed with placeholder behavior a later task would have to
+    /// unpick.
     public static func reconcile(
         ledger: MomentumLedger,
         elapsedWeeks: [MomentumWeekInput],
@@ -156,11 +163,24 @@ public enum MomentumReconciliation {
             switch weekOutcome {
             case .met:
                 ledger.currentStreak += 1
-            case .paused, .frozen, .protectedMiss:
-                break
+                ledger.weeksTowardNextShield += 1
+                if ledger.weeksTowardNextShield >= MomentumLedger.weeksPerShield {
+                    ledger.weeksTowardNextShield = 0
+                    ledger.shieldCount = min(MomentumLedger.maxShields, ledger.shieldCount + 1)
+                }
+                if MomentumMilestone.tiers.contains(ledger.currentStreak),
+                   !ledger.milestones.contains(where: { $0.weekCount == ledger.currentStreak }) {
+                    ledger.milestones.append(MilestoneAward(
+                        id: UUID(),
+                        weekCount: ledger.currentStreak,
+                        awardedAt: week.weekEnd
+                    ))
+                    ledger.shieldCount = min(MomentumLedger.maxShields, ledger.shieldCount + 1)
+                }
             case .shielded:
-                // TODO(Task 2): shield consumption — decrement shieldCount, reset
-                // weeksTowardNextShield, leave currentStreak unchanged.
+                ledger.shieldCount -= 1
+                ledger.weeksTowardNextShield = 0
+            case .paused, .frozen, .protectedMiss:
                 break
             case .missed:
                 // TODO(Task 3): open a Comeback Window guarded on missedWeekStart uniqueness.

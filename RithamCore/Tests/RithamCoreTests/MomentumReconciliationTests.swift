@@ -417,7 +417,8 @@ struct MomentumReconciliationTests {
         let calendar = Self.utcCalendar()
         let start = Self.weekStart(2026, 1, 5)
         let week = Self.weekInput(weekStart: start)
-        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 2, shieldCount: 1)
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 2, shieldCount: 1)
+        ledger.weeksTowardNextShield = 2
         let guardrails = MomentumGuardrails(recoveryWeeks: [], injuryFreezes: [], streakLossProtected: true)
 
         let result = MomentumReconciliation.reconcile(
@@ -456,7 +457,9 @@ struct MomentumReconciliationTests {
         let calendar = Self.utcCalendar()
         let start = Self.weekStart(2026, 1, 5)
         let weeks = Self.consecutiveMetWeeks(count: 4, startingAt: start)
-        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 10)
+        // Starting streak of 20 is chosen so that none of 21/22/23/24 collide with a milestone
+        // tier (4/12/26/52) — this test isolates shield-accrual behavior from milestone behavior.
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 20)
         ledger.weeksTowardNextShield = 0
         ledger.shieldCount = 0
         let lastWeekStart = weeks.last!.weekStart
@@ -470,7 +473,7 @@ struct MomentumReconciliationTests {
             calendar: calendar
         )
 
-        #expect(result.currentStreak == 14)
+        #expect(result.currentStreak == 24)
         #expect(result.shieldCount == 1)
         #expect(result.weeksTowardNextShield == 0)
     }
@@ -480,7 +483,8 @@ struct MomentumReconciliationTests {
         let calendar = Self.utcCalendar()
         let start = Self.weekStart(2026, 1, 5)
         let weeks = Self.consecutiveMetWeeks(count: 3, startingAt: start)
-        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 10)
+        // Starting streak of 20 avoids colliding with a milestone tier across 21/22/23.
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 20)
         ledger.weeksTowardNextShield = 0
         ledger.shieldCount = 0
         let lastWeekStart = weeks.last!.weekStart
@@ -494,7 +498,7 @@ struct MomentumReconciliationTests {
             calendar: calendar
         )
 
-        #expect(result.currentStreak == 13)
+        #expect(result.currentStreak == 23)
         #expect(result.shieldCount == 0)
         #expect(result.weeksTowardNextShield == 3)
     }
