@@ -193,6 +193,14 @@ public enum MomentumReconciliation {
             case .paused, .frozen, .protectedMiss:
                 break
             case .missed:
+                // Deliberate asymmetry with `.shielded` above: a *shielded* miss resets
+                // `weeksTowardNextShield` to 0 because the shield itself was just spent covering
+                // this week, so accrual toward the next one restarts from nothing. A *bare* miss
+                // (no shield available) spends nothing, and opens a Comeback window instead --
+                // partial accrual toward the next shield is left untouched here so a user
+                // part-way through earning a shield isn't also penalized on that counter while
+                // they're already dealing with an open comeback window and a to-be-resolved
+                // streak. (WR-02)
                 let alreadyOpened = ledger.comebackWindows.contains { $0.missedWeekStart == week.weekStart }
                 if !alreadyOpened {
                     let opensAt = week.weekEnd
