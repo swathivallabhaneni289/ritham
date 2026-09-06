@@ -53,6 +53,7 @@
 		5420001A0EB86B949E9EAF85 /* BandMotif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5D3C503846C096E9A8713 /* BandMotif.swift */; };
 		5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D475288D596A167095155 /* ConditionTagRecord.swift */; };
 		5551D280FD237803E5CD3D47 /* PreAssessmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552A5F0274532CE45416EB69 /* PreAssessmentView.swift */; };
+		5ABFC1E89FE1EB5F93728CE6 /* Phase3StepRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E502E71C4A59D4B6159311F5 /* Phase3StepRegistration.swift */; };
 		5F6AF00162B0EA447E75C145 /* MomentumStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081EC87233855904DB9C8EFC /* MomentumStoreTests.swift */; };
 		6436ACB30BF8188D864F46CD /* StrengthHistoryRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6401A5B4F844C3B3B3E2EB5E /* StrengthHistoryRegistration.swift */; };
 		656B6087193F6697574117C3 /* MomentumSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79421A5B2DF4A0AD43445519 /* MomentumSummary.swift */; };
@@ -71,6 +72,7 @@
 		84DE0CBBAAF0046434CD77C6 /* AboutYouRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B2F8F3C1DFD35D08F440D /* AboutYouRegistration.swift */; };
 		85BD7E6ECCA0763105D74388 /* MomentumLedgerRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */; };
 		87808DE1AEE493D4C2504F34 /* WelcomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */; };
+		89964437651E89BA6F73F524 /* MomentumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCB043980443A164BCA6359 /* MomentumView.swift */; };
 		8AE5EF7DFD295F7364E397D8 /* Phase2StepRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632509F9A89990336A60AA9 /* Phase2StepRegistration.swift */; };
 		8B3837980F3C805054099A91 /* RecommendationsRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B94745BFCB721026C5DCFE3 /* RecommendationsRegistration.swift */; };
 		8E2E6F391B9959A6EBD1A8A8 /* CardioActivityPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8973B69865744CC62FE8838E /* CardioActivityPickerView.swift */; };
@@ -110,6 +112,7 @@
 		CB5CC7503C59AEDFAA63069E /* RithamColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A018DD943E342E021CC548 /* RithamColor.swift */; };
 		CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B19DDAF63B16BBF06FAA39 /* OnboardingStepPresenting.swift */; };
 		CFDECDFE2EAE59916DF92C3D /* SleepCheckInRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9BB8D7CBC56CF6B75FFB13F /* SleepCheckInRecord.swift */; };
+		D170EDC7AAE93F48DA353EC7 /* MomentumRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E85752B692056E1D76046D /* MomentumRegistration.swift */; };
 		D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */; };
 		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
 		D56882DC7CE1313B4A28320F /* RecommendationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F30FF2712BABA41FDE11FD /* RecommendationsView.swift */; };
@@ -178,6 +181,7 @@
 		354827AFD6902E7D09FD3584 /* CalibrationCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationCompleteView.swift; sourceTree = "<group>"; };
 		35DDF9B0827C7ACB6CFF49C2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		384060D1603588777B8A5894 /* CalibrationSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSessionView.swift; sourceTree = "<group>"; };
+		39E85752B692056E1D76046D /* MomentumRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumRegistration.swift; sourceTree = "<group>"; };
 		3C81838575239D10BBB4B51A /* StrengthHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthHistoryTests.swift; sourceTree = "<group>"; };
 		3CC386A79787043DBCBCDD18 /* MovementSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementSnapshotTests.swift; sourceTree = "<group>"; };
 		42ADF8216D8BDBB06DB47AA7 /* MomentumViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumViewTests.swift; sourceTree = "<group>"; };
@@ -266,7 +270,9 @@
 		D78DFBC328CACEAE0C82CB19 /* MomentumSuiteSerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumSuiteSerialization.swift; sourceTree = "<group>"; };
 		D9E042D4ECE70F89401D7D36 /* CardioViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioViewTests.swift; sourceTree = "<group>"; };
 		DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometryTests.swift; sourceTree = "<group>"; };
+		DDCB043980443A164BCA6359 /* MomentumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumView.swift; sourceTree = "<group>"; };
 		E19602E32E53C3C028C2D45D /* DisclaimerTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclaimerTagTests.swift; sourceTree = "<group>"; };
+		E502E71C4A59D4B6159311F5 /* Phase3StepRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3StepRegistration.swift; sourceTree = "<group>"; };
 		E89E4D8F0456F5D8ACD8674A /* CalibrationIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationIntroView.swift; sourceTree = "<group>"; };
 		E936218B6545E5752A18E249 /* StrengthLoggingRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthLoggingRegistration.swift; sourceTree = "<group>"; };
 		EA6AD193A95EFC8C360C8DD4 /* GuidanceRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceRegistration.swift; sourceTree = "<group>"; };
@@ -312,8 +318,11 @@
 		165F362B928E1D41D48EAE06 /* Momentum */ = {
 			isa = PBXGroup;
 			children = (
+				39E85752B692056E1D76046D /* MomentumRegistration.swift */,
 				79421A5B2DF4A0AD43445519 /* MomentumSummary.swift */,
+				E502E71C4A59D4B6159311F5 /* Phase3StepRegistration.swift */,
 				637FA9FA6EA4CDB6835A3271 /* Components */,
+				B2DCFBB8ABD4771E78F4F597 /* Views */,
 			);
 			path = Momentum;
 			sourceTree = "<group>";
@@ -536,6 +545,14 @@
 				309EA04063A9FC990A21210A /* RithamTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B2DCFBB8ABD4771E78F4F597 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DDCB043980443A164BCA6359 /* MomentumView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		B8D4913BFF48B3FC905612AC /* Views */ = {
@@ -784,8 +801,10 @@
 				0FE18A7CC531422CA62B5065 /* MilestoneBadgeList.swift in Sources */,
 				85BD7E6ECCA0763105D74388 /* MomentumLedgerRecords.swift in Sources */,
 				C8AA1EBD187444041458D6E1 /* MomentumProgressBlocks.swift in Sources */,
+				D170EDC7AAE93F48DA353EC7 /* MomentumRegistration.swift in Sources */,
 				8FA438D74BA36B224DC66FDE /* MomentumStateRecord.swift in Sources */,
 				656B6087193F6697574117C3 /* MomentumSummary.swift in Sources */,
+				89964437651E89BA6F73F524 /* MomentumView.swift in Sources */,
 				6A84B0F8DC471684A46E0482 /* MotionActivityDetector.swift in Sources */,
 				F4EE2649683C66FE6B4D9EB6 /* NutritionGuidanceSection.swift in Sources */,
 				4623D5B2CE5480BAF72A7109 /* OnboardingCompletionRegistration.swift in Sources */,
@@ -793,6 +812,7 @@
 				CDE102911222255956BEE569 /* OnboardingStepPresenting.swift in Sources */,
 				F03CD5A2D32F1E0BCBAA37F5 /* PedometerSession.swift in Sources */,
 				8AE5EF7DFD295F7364E397D8 /* Phase2StepRegistration.swift in Sources */,
+				5ABFC1E89FE1EB5F93728CE6 /* Phase3StepRegistration.swift in Sources */,
 				C1AF2ADF5B66142103586431 /* PlateCalculatorView.swift in Sources */,
 				5551D280FD237803E5CD3D47 /* PreAssessmentView.swift in Sources */,
 				9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */,
