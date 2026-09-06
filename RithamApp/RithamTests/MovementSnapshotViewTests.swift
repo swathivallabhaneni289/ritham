@@ -161,6 +161,42 @@ extension MomentumContainerTouchingSuites {
             #expect(days.first(where: { calendar.isDate($0.date, inSameDayAs: day) })?.hasLoggedActivity == true)
         }
 
+        @Test("a session logged on the last calendar day of the displayed month marks that day (CR-02)")
+        func sessionOnLastDayOfMonthMarksThatDay() throws {
+            // A fixed month/year (January 2026, 31 days) rather than "today" -- deterministic
+            // regardless of which day of the month the suite happens to run on, unlike
+            // `monthWithCardioSessionMarksExactlyThatDay`'s "today" fixture. Before the CR-02 fix,
+            // `monthRange`'s upper bound was midnight at the *start* of Jan 31, so a session
+            // logged any time after midnight that day fell outside the inclusive-upper-bound
+            // session-query predicate and was silently never marked.
+            var components = DateComponents()
+            components.year = 2026
+            components.month = 1
+            components.day = 31
+            let lastDayOfMonth = calendar.date(from: components)!
+            let sessionStart = lastDayOfMonth.addingTimeInterval(9 * 3_600) // 09:00 on Jan 31.
+            let store = try makeStore()
+            try store.saveCardioSession(CardioSession(
+                activityType: .run,
+                source: .gps,
+                startedAt: sessionStart,
+                endedAt: sessionStart.addingTimeInterval(1_800),
+                progress: CardioProgress(continuousDuration: 1_800, distanceMeters: 5_000)
+            ))
+
+            components.day = 15
+            let anyDayInMonth = calendar.date(from: components)!
+            guard let range = MovementSnapshotView.monthRange(containing: anyDayInMonth, calendar: calendar) else {
+                Issue.record("expected a resolvable month range")
+                return
+            }
+            let days = try store.movementSnapshotDays(in: range)
+
+            let markedDays = days.filter(\.hasLoggedActivity)
+            #expect(markedDays.count == 1)
+            #expect(markedDays.first.map { calendar.isDate($0.date, inSameDayAs: lastDayOfMonth) } == true)
+        }
+
         @Test("a month with no stored session renders the catalog's no-entries empty state")
         func monthWithNoSessionRendersEmptyState() throws {
             let day = calendar.startOfDay(for: Date())

@@ -148,12 +148,15 @@ struct MovementSnapshotView: View, OnboardingStepPresenting {
 
 extension MovementSnapshotView {
     /// The closed date range spanning every calendar day in the month containing `date`, or
-    /// `nil` if the calendar cannot resolve the month's interval.
+    /// `nil` if the calendar cannot resolve the month's interval. The upper bound is pushed to
+    /// one millisecond before the start of the day *after* the last day (mirroring
+    /// `MomentumWeek.weekRange`'s own `-0.001`-second convention) rather than midnight at the
+    /// *start* of the last day -- an inclusive-upper-bound predicate against a start-of-day upper
+    /// bound would silently exclude any session logged later that same day.
     nonisolated static func monthRange(containing date: Date, calendar: Calendar) -> ClosedRange<Date>? {
         guard let interval = calendar.dateInterval(of: .month, for: date) else { return nil }
         let firstDay = calendar.startOfDay(for: interval.start)
-        guard let lastDay = calendar.date(byAdding: .day, value: -1, to: interval.end) else { return nil }
-        return firstDay...calendar.startOfDay(for: lastDay)
+        return firstDay...interval.end.addingTimeInterval(-0.001)
     }
 
     nonisolated static func monthTitle(for date: Date, calendar: Calendar) -> String {
