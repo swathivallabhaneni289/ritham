@@ -643,11 +643,14 @@ public final class HealthDataStore {
     /// Persists `ledger`'s scalar fields via `upsertMomentumState` (create on first write, mutate
     /// in place afterwards, never delete-then-reinsert), then inserts only the milestone awards
     /// and comeback windows whose identifiers are not already stored, and updates the claim
-    /// fields of an already-stored, still-unclaimed comeback window whose identifier matches.
-    /// This method never issues a delete call against a milestone or comeback row -- that asymmetry
-    /// is deliberate: plan 03-03's `MomentumReconciliation.reconcile` fold guarantees append-only
-    /// output (it never retracts an already-granted milestone or comeback window), and this
-    /// method is the persistence-layer half of that same guarantee (T-3-04's mitigation).
+    /// fields and the resolved marker of an already-stored comeback window whose identifier
+    /// matches (claim fields only while still unclaimed; `resolvedAt` only while still
+    /// unresolved). Persisting `resolvedAt` is what makes the unclaimed-expiry transition survive
+    /// an app relaunch -- see `ComebackWindowRecord.resolvedAt`'s doc comment. This method never
+    /// issues a delete call against a milestone or comeback row -- that asymmetry is deliberate:
+    /// plan 03-03's `MomentumReconciliation.reconcile` fold guarantees append-only output (it
+    /// never retracts an already-granted milestone or comeback window), and this method is the
+    /// persistence-layer half of that same guarantee (T-3-04's mitigation).
     public func saveMomentumLedger(_ ledger: MomentumLedger) throws {
         try upsertMomentumState { record in
             record.currentStreak = ledger.currentStreak
@@ -675,6 +678,9 @@ public final class HealthDataStore {
                 if existing.claimedAt == nil {
                     existing.claimedAt = window.claimedAt
                     existing.claimingSessionID = window.claimingSessionID
+                }
+                if existing.resolvedAt == nil {
+                    existing.resolvedAt = window.resolvedAt
                 }
             } else {
                 context.insert(ComebackWindowRecord(window: window))

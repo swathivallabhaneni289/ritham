@@ -1011,6 +1011,115 @@ struct MomentumReconciliationTests {
         #expect(result2 == result1)
     }
 
+    @Test("an expired-unclaimed comeback window does not keep re-zeroing the streak once new weeks are met (CR-01)")
+    func expiredUnclaimedWindowDoesNotRepeatedlyResetStreakOnLaterMetWeeks() {
+        let calendar = Self.utcCalendar()
+        let week1Start = Self.weekStart(2026, 1, 5)
+        let week2Start = MomentumWeek.nextWeekStart(after: week1Start, calendar: calendar)
+        let week3Start = MomentumWeek.nextWeekStart(after: week2Start, calendar: calendar)
+        let week4Start = MomentumWeek.nextWeekStart(after: week3Start, calendar: calendar)
+        let week5Start = MomentumWeek.nextWeekStart(after: week4Start, calendar: calendar)
+
+        let week1 = Self.weekInput(weekStart: week1Start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let closesAt = calendar.date(byAdding: .day, value: MomentumReconciliation.comebackWindowDays, to: week1.weekEnd)!
+
+        // First reconcile: week1 is missed, no shield, window opens and (per this same call, since
+        // `now` is already past `closesAt`) expires unclaimed. This mirrors
+        // `reconcilingTwiceOverAClosedUnclaimedWindowIsANoOp`'s first call exactly.
+        let firstNow = closesAt.addingTimeInterval(3600)
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week1],
+            currentWeek: Self.weekInput(weekStart: week2Start),
+            guardrails: Self.noGuardrails(),
+            now: firstNow,
+            calendar: calendar
+        )
+        #expect(result1.currentStreak == 0)
+        #expect(result1.streakLabelKind == .rebuilt)
+        #expect(result1.comebackWindows[0].resolvedAt != nil)
+        #expect(result1.comebackWindows[0].claimedAt == nil)
+
+        // Second reconcile, much later: three brand-new weeks (2, 3, 4) are each independently
+        // met. Their qualifying sessions are dated well past the window's `closesAt` (which falls
+        // within week2's first 3 days) so this exercises the *expiry* path, not a same-call
+        // claim -- if these sessions instead fell inside the window, the resolution pass would
+        // take the claim branch instead, and this test would no longer exercise CR-01's primary
+        // bug (an already-resolved, unclaimed window repeatedly re-zeroing the streak). Before
+        // the CR-01 fix, the unconditional `now >= window.closesAt` branch would re-fire on every
+        // one of these calls (the window's `claimedAt` stays `nil` forever and `now` only grows
+        // further past `closesAt`), permanently pinning `currentStreak` at 0.
+        func metWeek(_ start: Date) -> MomentumWeekInput {
+            Self.weekInput(weekStart: start, cardio: (0..<3).map {
+                Self.qualifyingCardioSession(startedAt: start.addingTimeInterval(4 * 86_400 + Double($0) * 3600))
+            })
+        }
+        let week2 = metWeek(week2Start)
+        let week3 = metWeek(week3Start)
+        let week4 = metWeek(week4Start)
+        let secondNow = week4.weekEnd.addingTimeInterval(3600)
+
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: result1,
+            elapsedWeeks: [week1, week2, week3, week4],
+            currentWeek: Self.weekInput(weekStart: week5Start),
+            guardrails: Self.noGuardrails(),
+            now: secondNow,
+            calendar: calendar
+        )
+
+        #expect(result2.currentStreak == 3)
+        #expect(result2.streakLabelKind == .rebuilt)
+        #expect(result2.comebackWindows[0].claimedAt == nil)
+    }
+
+    @Test("claiming a comeback window in the same call that also folds that week as met produces a result independent of reconciliation timing (CR-01 addendum)")
+    func claimingWindowInSameCallAsIndependentlyMetWeekDoesNotClobberHigherStreak() {
+        let calendar = Self.utcCalendar()
+        let week1Start = Self.weekStart(2026, 1, 5)
+        let week2Start = MomentumWeek.nextWeekStart(after: week1Start, calendar: calendar)
+
+        let week1 = Self.weekInput(weekStart: week1Start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+
+        // The claiming session falls inside the comeback window (opens at week1.weekEnd, closes 3
+        // days later) *and* is one of week2's three qualifying sessions, so week2 independently
+        // folds as `.met` in the very same `reconcile` call that resolves the window's claim.
+        let claimingSession = Self.qualifyingCardioSession(startedAt: week1.weekEnd.addingTimeInterval(3600))
+        let laterQualifyingSessions = (1..<3).map {
+            Self.qualifyingCardioSession(startedAt: week1.weekEnd.addingTimeInterval(Double(3 + $0) * 86_400))
+        }
+        let week2 = Self.weekInput(weekStart: week2Start, cardio: [claimingSession] + laterQualifyingSessions)
+        let now = week2.weekEnd.addingTimeInterval(3600)
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week1, week2],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: week2Start, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        // Per-week fold: week1 missed (streak untouched, stays at streakBeforeMiss == 5), week2
+        // met (streak += 1 -> 6, naively treating the still-unresolved miss as contiguous).
+        // Window resolution then claims the window using `claimingSession`.
+        //
+        // The correct restored value is 5, not 4 and not 6 -- checked by path-independence, since
+        // reconciliation-on-read must not let the *timing* of a read change the outcome for the
+        // same underlying history:
+        //   - Reconciled once at the start of week2 (claim via a `currentWeek` session, week2 not
+        //     yet folded as met): claim sets streak to `max(1, 5 - 1)` == 4. A later read that
+        //     folds week2 as met raises it to 5.
+        //   - Reconciled once, later, spanning both week1's miss and week2's met week in a single
+        //     call (this test): must also land on 5.
+        // Pre-fix, the claim branch's outright assignment `max(1, streakBeforeMiss - 1)` == 4
+        // would silently discard week2's already-earned +1, landing on 4 instead of 5.
+        #expect(result.currentStreak == 5)
+        #expect(result.comebackWindows[0].claimedAt == claimingSession.startedAt)
+    }
+
     @Test("reconciliationOnlyEverAddsToTheLedger")
     func reconciliationOnlyEverAddsToTheLedger() {
         let calendar = Self.utcCalendar()

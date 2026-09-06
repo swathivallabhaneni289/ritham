@@ -239,13 +239,31 @@ public enum MomentumReconciliation {
                 .min(by: { $0.startedAt < $1.startedAt }) {
                 ledger.comebackWindows[index].claimedAt = claiming.startedAt
                 ledger.comebackWindows[index].claimingSessionID = claiming.id
-                ledger.currentStreak = max(1, window.streakBeforeMiss - 1)
-            } else if now >= window.closesAt {
+                ledger.comebackWindows[index].resolvedAt = now
+                // The `.missed` branch above deliberately leaves `currentStreak` untouched, so it
+                // still reads exactly `window.streakBeforeMiss` unless a *later* week, processed
+                // by this same fold pass after the miss, was independently `.met` and incremented
+                // it further (each such week adds exactly 1). An outright
+                // `max(1, streakBeforeMiss - 1)` assignment would silently discard those
+                // already-earned increments. Restoring to one-less-than-before-the-miss and then
+                // re-adding whatever was earned since the miss keeps the result independent of
+                // *when* the user happens to reconcile (one call spanning the miss and the
+                // met week vs. two separate later calls must produce the same answer).
+                let restored = max(1, window.streakBeforeMiss - 1)
+                let earnedSinceMiss = max(0, ledger.currentStreak - window.streakBeforeMiss)
+                ledger.currentStreak = restored + earnedSinceMiss
+            } else if now >= window.closesAt, window.resolvedAt == nil {
+                // Gated on `resolvedAt == nil` so this transition applies exactly once per
+                // window. Without this gate, an already-expired-and-resolved window would keep
+                // re-zeroing `currentStreak` on every future `reconcile` call for the life of the
+                // install, because `claimedAt` stays `nil` (there is nothing to claim) and
+                // `now >= window.closesAt` stays true forever once it first becomes true.
                 ledger.currentStreak = 0
                 ledger.streakLabelKind = .rebuilt
+                ledger.comebackWindows[index].resolvedAt = now
             }
-            // Else: the window is still open and unclaimed — leave both it and the streak
-            // untouched.
+            // Else: the window is still open and unclaimed, or already resolved — leave both it
+            // and the streak untouched.
         }
 
         return ledger

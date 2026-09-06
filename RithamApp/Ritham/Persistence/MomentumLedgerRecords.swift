@@ -57,6 +57,12 @@ public final class ComebackWindowRecord {
     public var claimedAt: Date?
     public var claimingSessionID: UUID?
     public var streakBeforeMiss: Int
+    /// Mirrors `ComebackWindow.resolvedAt` -- set once, either on claim or on unclaimed expiry,
+    /// by `HealthDataStore.saveMomentumLedger`'s in-place-update branch. Without this column, the
+    /// domain-level resolved marker would be recomputed as "unresolved" on every fresh load from
+    /// `loadMomentumLedger`, reintroducing the permanent-streak-zero bug after the next app
+    /// relaunch.
+    public var resolvedAt: Date?
 
     public init(
         id: UUID,
@@ -65,7 +71,8 @@ public final class ComebackWindowRecord {
         closesAt: Date,
         claimedAt: Date?,
         claimingSessionID: UUID?,
-        streakBeforeMiss: Int
+        streakBeforeMiss: Int,
+        resolvedAt: Date? = nil
     ) {
         self.id = id
         self.missedWeekStart = missedWeekStart
@@ -74,6 +81,7 @@ public final class ComebackWindowRecord {
         self.claimedAt = claimedAt
         self.claimingSessionID = claimingSessionID
         self.streakBeforeMiss = streakBeforeMiss
+        self.resolvedAt = resolvedAt
     }
 
     public convenience init(window: ComebackWindow) {
@@ -84,7 +92,8 @@ public final class ComebackWindowRecord {
             closesAt: window.closesAt,
             claimedAt: window.claimedAt,
             claimingSessionID: window.claimingSessionID,
-            streakBeforeMiss: window.streakBeforeMiss
+            streakBeforeMiss: window.streakBeforeMiss,
+            resolvedAt: window.resolvedAt
         )
     }
 
@@ -98,7 +107,8 @@ public final class ComebackWindowRecord {
             closesAt: closesAt,
             claimedAt: claimedAt,
             claimingSessionID: claimingSessionID,
-            streakBeforeMiss: streakBeforeMiss
+            streakBeforeMiss: streakBeforeMiss,
+            resolvedAt: resolvedAt
         )
     }
 }

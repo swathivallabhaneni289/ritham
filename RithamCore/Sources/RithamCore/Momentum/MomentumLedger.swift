@@ -59,6 +59,12 @@ public struct ComebackWindow: Sendable, Equatable, Identifiable {
     public var claimedAt: Date?
     public var claimingSessionID: UUID?
     public var streakBeforeMiss: Int
+    /// Set exactly once, either at claim time or at unclaimed-expiry time, by
+    /// `MomentumReconciliation.reconcile`'s post-fold resolution pass — never re-derived from
+    /// `now`/`closesAt` on a later call. This is what makes the unclaimed-expiry transition
+    /// idempotent: once set, the resolution pass never re-applies the `currentStreak = 0`
+    /// side effect for this window again, no matter how many times `reconcile` runs afterward.
+    public var resolvedAt: Date?
 
     public init(
         id: UUID,
@@ -67,7 +73,8 @@ public struct ComebackWindow: Sendable, Equatable, Identifiable {
         closesAt: Date,
         claimedAt: Date?,
         claimingSessionID: UUID?,
-        streakBeforeMiss: Int
+        streakBeforeMiss: Int,
+        resolvedAt: Date? = nil
     ) {
         self.id = id
         self.missedWeekStart = missedWeekStart
@@ -76,6 +83,7 @@ public struct ComebackWindow: Sendable, Equatable, Identifiable {
         self.claimedAt = claimedAt
         self.claimingSessionID = claimingSessionID
         self.streakBeforeMiss = streakBeforeMiss
+        self.resolvedAt = resolvedAt
     }
 
     /// Whether the Comeback CTA should be visible right now: unclaimed and `now` is strictly
