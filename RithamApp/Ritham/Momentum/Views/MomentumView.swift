@@ -44,6 +44,38 @@ final class MomentumViewModel {
             loadError = error
         }
     }
+
+    // MARK: - Task 3: the two structurally separate self-report guardrail actions
+    //
+    // Per D-03, the Recovery Week flag (MOMENTUM-03) and the injury/pain freeze (MOMENTUM-08) are
+    // two structurally independent state machines. Each method here calls exactly one
+    // `MomentumSummaryReader` action method and nothing else -- neither method calls the other,
+    // and neither shares any mutation path beyond reloading the summary afterward so the screen
+    // reflects the new state on its next render.
+
+    /// Confirms the Recovery Week flag for the week containing `now`.
+    func flagRecoveryWeek(now: Date = Date()) {
+        performGuardrailAction(now: now) { try self.reader.flagRecoveryWeek(now: now) }
+    }
+
+    /// Confirms an injury/pain freeze starting at `now`.
+    func flagInjury(now: Date = Date()) {
+        performGuardrailAction(now: now) { try self.reader.flagInjury(now: now) }
+    }
+
+    /// Clears the open injury/pain freeze, if any, at `now`.
+    func clearInjury(now: Date = Date()) {
+        performGuardrailAction(now: now) { try self.reader.clearInjury(now: now) }
+    }
+
+    private func performGuardrailAction(now: Date, _ action: () throws -> Void) {
+        do {
+            try action()
+            load(now: now)
+        } catch {
+            loadError = error
+        }
+    }
 }
 
 struct MomentumView: View, OnboardingStepPresenting {
@@ -56,6 +88,12 @@ struct MomentumView: View, OnboardingStepPresenting {
     let flow: OnboardingFlow
     @Environment(\.modelContext) private var modelContext
     @State private var model: MomentumViewModel?
+
+    // Task 3: two separate `@State` booleans, one per row -- confirming or dismissing one alert
+    // can never touch the other row's presentation state. No enum, no shared "which alert is
+    // showing" flag of any kind (see this file's Task 3 section for the full D-03 rationale).
+    @State private var showingRecoveryWeekAlert = false
+    @State private var showingInjuryAlert = false
 
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Momentum") {
@@ -118,7 +156,92 @@ struct MomentumView: View, OnboardingStepPresenting {
             }
 
             sessionListSection(summary)
+
+            recoveryWeekRow(summary)
+            injuryRow(summary)
         }
+    }
+
+    // MARK: - Task 3: two structurally separate self-report controls
+    //
+    // Per D-03 (RithamCore-level) and its direct UI consequence (03-UI-SPEC.md Component 5), the
+    // Recovery Week flag and the injury/pain freeze render as two clearly separate rows: two
+    // different SF Symbols, two independent `@State` alert-presentation booleans, two separate
+    // `.alert(...)` confirmations. They must never be merged into one row, one icon, one
+    // enum-driven picker, or one section header implying they are a single mechanic. Neither row
+    // uses `RithamColor.destructive` -- clearing an injury flag is a state change, not a
+    // delete/irreversible action, and this phase has no destructive action of any kind.
+
+    @ViewBuilder
+    private func recoveryWeekRow(_ summary: MomentumSummary) -> some View {
+        if summary.isRecoveryWeekFlagged {
+            // Already flagged: a plain, non-interactive state, not a second control and not
+            // styled as an error. No distinct "already flagged" copy exists in MomentumCopy, so
+            // this reuses the same flagButton string as a plain label rather than drafting new
+            // copy the UI-SPEC's Copywriting Contract doesn't call for.
+            controlLabel(icon: "figure.walk.motion", title: MomentumCopy.RecoveryWeek.flagButton)
+        } else {
+            Button {
+                showingRecoveryWeekAlert = true
+            } label: {
+                controlLabel(icon: "figure.walk.motion", title: MomentumCopy.RecoveryWeek.flagButton)
+            }
+            .alert(MomentumCopy.RecoveryWeek.alertTitle, isPresented: $showingRecoveryWeekAlert) {
+                Button(MomentumCopy.RecoveryWeek.confirmButton) {
+                    model?.flagRecoveryWeek()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(MomentumCopy.RecoveryWeek.alertBody)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func injuryRow(_ summary: MomentumSummary) -> some View {
+        if summary.isInjuryFrozen {
+            Button {
+                showingInjuryAlert = true
+            } label: {
+                controlLabel(icon: "bandage", title: MomentumCopy.Injury.clearButton)
+            }
+            .alert(MomentumCopy.Injury.clearAlertTitle, isPresented: $showingInjuryAlert) {
+                Button(MomentumCopy.Injury.clearButton) {
+                    model?.clearInjury()
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+        } else {
+            Button {
+                showingInjuryAlert = true
+            } label: {
+                controlLabel(icon: "bandage", title: MomentumCopy.Injury.flagButton)
+            }
+            .alert(MomentumCopy.Injury.alertTitle, isPresented: $showingInjuryAlert) {
+                Button(MomentumCopy.Injury.confirmButton) {
+                    model?.flagInjury()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(MomentumCopy.Injury.alertBody)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func controlLabel(icon: String, title: String) -> some View {
+        HStack(spacing: RithamSpacing.sm) {
+            Image(systemName: icon)
+            Text(title)
+        }
+        .font(RithamType.body)
+        .foregroundStyle(RithamColor.paper)
+        .frame(minHeight: RithamSpacing.minimumTapTarget)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(
+            RoundedRectangle(cornerRadius: RithamSpacing.sm)
+                .stroke(RithamColor.paper, lineWidth: 1)
+        )
     }
 
     @ViewBuilder
@@ -226,5 +349,12 @@ extension MomentumView {
     /// a default value invented for a field that doesn't exist on that record type.
     nonisolated static func showsVerificationLabel(for entry: MomentumSessionEntry) -> Bool {
         entry.verificationLabel != nil
+    }
+
+    /// The injury row's label: `MomentumCopy.Injury.clearButton` exactly when `isInjuryFrozen`,
+    /// `MomentumCopy.Injury.flagButton` otherwise. Depends only on `isInjuryFrozen`, never on
+    /// `isRecoveryWeekFlagged` -- the two self-report controls share no state (D-03).
+    nonisolated static func injuryRowLabel(isInjuryFrozen: Bool) -> String {
+        isInjuryFrozen ? MomentumCopy.Injury.clearButton : MomentumCopy.Injury.flagButton
     }
 }

@@ -172,6 +172,60 @@ struct MomentumViewTests {
         #expect(MomentumView.showsVerificationLabel(for: manualCardio))
         #expect(!MomentumView.showsVerificationLabel(for: lift))
     }
+
+    // MARK: - Task 3: Recovery Week and injury self-report controls
+
+    @Test("the Recovery Week alert's three strings equal the MomentumCopy.RecoveryWeek constants")
+    func recoveryWeekAlertStringsMatchMomentumCopyConstants() {
+        #expect(MomentumCopy.RecoveryWeek.alertTitle == "Flag this week as a Recovery Week?")
+        #expect(MomentumCopy.RecoveryWeek.alertBody.contains("pauses this week's target"))
+        // The row's label and the alert's confirm button are the same shipped string.
+        #expect(MomentumCopy.RecoveryWeek.confirmButton == MomentumCopy.RecoveryWeek.flagButton)
+    }
+
+    @Test("the injury alert's strings equal the MomentumCopy.Injury constants, and the row's label switches to the clear string exactly when a freeze is open")
+    func injuryAlertStringsMatchMomentumCopyAndLabelSwitchesWhenFrozen() {
+        #expect(MomentumCopy.Injury.alertTitle == "Freeze your streak for pain or injury?")
+        #expect(MomentumCopy.Injury.clearAlertTitle == "Clear injury flag and resume Momentum?")
+        #expect(MomentumView.injuryRowLabel(isInjuryFrozen: false) == MomentumCopy.Injury.flagButton)
+        #expect(MomentumView.injuryRowLabel(isInjuryFrozen: true) == MomentumCopy.Injury.clearButton)
+    }
+
+    @Test("the two self-report controls share no state: toggling one leaves the other's derived state unchanged")
+    func theTwoSelfReportControlsShareNoState() {
+        let recoveryFlaggedOnly = makeSummary(isRecoveryWeekFlagged: true, isInjuryFrozen: false)
+        let injuryFrozenOnly = makeSummary(isRecoveryWeekFlagged: false, isInjuryFrozen: true)
+
+        // Flagging Recovery Week (recoveryFlaggedOnly) leaves the injury row's derived label at
+        // its un-frozen value -- toggling one control never moves the other's derived state.
+        #expect(MomentumView.injuryRowLabel(isInjuryFrozen: recoveryFlaggedOnly.isInjuryFrozen) == MomentumCopy.Injury.flagButton)
+        #expect(recoveryFlaggedOnly.isInjuryFrozen == false)
+
+        // Freezing for injury (injuryFrozenOnly) leaves the Recovery Week flag state untouched.
+        #expect(injuryFrozenOnly.isRecoveryWeekFlagged == false)
+        #expect(MomentumView.injuryRowLabel(isInjuryFrozen: injuryFrozenOnly.isInjuryFrozen) == MomentumCopy.Injury.clearButton)
+    }
+
+    /// Form used: a comment-filtered source check, per this task's own allowed alternative --
+    /// `RithamColor.destructive` is not reachable from a Swift Testing assertion without
+    /// rendering the view (no ViewInspector-style tooling exists in this codebase). Reads
+    /// `MomentumView.swift`'s own source relative to this test file's `#filePath` and asserts the
+    /// token never appears outside a `//` comment line.
+    @Test("no Momentum control declares the destructive color, checked by filtering the view's own source for comment lines")
+    func noMomentumControlUsesTheDestructiveColor() throws {
+        let thisFile = URL(fileURLWithPath: #filePath)
+        // RithamApp/RithamTests/MomentumViewTests.swift -> RithamApp/Ritham/Momentum/Views/MomentumView.swift
+        let viewFile = thisFile
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Ritham/Momentum/Views/MomentumView.swift")
+        let source = try String(contentsOf: viewFile, encoding: .utf8)
+        let nonCommentSource = source
+            .components(separatedBy: .newlines)
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+            .joined(separator: "\n")
+        #expect(!nonCommentSource.contains("RithamColor.destructive"))
+    }
 }
 
 // MARK: - Task 2: registration coverage
