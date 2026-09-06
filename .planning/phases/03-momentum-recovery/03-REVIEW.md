@@ -318,6 +318,14 @@ collapsed to one, and if intended, the copy should say so.
 with ordinary 4-week accrual, or (b) add copy acknowledging the milestone bonus shield mechanism, so
 the two-shields-at-week-4 outcome is explained rather than silently surprising.
 
+**Addendum (orchestrator, confirmed against requirements):** the double grant at week 4 is
+intentional, not a bug — `REQUIREMENTS.md` states both `MOMENTUM-02` ("Shields accrue automatically,
+1 per 4 consecutive successful weeks") and `MOMENTUM-05` ("Milestone rewards (badge + bonus shield)
+arrive at 4/12/26/52 weeks") as independent, always-on requirements, and week 4 is the first tier of
+both. **Apply fix option (b) only** — add copy explaining the milestone bonus shield. Do NOT collapse
+the double grant (option a); doing so would silently violate MOMENTUM-05's explicit "badge + bonus
+shield" requirement.
+
 #### WR-02: `weeksTowardNextShield` accrual counter is reset on a shielded miss but not on a bare miss
 
 **File:** `RithamCore/Sources/RithamCore/Momentum/MomentumReconciliation.swift:190-212`
