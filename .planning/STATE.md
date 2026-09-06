@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 02
 current_phase_name: core-tracking-adjusted-guidance
-status: executing
-stopped_at: Completed 02-15-PLAN.md
-last_updated: "2026-09-05T19:34:37.428Z"
-last_activity: 2026-09-05
-last_activity_desc: Phase 02 execution started
+status: blocked
+stopped_at: 02-16-PLAN.md Task 1 complete; Tasks 2-3 blocked on physical-device/AX3-AX5 checkpoint
+last_updated: "2026-09-06T05:05:00.000Z"
+last_activity: 2026-09-06
+last_activity_desc: Phase 02 plan 16 Task 1 (registry-race fix, Phase 2 coverage gate) complete; checkpoint pending for Tasks 2-3
 progress:
   total_phases: 5
   completed_phases: 1
@@ -30,10 +30,10 @@ comparison or ranking.
 
 ## Current Position
 
-Phase: 02 (core-tracking-adjusted-guidance) — EXECUTING
-Plan: 16 of 16
-Status: Ready to execute
-Last activity: 2026-09-05 — Phase 02 execution started
+Phase: 02 (core-tracking-adjusted-guidance) — BLOCKED
+Plan: 16 of 16 — Task 1 complete, Tasks 2-3 blocked on a physical-device/AX3-AX5 checkpoint
+Status: Awaiting human verification (see 02-16-SUMMARY.md's Checkpoint section)
+Last activity: 2026-09-06 — 02-16 Task 1 (StepRegistry cross-suite race fix, Phase2CoverageTests) committed and verified over ten consecutive full-target runs
 
 Progress: [██░░░░░░░░] 20%
 
@@ -266,8 +266,20 @@ pivot before that AskUserQuestion resolved. Item 4 (scroll concern) untouched.
 Next step: 01-18's remaining task is now just the AX3/AX5 accessibility pass across onboarding
 (the GPS-walk task is moot). Also still open: item 3 above needs a decision before implementing,
 and the Phase 2-vs-new-phase question for the exercise-recommendation feature (Phase 2 criterion 8
-is a placeholder, deliberately not settled). A real, pre-existing `StepRegistry` test-concurrency
-flake was found and documented in Blockers/Concerns but not fixed -- worth its own pass before
-trusting a full `xcodebuild test` run's pass/fail as-is.
+is a placeholder, deliberately not settled).
+
+2026-09-06 (plan 02-16): The `StepRegistry` cross-suite race referenced above is now fixed --
+see Blockers/Concerns for the mechanism. Plan 02-16's Task 1 (the fix, plus `Phase2CoverageTests`)
+is complete and committed (`1b65149`). Tasks 2 and 3 are blocked on a single combined checkpoint:
+no physical iPhone is attached to this Mac (only Simulator) and no touch-injection tool is
+available to drive Simulator UI, so real GPS/motion-sensor verification, the on-device Go
+round-trip render, and the AX3/AX5 accessibility pass (including the radial-timer item carried
+from Phase 1, referenced above -- it is STILL open, now via plan 02-16 rather than 01-18) all
+remain undischarged. The Go service's own contract (all three permission tiers, plus the
+service-down transport-error path) was curl-verified locally as the automatable slice. Full
+per-step breakdown of what's done vs. still needed is in
+`.planning/phases/02-core-tracking-adjusted-guidance/02-16-SUMMARY.md`'s Checkpoint section.
+Phase 2 cannot close until a human runs those steps on a physical device and at AX3/AX5, and
+reports back.
 Resume file:
-None
+.planning/phases/02-core-tracking-adjusted-guidance/02-16-SUMMARY.md
