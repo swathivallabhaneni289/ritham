@@ -705,4 +705,401 @@ struct MomentumReconciliationTests {
         #expect(result2.currentStreak == result1.currentStreak)
         #expect(result2.milestones.count == result1.milestones.count)
     }
+
+    // MARK: - Task 3: comeback windows, rebuilt-streak transition, append-only properties
+
+    @Test("a missed week opens exactly one comeback window with the correct bounds and pre-miss streak")
+    func missedWeekOpensOneComebackWindowWithCorrectBounds() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: start.addingTimeInterval(86_400),
+            calendar: calendar
+        )
+
+        #expect(result.comebackWindows.count == 1)
+        let window = result.comebackWindows[0]
+        #expect(window.missedWeekStart == start)
+        #expect(window.opensAt == week.weekEnd)
+        #expect(window.closesAt == calendar.date(byAdding: .day, value: MomentumReconciliation.comebackWindowDays, to: week.weekEnd))
+        #expect(window.streakBeforeMiss == 5)
+        #expect(window.claimedAt == nil)
+    }
+
+    @Test("aComebackWindowIsNeverOpenedTwiceForTheSameMissedWeek")
+    func aComebackWindowIsNeverOpenedTwiceForTheSameMissedWeek() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar))
+        let now = start.addingTimeInterval(86_400)
+
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+        #expect(result1.comebackWindows.count == 1)
+
+        // Simulate a repeat reconciliation over the very same missed week (anchor cleared to
+        // exercise the append's own missedWeekStart-uniqueness guard directly, rather than
+        // relying solely on the anchor skip to prevent this).
+        var ledgerWithClearedAnchor = result1
+        ledgerWithClearedAnchor.lastReconciledWeekStart = nil
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: ledgerWithClearedAnchor,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+        #expect(result2.comebackWindows.count == 1)
+    }
+
+    @Test("claimingAComebackRestoresTheStreakToOneLessNeverToNothing")
+    func claimingAComebackRestoresTheStreakToOneLessNeverToNothing() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let claimingSession = Self.qualifyingCardioSession(startedAt: week.weekEnd.addingTimeInterval(3600))
+        let currentWeek = Self.weekInput(
+            weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar),
+            cardio: [claimingSession]
+        )
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: week.weekEnd.addingTimeInterval(2 * 3600),
+            calendar: calendar
+        )
+
+        #expect(result.comebackWindows.count == 1)
+        #expect(result.comebackWindows[0].claimedAt == claimingSession.startedAt)
+        #expect(result.comebackWindows[0].claimingSessionID == claimingSession.id)
+        #expect(result.currentStreak == 4)
+    }
+
+    @Test("claiming with a pre-miss streak of 1 leaves the streak at 1, never at nothing")
+    func claimingWithPreMissStreakOfOneFloorsAtOne() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 1, shieldCount: 0)
+        let claimingSession = Self.qualifyingCardioSession(startedAt: week.weekEnd.addingTimeInterval(3600))
+        let currentWeek = Self.weekInput(
+            weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar),
+            cardio: [claimingSession]
+        )
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: week.weekEnd.addingTimeInterval(2 * 3600),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 1)
+    }
+
+    @Test("a non-qualifying session started inside the window does not claim it")
+    func nonQualifyingSessionInsideWindowDoesNotClaim() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let nonQualifying = Self.nonQualifyingCardioSession(startedAt: week.weekEnd.addingTimeInterval(3600))
+        let currentWeek = Self.weekInput(
+            weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar),
+            cardio: [nonQualifying]
+        )
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: week.weekEnd.addingTimeInterval(2 * 3600),
+            calendar: calendar
+        )
+
+        #expect(result.comebackWindows[0].claimedAt == nil)
+        #expect(result.currentStreak == 5)
+    }
+
+    @Test("a qualifying session started after the window closes does not claim it")
+    func qualifyingSessionAfterWindowClosesDoesNotClaim() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let closesAt = calendar.date(byAdding: .day, value: MomentumReconciliation.comebackWindowDays, to: week.weekEnd)!
+        let lateSession = Self.qualifyingCardioSession(startedAt: closesAt.addingTimeInterval(3600))
+        let currentWeek = Self.weekInput(
+            weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar),
+            cardio: [lateSession]
+        )
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: lateSession.startedAt.addingTimeInterval(3600),
+            calendar: calendar
+        )
+
+        #expect(result.comebackWindows[0].claimedAt == nil)
+        #expect(result.comebackWindows[0].claimingSessionID == nil)
+    }
+
+    @Test("a window still open at the reconciliation instant leaves the streak untouched and stays open")
+    func windowStillOpenLeavesStreakUntouched() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar))
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            // Well within the 3-day window.
+            now: week.weekEnd.addingTimeInterval(3600),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 5)
+        #expect(result.comebackWindows[0].isOpen(now: week.weekEnd.addingTimeInterval(3600)))
+    }
+
+    @Test("aClosedUnclaimedWindowMarksTheStreakAsRebuilding")
+    func aClosedUnclaimedWindowMarksTheStreakAsRebuilding() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let closesAt = calendar.date(byAdding: .day, value: MomentumReconciliation.comebackWindowDays, to: week.weekEnd)!
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar))
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: closesAt.addingTimeInterval(3600),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 0)
+        #expect(result.streakLabelKind == .rebuilt)
+        #expect(result.comebackWindows[0].claimedAt == nil)
+    }
+
+    @Test("once a rebuilt streak reaches its first met week, the streak reads 1 with the rebuilt label kind")
+    func rebuiltStreakReachesOneOnFirstMetWeek() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        // Ledger already stands as a closed-unclaimed rebuild transition would leave it: streak
+        // 0, label rebuilt, no lingering comeback windows (already resolved by a prior call).
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 0, shieldCount: 0)
+        ledger.streakLabelKind = .rebuilt
+
+        let week = Self.weekInput(weekStart: start, cardio: (0..<3).map {
+            Self.qualifyingCardioSession(startedAt: start.addingTimeInterval(Double($0) * 3600))
+        })
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: start.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 1)
+        #expect(result.streakLabelKind == .rebuilt)
+    }
+
+    @Test("reconciling twice over a claimed window does not re-claim it or double-adjust the streak")
+    func reconcilingTwiceOverAClaimedWindowIsANoOp() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let claimingSession = Self.qualifyingCardioSession(startedAt: week.weekEnd.addingTimeInterval(3600))
+        let currentWeek = Self.weekInput(
+            weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar),
+            cardio: [claimingSession]
+        )
+        let now = week.weekEnd.addingTimeInterval(2 * 3600)
+
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+        #expect(result1.currentStreak == 4)
+
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: result1,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        #expect(result2.currentStreak == 4)
+        #expect(result2.comebackWindows.count == 1)
+        #expect(result2.comebackWindows[0].claimedAt == claimingSession.startedAt)
+    }
+
+    @Test("reconciling twice over a closed-unclaimed window does not repeat the transition")
+    func reconcilingTwiceOverAClosedUnclaimedWindowIsANoOp() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 0)
+        let closesAt = calendar.date(byAdding: .day, value: MomentumReconciliation.comebackWindowDays, to: week.weekEnd)!
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar))
+        let now = closesAt.addingTimeInterval(3600)
+
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+        #expect(result1.currentStreak == 0)
+        #expect(result1.streakLabelKind == .rebuilt)
+
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: result1,
+            elapsedWeeks: [week],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        #expect(result2 == result1)
+    }
+
+    @Test("reconciliationOnlyEverAddsToTheLedger")
+    func reconciliationOnlyEverAddsToTheLedger() {
+        let calendar = Self.utcCalendar()
+        let metWeekStart = Self.weekStart(2026, 1, 5)
+        let missedWeekStart = MomentumWeek.nextWeekStart(after: metWeekStart, calendar: calendar)
+        let pausedWeekStart = MomentumWeek.nextWeekStart(after: missedWeekStart, calendar: calendar)
+        let frozenWeekStart = MomentumWeek.nextWeekStart(after: pausedWeekStart, calendar: calendar)
+        let shieldedWeekStart = MomentumWeek.nextWeekStart(after: frozenWeekStart, calendar: calendar)
+        let currentWeekStart = MomentumWeek.nextWeekStart(after: shieldedWeekStart, calendar: calendar)
+
+        let metWeek = Self.weekInput(weekStart: metWeekStart, cardio: (0..<3).map {
+            Self.qualifyingCardioSession(startedAt: metWeekStart.addingTimeInterval(Double($0) * 3600))
+        })
+        let missedWeek = Self.weekInput(weekStart: missedWeekStart)
+        let pausedWeek = Self.weekInput(weekStart: pausedWeekStart)
+        let frozenWeek = Self.weekInput(weekStart: frozenWeekStart)
+        let shieldedWeek = Self.weekInput(weekStart: shieldedWeekStart)
+
+        let guardrails = MomentumGuardrails(
+            recoveryWeeks: [RecoveryWeekPeriod(id: UUID(), weekStart: pausedWeekStart, flaggedAt: pausedWeekStart)],
+            injuryFreezes: [InjuryFreezePeriod(id: UUID(), startedAt: frozenWeekStart, endedAt: nil)],
+            streakLossProtected: false
+        )
+
+        let preexistingMilestone = MilestoneAward(id: UUID(), weekCount: 52, awardedAt: Self.date(2024, 1, 1))
+        let preexistingWindow = ComebackWindow(
+            id: UUID(),
+            missedWeekStart: Self.date(2023, 1, 2),
+            opensAt: Self.date(2023, 1, 9),
+            closesAt: Self.date(2023, 1, 12),
+            claimedAt: Self.date(2023, 1, 10),
+            claimingSessionID: UUID(),
+            streakBeforeMiss: 8
+        )
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 1, shieldCount: 1)
+        ledger.milestones = [preexistingMilestone]
+        ledger.comebackWindows = [preexistingWindow]
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [metWeek, missedWeek, pausedWeek, frozenWeek, shieldedWeek],
+            currentWeek: Self.weekInput(weekStart: currentWeekStart),
+            guardrails: guardrails,
+            now: currentWeekStart.addingTimeInterval(3600),
+            calendar: calendar
+        )
+
+        // Every pre-existing milestone and comeback window is still present, unchanged.
+        #expect(result.milestones.contains(preexistingMilestone))
+        #expect(result.comebackWindows.contains(preexistingWindow))
+        // And reconciliation only ever grew both arrays (or left them the same size), never
+        // shrank them.
+        #expect(result.milestones.count >= ledger.milestones.count)
+        #expect(result.comebackWindows.count >= ledger.comebackWindows.count)
+    }
+
+    @Test("aRetroactiveDropInAPastWeeksCountNeverRetractsAnAwardedMilestone")
+    func aRetroactiveDropInAPastWeeksCountNeverRetractsAnAwardedMilestone() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let weeks = Self.consecutiveMetWeeks(count: 4, startingAt: start)
+        let lastWeekStart = weeks.last!.weekStart
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: lastWeekStart, calendar: calendar))
+        let now = lastWeekStart.addingTimeInterval(8 * 86_400)
+        let ledger = Self.freshLedger(weeklyTarget: 3)
+
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: weeks,
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+        #expect(result1.milestones.contains { $0.weekCount == 4 })
+
+        // Retroactively empty the first week's sessions (STRENGTH-05-style edit) and reconcile
+        // again. Since that week is already at or before the anchor, it is skipped entirely, and
+        // the already-awarded milestone must survive unchanged.
+        let editedFirstWeek = Self.weekInput(weekStart: weeks[0].weekStart)
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: result1,
+            elapsedWeeks: [editedFirstWeek],
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        #expect(result2.milestones == result1.milestones)
+    }
 }
