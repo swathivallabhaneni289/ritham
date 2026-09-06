@@ -63,5 +63,28 @@ extension MomentumContainerTouchingSuites {
             }
             #expect(try store.loadMomentumTarget() == 4)
         }
+
+        // MARK: - Task 2: Settings entry point
+
+        @Test("the Settings row for the weekly Momentum target uses the expected label")
+        func settingsRowLabelForMomentumTarget() {
+            #expect(SettingsView.momentumTargetRowTitle == "Momentum target")
+        }
+
+        @Test("the target loaded for sheet presentation reflects the most recently persisted value, not a cached one")
+        func sheetPresentationLoadsFreshValueNotCached() throws {
+            let store = try makeStore()
+
+            // `SettingsView.currentMomentumTarget()` defers directly to
+            // `HealthDataStore.loadMomentumTarget()` with no caching of its own (mirroring
+            // `currentWeeklyFrequency()`'s identical pattern) -- proven here at the store level:
+            // a second load, after a second persist, reflects the newest value, never a value
+            // cached from the first load.
+            try store.saveMomentumTarget(2)
+            #expect(try store.loadMomentumTarget() == 2)
+
+            try store.saveMomentumTarget(5)
+            #expect(try store.loadMomentumTarget() == 5)
+        }
     }
 }

@@ -47,6 +47,7 @@ struct SettingsView: View {
     @State private var isEditingDietPlan = false
     @State private var isShowingAlwaysFreeList = false
     @State private var isEditingWorkoutFrequency = false
+    @State private var isEditingMomentumTarget = false
     @State private var isReScreenDue = false
 
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
@@ -82,6 +83,14 @@ struct SettingsView: View {
                 isEditingWorkoutFrequency = true
             }
 
+            // MOMENTUM-01's adjustable weekly target (Claude's Discretion, `03-CONTEXT.md`):
+            // placed directly next to Workout frequency since both are weekly-cadence
+            // preferences. This is a preference entry only -- Settings shows no Momentum state
+            // (streak, shields) of its own; that lives exclusively on `HomeHubView`/`MomentumView`.
+            SecondaryCTAButton(title: Self.momentumTargetRowTitle) {
+                isEditingMomentumTarget = true
+            }
+
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
                 Text("Screening answers")
                     .font(RithamType.heading)
@@ -107,7 +116,14 @@ struct SettingsView: View {
         .sheet(isPresented: $isEditingWorkoutFrequency) {
             WorkoutFrequencyView(initialFrequency: currentWeeklyFrequency())
         }
+        .sheet(isPresented: $isEditingMomentumTarget) {
+            MomentumTargetView(initialTarget: currentMomentumTarget())
+        }
     }
+
+    /// The Momentum-target row's label, extracted as a single source of truth so
+    /// `MomentumTargetPickerTests` can pin it without rendering this view.
+    static let momentumTargetRowTitle = "Momentum target"
 
     private func sectionEntryPoint(_ section: EditableSection, title: String) -> some View {
         SecondaryCTAButton(title: title) {
@@ -127,5 +143,15 @@ struct SettingsView: View {
     private func currentWeeklyFrequency() -> Int {
         let store = HealthDataStore(context: modelContext)
         return (try? store.loadWeeklyFrequency()) ?? 3
+    }
+
+    /// Loaded fresh at sheet-presentation time (not cached in `SettingsView`'s own state),
+    /// exactly mirroring `currentWeeklyFrequency()`'s own pattern above -- a reopen always
+    /// reflects whatever target was persisted the last time this sheet was dismissed.
+    /// `HealthDataStore.loadMomentumTarget` already supplies `MomentumTarget.defaultTarget` when
+    /// nothing is stored yet.
+    private func currentMomentumTarget() -> Int {
+        let store = HealthDataStore(context: modelContext)
+        return (try? store.loadMomentumTarget()) ?? MomentumTarget.defaultTarget
     }
 }
