@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Momentum & Recovery
 status: executing
-stopped_at: Completed 03-07-PLAN.md (Momentum target picker, Settings entry point, interim hub summary section wiring flow.open(.momentum))
-last_updated: "2026-09-06T11:28:39.805Z"
+stopped_at: Completed 03-08-PLAN.md (sleep check-in screen + client-side RECOVERY-01 lighter-plan adjustment, 12-test invariant suite)
+last_updated: "2026-09-06T12:04:40.852Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 40
-  completed_plans: 37
+  completed_plans: 38
   percent: 40
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 3 (Momentum & Recovery) — EXECUTING
-Plan: 8 of 10
+Plan: 9 of 10
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -93,6 +93,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 03-momentum-recovery P05 | 25min | 3 tasks | 8 files |
 | Phase 03-momentum-recovery P06 | 45min | 3 tasks | 12 files |
 | Phase 03-momentum-recovery P07 | 40min | 3 tasks | 6 files |
+| Phase 03-momentum-recovery P08 | 50min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,9 @@ Recent decisions affecting current work:
 - [Phase 03-06]: OnboardingRouter.nextStep's exhaustive switch and OnboardingFlowStateTests' hardcoded step-count expectation were updated as required blocking fixes for adding OnboardingStep.momentum (not in this plan's stated file list, but a compile-time and test-gate necessity)
 - [Phase ?]: 03-07: MomentumTargetView is a Settings-presented sheet, not a registered OnboardingStep -- recorded in the file's own header comment (routing from inside a sheet would push behind that sheet; every shipped Settings sub-screen is a sheet for this reason; matches WorkoutFrequencyView precedent).
 - [Phase ?]: 03-07: HomeHubView's Momentum summary section holds a plain MomentumSummary? loaded via its own MomentumSummaryReader construction in onAppear (not a hub-owned view model), keeping D-08's 'not baked into a hub-specific view model' requirement structural, and wires flow.open(.momentum), the entry point 03-06-SUMMARY.md explicitly left as this plan's scope.
+- [Phase 03-momentum-recovery]: 03-08: SleepQualityOption wraps SleepQuality with manual == / hash(into:) over rawValue rather than a cross-module retroactive Hashable conformance, matching WeeklyFrequencyOption/MomentumTargetOption's precedent.
+- [Phase 03-momentum-recovery]: 03-08: RecommendationsModel exposes the RECOVERY-01 adjustment as side-channel private(set) properties (originalPlan/adjustedPlan/isDisplayingAdjustedPlan) rather than widening RecommendationsState.plan's associated type, so every pre-existing test/call site stayed unchanged.
+- [Phase 03-momentum-recovery]: 03-08: Added .sleepCheckIn to OnboardingRouter.nextStep's terminal-steps switch and updated OnboardingFlowStateTests' hardcoded step count (25->26) as a Rule 3 compile/test-gate fix, not in the plan's stated file list.
 
 ### Pending Todos
 
@@ -266,8 +270,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T11:28:39.793Z
-Stopped at: Completed 03-07-PLAN.md (Momentum target picker, Settings entry point, interim hub summary section wiring flow.open(.momentum))
+Last session: 2026-09-06T12:04:40.841Z
+Stopped at: Completed 03-08-PLAN.md (sleep check-in screen + client-side RECOVERY-01 lighter-plan adjustment, 12-test invariant suite)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
