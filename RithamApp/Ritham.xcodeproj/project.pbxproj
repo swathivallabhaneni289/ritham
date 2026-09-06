@@ -101,6 +101,7 @@
 		B699CA6F0194F93D60914DBE /* HealthDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF1FE8182F9431C9184C34 /* HealthDataStoreTests.swift */; };
 		B79730E927043D1B94D41757 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DDF9B0827C7ACB6CFF49C2 /* SettingsView.swift */; };
 		BAF3872DA6BA426A08D9255F /* LiftSessionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F91DCC5A09870CA83E4280F /* LiftSessionRecord.swift */; };
+		BB94CBE689862C7016F67F0D /* Phase3CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0162DA40D97FEBE020DD15DC /* Phase3CoverageTests.swift */; };
 		BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */; };
 		BEAD3466EE45B0FFE621F497 /* ConditionChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */; };
 		BF441CA8CFFC7BFE0A7FA83D /* HomeHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB60B6780E7077E5D21BF8DE /* HomeHubTests.swift */; };
@@ -159,6 +160,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0162DA40D97FEBE020DD15DC /* Phase3CoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3CoverageTests.swift; sourceTree = "<group>"; };
 		05A018DD943E342E021CC548 /* RithamColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamColor.swift; sourceTree = "<group>"; };
 		0689A05996EA1E3544149BE5 /* GuidanceViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceViewTests.swift; sourceTree = "<group>"; };
 		074665026698CCD2C09002E0 /* RithamSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamSpacing.swift; sourceTree = "<group>"; };
@@ -646,6 +648,7 @@
 				3F5C9E54E0109E63B29A3B03 /* MovementSnapshotViewTests.swift */,
 				1024D116B21BD85232045566 /* PersistenceTests.swift */,
 				C51ABE5043F692DA8E79302F /* Phase2CoverageTests.swift */,
+				0162DA40D97FEBE020DD15DC /* Phase3CoverageTests.swift */,
 				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
 				1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */,
 				2C432DD1332C2E26772A7F26 /* RecoveryAdjustmentTests.swift */,
@@ -930,6 +933,7 @@
 				22C7AB50EF66616DEB15D897 /* MovementSnapshotViewTests.swift in Sources */,
 				69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */,
 				D86A6B3C4900E249C0A26882 /* Phase2CoverageTests.swift in Sources */,
+				BB94CBE689862C7016F67F0D /* Phase3CoverageTests.swift in Sources */,
 				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
 				11E1EC0DDEA72DA1962A9DD5 /* RecommendationsTests.swift in Sources */,
 				4BAEECF546BF5C81897726A1 /* RecoveryAdjustmentTests.swift in Sources */,
