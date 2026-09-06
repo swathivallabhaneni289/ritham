@@ -248,6 +248,52 @@ public struct MomentumSummaryReader {
         )
     }
 
+    // MARK: - User-initiated guardrail actions
+    //
+    // Three separate methods, each with its own separate store call, no shared code path between
+    // them. None of the three is ever invoked from `summary(now:)` or from any other read path in
+    // this file, and none calls the other two. MOMENTUM-03 requires a Recovery Week to be
+    // user-initiated only, never auto-triggered by the app; RECOVERY-01 requires the sleep feature
+    // never to auto-trigger one either. The enforcement is structural, not just a naming
+    // convention: `summary(now:)` above calls no write method other than
+    // `store.saveMomentumLedger(_:)`, and this file imports no sleep-check-in type at all -- there
+    // is nothing in this file able to read a check-in and call one of the three methods below.
+
+    /// Appends a Recovery Week period for the week containing `now`. Per D-12 this pauses that
+    /// entire week retroactively for reconciliation purposes regardless of which day within it
+    /// this was called on -- it always targets the week containing the flagging instant; there is
+    /// no path here for a caller to select an arbitrary earlier week.
+    public func flagRecoveryWeek(now: Date) throws {
+        let weekStart = MomentumWeek.weekStart(containing: now, calendar: calendar)
+        try store.appendRecoveryWeekPeriod(RecoveryWeekPeriod(id: UUID(), weekStart: weekStart, flaggedAt: now))
+    }
+
+    /// Appends an open-ended injury freeze starting at `now`. A no-op when one is already open --
+    /// `store.appendInjuryFreezePeriod` is itself idempotent on this condition.
+    public func flagInjury(now: Date) throws {
+        try store.appendInjuryFreezePeriod(InjuryFreezePeriod(id: UUID(), startedAt: now, endedAt: nil))
+    }
+
+    /// Closes the open injury freeze, if any, at `now`.
+    public func clearInjury(now: Date) throws {
+        try store.closeOpenInjuryFreeze(at: now)
+    }
+
+    /// A plain read helper the flag rows in plan 03-06 use to pick their label. Reads only
+    /// `InjuryFreezePeriodRecord` via `store.loadInjuryFreezePeriods()` -- no other guardrail or
+    /// self-report record type.
+    public func isInjuryFrozen(now: Date) throws -> Bool {
+        try store.loadInjuryFreezePeriods().contains { $0.startedAt <= now && $0.endedAt == nil }
+    }
+
+    /// A plain read helper the flag rows in plan 03-06 use to pick their label. Reads only
+    /// `RecoveryWeekPeriodRecord` via `store.loadRecoveryWeekPeriods()` -- no other guardrail or
+    /// self-report record type.
+    public func isRecoveryWeekFlagged(now: Date) throws -> Bool {
+        let weekStart = MomentumWeek.weekStart(containing: now, calendar: calendar)
+        return try store.loadRecoveryWeekPeriods().contains { $0.covers(weekStart: weekStart) }
+    }
+
     /// See `summary(now:)`'s call site comment: a profile-less store reads as "no active tags"
     /// rather than propagating `HealthDataStoreError.profileMissing`.
     private func loadActiveConditionTags(now: Date) throws -> Set<ConditionTag> {

@@ -272,5 +272,103 @@ extension MomentumContainerTouchingSuites {
 
             #expect(summary.recentSessions.map(\.id) == [laterThisWeek.id, earlierThisWeek.id])
         }
+
+        // MARK: - User-initiated guardrail actions
+
+        @Test("flagging a Recovery Week makes the current week resolve as paused on the next elapsed-week fold")
+        func flaggingRecoveryWeekPausesTheWeek() throws {
+            let (store, _) = try makeStore()
+            let w1 = MomentumWeek.weekStart(containing: date(2024, 1, 8), calendar: calendar)
+            try store.saveCardioSession(nonQualifyingCardio(startedAt: w1.addingTimeInterval(3_600)))
+
+            try reader(for: store).flagRecoveryWeek(now: w1.addingTimeInterval(3_600))
+
+            let now = MomentumWeek.weekEnd(startingAt: w1, calendar: calendar).addingTimeInterval(86_400)
+            let summary = try reader(for: store).summary(now: now)
+
+            #expect(summary.shieldCount == 0)
+            #expect(summary.openComebackWindow == nil)
+        }
+
+        @Test("flagging the same Recovery Week twice stores exactly one period and changes nothing on the second call")
+        func flaggingSameRecoveryWeekTwiceStoresOnePeriod() throws {
+            let (store, context) = try makeStore()
+            let now = date(2024, 1, 10)
+
+            try reader(for: store).flagRecoveryWeek(now: now)
+            try reader(for: store).flagRecoveryWeek(now: now.addingTimeInterval(3_600))
+
+            #expect(try context.fetch(FetchDescriptor<RecoveryWeekPeriodRecord>()).count == 1)
+        }
+
+        @Test("flagging an injury makes an overlapping elapsed week resolve as frozen")
+        func flaggingInjuryFreezesOverlappingWeek() throws {
+            let (store, _) = try makeStore()
+            let w1 = MomentumWeek.weekStart(containing: date(2024, 1, 8), calendar: calendar)
+            try store.saveCardioSession(nonQualifyingCardio(startedAt: w1.addingTimeInterval(3_600)))
+
+            try reader(for: store).flagInjury(now: w1.addingTimeInterval(3_600))
+
+            let now = MomentumWeek.weekEnd(startingAt: w1, calendar: calendar).addingTimeInterval(86_400)
+            let summary = try reader(for: store).summary(now: now)
+
+            #expect(summary.shieldCount == 0)
+            #expect(summary.openComebackWindow == nil)
+        }
+
+        @Test("clearing an injury allows a subsequent week to resolve normally")
+        func clearingInjuryAllowsSubsequentWeekToResolveNormally() throws {
+            let (store, _) = try makeStore()
+            let w1 = MomentumWeek.weekStart(containing: date(2024, 1, 8), calendar: calendar)
+            let w2 = MomentumWeek.nextWeekStart(after: w1, calendar: calendar)
+
+            try reader(for: store).flagInjury(now: w1.addingTimeInterval(3_600))
+            try reader(for: store).clearInjury(now: w1.addingTimeInterval(7_200))
+
+            // The freeze only covers [w1+3_600, w1+7_200) -- it does not overlap w2. W2's fixture
+            // is a normal met week: two real qualifying sessions clear its endowed-credit-adjusted
+            // requirement (this is the first-ever session, so w2 is the endowed week).
+            try store.saveCardioSession(qualifyingCardio(startedAt: w2.addingTimeInterval(3_600)))
+            try store.saveCardioSession(qualifyingCardio(startedAt: w2.addingTimeInterval(7_200)))
+
+            let now = MomentumWeek.weekEnd(startingAt: w2, calendar: calendar).addingTimeInterval(86_400)
+            let summary = try reader(for: store).summary(now: now)
+
+            #expect(summary.currentStreak == 1)
+        }
+
+        @Test("readingTheSummaryNeverFlagsARecoveryWeekOrAnInjury")
+        func readingTheSummaryNeverFlagsARecoveryWeekOrAnInjury() throws {
+            let (store, context) = try makeStore()
+            let now = date(2024, 1, 10)
+
+            _ = try reader(for: store).summary(now: now)
+
+            let w1 = MomentumWeek.weekStart(containing: date(2024, 1, 8), calendar: calendar)
+            try store.saveCardioSession(nonQualifyingCardio(startedAt: w1.addingTimeInterval(3_600)))
+            let laterNow = MomentumWeek.weekEnd(startingAt: w1, calendar: calendar).addingTimeInterval(86_400)
+            _ = try reader(for: store).summary(now: laterNow)
+
+            try store.saveSleepCheckIn(SleepCheckIn(day: now, quality: .poor, note: nil))
+            _ = try reader(for: store).summary(now: now)
+
+            #expect(try context.fetch(FetchDescriptor<RecoveryWeekPeriodRecord>()).count == 0)
+            #expect(try context.fetch(FetchDescriptor<InjuryFreezePeriodRecord>()).count == 0)
+        }
+
+        @Test("aPoorSleepCheckInNeverConsumesAShield")
+        func aPoorSleepCheckInNeverConsumesAShield() throws {
+            let (store, _) = try makeStore()
+            var ledger = MomentumLedger.empty
+            ledger.shieldCount = 2
+            try store.saveMomentumLedger(ledger)
+
+            let now = date(2024, 1, 10)
+            try store.saveSleepCheckIn(SleepCheckIn(day: now, quality: .poor, note: nil))
+
+            let summary = try reader(for: store).summary(now: now)
+
+            #expect(summary.shieldCount == 2)
+        }
     }
 }
