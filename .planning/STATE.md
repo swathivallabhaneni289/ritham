@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Momentum & Recovery
 status: executing
-stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-09-06T08:42:19.142Z"
+stopped_at: Phase 3 wave 1 complete (03-01, 03-02)
+last_updated: "2026-09-06T09:01:15.415Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 40
-  completed_plans: 30
+  completed_plans: 32
   percent: 40
 ---
 
@@ -248,8 +248,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T07:47:01.592Z
-Stopped at: Phase 3 UI-SPEC approved
+Last session: 2026-09-06T09:01:15.404Z
+Stopped at: Phase 3 wave 1 complete (03-01, 03-02)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
@@ -285,4 +285,4 @@ per-step breakdown of what's done vs. still needed is in
 Phase 2 cannot close until a human runs those steps on a physical device and at AX3/AX5, and
 reports back.
 Resume file:
-.planning/phases/03-momentum-recovery/03-UI-SPEC.md
+.planning/phases/03-momentum-recovery/03-03-PLAN.md
