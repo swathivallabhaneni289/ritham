@@ -32,6 +32,12 @@ struct HomeHubView: View {
     // first -- not just by adding a line to this view.
     @State private var momentumSummary: MomentumSummary?
 
+    // MOMENTUM-07/D-09's opt-in-gated entry state: loaded alongside `momentumSummary` in this
+    // view's one existing appearance handler below (never a second one). Off by default
+    // (`HealthDataStore.loadMovementSnapshotOptIn`'s own default), which is what makes the CTA
+    // below render nothing at all until the user opts in from Settings.
+    @State private var isMovementSnapshotEnabled = false
+
     var body: some View {
         RithamScreen(
             surface: DecorativeSurface.boundedHeaderOnly,
@@ -77,6 +83,21 @@ struct HomeHubView: View {
                 PrimaryCTAButton(title: "Recommendations") {
                     flow.open(.recommendations)
                 }
+
+                // MOMENTUM-07/D-09: the Daily Movement Snapshot's opt-in-gated hub entry.
+                // Deliberately placed here, below the tracking entries and below
+                // `momentumSection` (never inside it, never rendered adjacent to it as a group)
+                // -- the snapshot is the deliberately quiet counterpart to Momentum and must
+                // carry no streak, shield or target association, including by mere adjacency.
+                // When the opt-in is off, this renders nothing at all: no disabled row, no
+                // greyed entry, no "turn this on" prompt -- an off opt-in is indistinguishable
+                // from the feature not existing.
+                if HomeHubView.showsMovementSnapshotEntry(optIn: isMovementSnapshotEnabled) {
+                    SecondaryCTAButton(title: "Daily Movement Snapshot") {
+                        flow.open(.movementSnapshot)
+                    }
+                }
+
                 SecondaryCTAButton(title: "Settings") {
                     isPresentingSettings = true
                 }
@@ -86,6 +107,7 @@ struct HomeHubView: View {
             let store = HealthDataStore(context: modelContext)
             let reader = MomentumSummaryReader(store: store, calendar: .current)
             momentumSummary = try? reader.summary(now: Date())
+            isMovementSnapshotEnabled = (try? store.loadMovementSnapshotOptIn()) ?? false
         }
         .sheet(isPresented: $isPresentingSettings) {
             SettingsView(
@@ -140,5 +162,34 @@ struct HomeHubView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Pure, testable derivations (see MomentumView.swift's header for why these must be
+// `nonisolated`: SwiftUI's `View` protocol is itself `@MainActor`, which infers `@MainActor`
+// isolation onto every member of a conforming type by default, and Swift Testing runs test
+// functions off the main actor).
+
+extension HomeHubView {
+    /// Whether the Daily Movement Snapshot's hub entry should render for a given opt-in state.
+    /// The real `body` above calls this exact function -- not a parallel, independently
+    /// maintained copy -- so `MovementSnapshotViewTests` exercises the same logic the rendered
+    /// screen uses.
+    nonisolated static func showsMovementSnapshotEntry(optIn: Bool) -> Bool {
+        optIn
+    }
+
+    /// The hub's `flow.open(_:)`-reachable destinations for a given movement-snapshot opt-in
+    /// state, used by `MovementSnapshotViewTests` to assert the snapshot step's exact
+    /// presence/absence without rendering this view.
+    nonisolated static func routingSteps(movementSnapshotOptIn: Bool) -> [OnboardingStep] {
+        var steps: [OnboardingStep] = [
+            .sleepCheckIn, .cardioActivityPicker, .cardioHistory,
+            .strengthSession, .strengthHistory, .guidance, .recommendations,
+        ]
+        if showsMovementSnapshotEntry(optIn: movementSnapshotOptIn) {
+            steps.append(.movementSnapshot)
+        }
+        return steps
     }
 }

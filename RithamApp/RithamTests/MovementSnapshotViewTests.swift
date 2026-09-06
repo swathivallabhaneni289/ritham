@@ -218,6 +218,69 @@ extension MomentumContainerTouchingSuites {
             }
             #expect(scannedAtLeastOneFile)
         }
+
+        // MARK: - Task 3: opt-in-gated hub entry
+
+        @Test("the hub's routing list includes the snapshot step exactly when the opt-in is on")
+        func hubRoutingListIncludesSnapshotWhenOptInOn() {
+            #expect(HomeHubView.routingSteps(movementSnapshotOptIn: true).contains(.movementSnapshot))
+        }
+
+        @Test("the hub's routing list omits the snapshot step entirely when the opt-in is off, with no placeholder entry of any kind")
+        func hubRoutingListOmitsSnapshotWhenOptInOff() {
+            let onSteps = HomeHubView.routingSteps(movementSnapshotOptIn: true)
+            let offSteps = HomeHubView.routingSteps(movementSnapshotOptIn: false)
+            #expect(!offSteps.contains(.movementSnapshot))
+            // No placeholder entry of any kind: the off-state list is exactly the on-state list
+            // with the snapshot step removed, not those destinations plus a stand-in.
+            #expect(offSteps == onSteps.filter { $0 != .movementSnapshot })
+        }
+
+        @Test("the hub renders no snapshot-related element at all when the opt-in is off")
+        func hubRendersNoSnapshotElementWhenOptInOff() {
+            #expect(HomeHubView.showsMovementSnapshotEntry(optIn: false) == false)
+        }
+
+        /// Form used: a comment-filtered source scan isolating the Momentum summary section's
+        /// own source text, the same technique this file's own
+        /// `theSnapshotScreenReferencesNoMomentumType` already uses for a directory -- here
+        /// scoped to one named section within `HomeHubView.swift`, since no ViewInspector-style
+        /// rendering/section-tree-introspection tool exists in this codebase to check adjacency
+        /// directly at the rendered-view level.
+        @Test("theSnapshotEntryIsNotAdjacentToTheMomentumSummary")
+        func theSnapshotEntryIsNotAdjacentToTheMomentumSummary() throws {
+            let thisFile = URL(fileURLWithPath: #filePath)
+            // RithamApp/RithamTests/MovementSnapshotViewTests.swift ->
+            // RithamApp/Ritham/Home/HomeHubView.swift
+            let hubFile = thisFile
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .appendingPathComponent("Ritham/Home/HomeHubView.swift")
+            let source = try String(contentsOf: hubFile, encoding: .utf8)
+
+            // "MARK: - D-08's Momentum summary section" (not the shorter "D-08's Momentum
+            // summary section" fragment) -- that shorter fragment also appears earlier in this
+            // file, inside `momentumSummary`'s own `@State` doc comment ("D-08's Momentum
+            // summary section state: a plain..."), and `range(of:)` finds the first match.
+            guard let markerRange = source.range(of: "MARK: - D-08's Momentum summary section") else {
+                Issue.record("could not locate the Momentum summary section marker in HomeHubView.swift")
+                return
+            }
+            // Bounded to the struct's own closing -- `momentumSection` is this struct's last
+            // member, so its body ends where the file's first `extension HomeHubView` begins
+            // (this file's own bottom-of-file pure-derivations extension). Bounding this way
+            // (rather than scanning to end-of-file) keeps this test from tripping on that
+            // extension's own doc comments, which legitimately name the snapshot entry.
+            guard let extensionRange = source.range(of: "\nextension HomeHubView", range: markerRange.upperBound..<source.endIndex) else {
+                Issue.record("could not locate the end of HomeHubView's struct body in HomeHubView.swift")
+                return
+            }
+            let momentumSectionSource = String(source[markerRange.upperBound..<extensionRange.lowerBound])
+            #expect(
+                !momentumSectionSource.contains("movementSnapshot"),
+                "the Momentum summary section's own source mentions the snapshot entry"
+            )
+        }
     }
 }
 
