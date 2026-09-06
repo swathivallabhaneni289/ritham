@@ -154,14 +154,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Momentum (Streak System)
 
-- [ ] **MOMENTUM-01**: A single cross-modality streak treats a qualifying cardio session
+- [x] **MOMENTUM-01**: A single cross-modality streak treats a qualifying cardio session
   (continuous tracked movement, minimum 10 minutes, GPS or manual stopwatch) and a qualifying
   lift session (at least 3 working sets across 2+ exercises) as equally valid toward one shared
   weekly target (default 3, user-adjustable 2–5). Manually-entered sessions count but are
   labeled distinctly from sensor-verified ones. First Momentum week starts pre-filled at 1/3
   after the user's first logged session, not 0/3.
 
-- [ ] **MOMENTUM-02**: Shields accrue automatically (1 per 4 consecutive successful weeks,
+- [x] **MOMENTUM-02**: Shields accrue automatically (1 per 4 consecutive successful weeks,
   stacking up to 3), are never purchasable, and auto-apply the moment a week is about to be
   missed.
 
@@ -169,10 +169,10 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   user-initiated "Recovery Week" flag pauses the target without breaking the streak count; it is
   never auto-triggered by the app.
 
-- [ ] **MOMENTUM-04**: A missed week (no guardrail, no shield) is restored via a single "Comeback
+- [x] **MOMENTUM-04**: A missed week (no guardrail, no shield) is restored via a single "Comeback
   Session" logged within 3 days, restoring the streak count minus one — never zeroing it.
 
-- [ ] **MOMENTUM-05**: Milestone rewards (badge + bonus shield) arrive at 4/12/26/52 weeks.
+- [x] **MOMENTUM-05**: Milestone rewards (badge + bonus shield) arrive at 4/12/26/52 weeks.
   Framing is informational/competence-based, never threat-framed (e.g., "Week 1 of your rebuilt
   streak," never a deleted/reset-to-zero animation).
 
@@ -183,7 +183,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **MOMENTUM-07**: A separate, optional Daily Movement Snapshot exists with no
   streak/shield/target attached to it.
 
-- [ ] **MOMENTUM-08**: A self-reported pain/injury flag can automatically trigger a streak freeze
+- [x] **MOMENTUM-08**: A self-reported pain/injury flag can automatically trigger a streak freeze
   (self-reported version only in v1; pattern-detected auto-freeze is v2 — see INJURY-02).
 
 ### Recovery-Aware Momentum
@@ -368,14 +368,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIET-03 | Phase 2 | Complete |
 | MONETIZE-01 | Phase 2 | Complete |
 | CROSSGEN-02 | Phase 2 | Complete |
-| MOMENTUM-01 | Phase 3 | Pending |
-| MOMENTUM-02 | Phase 3 | Pending |
+| MOMENTUM-01 | Phase 3 | Complete |
+| MOMENTUM-02 | Phase 3 | Complete |
 | MOMENTUM-03 | Phase 3 | Pending |
-| MOMENTUM-04 | Phase 3 | Pending |
-| MOMENTUM-05 | Phase 3 | Pending |
+| MOMENTUM-04 | Phase 3 | Complete |
+| MOMENTUM-05 | Phase 3 | Complete |
 | MOMENTUM-06 | Phase 3 | Pending |
 | MOMENTUM-07 | Phase 3 | Pending |
-| MOMENTUM-08 | Phase 3 | Pending |
+| MOMENTUM-08 | Phase 3 | Complete |
 | RECOVERY-01 | Phase 3 | Pending |
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Pending |

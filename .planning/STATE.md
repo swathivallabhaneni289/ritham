@@ -6,14 +6,14 @@ current_phase: 3
 current_phase_name: Momentum & Recovery
 status: executing
 stopped_at: Phase 3 wave 1 complete (03-01, 03-02)
-last_updated: "2026-09-06T09:01:15.415Z"
+last_updated: "2026-09-06T09:18:37.625Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 40
-  completed_plans: 32
+  completed_plans: 33
   percent: 40
 ---
 
@@ -31,10 +31,10 @@ comparison or ranking.
 ## Current Position
 
 Phase: 3 (Momentum & Recovery) — EXECUTING
-Plan: 1 of 10
+Plan: 4 of 10
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Executing Phase 3
+Status: Ready to execute
 batched verification pass runs
 Last activity: 2026-09-06 — Phase 3 execution started
 
@@ -88,6 +88,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P14 | 35min | 2 tasks | 4 files |
 | Phase 02 P12 | 25min | 3 tasks | 9 files |
 | Phase 02 P15 | 45min | 3 tasks | 5 files |
+| Phase 03 P03 | 30min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -182,6 +183,8 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-12: NutritionGuidanceSection treats a nil stored dietaryPattern (profile never visited DietPlanView) as the one input suppressing both swaps and education, distinct from an explicitly-chosen DietaryPattern.none which still shows baseline swaps — Avoids silently defaulting an unanswered dietary preference to an omnivore swap list
 - [Phase ?]: 02-15: StrengthHistoryModel.allSessionStartDates is populated only inside the model's existing full-store load(), never a dedicated year-list-only load, so YearJumpDatePicker's offered periods never require a separate whole-store read
 - [Phase ?]: 02-15: SessionEditView was built and unit-tested at the model level but is not wired into StrengthHistoryView as a reachable sheet in this plan -- Task 3's file scope deliberately excluded StrengthHistoryView.swift; a future plan/task must add the .sheet(item:) entry point from a history row
+- [Phase ?]: 03-03: Shield-accrual-isolation tests start from currentStreak: 20 (not 0) to avoid an unintended collision with milestone tier 12
+- [Phase ?]: 03-03: The rebuilt-streak-reaches-first-met-week test constructs its ledger post-rebuild directly rather than chaining reconcile calls, after finding that a stale expired comeback window can re-fire its rebuild transition against a same-call subsequent met week in a large catch-up fold -- implemented literally per plan scope, flagged as a known edge case
 
 ### Pending Todos
 
@@ -248,7 +251,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T09:01:15.404Z
+Last session: 2026-09-06T09:18:17.525Z
 Stopped at: Phase 3 wave 1 complete (03-01, 03-02)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
@@ -285,4 +288,4 @@ per-step breakdown of what's done vs. still needed is in
 Phase 2 cannot close until a human runs those steps on a physical device and at AX3/AX5, and
 reports back.
 Resume file:
-.planning/phases/03-momentum-recovery/03-03-PLAN.md
+None
