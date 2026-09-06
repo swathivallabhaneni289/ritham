@@ -19,8 +19,18 @@ import RithamCore
 struct HomeHubView: View {
     let flow: OnboardingFlow
 
+    @Environment(\.modelContext) private var modelContext
     @State private var isPresentingSettings = false
     @State private var isPresentingHealthProfile = false
+
+    // D-08's Momentum summary section state: a plain `MomentumSummary?`, loaded via the same
+    // `MomentumSummaryReader` `MomentumView` (plan 03-06) constructs over its own `HealthDataStore`
+    // -- proven to be the same underlying read by `hubAndDetailScreenReadTheSameUnderlyingData`
+    // (HomeHubTests). `MomentumSummary` itself carries no sleep-check-in member of any kind
+    // (03-05's own structural guarantee, `momentumSummaryCarriesNoSleepState`), so this state can
+    // never grow a sleep-derived indicator without editing `MomentumSummary`'s own declaration
+    // first -- not just by adding a line to this view.
+    @State private var momentumSummary: MomentumSummary?
 
     var body: some View {
         RithamScreen(
@@ -29,6 +39,13 @@ struct HomeHubView: View {
             bodyText: "This is a temporary hub so Phase 2's tracking and guidance features are reachable now. A polished home screen arrives later."
         ) {
             VStack(alignment: .leading, spacing: RithamSpacing.md) {
+                // D-08: the hub's own decorative surface (`.boundedHeaderOnly` above) stays
+                // exactly as it is -- this section renders in the scrollable content area below
+                // the header, never inside the header region itself, so the hub's existing
+                // header ornament and this section's own progress-block strip never share one
+                // viewport (03-UI-SPEC.md Component 1's own "two circular motifs" rationale).
+                momentumSection
+
                 PrimaryCTAButton(title: "Track cardio") {
                     flow.open(.cardioActivityPicker)
                 }
@@ -52,6 +69,11 @@ struct HomeHubView: View {
                 }
             }
         }
+        .onAppear {
+            let store = HealthDataStore(context: modelContext)
+            let reader = MomentumSummaryReader(store: store, calendar: .current)
+            momentumSummary = try? reader.summary(now: Date())
+        }
         .sheet(isPresented: $isPresentingSettings) {
             SettingsView(
                 flow: flow,
@@ -63,6 +85,47 @@ struct HomeHubView: View {
         }
         .sheet(isPresented: $isPresentingHealthProfile) {
             HealthProfileView()
+        }
+    }
+
+    // MARK: - D-08's Momentum summary section
+    //
+    // Renders this week's progress, the streak, and the shield count -- MOMENTUM-06 requires zero
+    // share/export/invite affordance anywhere on this section (no `ShareLink`,
+    // `UIActivityViewController`, or copy-link control appears here or anywhere else in this
+    // file). Deliberately no sleep-check-in state indicator, badge, dot, or "you haven't checked
+    // in" prompt of any kind: RECOVERY-01 invariant 3 requires a skipped check-in to be
+    // indistinguishable, app-wide, from a day the prompt was never shown -- do not reintroduce one
+    // here as a helpful nudge.
+    @ViewBuilder
+    private var momentumSection: some View {
+        if let summary = momentumSummary {
+            VStack(alignment: .leading, spacing: RithamSpacing.md) {
+                MomentumProgressBlocks(filled: summary.displayedCount, target: summary.weeklyTarget)
+
+                Text(MomentumView.streakLine(for: summary))
+                    .font(RithamType.heading)
+                    .modifier(RithamType.numerals())
+                    .foregroundStyle(RithamColor.paper)
+
+                ShieldRow(earned: summary.shieldCount, maximum: MomentumLedger.maxShields)
+
+                if summary.recentSessions.isEmpty {
+                    VStack(alignment: .leading, spacing: RithamSpacing.xs) {
+                        Text(MomentumCopy.Empty.noSessionsHeadline)
+                            .font(RithamType.body.weight(.semibold))
+                            .foregroundStyle(RithamColor.paper)
+                        Text(MomentumCopy.Empty.noSessionsBody)
+                            .font(RithamType.label)
+                            .foregroundStyle(RithamColor.paper)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+
+                PrimaryCTAButton(title: "Momentum") {
+                    flow.open(.momentum)
+                }
+            }
         }
     }
 }

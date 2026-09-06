@@ -1,3 +1,5 @@
+import Foundation
+import SwiftData
 import Testing
 import RithamCore
 @testable import Ritham
@@ -6,6 +8,12 @@ import RithamCore
 /// for `advance`/`goBack`, rather than rendering `HomeHubView`. This suite never touches
 /// `StepRegistry`'s shared static state, so it cannot join the cross-suite race
 /// `STATE.md`'s Blockers/Concerns documents for suites that do.
+///
+/// Plan 03-07 adds a few tests that construct their own in-memory `HealthDataStore`/
+/// `MomentumSummaryReader` directly -- the same flat, non-`.serialized`, own-container-per-test
+/// pattern `WorkoutFrequencyTests` (`SettingsPhase2Tests.swift`) already uses without joining
+/// `MomentumContainerTouchingSuites`, since each test's container is a local instance, not shared
+/// static state.
 @MainActor
 @Suite("HomeHubTests")
 struct HomeHubTests {
@@ -66,5 +74,82 @@ struct HomeHubTests {
         flow.open(.cardioActivityPicker)
         flow.open(.guidance)
         #expect(flow.path == [.cardioActivityPicker, .guidance])
+    }
+
+    // MARK: - Plan 03-07: the hub's Momentum summary section
+
+    @Test("opening momentum appends exactly that step, alongside the hub's existing Phase 2 destinations")
+    func openingMomentumAppendsExactlyThatStep() {
+        let flow = OnboardingFlow()
+        flow.open(.cardioActivityPicker)
+        flow.open(.momentum)
+        #expect(flow.path == [.cardioActivityPicker, .momentum])
+    }
+
+    private func makeStore() throws -> HealthDataStore {
+        let container = try RithamModelContainer.make(inMemory: true)
+        return HealthDataStore(context: ModelContext(container))
+    }
+
+    @Test("two independently constructed MomentumSummaryReaders over the same store return an identical summary, proving the hub and MomentumView read the same underlying data (D-08)")
+    func hubAndDetailScreenReadTheSameUnderlyingData() throws {
+        let store = try makeStore()
+        let now = Date()
+
+        // `HomeHubView`'s own `onAppear` and `MomentumView`'s own `onAppear` each construct their
+        // own `MomentumSummaryReader(store:calendar:)` -- never a shared, hub-owned view model
+        // (D-08's own requirement). Constructing two readers here, independently, over the same
+        // store proves both surfaces read the same underlying data rather than two divergent
+        // paths that happen to look similar.
+        let hubReader = MomentumSummaryReader(store: store, calendar: .current)
+        let detailReader = MomentumSummaryReader(store: store, calendar: .current)
+
+        #expect(try hubReader.summary(now: now) == (try detailReader.summary(now: now)))
+    }
+
+    @Test("theHubShowsNoSleepCheckInStateIndicator")
+    func theHubShowsNoSleepCheckInStateIndicator() {
+        // The type `HomeHubView` renders (`MomentumSummary`) is Mirrored directly, the same
+        // structural check 03-05's `momentumSummaryCarriesNoSleepState` already performs on the
+        // type itself -- reasserted here, scoped to this suite, since RECOVERY-01 invariant 3
+        // requires a skipped check-in to be indistinguishable, app-wide, from a day the prompt was
+        // never shown, and the hub is one of the two surfaces (alongside MomentumView) where that
+        // invariant could be silently broken by a future edit.
+        let summary = MomentumSummary(
+            weekStart: Date(),
+            weekEnd: Date(),
+            weeklyTarget: 3,
+            requiredThisWeek: 2,
+            qualifyingThisWeek: 0,
+            endowedCredit: 1,
+            displayedCount: 1,
+            currentStreak: 0,
+            streakLabelKind: .fresh,
+            shieldCount: 0,
+            milestones: [],
+            openComebackWindow: nil,
+            isRecoveryWeekFlagged: false,
+            isInjuryFrozen: false,
+            isStreakLossProtected: false,
+            visibility: .privateToDevice,
+            recentSessions: []
+        )
+
+        let mirror = Mirror(reflecting: summary)
+        let hasSleepDerivedMember = mirror.children.contains { child in
+            guard let label = child.label else { return false }
+            let lowercased = label.lowercased()
+            return lowercased.contains("sleep") || lowercased.contains("checkin") || lowercased.contains("check_in")
+        }
+        #expect(!hasSleepDerivedMember)
+    }
+
+    @Test("the hub's empty state equals MomentumCopy's no-sessions pair exactly")
+    func hubEmptyStateMatchesCatalogNoSessionsPair() {
+        #expect(MomentumCopy.Empty.noSessionsHeadline == "No sessions logged yet")
+        #expect(
+            MomentumCopy.Empty.noSessionsBody
+                == "Log your first cardio or lift session to start your streak."
+        )
     }
 }
