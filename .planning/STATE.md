@@ -203,18 +203,37 @@ Recent decisions affecting current work:
   presumably fixed in a prior session not reflected here. See `deferred-items.md`, itself also
   stale on this point.
 
-- Real (not stale) test-infrastructure issue found 2026-09-01: `xcodebuild test` run against the
-  full RithamTests target intermittently fails with steps reported as "unregistered" that are, in
-  fact, registered. Confirmed via `git stash` that this predates the 2026-09-01 calibration pivot.
-  Root cause: `StepRegistry`'s shared static state races across Swift Testing suites that run
-  concurrently -- each suite's own `.serialized` trait only serializes tests *within* that suite,
-  not across suites, so one suite's `StepRegistry.reset()` can interleave with another suite's
-  in-flight assertions. Every suite passes reliably run individually
-  (`-only-testing:RithamTests/<Suite>`); only the full concurrent run flakes. Not fixed --
-  needs its own pass (likely: merge the `StepRegistry`-touching suites into one `.serialized`
-  suite, or find swift-testing's real cross-suite serialization mechanism if one exists).
+- ~~Real (not stale) test-infrastructure issue found 2026-09-01...~~ Fixed 2026-09-06 (plan
+  02-16, Task 1). Root cause was as diagnosed: `StepRegistry`'s shared static state races across
+  Swift Testing suites that run concurrently, because a per-suite `.serialized` trait only orders
+  tests *within* that suite, not across suites. The fix uses Swift Testing's real cross-suite
+  serialization mechanism -- nesting: `RithamApp/RithamTests/StepRegistrySerialization.swift`
+  declares an empty `@Suite("StepRegistryTouchingSuites", .serialized)` enum, and each of the five
+  registry-touching suites (`AppShellTests`, `AboutYouStepTests`, `CalibrationSourceTests`,
+  `PhaseCoverageTests`, `ScreeningFlowTests`) plus the new `Phase2CoverageTests` is re-declared
+  inside an `extension StepRegistryTouchingSuites { ... }` in its own file -- Swift permits a
+  nested type to be introduced by an extension in a different file from the type it extends, and
+  Swift Testing's `.serialized` trait serializes an entire suite subtree recursively, not just
+  the suite it is attached to. Verified via ten consecutive full-target `xcodebuild test` runs,
+  all green, with no run reporting a registered step as unregistered. A single unrelated crash
+  (`PersistenceTests.makeContext()`, a SwiftData in-memory `ModelContainer` concurrency flake) was
+  observed once across seventeen total full-target runs during this verification; it is a
+  pre-existing, separate issue untouched by this fix and is tracked below, not folded into this
+  entry.
 
 - DIET-01 (Phase 2) stays Pending: 02-06's HomeHubView -> Settings -> DietPlanView route is wired and unit/integration-verified but the interactive spot-check (launch app, click through) was not run -- no touch-injection tool (idb/XCUITest) is available in this environment, only simctl. Next interactive UAT pass on Phase 2 should run this click-through and mark DIET-01 complete if it renders.
+
+- New, separate, low-frequency flake found 2026-09-06 during plan 02-16's ten-consecutive-run
+  verification (unrelated to the StepRegistry race just fixed above): a full-target run crashed
+  once (1 of 17 total runs) at `PersistenceTests.makeContext()`, which creates an in-memory
+  SwiftData `ModelContainer`. Three other suites also create in-memory `ModelContainer`s without a
+  `.serialized` trait (`HealthDataStoreTests`, `EditAnswerFlowTests`, plus `PersistenceTests`
+  itself), so concurrent `ModelContainer` instantiation across suites is the likely cause -- a
+  known category of SwiftData-runtime flake, distinct in kind from the registry race. Out of
+  scope for plan 02-16 per its own scope boundary (pre-existing, unrelated file, not caused by
+  this plan's changes); not fixed. Needs its own pass if it recurs: likely fix is `.serialized` on
+  the three affected suites, or a shared lock around `ModelContainer(for:configurations:)` in test
+  helpers.
 
 ## Deferred Items
 

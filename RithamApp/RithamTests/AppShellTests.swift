@@ -15,7 +15,12 @@ private struct DummyWelcomePresenter: OnboardingStepPresenting {
 // `.serialized` because every test in this suite reads/writes `StepRegistry`'s shared static
 // state; running them concurrently (Swift Testing's default) would make registration tests
 // order-dependent. `@MainActor` because `OnboardingFlow` and `StepRegistry` are both main-actor
-// isolated.
+// isolated. Nested inside `StepRegistryTouchingSuites` (`StepRegistrySerialization.swift`) so
+// this suite's registry access is also ordered relative to every other registry-touching suite,
+// not only internally -- see that file's header comment for why the per-suite trait alone is
+// insufficient.
+extension StepRegistryTouchingSuites {
+
 @Suite("AppShellTests", .serialized)
 @MainActor
 struct AppShellTests {
@@ -124,4 +129,6 @@ struct AppShellTests {
 
         #expect(flow.path.isEmpty)
     }
+}
+
 }

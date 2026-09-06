@@ -33,6 +33,13 @@ import RithamCore
 // This file's own row (T-01-114, Task 01-18-T2, "every onboarding step resolves to a real
 // screen") is covered directly below: `unregisteredStepsIsEmpty`,
 // `everyStepResolvesWithoutTrapping`, and the `reachablePathsVisitOnlyRegisteredSteps` group.
+//
+// Plan 02-16 nests this suite inside `StepRegistryTouchingSuites`
+// (`StepRegistrySerialization.swift`) so its own `unregisteredSteps`-is-empty assertion --
+// the phase's completeness gate -- is genuinely ordered relative to every other
+// registry-touching suite during a full-target run, not only internally.
+extension StepRegistryTouchingSuites {
+
 @Suite("PhaseCoverageTests", .serialized)
 @MainActor
 struct PhaseCoverageTests {
@@ -205,4 +212,6 @@ struct PhaseCoverageTests {
         }
         #expect(seen.count == ConditionTag.allCases.count)
     }
+}
+
 }

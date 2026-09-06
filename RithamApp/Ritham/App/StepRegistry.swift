@@ -103,9 +103,21 @@ final class OnboardingFlow {
 enum StepRegistry {
     private static var factories: [OnboardingStep: (OnboardingFlow) -> AnyView] = [:]
 
+    /// Tracks the concrete `Presenter.Type` registered per step, alongside `factories`. Exists
+    /// solely so tests can assert *which* real screen type backs a step -- `view(for:flow:)`
+    /// alone can't answer that, since its `AnyView` return type-erases the presenter before
+    /// returning. Plan 02-16's `Phase2CoverageTests` is the first consumer.
+    private static var presenterTypes: [OnboardingStep: Any.Type] = [:]
+
     /// Registers `type` under its own `step`, overwriting any prior registration for that step.
     static func register<Presenter: OnboardingStepPresenting>(_ type: Presenter.Type) {
         factories[type.step] = { flow in type.makeView(flow: flow) }
+        presenterTypes[type.step] = type
+    }
+
+    /// The concrete `OnboardingStepPresenting` conformer registered for `step`, if any.
+    static func registeredPresenterType(for step: OnboardingStep) -> Any.Type? {
+        presenterTypes[step]
     }
 
     /// Resolves the view for `step`. Never traps: an unregistered step gets a labelled
@@ -127,6 +139,7 @@ enum StepRegistry {
     /// execution order. Never called from app code.
     static func reset() {
         factories = [:]
+        presenterTypes = [:]
     }
 }
 

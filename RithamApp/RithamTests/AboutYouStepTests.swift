@@ -5,7 +5,11 @@ import RithamCore
 // `.serialized` because `StepRegistry` is shared static state (same reason AppShellTests uses
 // it) -- running registration assertions concurrently with other suites touching the registry
 // would make them order-dependent. `@MainActor` because `OnboardingFlow`/`StepRegistry` are
-// both main-actor isolated.
+// both main-actor isolated. Nested inside `StepRegistryTouchingSuites`
+// (`StepRegistrySerialization.swift`) so this suite orders relative to every other
+// registry-touching suite, not only internally.
+extension StepRegistryTouchingSuites {
+
 @Suite("AboutYouStepTests", .serialized)
 @MainActor
 struct AboutYouStepTests {
@@ -84,4 +88,6 @@ struct AboutYouStepTests {
 
         #expect(answers.age == 8)
     }
+}
+
 }

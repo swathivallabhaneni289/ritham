@@ -9,6 +9,12 @@ import RithamCore
 // authorization -- every source under test accepts an injected clock, availability check, or
 // authorization-status provider, so all of this runs deterministically in the Simulator per
 // 01-RESEARCH.md Pitfall 4.
+//
+// Nested inside `StepRegistryTouchingSuites` (`StepRegistrySerialization.swift`) because this
+// suite's registration tests touch `StepRegistry`'s shared static state -- ordering relative to
+// every other registry-touching suite, not only internally, is what fixes the cross-suite race.
+extension StepRegistryTouchingSuites {
+
 @Suite("CalibrationSourceTests", .serialized)
 @MainActor
 struct CalibrationSourceTests {
@@ -236,4 +242,6 @@ struct CalibrationSourceTests {
         #expect(loaded?.source == .provisional)
         #expect(loaded?.establishedAt == knownDate)
     }
+}
+
 }

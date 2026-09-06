@@ -9,7 +9,11 @@ import RithamCore
 // `AboutYouStepTests`'s pattern -- `StepRegistry` is shared static state, and running
 // registration assertions concurrently with other suites touching it would make them
 // order-dependent. `@MainActor` because `OnboardingFlow`/`StepRegistry`/`HealthDataStore` are all
-// main-actor isolated.
+// main-actor isolated. Nested inside `StepRegistryTouchingSuites`
+// (`StepRegistrySerialization.swift`) so this suite orders relative to every other
+// registry-touching suite, not only internally.
+extension StepRegistryTouchingSuites {
+
 @Suite("ScreeningFlowTests", .serialized)
 @MainActor
 struct ScreeningFlowTests {
@@ -158,4 +162,6 @@ struct ScreeningFlowTests {
         #expect(activeTags == result.matchedTags)
         #expect(!activeTags.isEmpty)
     }
+}
+
 }
