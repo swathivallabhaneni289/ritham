@@ -248,6 +248,16 @@ decision, not a Ritham product requirement — iOS client stays Swift).
      fully private with only opt-in household/accountability-contact sharing — never a public
      leaderboard — and a separate, optional Daily Movement Snapshot is available with no streak,
      shield, or target attached to it.
+
+     *Household half deferred 2026-09-06 (see `03-CONTEXT.md` D-06): Phase 3 ships only the
+     private-by-default half of MOMENTUM-06. Streak and shield state has no visibility surface
+     beyond the user's own device this phase — no public leaderboard and no sharing of any kind,
+     asserted at phase close by a structural no-sharing test. The opt-in household half is not
+     built here because Household does not exist until Phase 4 (HOUSEHOLD-01) — there is nothing
+     to opt into yet. Even once Phase 4 ships HOUSEHOLD-01, the accountability-contact tier
+     specifically stays deferred: that is HOUSEHOLD-02, already out of scope to v2 per
+     PROJECT.md. The Momentum data model carries a visibility scope from day one (D-07), so
+     Phase 4 can add a household scope with no data migration.*
 **Plans**: 9/10 plans executed
 
 Plans:
