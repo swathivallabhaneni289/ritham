@@ -1,7 +1,8 @@
 ---
 phase: 3
 slug: momentum-recovery
-status: draft
+status: approved
+reviewed_at: 2026-09-06
 shadcn_initialized: false
 preset: none
 created: 2026-09-06
