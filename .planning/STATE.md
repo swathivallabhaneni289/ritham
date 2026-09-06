@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Momentum & Recovery
 status: executing
-stopped_at: Phase 3 wave 1 complete (03-01, 03-02)
-last_updated: "2026-09-06T09:36:54.900Z"
+stopped_at: Completed 03-05-PLAN.md (sleep check-in, Movement Snapshot, MomentumSummary)
+last_updated: "2026-09-06T10:06:24.121Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 40
-  completed_plans: 34
+  completed_plans: 35
   percent: 40
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 3 (Momentum & Recovery) — EXECUTING
-Plan: 5 of 10
+Plan: 6 of 10
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -90,6 +90,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P15 | 45min | 3 tasks | 5 files |
 | Phase 03 P03 | 30min | 3 tasks | 2 files |
 | Phase 03-momentum-recovery P04 | 15min | 3 tasks | 7 files |
+| Phase 03-momentum-recovery P05 | 25min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -189,6 +190,9 @@ Recent decisions affecting current work:
 - [Phase ?]: HealthDataStore.supportedMomentumTargets reads MomentumTarget.supported directly (no second literal), unlike supportedWeeklyFrequencies -- MomentumTarget.supported has no main-actor isolation conflict.
 - [Phase ?]: loadMomentumLedger sorts milestone/comeback-window fetches (awardedAt/opensAt ascending) so a save-then-load round trip is order-stable and Equatable-comparable in tests.
 - [Phase ?]: Did not add a ComebackWindow.resolved field to fix 03-03's flagged stale-window edge case -- out of this plan's file scope (would require touching MomentumReconciliation.swift); carried forward to whichever plan next touches reconciliation logic.
+- [Phase ?]: 03-05: Locked deviation from 03-RESEARCH.md's Data Model Shape -- MovementSnapshotDay is derived at read time from existing CardioSessionRecord/LiftSessionRecord rows rather than a new append-only MovementSnapshotEntryRecord, making MOMENTUM-07's 'no streak, shield or target attached' structurally true.
+- [Phase ?]: 03-05: MomentumSummaryReader.summary(now:) tolerates a profile-less store (catches HealthDataStoreError.profileMissing from activeConditionTags and treats it as an empty tag set) since Momentum reads must never throw on an empty store.
+- [Phase ?]: 03-05: Elapsed-week reconciliation assembly is capped at 104 weeks per read (T-3-10); a long-idle store folds only the most recent bounded window and the ledger anchor advances past skipped overflow weeks, a documented tradeoff.
 
 ### Pending Todos
 
@@ -255,8 +259,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T09:35:56.490Z
-Stopped at: Phase 3 wave 1 complete (03-01, 03-02)
+Last session: 2026-09-06T10:06:24.110Z
+Stopped at: Completed 03-05-PLAN.md (sleep check-in, Movement Snapshot, MomentumSummary)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification

@@ -180,7 +180,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   household/accountability-contact sharing is available; there is never a public leaderboard of
   streak length.
 
-- [ ] **MOMENTUM-07**: A separate, optional Daily Movement Snapshot exists with no
+- [x] **MOMENTUM-07**: A separate, optional Daily Movement Snapshot exists with no
   streak/shield/target attached to it.
 
 - [x] **MOMENTUM-08**: A self-reported pain/injury flag can automatically trigger a streak freeze
@@ -188,7 +188,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Recovery-Aware Momentum
 
-- [ ] **RECOVERY-01**: A daily self-report prompt (Great/OK/Poor + optional note) is the sleep
+- [x] **RECOVERY-01**: A daily self-report prompt (Great/OK/Poor + optional note) is the sleep
   signal for the day's suggested session. Poor sleep shifts the suggestion toward
   technique-light/lower-velocity/lower-force/moderate-intensity work; a single poor night is
   never presented as injury-risk messaging. The following invariants hold without exception: the
@@ -374,9 +374,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOMENTUM-04 | Phase 3 | Complete |
 | MOMENTUM-05 | Phase 3 | Complete |
 | MOMENTUM-06 | Phase 3 | Complete |
-| MOMENTUM-07 | Phase 3 | Pending |
+| MOMENTUM-07 | Phase 3 | Complete |
 | MOMENTUM-08 | Phase 3 | Complete |
-| RECOVERY-01 | Phase 3 | Pending |
+| RECOVERY-01 | Phase 3 | Complete |
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Pending |
 | CROSSGEN-04 | Phase 4 | Pending |
