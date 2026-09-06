@@ -577,6 +577,162 @@ public final class HealthDataStore {
         try context.save()
     }
 
+    // MARK: - Momentum
+
+    /// MOMENTUM-01's weekly-target choices. Sourced directly from `MomentumTarget.supported`
+    /// (RithamCore) rather than a second literal, unlike `HealthDataStore
+    /// .supportedWeeklyFrequencies` -- that constant has no RithamCore domain counterpart to
+    /// source from, and `WeeklyFrequencyOption.all` (the UI-layer mirror of it) had to be
+    /// declared as its own separate literal only because it must stay `nonisolated` while this
+    /// property lives on `@MainActor`-isolated `HealthDataStore`. `MomentumTarget.supported` is a
+    /// plain, non-isolated domain constant, so this property can simply read it directly with no
+    /// analogous isolation problem and no risk of drifting from it.
+    public static let supportedMomentumTargets: Set<Int> = MomentumTarget.supported
+
+    /// Same isolation and "never a blank state" discipline as `loadWeeklyFrequency`: defaults to
+    /// `MomentumTarget.defaultTarget` when no `MomentumStateRecord` is stored yet.
+    public func loadMomentumTarget() throws -> Int {
+        try loadMomentumStateRecord()?.weeklyTarget ?? MomentumTarget.defaultTarget
+    }
+
+    /// Throws `HealthDataStoreError.unsupportedMomentumTarget` and persists nothing when
+    /// `target` is outside `supportedMomentumTargets` -- mirrors `saveWeeklyFrequency` exactly.
+    /// An out-of-range value is never clamped into range; T-3-01's mitigation is that nothing is
+    /// written at all when this throws.
+    public func saveMomentumTarget(_ target: Int) throws {
+        guard Self.supportedMomentumTargets.contains(target) else {
+            throw HealthDataStoreError.unsupportedMomentumTarget
+        }
+        try upsertMomentumState { $0.weeklyTarget = target }
+    }
+
+    /// Assembles the full domain `MomentumLedger` from the single scalar `MomentumStateRecord`
+    /// row plus every stored `MilestoneAwardRecord`/`ComebackWindowRecord`. Falls back to
+    /// `MomentumLedger.empty` (already seeded with `MomentumTarget.defaultTarget`) when no state
+    /// row exists yet, following `loadCalibrationBaseline`'s "never return a blank state"
+    /// discipline. A record whose raw values no longer decode (T-01-64's pattern) falls back to
+    /// its documented default rather than trapping.
+    public func loadMomentumLedger() throws -> MomentumLedger {
+        let milestones = try context.fetch(FetchDescriptor<MilestoneAwardRecord>(
+            sortBy: [SortDescriptor(\.awardedAt, order: .forward)]
+        )).compactMap(\.award)
+        let comebackWindows = try context.fetch(FetchDescriptor<ComebackWindowRecord>(
+            sortBy: [SortDescriptor(\.opensAt, order: .forward)]
+        )).compactMap(\.window)
+
+        guard let state = try loadMomentumStateRecord() else {
+            var ledger = MomentumLedger.empty
+            ledger.milestones = milestones
+            ledger.comebackWindows = comebackWindows
+            return ledger
+        }
+
+        return MomentumLedger(
+            currentStreak: state.currentStreak,
+            streakLabelKind: state.streakLabelKind ?? .fresh,
+            shieldCount: state.shieldCount,
+            weeksTowardNextShield: state.weeksTowardNextShield,
+            lastReconciledWeekStart: state.lastReconciledWeekStart,
+            weeklyTarget: state.weeklyTarget,
+            visibility: state.visibilityScope ?? .privateToDevice,
+            milestones: milestones,
+            comebackWindows: comebackWindows
+        )
+    }
+
+    /// Persists `ledger`'s scalar fields via `upsertMomentumState` (create on first write, mutate
+    /// in place afterwards, never delete-then-reinsert), then inserts only the milestone awards
+    /// and comeback windows whose identifiers are not already stored, and updates the claim
+    /// fields of an already-stored, still-unclaimed comeback window whose identifier matches.
+    /// This method never issues a delete call against a milestone or comeback row -- that asymmetry
+    /// is deliberate: plan 03-03's `MomentumReconciliation.reconcile` fold guarantees append-only
+    /// output (it never retracts an already-granted milestone or comeback window), and this
+    /// method is the persistence-layer half of that same guarantee (T-3-04's mitigation).
+    public func saveMomentumLedger(_ ledger: MomentumLedger) throws {
+        try upsertMomentumState { record in
+            record.currentStreak = ledger.currentStreak
+            record.streakLabelKindRaw = ledger.streakLabelKind.rawValue
+            record.shieldCount = ledger.shieldCount
+            record.weeksTowardNextShield = ledger.weeksTowardNextShield
+            record.lastReconciledWeekStart = ledger.lastReconciledWeekStart
+            record.weeklyTarget = ledger.weeklyTarget
+            record.visibilityScopeRaw = ledger.visibility.rawValue
+        }
+
+        let existingMilestoneIDs = Set(
+            try context.fetch(FetchDescriptor<MilestoneAwardRecord>()).map(\.id)
+        )
+        for award in ledger.milestones where !existingMilestoneIDs.contains(award.id) {
+            context.insert(MilestoneAwardRecord(award: award))
+        }
+
+        let existingComebackRecords = try context.fetch(FetchDescriptor<ComebackWindowRecord>())
+        let existingComebackByID = Dictionary(
+            uniqueKeysWithValues: existingComebackRecords.map { ($0.id, $0) }
+        )
+        for window in ledger.comebackWindows {
+            if let existing = existingComebackByID[window.id] {
+                if existing.claimedAt == nil {
+                    existing.claimedAt = window.claimedAt
+                    existing.claimingSessionID = window.claimingSessionID
+                }
+            } else {
+                context.insert(ComebackWindowRecord(window: window))
+            }
+        }
+
+        try context.save()
+    }
+
+    /// D-10's endowed week-one credit is anchored to the week containing the user's earliest
+    /// logged session across both modalities -- this is that anchor. Returns `nil` when neither
+    /// a cardio nor a lift session is stored.
+    public func earliestSessionStart() throws -> Date? {
+        let earliestCardio = try context.fetch(FetchDescriptor<CardioSessionRecord>(
+            sortBy: [SortDescriptor(\.startedAt, order: .forward)]
+        )).first?.startedAt
+        let earliestLift = try context.fetch(FetchDescriptor<LiftSessionRecord>(
+            sortBy: [SortDescriptor(\.startedAt, order: .forward)]
+        )).first?.startedAt
+
+        switch (earliestCardio, earliestLift) {
+        case let (cardio?, lift?):
+            return min(cardio, lift)
+        case let (cardio?, nil):
+            return cardio
+        case let (nil, lift?):
+            return lift
+        case (nil, nil):
+            return nil
+        }
+    }
+
+    private func loadMomentumStateRecord() throws -> MomentumStateRecord? {
+        try context.fetch(FetchDescriptor<MomentumStateRecord>()).first
+    }
+
+    /// Creates the single Momentum state row on first write, otherwise mutates the existing one
+    /// -- the same never-delete-then-reinsert discipline `upsertWorkoutPreference` uses, since
+    /// this is one row with independently-settable scalar fields, not a replaceable set.
+    private func upsertMomentumState(_ mutate: (MomentumStateRecord) -> Void) throws {
+        if let existing = try loadMomentumStateRecord() {
+            mutate(existing)
+        } else {
+            let record = MomentumStateRecord(
+                currentStreak: 0,
+                streakLabelKindRaw: StreakLabelKind.fresh.rawValue,
+                shieldCount: 0,
+                weeksTowardNextShield: 0,
+                lastReconciledWeekStart: nil,
+                weeklyTarget: MomentumTarget.defaultTarget,
+                visibilityScopeRaw: MomentumVisibility.privateToDevice.rawValue
+            )
+            mutate(record)
+            context.insert(record)
+        }
+        try context.save()
+    }
+
     // MARK: - Private
 
     private func fetchProfile() throws -> UserProfile? {
@@ -639,4 +795,7 @@ public enum HealthDataStoreError: Error, Equatable {
     /// Thrown by `saveWeeklyFrequency` when the incoming value is outside
     /// `HealthDataStore.supportedWeeklyFrequencies` -- nothing is persisted when this throws.
     case unsupportedWeeklyFrequency
+    /// Thrown by `saveMomentumTarget` when the incoming value is outside
+    /// `HealthDataStore.supportedMomentumTargets` -- nothing is persisted when this throws.
+    case unsupportedMomentumTarget
 }
