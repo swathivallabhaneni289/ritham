@@ -34,6 +34,16 @@ enum RecommendationsState: Equatable {
 final class RecommendationsModel {
     private(set) var state: RecommendationsState = .idle
 
+    // RECOVERY-01/D-04: the adjustment is a client-side post-processing step applied entirely
+    // after `client.fetchPlan` returns, over the plan already in hand. `originalPlan` is always
+    // the exact plan `WorkoutPlanClient` returned; `adjustedPlan` is only ever non-nil when
+    // today's stored sleep check-in is Poor. Neither property is read by `fetchPlan` to build the
+    // request -- sleep-quality data never crosses into `WorkoutPlanRequest`, and `WorkoutPlanClient`
+    // itself is untouched by this file (git diff --stat on that file is empty for this plan).
+    private(set) var originalPlan: WorkoutPlan?
+    private(set) var adjustedPlan: WorkoutPlan?
+    private(set) var isDisplayingAdjustedPlan = false
+
     private let store: HealthDataStore
     private let client: WorkoutPlanClient
 
@@ -54,6 +64,15 @@ final class RecommendationsModel {
         await fetchPlan(now: now)
     }
 
+    /// RECOVERY-01 invariant 2: "do the original session instead" is always available and
+    /// equal-weight. Flips which plan is displayed and updates `state` to match -- a no-op when
+    /// no adjustment applies (`adjustedPlan == nil`), since there is nothing to toggle to.
+    func toggleDisplayedPlan() {
+        guard let originalPlan, let adjustedPlan else { return }
+        isDisplayingAdjustedPlan.toggle()
+        state = .plan(isDisplayingAdjustedPlan ? adjustedPlan : originalPlan)
+    }
+
     private func fetchPlan(now: Date) async {
         state = .loading
         do {
@@ -67,12 +86,53 @@ final class RecommendationsModel {
                 experienceLevel: experience,
                 workoutGate: gates.workout
             )
-            state = .plan(plan)
+
+            // Read today's check-in and compute the shift entirely after the client has already
+            // returned -- no new network round-trip, no field added anywhere upstream of this
+            // point. A missing/unreadable check-in (`try?`) is treated the same as no check-in at
+            // all, matching `SleepAdjustment.shift(for: nil)`'s own "skip has zero effect" rule.
+            let checkIn = try? store.loadSleepCheckIn(on: now)
+            let shift = SleepAdjustment.shift(for: checkIn)
+
+            originalPlan = plan
+            if shift == .lighter {
+                // D-11: the adjustment applies uniformly across every session in the
+                // currently-displayed plan, never a single day singled out by the session's own
+                // ordinal (a plain sequence number with no calendar-weekday meaning) -- every
+                // session below is mapped through the identical
+                // `SleepAdjustment.adjustedSetCount` lever.
+                let lighterPlan = Self.applyingLighterShift(to: plan)
+                adjustedPlan = lighterPlan
+                isDisplayingAdjustedPlan = true
+                state = .plan(lighterPlan)
+            } else {
+                adjustedPlan = nil
+                isDisplayingAdjustedPlan = false
+                state = .plan(plan)
+            }
         } catch let error as WorkoutPlanClientError {
             state = .error(error)
         } catch {
             state = .error(.transport)
         }
+    }
+
+    /// Maps every session's every exercise through `SleepAdjustment.adjustedSetCount`, leaving
+    /// the rep range, the focus text, the day index, the frequency and the guidance note
+    /// untouched -- the single numeric lever this adjustment is permitted to touch (RECOVERY-01
+    /// invariant 1: no other field on a session row ever differs between the two plans).
+    private static func applyingLighterShift(to plan: WorkoutPlan) -> WorkoutPlan {
+        let adjustedSessions = plan.sessions.map { session -> WorkoutPlanSession in
+            let adjustedExercises = session.exercises.map { exercise -> WorkoutPlanExercise in
+                WorkoutPlanExercise(
+                    name: exercise.name,
+                    sets: SleepAdjustment.adjustedSetCount(exercise.sets, shift: .lighter),
+                    repRange: exercise.repRange
+                )
+            }
+            return WorkoutPlanSession(dayIndex: session.dayIndex, focus: session.focus, exercises: adjustedExercises)
+        }
+        return WorkoutPlan(frequencyPerWeek: plan.frequencyPerWeek, sessions: adjustedSessions, guidanceNote: plan.guidanceNote)
     }
 }
 
@@ -108,7 +168,7 @@ struct RecommendationsView: View, OnboardingStepPresenting {
                 ProgressView("Building your plan...")
                     .foregroundStyle(RithamColor.paper)
             case .plan(let plan):
-                planContent(plan)
+                planContent(plan, model: model)
             case .error(let error):
                 errorContent(error, model: model)
             }
@@ -131,8 +191,32 @@ struct RecommendationsView: View, OnboardingStepPresenting {
     }
 
     @ViewBuilder
-    private func planContent(_ plan: WorkoutPlan) -> some View {
+    private func planContent(_ plan: WorkoutPlan, model: RecommendationsModel) -> some View {
         VStack(alignment: .leading, spacing: RithamSpacing.md) {
+            // RECOVERY-01's only adjustment-related UI (03-UI-SPEC.md Component 7): one plain
+            // plan-level banner plus an equal-weight toggle, shown only when a lighter adjustment
+            // applies. This is literally the same button, whose title alternates -- never two
+            // separate buttons with different styling, so invariant 2 ("never one primary and
+            // one secondary") holds by construction rather than by two components matching.
+            if model.adjustedPlan != nil {
+                Text(MomentumCopy.Plan.banner)
+                    .font(RithamType.label)
+                    .foregroundStyle(RithamColor.paper)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                SecondaryCTAButton(
+                    title: model.isDisplayingAdjustedPlan ? MomentumCopy.Plan.showOriginalCTA : MomentumCopy.Plan.showLighterCTA
+                ) {
+                    model.toggleDisplayedPlan()
+                }
+            }
+
+            // Individual session rows below render identically regardless of which plan is
+            // currently displayed -- no badge, asterisk, "lighter" tag, tint change, icon, or
+            // reordering differentiates an adjusted row from an original one (RECOVERY-01
+            // invariant 1). The only value that ever differs between the two plans is a session's
+            // exercise `sets` count; every other field renders through the exact same code below
+            // either way.
             ForEach(plan.sessions) { session in
                 VStack(alignment: .leading, spacing: RithamSpacing.xs) {
                     Text("Day \(session.dayIndex): \(session.focus)")
