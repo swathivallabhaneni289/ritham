@@ -63,12 +63,14 @@
 		7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */; };
 		8323424B4850AD53C356C2A5 /* SettingsPhase2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2CA3EF9D6C31149FBD93E5 /* SettingsPhase2Tests.swift */; };
 		84DE0CBBAAF0046434CD77C6 /* AboutYouRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B2F8F3C1DFD35D08F440D /* AboutYouRegistration.swift */; };
+		85BD7E6ECCA0763105D74388 /* MomentumLedgerRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */; };
 		87808DE1AEE493D4C2504F34 /* WelcomeStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */; };
 		8AE5EF7DFD295F7364E397D8 /* Phase2StepRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632509F9A89990336A60AA9 /* Phase2StepRegistration.swift */; };
 		8B3837980F3C805054099A91 /* RecommendationsRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B94745BFCB721026C5DCFE3 /* RecommendationsRegistration.swift */; };
 		8E2E6F391B9959A6EBD1A8A8 /* CardioActivityPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8973B69865744CC62FE8838E /* CardioActivityPickerView.swift */; };
 		8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */; };
 		8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */; };
+		8FA438D74BA36B224DC66FDE /* MomentumStateRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */; };
 		90C538F5EAFE6CAC0FA2A0D0 /* GlossaryTermTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */; };
 		92D028BE8C366106ABF757F3 /* AppShellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202A72738414384DAE6A08D /* AppShellTests.swift */; };
 		949B3F05CDF426A4C9BB39E1 /* ScreeningCompleteStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2E2BBC0CDB85F157164BD1 /* ScreeningCompleteStepView.swift */; };
@@ -145,6 +147,7 @@
 		0B4438C355A19887EE4B879F /* RithamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamApp.swift; sourceTree = "<group>"; };
 		0BAEA0958C9AB53F8DB2BF5F /* AboutYouStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutYouStepTests.swift; sourceTree = "<group>"; };
 		1024D116B21BD85232045566 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
+		1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumStateRecord.swift; sourceTree = "<group>"; };
 		16B066C106553C75535FFE65 /* UniversalFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalFollowUpView.swift; sourceTree = "<group>"; };
 		1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionView.swift; sourceTree = "<group>"; };
 		1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsTests.swift; sourceTree = "<group>"; };
@@ -208,6 +211,7 @@
 		9B61ACD89789D585BDF4FFE4 /* PrivacyExplainerStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyExplainerStepView.swift; sourceTree = "<group>"; };
 		9BA7CEE7DB00083DB8BFA6EE /* BandGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometry.swift; sourceTree = "<group>"; };
 		9CA2C00B50E27B822C89CC13 /* WorkoutFrequencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFrequencyView.swift; sourceTree = "<group>"; };
+		A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumLedgerRecords.swift; sourceTree = "<group>"; };
 		A49AD7002CE2D97EA29E3FB4 /* LocationEnrichment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEnrichment.swift; sourceTree = "<group>"; };
 		A540323B6DBDE9C87D9AEF3A /* LiftSessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftSessionRecorder.swift; sourceTree = "<group>"; };
 		A6025BA3E8E23F2B10179F3E /* AgeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeStepView.swift; sourceTree = "<group>"; };
@@ -432,6 +436,8 @@
 				4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */,
 				5F91DCC5A09870CA83E4280F /* LiftSessionRecord.swift */,
 				C7106F3171C2691292CD68A5 /* LiftSetRecord.swift */,
+				A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */,
+				1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */,
 				7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */,
 				C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */,
 				8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */,
@@ -729,6 +735,8 @@
 				F874FB2134A24BF9B64F2A05 /* LiftSessionRecorder.swift in Sources */,
 				FAC67EBCA7A58642957FE497 /* LiftSetRecord.swift in Sources */,
 				5095A4F4DA0A7410735424A4 /* LocationEnrichment.swift in Sources */,
+				85BD7E6ECCA0763105D74388 /* MomentumLedgerRecords.swift in Sources */,
+				8FA438D74BA36B224DC66FDE /* MomentumStateRecord.swift in Sources */,
 				6A84B0F8DC471684A46E0482 /* MotionActivityDetector.swift in Sources */,
 				F4EE2649683C66FE6B4D9EB6 /* NutritionGuidanceSection.swift in Sources */,
 				4623D5B2CE5480BAF72A7109 /* OnboardingCompletionRegistration.swift in Sources */,

@@ -19,6 +19,11 @@ public enum RithamModelContainer {
         LiftSessionRecord.self,
         LiftSetRecord.self,
         WorkoutPreferenceRecord.self,
+        MomentumStateRecord.self,
+        MilestoneAwardRecord.self,
+        ComebackWindowRecord.self,
+        RecoveryWeekPeriodRecord.self,
+        InjuryFreezePeriodRecord.self,
     ]
 
     /// Builds a `ModelContainer`. `inMemory: true` is used by tests — an in-memory store has no
