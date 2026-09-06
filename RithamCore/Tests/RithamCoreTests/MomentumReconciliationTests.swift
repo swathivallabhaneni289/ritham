@@ -431,6 +431,274 @@ struct MomentumReconciliationTests {
 
         #expect(result.currentStreak == 2)
         #expect(result.shieldCount == 1)
+        #expect(result.weeksTowardNextShield == 2)
         #expect(result.comebackWindows.isEmpty)
+    }
+
+    // MARK: - Task 2: shield accrual/consumption, milestones, idempotence
+
+    /// `count` consecutive met weeks (each meeting `target` via qualifying cardio sessions),
+    /// starting at `startWeek`.
+    private static func consecutiveMetWeeks(count: Int, startingAt startWeek: Date, target: Int = 3) -> [MomentumWeekInput] {
+        let calendar = Self.utcCalendar()
+        var weeks: [MomentumWeekInput] = []
+        var weekStart = startWeek
+        for _ in 0..<count {
+            let cardio = (0..<target).map { Self.qualifyingCardioSession(startedAt: weekStart.addingTimeInterval(Double($0) * 3600)) }
+            weeks.append(Self.weekInput(weekStart: weekStart, cardio: cardio))
+            weekStart = MomentumWeek.nextWeekStart(after: weekStart, calendar: calendar)
+        }
+        return weeks
+    }
+
+    @Test("four consecutive met weeks grant exactly one shield and reset the accrual counter to zero")
+    func fourConsecutiveMetWeeksGrantOneShield() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let weeks = Self.consecutiveMetWeeks(count: 4, startingAt: start)
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 10)
+        ledger.weeksTowardNextShield = 0
+        ledger.shieldCount = 0
+        let lastWeekStart = weeks.last!.weekStart
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: weeks,
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: lastWeekStart, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: lastWeekStart.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 14)
+        #expect(result.shieldCount == 1)
+        #expect(result.weeksTowardNextShield == 0)
+    }
+
+    @Test("three consecutive met weeks grant no shield and leave the accrual counter at three")
+    func threeConsecutiveMetWeeksGrantNoShield() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let weeks = Self.consecutiveMetWeeks(count: 3, startingAt: start)
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 10)
+        ledger.weeksTowardNextShield = 0
+        ledger.shieldCount = 0
+        let lastWeekStart = weeks.last!.weekStart
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: weeks,
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: lastWeekStart, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: lastWeekStart.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 13)
+        #expect(result.shieldCount == 0)
+        #expect(result.weeksTowardNextShield == 3)
+    }
+
+    @Test("shieldCountNeverExceedsThreeAcrossTwelveConsecutiveMetWeeks")
+    func shieldCountNeverExceedsThreeAcrossTwelveConsecutiveMetWeeks() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let weeks = Self.consecutiveMetWeeks(count: 12, startingAt: start)
+        let ledger = Self.freshLedger(weeklyTarget: 3)
+        let lastWeekStart = weeks.last!.weekStart
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: weeks,
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: lastWeekStart, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: lastWeekStart.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 12)
+        #expect(result.shieldCount == MomentumLedger.maxShields)
+        #expect(result.weeksTowardNextShield == 0)
+    }
+
+    @Test("a shielded week decrements the shield count by exactly one, leaves the streak unchanged, and resets the accrual counter to zero")
+    func shieldedWeekDecrementsShieldAndResetsAccrual() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 5, shieldCount: 2)
+        ledger.weeksTowardNextShield = 2
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: start.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 5)
+        #expect(result.shieldCount == 1)
+        #expect(result.weeksTowardNextShield == 0)
+    }
+
+    @Test("a protectedMiss week neither increments nor resets the accrual counter")
+    func protectedMissWeekLeavesAccrualCounterUnchanged() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start)
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 2, shieldCount: 1)
+        ledger.weeksTowardNextShield = 2
+        let guardrails = MomentumGuardrails(recoveryWeeks: [], injuryFreezes: [], streakLossProtected: true)
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+            guardrails: guardrails,
+            now: start.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.weeksTowardNextShield == 2)
+    }
+
+    @Test("a streak reaching a milestone tier awards exactly one milestone plus one bonus shield")
+    func streakReachingATierAwardsMilestoneAndBonusShield() {
+        let calendar = Self.utcCalendar()
+        for tier in MomentumMilestone.tiers {
+            let start = Self.weekStart(2026, 1, 5)
+            let week = Self.weekInput(weekStart: start, cardio: (0..<3).map {
+                Self.qualifyingCardioSession(startedAt: start.addingTimeInterval(Double($0) * 3600))
+            })
+            let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: tier - 1, shieldCount: 0)
+
+            let result = MomentumReconciliation.reconcile(
+                ledger: ledger,
+                elapsedWeeks: [week],
+                currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+                guardrails: Self.noGuardrails(),
+                now: start.addingTimeInterval(8 * 86_400),
+                calendar: calendar
+            )
+
+            #expect(result.currentStreak == tier)
+            #expect(result.milestones.count == 1)
+            #expect(result.milestones.first?.weekCount == tier)
+            #expect(result.shieldCount == 1)
+        }
+    }
+
+    @Test("a milestone bonus shield still respects the cap of three")
+    func milestoneBonusShieldRespectsCap() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start, cardio: (0..<3).map {
+            Self.qualifyingCardioSession(startedAt: start.addingTimeInterval(Double($0) * 3600))
+        })
+        let ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 3, shieldCount: MomentumLedger.maxShields)
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: start.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 4)
+        #expect(result.milestones.count == 1)
+        #expect(result.shieldCount == MomentumLedger.maxShields)
+    }
+
+    @Test("aMilestoneAlreadyAwardedIsNeverAwardedASecondTime")
+    func aMilestoneAlreadyAwardedIsNeverAwardedASecondTime() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let week = Self.weekInput(weekStart: start, cardio: (0..<3).map {
+            Self.qualifyingCardioSession(startedAt: start.addingTimeInterval(Double($0) * 3600))
+        })
+        var ledger = Self.freshLedger(weeklyTarget: 3, currentStreak: 3, shieldCount: 0)
+        ledger.milestones = [MilestoneAward(id: UUID(), weekCount: 4, awardedAt: Self.date(2025, 1, 1))]
+
+        let result = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: [week],
+            currentWeek: Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: start, calendar: calendar)),
+            guardrails: Self.noGuardrails(),
+            now: start.addingTimeInterval(8 * 86_400),
+            calendar: calendar
+        )
+
+        #expect(result.currentStreak == 4)
+        #expect(result.milestones.count == 1)
+        #expect(result.shieldCount == 0)
+    }
+
+    @Test("reconcilingTwiceWithIdenticalInputsProducesAnEqualLedger")
+    func reconcilingTwiceWithIdenticalInputsProducesAnEqualLedger() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let weeks = Self.consecutiveMetWeeks(count: 5, startingAt: start)
+        let lastWeekStart = weeks.last!.weekStart
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: lastWeekStart, calendar: calendar))
+        let now = lastWeekStart.addingTimeInterval(8 * 86_400)
+        let ledger = Self.freshLedger(weeklyTarget: 3)
+
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: weeks,
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: result1,
+            elapsedWeeks: weeks,
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        #expect(result1 == result2)
+    }
+
+    @Test("reconciling a second time with an elapsed-week list already at or before the anchor processes none of them again")
+    func reconcilingAgainOverAlreadyProcessedWeeksIsANoOp() {
+        let calendar = Self.utcCalendar()
+        let start = Self.weekStart(2026, 1, 5)
+        let weeks = Self.consecutiveMetWeeks(count: 4, startingAt: start)
+        let lastWeekStart = weeks.last!.weekStart
+        let currentWeek = Self.weekInput(weekStart: MomentumWeek.nextWeekStart(after: lastWeekStart, calendar: calendar))
+        let now = lastWeekStart.addingTimeInterval(8 * 86_400)
+        let ledger = Self.freshLedger(weeklyTarget: 3)
+
+        let result1 = MomentumReconciliation.reconcile(
+            ledger: ledger,
+            elapsedWeeks: weeks,
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        // Passing the *same* (already-processed) weeks again must be a no-op.
+        let result2 = MomentumReconciliation.reconcile(
+            ledger: result1,
+            elapsedWeeks: weeks,
+            currentWeek: currentWeek,
+            guardrails: Self.noGuardrails(),
+            now: now,
+            calendar: calendar
+        )
+
+        #expect(result2.shieldCount == result1.shieldCount)
+        #expect(result2.currentStreak == result1.currentStreak)
+        #expect(result2.milestones.count == result1.milestones.count)
     }
 }
