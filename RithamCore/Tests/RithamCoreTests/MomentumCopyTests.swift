@@ -36,6 +36,11 @@ struct MomentumCopyTests {
         ("Progress.weekly", MomentumCopy.Progress.weekly(count: 2, target: 3)),
         ("Progress.weeklyAccessibility", MomentumCopy.Progress.weeklyAccessibility(count: 2, target: 3)),
         ("Streak.streak", MomentumCopy.Streak.streak(weeks: 5)),
+        // weeks: 0 is the one interpolation case in this catalog that can produce a literal
+        // "0" digit, the exact quantity the banned-lexicon table's "zero" row is about (it
+        // forbids "zero" *describing the user's own count going back to it", not the digit
+        // itself as a token match, but it is the case worth gating explicitly).
+        ("Streak.streak(weeks: 0)", MomentumCopy.Streak.streak(weeks: 0)),
         ("Streak.rebuiltStreak", MomentumCopy.Streak.rebuiltStreak),
         ("Shields.shields", MomentumCopy.Shields.shields(earned: 2)),
         ("Comeback.headline", MomentumCopy.Comeback.headline),
@@ -87,7 +92,7 @@ struct MomentumCopyTests {
         // enum namespace's static members, so this cannot mechanically detect a new
         // MomentumCopy constant that was never added to shippedStrings. It does catch an
         // accidental duplicate or removal within this file.
-        #expect(Self.shippedStrings.count == 46)
+        #expect(Self.shippedStrings.count == 47)
     }
 
     @Test("no shipped Momentum or Recovery string contains a banned framing token")
