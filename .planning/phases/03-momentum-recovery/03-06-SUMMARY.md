@@ -111,6 +111,9 @@ coverage:
       - kind: unit
         ref: "RithamApp/RithamTests/MomentumViewTests.swift (recoveryWeekAlertStringsMatchMomentumCopyConstants, injuryAlertStringsMatchMomentumCopyAndLabelSwitchesWhenFrozen, theTwoSelfReportControlsShareNoState, noMomentumControlUsesTheDestructiveColor)"
         status: pass
+      - kind: other
+        ref: "source greps on RithamApp/Ritham/Momentum/Views/MomentumView.swift: two distinct SF Symbol names (figure.walk.motion, bandage) in recoveryWeekRow/injuryRow; two distinct @State booleans (showingRecoveryWeekAlert, showingInjuryAlert) with no shared alert-presentation flag; grep -c \"\\.alert(\" returns 4 (>= 2, two distinct confirmations, not one shared dialog)"
+        status: pass
     human_judgment: false
   - id: D8
     description: "The new .momentum step case resolves to MomentumView after StepBootstrap.registerAllSteps(), and the shipped unregistered-steps/idempotence/reachability gates all stay green"
@@ -181,7 +184,6 @@ Each task was committed atomically:
 - The Comeback Session CTA routes to `flow.open(.cardioActivityPicker)` only, per 03-UI-SPEC.md Component 4 leaving the exact single-entry-point choice to the executor.
 - Recovery Week's already-flagged state reuses the same `flagButton` string as a plain label (no new copy drafted, none exists in the Copywriting Contract for this state).
 - `noMomentumControlUsesTheDestructiveColor` uses a comment-filtered source-read check (the plan's own stated fallback), since `RithamColor.destructive` isn't reachable from a value-level assertion without view-rendering tooling.
-- Each alert's "Cancel" dismiss button is a literal string, matching the existing codebase convention (`SessionEditView.swift`, `ExercisePickerView.swift`) rather than a new `MomentumCopy` constant for a system-standard action.
 
 ## Deviations from Plan
 
@@ -216,6 +218,16 @@ Each task was committed atomically:
 **Total deviations:** 3 auto-fixed (1 bug caught by the plan's own test suite, 1 blocking compile fix, 1 bug in a pre-existing hardcoded count).
 **Impact on plan:** All three are necessary corrections directly caused by this plan's own changes (adding a new `OnboardingStep` case, and a real Swift-concurrency isolation gap this codebase already has an established fix pattern for). No scope creep -- no file outside this plan's stated set or its immediate compile-time consequence was touched.
 
+### Accepted Variances (not auto-fixes; documented, not corrected)
+
+**1. [Copywriting Contract] Each self-report alert's "Cancel" button is a literal string, not a `MomentumCopy` constant**
+- **Found during:** Task 3, writing the Recovery Week and injury alert actions
+- **Issue:** Task 3's acceptance criteria state "every string rendered by either row comes from `MomentumCopy`." Each alert's dismiss button renders the literal `"Cancel"`, which is not a `MomentumCopy` constant.
+- **Why not fixed:** `MomentumCopy` lives in `RithamCore`, outside Task 3's file scope, and 03-UI-SPEC.md's Copywriting Contract table has no row for a cancel/dismiss action at all -- drafting one would be inventing phase-specific framing copy for a system-standard dismissal action, not transcribing an existing one. The identical literal `"Cancel"` is already the established codebase convention for this exact SwiftUI `.alert(role: .cancel)` pattern (`RithamApp/Ritham/Strength/Views/SessionEditView.swift:173`, `ExercisePickerView.swift:61`), so introducing a `MomentumCopy` constant here would create a second, divergent way to spell the same system action rather than following precedent.
+- **Files affected:** `RithamApp/Ritham/Momentum/Views/MomentumView.swift` (4 occurrences, one per alert)
+- **Verification:** Confirmed via source grep that "Cancel" and the two SF Symbol names are the only non-`MomentumCopy` string literals in the two self-report rows; every other rendered string (`flagButton`, `alertTitle`, `alertBody`, `confirmButton`, `clearButton`, `clearAlertTitle`) is a `MomentumCopy` reference.
+- **Committed in:** `8ff82b4` (Task 3 commit)
+
 ## Issues Encountered
 None beyond the deviations above, all caught and fixed before their respective task commits landed.
 
@@ -223,7 +235,7 @@ None beyond the deviations above, all caught and fixed before their respective t
 None - no external service configuration required.
 
 ## Next Phase Readiness
-- `MomentumView` is registered and reachable; `HomeHubView` (plan 03-07) can add its own Momentum summary section reading the same `MomentumSummaryReader` without any change to this plan's files.
+- `MomentumView` is registered and resolvable (`StepRegistry.view(for: .momentum, flow:)` returns the real screen, proven by `momentumStepResolvesWithoutTrapping`) but **not yet reachable**: `.momentum` is a terminal step like every other Phase 2/3 hub surface, and nothing in the app currently calls `flow.open(.momentum)` -- there is no button on `HomeHubView` or anywhere else that navigates a user to this screen yet. Wiring that entry point (most likely from `HomeHubView`'s own Momentum summary section) is explicitly plan 03-07's job, not done here. This is a stated handoff, not an orphaned screen: unlike the `SessionEditView`/`StrengthHistoryView` gap flagged in `.planning/STATE.md` (built-and-tested but never wired, no owning follow-up plan named), this screen's wiring is plan 03-07's own stated scope, called out here so it isn't rediscovered as a surprise gap.
 - `Scripts/build-app.sh build` succeeds; the full `RithamTests` target (342 tests, 44 suites) passes; `RithamCore/Scripts/test-core.sh` (394 tests, 30 suites) passes; `PhaseCoverageTests`/`Phase2CoverageTests` remain green with the new case included.
 - No sharing/export affordance exists anywhere in `RithamApp/Ritham/Momentum/` (MOMENTUM-06's private-by-default scope for this phase, confirmed by source grep) -- this stays true for plan 03-10's own close-out gate to re-verify against later plans' additions.
 - Physical-device/AX3-AX5 accessibility verification for this screen is deferred to the single end-of-project batched pass, per PROJECT.md's 2026-09-06 decision (same posture as every other Phase 2/3 screen) -- not a blocker for this plan or this phase's continuation.
