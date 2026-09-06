@@ -48,6 +48,7 @@ struct SettingsView: View {
     @State private var isShowingAlwaysFreeList = false
     @State private var isEditingWorkoutFrequency = false
     @State private var isEditingMomentumTarget = false
+    @State private var isEditingMovementSnapshot = false
     @State private var isReScreenDue = false
 
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
@@ -91,6 +92,14 @@ struct SettingsView: View {
                 isEditingMomentumTarget = true
             }
 
+            // MOMENTUM-07/D-09: the Daily Movement Snapshot opt-in, off by default. This is a
+            // preference entry only, exactly like the Momentum-target row above it -- Settings
+            // shows no snapshot state (calendar days, marked/unmarked) of its own; that lives
+            // exclusively on `MovementSnapshotView`, reachable only from the hub once opted in.
+            SecondaryCTAButton(title: Self.movementSnapshotRowTitle) {
+                isEditingMovementSnapshot = true
+            }
+
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
                 Text("Screening answers")
                     .font(RithamType.heading)
@@ -119,11 +128,18 @@ struct SettingsView: View {
         .sheet(isPresented: $isEditingMomentumTarget) {
             MomentumTargetView(initialTarget: currentMomentumTarget())
         }
+        .sheet(isPresented: $isEditingMovementSnapshot) {
+            MovementSnapshotToggleView(initialOptIn: currentMovementSnapshotOptIn())
+        }
     }
 
     /// The Momentum-target row's label, extracted as a single source of truth so
     /// `MomentumTargetPickerTests` can pin it without rendering this view.
     static let momentumTargetRowTitle = "Momentum target"
+
+    /// The Movement Snapshot row's label, extracted the same way `momentumTargetRowTitle` is so
+    /// `MovementSnapshotViewTests` can pin it without rendering this view.
+    static let movementSnapshotRowTitle = "Daily Movement Snapshot"
 
     private func sectionEntryPoint(_ section: EditableSection, title: String) -> some View {
         SecondaryCTAButton(title: title) {
@@ -153,5 +169,14 @@ struct SettingsView: View {
     private func currentMomentumTarget() -> Int {
         let store = HealthDataStore(context: modelContext)
         return (try? store.loadMomentumTarget()) ?? MomentumTarget.defaultTarget
+    }
+
+    /// Loaded fresh at sheet-presentation time (not cached in `SettingsView`'s own state),
+    /// mirroring `currentWeeklyFrequency()`/`currentMomentumTarget()`'s own pattern above.
+    /// `HealthDataStore.loadMovementSnapshotOptIn` already supplies `false` when nothing is
+    /// stored yet.
+    private func currentMovementSnapshotOptIn() -> Bool {
+        let store = HealthDataStore(context: modelContext)
+        return (try? store.loadMovementSnapshotOptIn()) ?? false
     }
 }
