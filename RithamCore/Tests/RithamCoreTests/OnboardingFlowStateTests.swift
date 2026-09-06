@@ -209,8 +209,9 @@ struct OnboardingFlowStateTests {
         for raw in newRawValues {
             #expect(OnboardingStep(rawValue: raw) != nil, "expected a case for raw value \(raw)")
         }
-        // 24 through the end of Phase 2, +1 for Phase 3 plan 03-06's new `.momentum` case.
-        #expect(OnboardingStep.allCases.count == 25)
+        // 24 through the end of Phase 2, +1 for Phase 3 plan 03-06's `.momentum` case, +1 for
+        // plan 03-08's `.sleepCheckIn` case.
+        #expect(OnboardingStep.allCases.count == 26)
     }
 
     @Test("every new Phase 2 case is terminal: OnboardingRouter.nextStep returns nil for each")

@@ -46,6 +46,19 @@ struct HomeHubView: View {
                 // viewport (03-UI-SPEC.md Component 1's own "two circular motifs" rationale).
                 momentumSection
 
+                // RECOVERY-01's daily sleep check-in entry point. Deliberately placed here, on
+                // the hub, rather than inside `momentumSection` or on `MomentumView`: invariant 7
+                // requires the sleep and Momentum systems to share zero UI surface beyond the
+                // single plan-level banner (Component 7), and D-03 requires the three self-report
+                // machines (sleep check-in, Recovery Week, injury freeze) to stay structurally
+                // independent. The label is a plain string constant -- never derived from
+                // whether a check-in exists for today -- so a skipped check-in is indistinguishable,
+                // app-wide, from a day the prompt was never shown (invariant 3): no badge, no dot,
+                // no completed state of any kind.
+                SecondaryCTAButton(title: MomentumCopy.Sleep.headline) {
+                    flow.open(.sleepCheckIn)
+                }
+
                 PrimaryCTAButton(title: "Track cardio") {
                     flow.open(.cardioActivityPicker)
                 }

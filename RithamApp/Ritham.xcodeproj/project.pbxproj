@@ -45,6 +45,7 @@
 		45FA6FA7A9E776B6BD09B39E /* EditAnswerFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09AFD05148DDECA5064D35BB /* EditAnswerFlowTests.swift */; };
 		4623D5B2CE5480BAF72A7109 /* OnboardingCompletionRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E2C544658C88B34F194BD /* OnboardingCompletionRegistration.swift */; };
 		4A3B3A80A114FF2F6537860A /* CalibrationSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFBFA5F220C3A206E70F8E /* CalibrationSourceTests.swift */; };
+		4BAEECF546BF5C81897726A1 /* RecoveryAdjustmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C432DD1332C2E26772A7F26 /* RecoveryAdjustmentTests.swift */; };
 		4E5C516F5949297C5F9935E2 /* GuidanceContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C5A3EBA8DB4587568FE1DDD /* GuidanceContext.swift */; };
 		4EDF881FDE663F23A30F29CE /* ScreeningFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */; };
 		507ED14AF0F3BDB019DE15FF /* AgeValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257DEEF73E7060A1F4117609 /* AgeValidationTests.swift */; };
@@ -125,6 +126,7 @@
 		E08CE99E8BBF48AA7975E7F1 /* GuidanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5398A0EBE3232277DF47F768 /* GuidanceView.swift */; };
 		E1FB7E5F23927CD2367FF429 /* HomeHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3947E82C5A5C050CB361C4 /* HomeHubView.swift */; };
 		E237B8D80685930DCEDBF0D0 /* CardioRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DA5833C338691FF38300B0 /* CardioRegistration.swift */; };
+		E4DBB83482598F8D440445BF /* SleepCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E8473A4F8E58949381D619 /* SleepCheckInView.swift */; };
 		E9B451301BBB32186D650E4F /* StopwatchSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899994571E54AFD8D9247EEA /* StopwatchSession.swift */; };
 		EA77E7A1C1297BA0CB56658F /* ChoiceQuestionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED5B376F4222B06352A10E7 /* ChoiceQuestionTests.swift */; };
 		EB1A1E77C6D00055FEDF1B38 /* CalibrationCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354827AFD6902E7D09FD3584 /* CalibrationCompleteView.swift */; };
@@ -177,6 +179,7 @@
 		2A8729A9442CD3525C433B97 /* WorkoutPlanClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlanClient.swift; sourceTree = "<group>"; };
 		2B0DB918D6F79ADB63C045BA /* StepRegistrySerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRegistrySerialization.swift; sourceTree = "<group>"; };
 		2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStepView.swift; sourceTree = "<group>"; };
+		2C432DD1332C2E26772A7F26 /* RecoveryAdjustmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryAdjustmentTests.swift; sourceTree = "<group>"; };
 		2D7D475288D596A167095155 /* ConditionTagRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionTagRecord.swift; sourceTree = "<group>"; };
 		309EA04063A9FC990A21210A /* RithamTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RithamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		33CE82EE341BE99682A4A6E6 /* Ritham.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Ritham.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -260,6 +263,7 @@
 		C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationBaselineRecord.swift; sourceTree = "<group>"; };
 		C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionChecklistView.swift; sourceTree = "<group>"; };
 		C51ABE5043F692DA8E79302F /* Phase2CoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2CoverageTests.swift; sourceTree = "<group>"; };
+		C5E8473A4F8E58949381D619 /* SleepCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepCheckInView.swift; sourceTree = "<group>"; };
 		C632509F9A89990336A60AA9 /* Phase2StepRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2StepRegistration.swift; sourceTree = "<group>"; };
 		C7106F3171C2691292CD68A5 /* LiftSetRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftSetRecord.swift; sourceTree = "<group>"; };
 		C7CF1FE8182F9431C9184C34 /* HealthDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataStoreTests.swift; sourceTree = "<group>"; };
@@ -556,6 +560,7 @@
 			children = (
 				AB84316635231CF593DCFF89 /* MomentumTargetView.swift */,
 				DDCB043980443A164BCA6359 /* MomentumView.swift */,
+				C5E8473A4F8E58949381D619 /* SleepCheckInView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -624,6 +629,7 @@
 				C51ABE5043F692DA8E79302F /* Phase2CoverageTests.swift */,
 				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
 				1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */,
+				2C432DD1332C2E26772A7F26 /* RecoveryAdjustmentTests.swift */,
 				AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */,
 				0B2CA3EF9D6C31149FBD93E5 /* SettingsPhase2Tests.swift */,
 				2B0DB918D6F79ADB63C045BA /* StepRegistrySerialization.swift */,
@@ -846,6 +852,7 @@
 				36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */,
 				CA189C582F73C271693A0B54 /* ShieldRow.swift in Sources */,
 				CFDECDFE2EAE59916DF92C3D /* SleepCheckInRecord.swift in Sources */,
+				E4DBB83482598F8D440445BF /* SleepCheckInView.swift in Sources */,
 				ED5112BF358AF9FD675F531F /* StandingFooterDisclaimer.swift in Sources */,
 				94DDA35A59D98E641168FE28 /* StepBootstrap.swift in Sources */,
 				9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */,
@@ -893,6 +900,7 @@
 				D86A6B3C4900E249C0A26882 /* Phase2CoverageTests.swift in Sources */,
 				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
 				11E1EC0DDEA72DA1962A9DD5 /* RecommendationsTests.swift in Sources */,
+				4BAEECF546BF5C81897726A1 /* RecoveryAdjustmentTests.swift in Sources */,
 				4EDF881FDE663F23A30F29CE /* ScreeningFlowTests.swift in Sources */,
 				8323424B4850AD53C356C2A5 /* SettingsPhase2Tests.swift in Sources */,
 				2E093B3D5F52D25A10E92A81 /* StepRegistrySerialization.swift in Sources */,

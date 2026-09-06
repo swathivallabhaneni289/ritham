@@ -8,5 +8,6 @@ import RithamCore
 enum MomentumRegistration {
     static func registerAll() {
         StepRegistry.register(MomentumView.self)
+        StepRegistry.register(SleepCheckInView.self)
     }
 }
