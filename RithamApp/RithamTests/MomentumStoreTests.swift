@@ -217,5 +217,127 @@ extension MomentumContainerTouchingSuites {
 
             #expect(try store.earliestSessionStart() == earlierDate)
         }
+
+        // MARK: - Recovery Week and injury freeze periods
+
+        @Test("appending a Recovery Week period and reloading it returns the same period")
+        func recoveryWeekPeriodRoundTrips() throws {
+            let (store, _) = try makeStore()
+            let now = Date()
+            let period = RecoveryWeekPeriod(id: UUID(), weekStart: now, flaggedAt: now)
+
+            try store.appendRecoveryWeekPeriod(period)
+
+            #expect(try store.loadRecoveryWeekPeriods() == [period])
+        }
+
+        @Test("appending the same Recovery Week twice stores exactly one row")
+        func appendingSameRecoveryWeekTwiceStoresExactlyOneRow() throws {
+            let (store, _) = try makeStore()
+            let now = Date()
+
+            try store.appendRecoveryWeekPeriod(RecoveryWeekPeriod(id: UUID(), weekStart: now, flaggedAt: now))
+            try store.appendRecoveryWeekPeriod(
+                RecoveryWeekPeriod(id: UUID(), weekStart: now, flaggedAt: now.addingTimeInterval(60))
+            )
+
+            #expect(try store.loadRecoveryWeekPeriods().count == 1)
+        }
+
+        @Test("appending an injury freeze while one is already open stores exactly one row")
+        func appendingSecondInjuryFreezeWhileOpenStoresExactlyOneRow() throws {
+            let (store, _) = try makeStore()
+            let now = Date()
+
+            try store.appendInjuryFreezePeriod(InjuryFreezePeriod(id: UUID(), startedAt: now, endedAt: nil))
+            try store.appendInjuryFreezePeriod(
+                InjuryFreezePeriod(id: UUID(), startedAt: now.addingTimeInterval(3_600), endedAt: nil)
+            )
+
+            #expect(try store.loadInjuryFreezePeriods().count == 1)
+        }
+
+        @Test("closing an open freeze sets its end and leaves the row present")
+        func closingOpenFreezeSetsEndAndLeavesRowPresent() throws {
+            let (store, _) = try makeStore()
+            let now = Date()
+            try store.appendInjuryFreezePeriod(InjuryFreezePeriod(id: UUID(), startedAt: now, endedAt: nil))
+
+            let closeDate = now.addingTimeInterval(86_400)
+            try store.closeOpenInjuryFreeze(at: closeDate)
+
+            let loaded = try store.loadInjuryFreezePeriods()
+            #expect(loaded.count == 1)
+            #expect(loaded.first?.endedAt == closeDate)
+        }
+
+        @Test("closing when nothing is open is a no-op that throws nothing")
+        func closingWhenNothingOpenIsANoOp() throws {
+            let (store, _) = try makeStore()
+            try store.closeOpenInjuryFreeze(at: Date())
+            #expect(try store.loadInjuryFreezePeriods().isEmpty)
+        }
+
+        @Test("recoveryWeekAndInjuryFreezeShareNoStoredState")
+        func recoveryWeekAndInjuryFreezeShareNoStoredState() throws {
+            let (store, _) = try makeStore()
+            let now = Date()
+
+            try store.appendInjuryFreezePeriod(InjuryFreezePeriod(id: UUID(), startedAt: now, endedAt: nil))
+            let injuryCountAfterFirstAppend = try store.loadInjuryFreezePeriods().count
+
+            try store.appendRecoveryWeekPeriod(RecoveryWeekPeriod(id: UUID(), weekStart: now, flaggedAt: now))
+            #expect(try store.loadInjuryFreezePeriods().count == injuryCountAfterFirstAppend)
+
+            let recoveryCountAfterFirstAppend = try store.loadRecoveryWeekPeriods().count
+            try store.appendInjuryFreezePeriod(
+                InjuryFreezePeriod(id: UUID(), startedAt: now.addingTimeInterval(30 * 86_400), endedAt: nil)
+            )
+            #expect(try store.loadRecoveryWeekPeriods().count == recoveryCountAfterFirstAppend)
+        }
+
+        /// A guardrail case a manually maintained inventory entry can describe: which of the two
+        /// D-03-independent guardrail record types (if any) a `HealthDataStore` method reads from
+        /// storage, and which it writes to storage.
+        private enum GuardrailAccess: Equatable {
+            case recoveryWeek
+            case injuryFreeze
+            case none
+        }
+
+        private struct MethodGuardrailAccess {
+            let name: String
+            let reads: GuardrailAccess
+            let writes: GuardrailAccess
+        }
+
+        /// A manually maintained, reviewer-facing inventory of every `HealthDataStore` method in
+        /// the Recovery Week / injury freeze section, paired with which guardrail type (if any)
+        /// it reads from storage and which it writes to storage. This stands in for a reflection
+        /// trick 03-04-PLAN.md explicitly allows skipping: Swift Testing has no supported runtime
+        /// API to enumerate a class's methods and inspect what each one reads/writes. A reviewer
+        /// adding a new Momentum guardrail method is expected to add a matching row here; this
+        /// test then re-checks the whole table's invariant, so a future method that both reads
+        /// one guardrail type and writes the other fails this test the moment its row is added.
+        private static let momentumGuardrailMethodInventory: [MethodGuardrailAccess] = [
+            MethodGuardrailAccess(name: "loadRecoveryWeekPeriods", reads: .recoveryWeek, writes: .none),
+            MethodGuardrailAccess(name: "appendRecoveryWeekPeriod", reads: .recoveryWeek, writes: .recoveryWeek),
+            MethodGuardrailAccess(name: "loadInjuryFreezePeriods", reads: .injuryFreeze, writes: .none),
+            MethodGuardrailAccess(name: "appendInjuryFreezePeriod", reads: .injuryFreeze, writes: .injuryFreeze),
+            MethodGuardrailAccess(name: "closeOpenInjuryFreeze", reads: .injuryFreeze, writes: .injuryFreeze),
+        ]
+
+        @Test("momentumStoreExposesNoCrossMachineTransition")
+        func momentumStoreExposesNoCrossMachineTransition() {
+            for entry in Self.momentumGuardrailMethodInventory {
+                let crossesMachines = entry.reads != .none
+                    && entry.writes != .none
+                    && entry.reads != entry.writes
+                #expect(
+                    !crossesMachines,
+                    "\(entry.name) reads \(entry.reads) but writes \(entry.writes) -- a guardrail method must never read one machine and write the other (D-03)"
+                )
+            }
+        }
     }
 }

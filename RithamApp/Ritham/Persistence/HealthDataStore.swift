@@ -707,6 +707,61 @@ public final class HealthDataStore {
         }
     }
 
+    // MARK: - Recovery Week and injury freeze periods
+
+    /// All stored Recovery Week periods, ascending by week start. Kept strictly separate from
+    /// `loadInjuryFreezePeriods`/`appendInjuryFreezePeriod`/`closeOpenInjuryFreeze`: no method in
+    /// this section reads one guardrail type and writes the other, and no method reads either
+    /// guardrail type and writes the sleep check-in record plan 03-05 adds. D-03 requires zero
+    /// automatic transitions between the three self-report machines, and the absence of such a
+    /// method is the structural expression of that (T-3-08's mitigation).
+    public func loadRecoveryWeekPeriods() throws -> [RecoveryWeekPeriod] {
+        let records = try context.fetch(FetchDescriptor<RecoveryWeekPeriodRecord>(
+            sortBy: [SortDescriptor(\.weekStart, order: .forward)]
+        ))
+        return records.compactMap(\.period)
+    }
+
+    /// Inserts a Recovery Week period only when no stored row already has the same `weekStart` --
+    /// flagging the same week twice is a no-op, never a duplicate row. Per D-12 the flag always
+    /// pauses the entire week containing the flagging instant for reconciliation purposes,
+    /// regardless of what day of that week it was set on -- it never applies retroactively to an
+    /// arbitrary earlier week the user selects; `period.weekStart` must already be that
+    /// containing week's boundary by the time it reaches this method.
+    public func appendRecoveryWeekPeriod(_ period: RecoveryWeekPeriod) throws {
+        let existing = try loadRecoveryWeekPeriods()
+        guard !existing.contains(where: { $0.weekStart == period.weekStart }) else { return }
+        context.insert(RecoveryWeekPeriodRecord(period: period))
+        try context.save()
+    }
+
+    /// All stored injury freeze periods, ascending by start.
+    public func loadInjuryFreezePeriods() throws -> [InjuryFreezePeriod] {
+        let records = try context.fetch(FetchDescriptor<InjuryFreezePeriodRecord>(
+            sortBy: [SortDescriptor(\.startedAt, order: .forward)]
+        ))
+        return records.compactMap(\.period)
+    }
+
+    /// Inserts an injury freeze only when no stored row is currently open (a `nil` `endedAt`) --
+    /// flagging a second injury while already frozen is a no-op, never a duplicate open row.
+    public func appendInjuryFreezePeriod(_ period: InjuryFreezePeriod) throws {
+        let records = try context.fetch(FetchDescriptor<InjuryFreezePeriodRecord>())
+        guard !records.contains(where: { $0.endedAt == nil }) else { return }
+        context.insert(InjuryFreezePeriodRecord(period: period))
+        try context.save()
+    }
+
+    /// Sets the end of the single open injury freeze row, if any, to `date`. A no-op (throws
+    /// nothing) when no open row exists. Never deletes a row -- the freeze history is append-only
+    /// like the rest of the Momentum ledger.
+    public func closeOpenInjuryFreeze(at date: Date) throws {
+        let records = try context.fetch(FetchDescriptor<InjuryFreezePeriodRecord>())
+        guard let open = records.first(where: { $0.endedAt == nil }) else { return }
+        open.endedAt = date
+        try context.save()
+    }
+
     private func loadMomentumStateRecord() throws -> MomentumStateRecord? {
         try context.fetch(FetchDescriptor<MomentumStateRecord>()).first
     }
