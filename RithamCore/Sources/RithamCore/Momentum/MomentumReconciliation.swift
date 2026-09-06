@@ -138,9 +138,20 @@ public enum MomentumReconciliation {
     /// week's derived qualifying count — reconciliation only ever asks whether a milestone has
     /// already been awarded, never whether it should currently be true.
     ///
-    /// Comeback-window handling (on `missed`) is completed by a later task — see the TODO marker
-    /// below; that branch is not stubbed with placeholder behavior a later task would have to
-    /// unpick.
+    /// A reference to a qualifying session used only by the comeback-window resolution pass
+    /// below, to compare cardio and lift sessions uniformly without re-deriving qualification.
+    private struct QualifyingSessionRef {
+        let id: UUID
+        let startedAt: Date
+    }
+
+    /// Comeback-window handling (on `missed`, plus the post-fold resolution pass) completes
+    /// MOMENTUM-04's 3-day repair and MOMENTUM-05's rebuilt-streak transition. Opening a window
+    /// is guarded on `missedWeekStart` uniqueness so a repeat reconciliation over the same missed
+    /// week can never duplicate it. Claiming a window is guarded on `claimedAt == nil` so it
+    /// happens at most once. This file records only the `rebuilt` label kind on the ledger — the
+    /// "Week 1 of your rebuilt streak" display framing itself is a display concern owned
+    /// elsewhere (a later plan's copy layer), never written here.
     public static func reconcile(
         ledger: MomentumLedger,
         elapsedWeeks: [MomentumWeekInput],
@@ -151,12 +162,11 @@ public enum MomentumReconciliation {
     ) -> MomentumLedger {
         var ledger = ledger
 
-        let weeksToProcess = elapsedWeeks
-            .sorted { $0.weekStart < $1.weekStart }
-            .filter { week in
-                guard let anchor = ledger.lastReconciledWeekStart else { return true }
-                return week.weekStart > anchor
-            }
+        let sortedElapsedWeeks = elapsedWeeks.sorted { $0.weekStart < $1.weekStart }
+        let weeksToProcess = sortedElapsedWeeks.filter { week in
+            guard let anchor = ledger.lastReconciledWeekStart else { return true }
+            return week.weekStart > anchor
+        }
 
         for week in weeksToProcess {
             let weekOutcome = outcome(for: week, ledger: ledger, guardrails: guardrails)
@@ -183,10 +193,59 @@ public enum MomentumReconciliation {
             case .paused, .frozen, .protectedMiss:
                 break
             case .missed:
-                // TODO(Task 3): open a Comeback Window guarded on missedWeekStart uniqueness.
-                break
+                let alreadyOpened = ledger.comebackWindows.contains { $0.missedWeekStart == week.weekStart }
+                if !alreadyOpened {
+                    let opensAt = week.weekEnd
+                    let closesAt = calendar.date(byAdding: .day, value: comebackWindowDays, to: opensAt) ?? opensAt
+                    ledger.comebackWindows.append(ComebackWindow(
+                        id: UUID(),
+                        missedWeekStart: week.weekStart,
+                        opensAt: opensAt,
+                        closesAt: closesAt,
+                        claimedAt: nil,
+                        claimingSessionID: nil,
+                        streakBeforeMiss: ledger.currentStreak
+                    ))
+                }
+                // Streak is deliberately left untouched here — the window's resolution below
+                // decides it (claimed: minus one; expired unclaimed: rebuilding start value).
             }
             ledger.lastReconciledWeekStart = week.weekStart
+        }
+
+        // Resolve every unclaimed comeback window against the union of the elapsed weeks' and
+        // the current week's sessions, in ascending opensAt order, after the fold above has
+        // fully completed.
+        let candidateCardio = sortedElapsedWeeks.flatMap(\.cardio) + currentWeek.cardio
+        let candidateLift = sortedElapsedWeeks.flatMap(\.lift) + currentWeek.lift
+        let qualifyingRefs: [QualifyingSessionRef] =
+            candidateCardio
+                .filter { CardioQualification.evaluate($0.progress) == .complete }
+                .map { QualifyingSessionRef(id: $0.id, startedAt: $0.startedAt) }
+            + candidateLift
+                .filter { LiftQualification.evaluate($0) == .complete }
+                .map { QualifyingSessionRef(id: $0.id, startedAt: $0.startedAt) }
+
+        let windowIndicesByOpensAt = ledger.comebackWindows.indices.sorted {
+            ledger.comebackWindows[$0].opensAt < ledger.comebackWindows[$1].opensAt
+        }
+
+        for index in windowIndicesByOpensAt {
+            guard ledger.comebackWindows[index].claimedAt == nil else { continue }
+            let window = ledger.comebackWindows[index]
+
+            if let claiming = qualifyingRefs
+                .filter({ window.covers($0.startedAt) })
+                .min(by: { $0.startedAt < $1.startedAt }) {
+                ledger.comebackWindows[index].claimedAt = claiming.startedAt
+                ledger.comebackWindows[index].claimingSessionID = claiming.id
+                ledger.currentStreak = max(1, window.streakBeforeMiss - 1)
+            } else if now >= window.closesAt {
+                ledger.currentStreak = 0
+                ledger.streakLabelKind = .rebuilt
+            }
+            // Else: the window is still open and unclaimed — leave both it and the streak
+            // untouched.
         }
 
         return ledger
