@@ -165,7 +165,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   stacking up to 3), are never purchasable, and auto-apply the moment a week is about to be
   missed.
 
-- [ ] **MOMENTUM-03**: The tracked week resets Monday 3am local time, not midnight Sunday. A
+- [x] **MOMENTUM-03**: The tracked week resets Monday 3am local time, not midnight Sunday. A
   user-initiated "Recovery Week" flag pauses the target without breaking the streak count; it is
   never auto-triggered by the app.
 
@@ -176,7 +176,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   Framing is informational/competence-based, never threat-framed (e.g., "Week 1 of your rebuilt
   streak," never a deleted/reset-to-zero animation).
 
-- [ ] **MOMENTUM-06**: Streak/shield visibility is private by default; only opt-in
+- [x] **MOMENTUM-06**: Streak/shield visibility is private by default; only opt-in
   household/accountability-contact sharing is available; there is never a public leaderboard of
   streak length.
 
@@ -370,10 +370,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CROSSGEN-02 | Phase 2 | Complete |
 | MOMENTUM-01 | Phase 3 | Complete |
 | MOMENTUM-02 | Phase 3 | Complete |
-| MOMENTUM-03 | Phase 3 | Pending |
+| MOMENTUM-03 | Phase 3 | Complete |
 | MOMENTUM-04 | Phase 3 | Complete |
 | MOMENTUM-05 | Phase 3 | Complete |
-| MOMENTUM-06 | Phase 3 | Pending |
+| MOMENTUM-06 | Phase 3 | Complete |
 | MOMENTUM-07 | Phase 3 | Pending |
 | MOMENTUM-08 | Phase 3 | Complete |
 | RECOVERY-01 | Phase 3 | Pending |

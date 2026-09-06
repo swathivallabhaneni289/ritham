@@ -6,14 +6,14 @@ current_phase: 3
 current_phase_name: Momentum & Recovery
 status: executing
 stopped_at: Phase 3 wave 1 complete (03-01, 03-02)
-last_updated: "2026-09-06T09:18:37.625Z"
+last_updated: "2026-09-06T09:36:54.900Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 3 execution started
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 40
-  completed_plans: 33
+  completed_plans: 34
   percent: 40
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 3 (Momentum & Recovery) — EXECUTING
-Plan: 4 of 10
+Plan: 5 of 10
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -89,6 +89,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02 P12 | 25min | 3 tasks | 9 files |
 | Phase 02 P15 | 45min | 3 tasks | 5 files |
 | Phase 03 P03 | 30min | 3 tasks | 2 files |
+| Phase 03-momentum-recovery P04 | 15min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -185,6 +186,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-15: SessionEditView was built and unit-tested at the model level but is not wired into StrengthHistoryView as a reachable sheet in this plan -- Task 3's file scope deliberately excluded StrengthHistoryView.swift; a future plan/task must add the .sheet(item:) entry point from a history row
 - [Phase ?]: 03-03: Shield-accrual-isolation tests start from currentStreak: 20 (not 0) to avoid an unintended collision with milestone tier 12
 - [Phase ?]: 03-03: The rebuilt-streak-reaches-first-met-week test constructs its ledger post-rebuild directly rather than chaining reconcile calls, after finding that a stale expired comeback window can re-fire its rebuild transition against a same-call subsequent met week in a large catch-up fold -- implemented literally per plan scope, flagged as a known edge case
+- [Phase ?]: HealthDataStore.supportedMomentumTargets reads MomentumTarget.supported directly (no second literal), unlike supportedWeeklyFrequencies -- MomentumTarget.supported has no main-actor isolation conflict.
+- [Phase ?]: loadMomentumLedger sorts milestone/comeback-window fetches (awardedAt/opensAt ascending) so a save-then-load round trip is order-stable and Equatable-comparable in tests.
+- [Phase ?]: Did not add a ComebackWindow.resolved field to fix 03-03's flagged stale-window edge case -- out of this plan's file scope (would require touching MomentumReconciliation.swift); carried forward to whichever plan next touches reconciliation logic.
 
 ### Pending Todos
 
@@ -251,7 +255,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T09:18:17.525Z
+Last session: 2026-09-06T09:35:56.490Z
 Stopped at: Phase 3 wave 1 complete (03-01, 03-02)
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new

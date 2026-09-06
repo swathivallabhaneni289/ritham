@@ -248,7 +248,7 @@ decision, not a Ritham product requirement — iOS client stays Swift).
      fully private with only opt-in household/accountability-contact sharing — never a public
      leaderboard — and a separate, optional Daily Movement Snapshot is available with no streak,
      shield, or target attached to it.
-**Plans**: 3/10 plans executed
+**Plans**: 4/10 plans executed
 
 Plans:
 
@@ -261,7 +261,7 @@ Plans:
 - [x] 03-03-PLAN.md — The reconciliation fold: lazy, idempotent, append-only shields, milestones,
   comeback windows and guardrail precedence
 
-- [ ] 03-04-PLAN.md — Momentum SwiftData records, schema registration, and the `HealthDataStore`
+- [x] 03-04-PLAN.md — Momentum SwiftData records, schema registration, and the `HealthDataStore`
   ledger facade with guard-and-throw target validation
 
 - [ ] 03-05-PLAN.md — Sleep check-in and snapshot persistence, plus `MomentumSummary` — the
@@ -337,7 +337,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
-| 3. Momentum & Recovery | 3/10 | In Progress|  |
+| 3. Momentum & Recovery | 4/10 | In Progress|  |
 | 4. Household & Home | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
