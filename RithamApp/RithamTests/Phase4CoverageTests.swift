@@ -117,14 +117,37 @@ struct Phase4CoverageTests {
         try nonCommentSource(of: "Home/HomeHubView.swift")
     }
 
-    @Test("the dashboard hosts every section inline")
-    func theDashboardHostsEverySectionInline() throws {
+    @Test("the Momentum, sleep and exercise sections render inline")
+    func theGlanceableSectionsRenderInline() throws {
+        // Checkpoint revision (2026-09-08): only Momentum, sleep and exercise stay inline on the
+        // dashboard. Workout plan and diet plan moved to tap-to-open summary cards -- see the
+        // next test.
         guard let source = try homeHubViewSource() else {
             Issue.record("could not read Ritham/Home/HomeHubView.swift")
             return
         }
-        for symbol in ["MomentumDashboardSection", "RecommendationsSectionContent", "DietPlanSectionContent"] {
-            #expect(source.contains(symbol), "HomeHubView.swift no longer references \(symbol) -- a section may have been moved behind navigation instead of rendered inline")
+        for symbol in ["MomentumDashboardSection", "exerciseSection", "sleepSection"] {
+            #expect(source.contains(symbol), "HomeHubView.swift no longer references \(symbol) -- an always-visible section may have been moved behind navigation")
+        }
+    }
+
+    @Test("the workout-plan and diet-plan sections are tap-to-open summaries, not inline embeds")
+    func theWorkoutAndDietSectionsAreTapToOpenSummaries() throws {
+        // Checkpoint revision (2026-09-08): direct human-checkpoint feedback moved these two
+        // sections from always-inline embeds (the original D-04/D-05) to compact summary cards
+        // that open a sheet on tap. `RecommendationsSectionContent`/`DietPlanSectionContent`
+        // (the full embeddable content) must NOT appear directly in HomeHubView.swift any more --
+        // they now live only inside `RecommendationsQuickView`/`DietPlanQuickEditView`, the sheets
+        // this file presents.
+        guard let source = try homeHubViewSource() else {
+            Issue.record("could not read Ritham/Home/HomeHubView.swift")
+            return
+        }
+        for symbol in ["RecommendationsQuickView", "DietPlanQuickEditView", "isPresentingWorkoutPlan", "isPresentingDietPlan"] {
+            #expect(source.contains(symbol), "HomeHubView.swift no longer references \(symbol) -- the tap-to-open workout-plan/diet-plan pattern may have regressed")
+        }
+        for symbol in ["RecommendationsSectionContent(", "DietPlanSectionContent("] {
+            #expect(!source.contains(symbol), "HomeHubView.swift directly constructs \(symbol) -- workout plan and diet plan must be tap-to-open summaries, not inline embeds, per the 2026-09-08 checkpoint revision")
         }
     }
 

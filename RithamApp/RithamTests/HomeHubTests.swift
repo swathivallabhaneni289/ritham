@@ -157,11 +157,13 @@ struct HomeHubTests {
 
     @Test("theDashboardNoLongerRoutesToTheRecommendationsScreen")
     func theDashboardNoLongerRoutesToTheRecommendationsScreen() {
-        // D-04: the workout plan is now embedded inline via `RecommendationsSectionContent`, so
-        // nothing in `HomeHubView.body` calls `flow.open(.recommendations)` any more.
-        // `.recommendations` stays registered regardless -- `StepRegistry.unregisteredSteps` is
-        // asserted empty per-case, not per-reachability (04-RESEARCH.md Pitfall 4) -- this test
-        // only pins `routingSteps`' own returned list, never `StepRegistry`'s registration.
+        // D-04 (checkpoint-revised 2026-09-08): the workout plan is now a tap-to-open summary
+        // card presented as a `RecommendationsQuickView` sheet, so nothing in `HomeHubView.body`
+        // calls `flow.open(.recommendations)` -- neither the original inline-embed design nor
+        // this revision ever pushes to it. `.recommendations` stays registered regardless --
+        // `StepRegistry.unregisteredSteps` is asserted empty per-case, not per-reachability
+        // (04-RESEARCH.md Pitfall 4) -- this test only pins `routingSteps`' own returned list,
+        // never `StepRegistry`'s registration.
         #expect(!HomeHubView.routingSteps(movementSnapshotOptIn: true).contains(.recommendations))
     }
 

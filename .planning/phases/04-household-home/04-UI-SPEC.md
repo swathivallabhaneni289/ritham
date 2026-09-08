@@ -16,6 +16,19 @@ created: 2026-09-08
 > (content-extraction, file placement, xcodegen regeneration, test-file coupling) belong to
 > `04-RESEARCH.md` and the planner; this document states the resulting *look and behavior* those
 > mechanics must produce.
+>
+> **Checkpoint revision (2026-09-08):** Task 3's human-verification checkpoint produced direct
+> layout/interaction feedback that changes three things this document originally locked:
+> (1) Momentum and sleep now sit in a two-column grid row instead of two full-width stacked
+> cards — "rather than keeping them all stacked one after the other." (2) The workout-plan and
+> diet-plan sections are compact tap-to-open summary cards (a `Button`-wrapped card presenting a
+> sheet on tap) rather than always-inline embeds — "the details... should only open when I click
+> the [option]." (3) The exercise section gained a small leading SF Symbol per session row,
+> matching Apple Fitness's icon-plus-row list shape — the Ring Collision rule below still forbids
+> a data-bearing ring/arc anywhere on this screen, so the icon is a static glyph, not a progress
+> indicator. See 04-CONTEXT.md's dated D-04/D-05 revisions for the full decision record. The
+> original locked contract below is retained for context; the Layout & Section Contract and
+> Copywriting Contract sections carry inline notes marking exactly what each revision supersedes.
 
 ---
 

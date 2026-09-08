@@ -40,9 +40,17 @@ with a dated record rather than silently expanding this round's scope.
   call. RECOVERY-01 invariant 3 (a skipped check-in must be indistinguishable, app-wide, from a
   day the prompt was never shown) still applies — no badge, dot, or "you haven't logged sleep"
   nudge on this section.
-- **D-04:** A workout-plan section, surfacing `RecommendationsView` (already built, currently
-  reachable only via a `PrimaryCTAButton` on the interim hub) directly as a dashboard section
-  rather than a button that navigates away.
+- **D-04 (revised 2026-09-08, Task 3 human-checkpoint feedback):** A workout-plan section on the
+  dashboard, but as a compact, tap-to-open summary card (heading + a one-line status derived from
+  `RecommendationsModel.state` — "Tap to get your plan" / "Building your plan…" / "N sessions
+  ready" / "Couldn't load — tap to retry"), not the original always-inline embed of
+  `RecommendationsSectionContent`. Tapping opens `RecommendationsQuickView`, a sheet hosting the
+  same content over the same shared `RecommendationsModel` instance the summary card observes, so
+  neither the sheet nor the card can go stale relative to the other. Direct product feedback: "the
+  details of the diet plan should only open when I click the diet plan option. The same goes for
+  the workout plan also." Supersedes the original D-04 (inline embed); `RecommendationsView`
+  itself and its `.recommendations` registration are unaffected (still registered per Pitfall 4,
+  still unreached by the dashboard either way).
 - **D-05 (narrowed 2026-09-08 per 04-RESEARCH.md Pitfall 3/Assumption A1):** A diet-plan section
   on the dashboard, but scoped to `DietPlanView`'s DIET-01-isolated controls only — the dietary-
   pattern picker and allergen multi-select (`persistDiet`/`persistAllergens`, which never touch
@@ -55,6 +63,15 @@ with a dated record rather than silently expanding this round's scope.
   time a returning user touched it. The user asked to see their diet plan on the dashboard, not
   specifically for the screening checkbox to move there; this narrowing preserves the former
   without introducing the latter's data-loss risk.
+
+  **Further revised 2026-09-08 (Task 3 human-checkpoint feedback):** the diet-plan section itself
+  moved from an always-inline embed of `DietPlanSectionContent` to a compact, tap-to-open summary
+  card (heading + the currently saved dietary pattern, e.g. "Vegan" / "Not set"). Tapping opens
+  `DietPlanQuickEditView`, a new sheet hosting only `DietPlanSectionContent` — the food-allergy
+  screening checkbox stays exclusively in the Settings-presented `DietPlanView`, so this revision
+  does not reopen Pitfall 3's risk; it only changes how the DIET-01-isolated pickers are reached,
+  not what reaches the screening checkbox. Direct product feedback, same quote as D-04's revision
+  above (diet and workout plan named together).
 - **D-06:** The Momentum summary section Phase 3 already built (D-08 in 03-CONTEXT.md — progress
   blocks, streak line, shield row) carries forward into the new dashboard essentially as-is. It
   is proven, tested, reconciliation-on-read code; this phase re-parents it into the new layout,

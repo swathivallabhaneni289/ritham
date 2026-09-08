@@ -3,9 +3,16 @@ import RithamCore
 
 /// The real home screen (CROSSGEN-01): a sectioned dashboard, not a vertical list of action
 /// buttons. Every section renders its own real content -- progress blocks, session rows, plan
-/// session rows, or a diet-pattern selector -- above any action control (04-UI-SPEC.md's
+/// summary, or a dietary-pattern name -- above any tap affordance (04-UI-SPEC.md's
 /// "card-vs-button-list discriminator"), replacing the earlier interim hub the user tested and
 /// rejected during Phase 3 sign-off.
+///
+/// **Checkpoint revision (2026-09-08):** the workout-plan and diet-plan sections moved from
+/// always-inline embeds (the original D-04/D-05) to compact tap-to-open summary cards, per direct
+/// human-checkpoint feedback during Task 3's Simulator review -- see 04-CONTEXT.md's dated
+/// revision. The Momentum and sleep sections became a two-column grid row at the same time, per
+/// the same feedback round, so the dashboard reads as an organized grid rather than one long
+/// vertical stack.
 ///
 /// `.boundedHeaderOnly` fits this screen's own naming rationale (a bounded header band, used by
 /// screens that explain or introduce something without collecting, confirming, or blocking on
@@ -14,11 +21,11 @@ import RithamCore
 ///
 /// Navigates to every pushed destination through `flow.open(_:)`, never a second navigation
 /// container -- CROSSGEN-05 reserves the app's one navigation container for `OnboardingRootView`.
-/// Settings (and the health profile it can open) are sheets, exactly as `SettingsView` itself
-/// already uses sheets for its own sub-screens, never pushes. The `SettingsView` sheet below is
-/// the only surviving route to the food-allergy screening question (`DietPlanView`'s checklist and
-/// severity follow-up) -- see `dietPlanSection`'s own comment for why that question does not also
-/// live on this dashboard.
+/// Settings, the health profile, the workout-plan quick view and the diet-plan quick view are all
+/// sheets, exactly as `SettingsView` itself already uses sheets for its own sub-screens, never
+/// pushes. The `SettingsView` sheet below is the only surviving route to the food-allergy
+/// screening question (`DietPlanView`'s checklist and severity follow-up) -- `DietPlanQuickEditView`
+/// deliberately does not carry it; see that type's own header comment.
 struct HomeHubView: View {
     // Dashboard copy catalog: centralized `nonisolated static let` constants, matching this
     // type's existing `nonisolated static func` idiom for testable derivations (see the bottom
@@ -28,14 +35,20 @@ struct HomeHubView: View {
     // planner-authored purely for visual grouping, not a verbatim-shipped-strings-table entry.
     nonisolated static let dashboardHeadline = "Home"
     nonisolated static let exerciseSectionHeading = "This week's activity"
-    nonisolated static let workoutPlanSectionHeading = "Your workout plan"
+    nonisolated static let workoutPlanSectionHeading = "Workout plan"
     nonisolated static let dietPlanSectionHeading = "Diet plan"
+    nonisolated static let workoutPlanIdleStatus = "Tap to get your plan"
+    nonisolated static let workoutPlanLoadingStatus = "Building your plan…"
+    nonisolated static let workoutPlanErrorStatus = "Couldn't load — tap to retry"
+    nonisolated static let dietPlanUnsetStatus = "Not set"
 
     let flow: OnboardingFlow
 
     @Environment(\.modelContext) private var modelContext
     @State private var isPresentingSettings = false
     @State private var isPresentingHealthProfile = false
+    @State private var isPresentingWorkoutPlan = false
+    @State private var isPresentingDietPlan = false
 
     // D-08's Momentum summary section state: a plain `MomentumSummary?`, loaded via the same
     // `MomentumSummaryReader` `MomentumView` (plan 03-06) constructs over its own `HealthDataStore`
@@ -59,13 +72,22 @@ struct HomeHubView: View {
     // below render nothing at all until the user opts in from Settings.
     @State private var isMovementSnapshotEnabled = false
 
-    // D-04: the workout-plan section's own model, constructed once in this view's existing
-    // `onAppear` alongside the Momentum summary load. A plain `RecommendationsModel?`, not a
-    // hub-owned aggregate view model (D-08's "no dashboard-specific aggregate view model" rule,
-    // 04-CONTEXT.md's canonical-refs restatement) -- the same independently-loaded-per-section
-    // pattern `momentumSummary` above already uses, and the same construction
-    // `RecommendationsView` itself already performs.
+    // D-04 (as checkpoint-revised): the workout-plan card's own model, constructed once in this
+    // view's existing `onAppear` alongside the Momentum summary load. A plain
+    // `RecommendationsModel?`, not a hub-owned aggregate view model (D-08's "no dashboard-specific
+    // aggregate view model" rule, 04-CONTEXT.md's canonical-refs restatement) -- the same
+    // independently-loaded-per-section pattern `momentumSummary` above already uses. Shared by
+    // reference with `RecommendationsQuickView` when the sheet opens, so a plan already fetched
+    // shows immediately in the sheet, and a fetch made inside the sheet updates the summary card
+    // once dismissed -- both observe the same `@Observable` instance.
     @State private var recommendationsModel: RecommendationsModel?
+
+    // Checkpoint revision: the diet-plan card's own independently-loaded display value -- read
+    // directly, not derived from `DietPlanSectionContent`'s private internal `@State`, since that
+    // view's selection is intentionally not exposed upward (D-08's "no aggregate state" rule).
+    // Reloaded on the quick-edit sheet's dismissal (`reloadDietaryPatternSummary` below), since
+    // this view's own `onAppear` does not re-fire just because a child sheet closed.
+    @State private var dietaryPatternSummary: DietaryPattern?
 
     var body: some View {
         RithamScreen(
@@ -79,11 +101,17 @@ struct HomeHubView: View {
                 // header ornament and any section's own progress-block strip never share one
                 // viewport (03-UI-SPEC.md Component 1's own "two circular motifs" rationale;
                 // 04-UI-SPEC.md restates this as the Ring Collision rule).
-                sectionCard { momentumSection }
-                sectionCard { sleepSection }
+                //
+                // Checkpoint revision: Momentum and sleep sit in a two-column grid row instead of
+                // two full-width stacked cards -- the first break from a pure vertical stack, per
+                // direct feedback that everything one-after-another did not read as a dashboard.
+                HStack(alignment: .top, spacing: RithamSpacing.md) {
+                    tile { momentumSection }
+                    tile { sleepSection }
+                }
                 sectionCard { exerciseSection }
-                sectionCard { workoutPlanSection }
-                sectionCard { dietPlanSection }
+                tapToOpenCard(action: { isPresentingWorkoutPlan = true }) { workoutPlanSummary }
+                tapToOpenCard(action: { isPresentingDietPlan = true }) { dietPlanSummary }
                 overflowRow
             }
         }
@@ -106,6 +134,8 @@ struct HomeHubView: View {
             if recommendationsModel == nil {
                 recommendationsModel = RecommendationsModel(store: store)
             }
+
+            reloadDietaryPatternSummary()
         }
         .sheet(isPresented: $isPresentingSettings) {
             SettingsView(
@@ -119,6 +149,23 @@ struct HomeHubView: View {
         .sheet(isPresented: $isPresentingHealthProfile) {
             HealthProfileView()
         }
+        .sheet(isPresented: $isPresentingWorkoutPlan) {
+            if let recommendationsModel {
+                RecommendationsQuickView(model: recommendationsModel, flow: flow)
+            }
+        }
+        .sheet(isPresented: $isPresentingDietPlan, onDismiss: reloadDietaryPatternSummary) {
+            DietPlanQuickEditView(flow: flow)
+        }
+    }
+
+    /// Re-reads the stored dietary pattern for the diet-plan card's own display value. Called from
+    /// `onAppear` and from the diet quick-edit sheet's `onDismiss`, since a value changed inside
+    /// that sheet is not otherwise visible to this view -- `DietPatternPicker`'s selection is
+    /// private `@State`, not shared state (D-08).
+    private func reloadDietaryPatternSummary() {
+        let store = HealthDataStore(context: modelContext)
+        dietaryPatternSummary = (try? store.loadProfile())?.dietaryPattern
     }
 
     // MARK: - Dashboard sections
@@ -163,16 +210,29 @@ struct HomeHubView: View {
 
         if let summary = momentumSummary, !summary.recentSessions.isEmpty {
             ForEach(summary.recentSessions) { session in
-                VStack(alignment: .leading, spacing: RithamSpacing.xs) {
-                    Text(session.title)
-                        .font(RithamType.body)
-                        .foregroundStyle(RithamColor.paper)
+                // Checkpoint revision: a leading SF Symbol per row, matching the icon-plus-row
+                // shape of Apple Fitness's own workout history list -- the one part of "Apple's
+                // model" available here, since a data-bearing ring/arc is permanently off-limits
+                // for this screen (04-UI-SPEC.md's Ring Collision rule, carried from Phase 3).
+                // Neutral `paper` tint only, never the accent color: `RithamColor.hot` is reserved
+                // for CTA fills/progress blocks/shield glyphs and must never read as a status
+                // badge or completion indicator on this row.
+                HStack(alignment: .top, spacing: RithamSpacing.sm) {
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(RithamColor.paper.opacity(0.6))
+                        .accessibilityHidden(true)
 
-                    if let verificationLabel = session.verificationLabel {
-                        Text(verificationLabel)
-                            .font(RithamType.label)
-                            .modifier(RithamType.fineprint())
+                    VStack(alignment: .leading, spacing: RithamSpacing.xs) {
+                        Text(session.title)
+                            .font(RithamType.body)
                             .foregroundStyle(RithamColor.paper)
+
+                        if let verificationLabel = session.verificationLabel {
+                            Text(verificationLabel)
+                                .font(RithamType.label)
+                                .modifier(RithamType.fineprint())
+                                .foregroundStyle(RithamColor.paper)
+                        }
                     }
                 }
             }
@@ -218,42 +278,72 @@ struct HomeHubView: View {
         }
     }
 
-    // D-04: the workout-plan section, embedding `RecommendationsSectionContent` (04-01's
-    // extraction) directly rather than a button that navigates away. Deliberately never calls
+    // D-04 (checkpoint-revised 2026-09-08): a compact, tap-to-open summary card rather than an
+    // inline embed of `RecommendationsSectionContent` -- direct human-checkpoint feedback that
+    // diet and workout plan should open only on tap, not sit permanently expanded on the
+    // dashboard. `recommendationsWorkoutPlanStatus` below is the card's own real content (never
+    // just a heading plus a bare button, per the discriminator rule) -- it reflects
+    // `recommendationsModel.state` exactly, so the summary line is never stale relative to
+    // whatever `RecommendationsQuickView`'s sheet is showing. Deliberately never calls
     // `requestPlan` from this view's `onAppear` or from any other lifecycle hook --
     // `RecommendationsModel.requestPlan` opens `.preAssessment` when the pre-assessment flag is
     // false, so an auto-request would push the pre-assessment screen on top of home with no user
-    // action on a cold launch, and would hit the Go plan service on every launch. The landing
-    // state is `.idle` plus `RecommendationsSectionContent`'s own "Get my plan" control -- the
-    // user's tap is the only trigger.
+    // action on a cold launch, and would hit the Go plan service on every launch.
     @ViewBuilder
-    private var workoutPlanSection: some View {
+    private var workoutPlanSummary: some View {
         Text(HomeHubView.workoutPlanSectionHeading)
             .font(RithamType.heading)
             .foregroundStyle(RithamColor.paper)
 
-        if let recommendationsModel {
-            RecommendationsSectionContent(model: recommendationsModel, flow: flow)
-        } else {
-            ProgressView()
+        Text(recommendationsWorkoutPlanStatus)
+            .font(RithamType.body)
+            .foregroundStyle(RithamColor.paper)
+    }
+
+    /// A one-line status derived entirely from `recommendationsModel.state` -- no new state of
+    /// its own, so it can never drift out of sync with the sheet showing the same model.
+    private var recommendationsWorkoutPlanStatus: String {
+        switch recommendationsModel?.state {
+        case .none, .idle:
+            return HomeHubView.workoutPlanIdleStatus
+        case .loading:
+            return HomeHubView.workoutPlanLoadingStatus
+        case .plan(let plan):
+            return "\(plan.sessions.count) session\(plan.sessions.count == 1 ? "" : "s") ready"
+        case .error:
+            return HomeHubView.workoutPlanErrorStatus
         }
     }
 
-    // D-05 (narrowed per 04-RESEARCH.md Pitfall 3): embeds only `DietPlanSectionContent`, the
-    // DIET-01-isolated dietary-pattern and allergen pickers (04-01's extraction) -- never
-    // `DietPlanView` and never a re-created food-allergy checklist control. The food-allergy
-    // screening checkbox and its severity follow-up call `GateResolution.resolve`/
-    // `saveScreeningResult` against `flow.answers.screening`, which is empty on every fresh app
-    // launch; embedding that control on a screen reached fresh on every relaunch would silently
-    // wipe real condition-tag data the first time a returning user touched it. That question stays
-    // in the Settings-presented `DietPlanView` only (this file's `SettingsView` sheet below).
+    // D-05 (narrowed per 04-RESEARCH.md Pitfall 3, then checkpoint-revised 2026-09-08 to
+    // tap-to-open): a compact summary card showing the currently saved dietary pattern, never the
+    // full `DietPlanSectionContent` inline. Tapping opens `DietPlanQuickEditView` (a sheet hosting
+    // only the DIET-01-isolated pickers) -- Pitfall 3's isolation still holds: the food-allergy
+    // screening checkbox and its severity follow-up, which call `GateResolution.resolve`/
+    // `saveScreeningResult` against `flow.answers.screening` (empty on every fresh app launch),
+    // stay reachable only through the Settings-presented `DietPlanView` (this file's `SettingsView`
+    // sheet below) -- neither this summary nor the quick-edit sheet it opens ever constructs that
+    // screen or duplicates its screening-write path.
     @ViewBuilder
-    private var dietPlanSection: some View {
+    private var dietPlanSummary: some View {
         Text(HomeHubView.dietPlanSectionHeading)
             .font(RithamType.heading)
             .foregroundStyle(RithamColor.paper)
 
-        DietPlanSectionContent(flow: flow)
+        Text(dietPlanStatus)
+            .font(RithamType.body)
+            .foregroundStyle(RithamColor.paper)
+    }
+
+    private var dietPlanStatus: String {
+        switch dietaryPatternSummary {
+        case .none, .some(.none):
+            return HomeHubView.dietPlanUnsetStatus
+        case .some(.vegetarian):
+            return OnboardingCopy.Diet.optionVegetarian
+        case .some(.vegan):
+            return OnboardingCopy.Diet.optionVegan
+        }
     }
 
     // D-07: Guidance and Settings, reduced to a single compact overflow row rather than the two
@@ -294,6 +384,53 @@ struct HomeHubView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RithamColor.paper.opacity(0.06))
         .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
+    }
+
+    // Checkpoint revision: the same Dashboard Section Card treatment as `sectionCard`, but
+    // constrained to half the row's width for the Momentum/sleep grid row -- identical fill,
+    // radius and padding, only the width behavior differs (`maxWidth: .infinity` inside an
+    // `HStack` divides the row evenly between the two tiles rather than each claiming the full
+    // screen width).
+    @ViewBuilder
+    private func tile<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: RithamSpacing.sm) {
+            content()
+        }
+        .padding(RithamSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RithamColor.paper.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
+    }
+
+    // Checkpoint revision: the tap-to-open variant of `sectionCard` for the workout-plan and
+    // diet-plan summaries -- same fill/radius/padding, wrapped in a `Button` so the whole card is
+    // one accessible tap target (VoiceOver reads the heading and status line, then announces the
+    // button trait) rather than requiring a separate small control inside the card. A trailing
+    // chevron is the only new visual element: a plain SF Symbol glyph, not a ring/arc/radial form,
+    // so it does not trip the Ring Collision rule, and it is tinted at the same neutral
+    // `paper.opacity` as the exercise section's row icons -- never the accent color, which stays
+    // reserved for CTA fills/progress blocks/shield glyphs only.
+    @ViewBuilder
+    private func tapToOpenCard<Content: View>(
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: RithamSpacing.sm) {
+                VStack(alignment: .leading, spacing: RithamSpacing.md) {
+                    content()
+                }
+                Spacer(minLength: RithamSpacing.sm)
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(RithamColor.paper.opacity(0.5))
+                    .accessibilityHidden(true)
+            }
+            .padding(RithamSpacing.md)
+            .frame(maxWidth: .infinity, minHeight: RithamSpacing.minimumTapTarget, alignment: .leading)
+            .background(RithamColor.paper.opacity(0.06))
+            .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - D-08's Momentum summary section
