@@ -68,6 +68,7 @@
 		6A84B0F8DC471684A46E0482 /* MotionActivityDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F349B49CBAF0C270BDD7A46 /* MotionActivityDetector.swift */; };
 		6DFC373C452962BB4B99237F /* MomentumSuiteSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78DFBC328CACEAE0C82CB19 /* MomentumSuiteSerialization.swift */; };
 		6F3C03C793124E2B9A6AA363 /* StopwatchCardioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FA231D99B991A1181046A2 /* StopwatchCardioSession.swift */; };
+		6F587496F24B08EC21E10C24 /* Phase4CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF987DA88052D9B310E87A /* Phase4CoverageTests.swift */; };
 		6F677F522EFE67768F00A9D7 /* CardioCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C622C40022EFD69AF8FDD26 /* CardioCaptureTests.swift */; };
 		70ECB72057040BD011E0B020 /* FoodAllergenRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFFECF3591AFEB66F20B54C /* FoodAllergenRecord.swift */; };
 		79F7945ED6528A347F5440E3 /* CardioHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */; };
@@ -179,6 +180,7 @@
 		16B066C106553C75535FFE65 /* UniversalFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalFollowUpView.swift; sourceTree = "<group>"; };
 		16E505BAD9D2B8795D8D4B6C /* ShieldRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShieldRow.swift; sourceTree = "<group>"; };
 		1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionView.swift; sourceTree = "<group>"; };
+		1CDF987DA88052D9B310E87A /* Phase4CoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase4CoverageTests.swift; sourceTree = "<group>"; };
 		1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsTests.swift; sourceTree = "<group>"; };
 		226CB34F3DE1E1C5B984771E /* RingAndDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingAndDot.swift; sourceTree = "<group>"; };
 		22DFCFA1AACDDDED577DD44F /* GateSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateSectionView.swift; sourceTree = "<group>"; };
@@ -661,6 +663,7 @@
 				1024D116B21BD85232045566 /* PersistenceTests.swift */,
 				C51ABE5043F692DA8E79302F /* Phase2CoverageTests.swift */,
 				0162DA40D97FEBE020DD15DC /* Phase3CoverageTests.swift */,
+				1CDF987DA88052D9B310E87A /* Phase4CoverageTests.swift */,
 				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
 				1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */,
 				2C432DD1332C2E26772A7F26 /* RecoveryAdjustmentTests.swift */,
@@ -950,6 +953,7 @@
 				69481E73C4D75413E92E8FA5 /* PersistenceTests.swift in Sources */,
 				D86A6B3C4900E249C0A26882 /* Phase2CoverageTests.swift in Sources */,
 				BB94CBE689862C7016F67F0D /* Phase3CoverageTests.swift in Sources */,
+				6F587496F24B08EC21E10C24 /* Phase4CoverageTests.swift in Sources */,
 				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
 				11E1EC0DDEA72DA1962A9DD5 /* RecommendationsTests.swift in Sources */,
 				4BAEECF546BF5C81897726A1 /* RecoveryAdjustmentTests.swift in Sources */,
