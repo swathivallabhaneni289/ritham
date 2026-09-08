@@ -2,9 +2,13 @@ import SwiftData
 import SwiftUI
 import RithamCore
 
-// D-03's dedicated Recommendations surface: the user opens this explicitly from the hub
-// (`HomeHubView`'s "Recommendations" action, already wired) and asks for a plan here, rather than
-// the pre-assessment being triggered by an inferred moment elsewhere in the app.
+// D-03's dedicated Recommendations surface: originally the user opened this explicitly from the
+// hub (`HomeHubView`'s "Recommendations" action). As of plan 04-01/04-02, the dashboard embeds
+// this screen's content (`RecommendationsSectionContent`) directly as a workout-plan section
+// instead, so nothing pushes to `.recommendations` from the running app any more. This screen
+// stays registered anyway -- 04-RESEARCH.md Pitfall 4: `StepRegistry.unregisteredSteps` is
+// asserted empty per-case, not per-reachability, so every `OnboardingStep` must resolve to a
+// presenter whether or not anything currently navigates to it.
 //
 // On request, this gates on the pre-assessment-completion flag: the first request opens
 // `PreAssessmentView` instead of calling the network at all; once that flag is true, a request
@@ -149,110 +153,16 @@ struct RecommendationsView: View, OnboardingStepPresenting {
 
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Recommendations") {
-            content
+            if let model {
+                RecommendationsSectionContent(model: model, flow: flow)
+            } else {
+                ProgressView()
+            }
         }
         .onAppear {
             if model == nil {
                 model = RecommendationsModel(store: HealthDataStore(context: modelContext))
             }
-        }
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        if let model {
-            switch model.state {
-            case .idle:
-                idleContent(model)
-            case .loading:
-                ProgressView("Building your plan...")
-                    .foregroundStyle(RithamColor.paper)
-            case .plan(let plan):
-                planContent(plan, model: model)
-            case .error(let error):
-                errorContent(error, model: model)
-            }
-        } else {
-            ProgressView()
-        }
-    }
-
-    @ViewBuilder
-    private func idleContent(_ model: RecommendationsModel) -> some View {
-        VStack(alignment: .leading, spacing: RithamSpacing.md) {
-            Text("Get a plan built around your stored weekly frequency and starting point.")
-                .font(RithamType.body)
-                .foregroundStyle(RithamColor.paper)
-
-            PrimaryCTAButton(title: "Get my plan") {
-                request(model)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func planContent(_ plan: WorkoutPlan, model: RecommendationsModel) -> some View {
-        VStack(alignment: .leading, spacing: RithamSpacing.md) {
-            // RECOVERY-01's only adjustment-related UI (03-UI-SPEC.md Component 7): one plain
-            // plan-level banner plus an equal-weight toggle, shown only when a lighter adjustment
-            // applies. This is literally the same button, whose title alternates -- never two
-            // separate buttons with different styling, so invariant 2 ("never one primary and
-            // one secondary") holds by construction rather than by two components matching.
-            if model.adjustedPlan != nil {
-                Text(MomentumCopy.Plan.banner)
-                    .font(RithamType.label)
-                    .foregroundStyle(RithamColor.paper)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                SecondaryCTAButton(
-                    title: model.isDisplayingAdjustedPlan ? MomentumCopy.Plan.showOriginalCTA : MomentumCopy.Plan.showLighterCTA
-                ) {
-                    model.toggleDisplayedPlan()
-                }
-            }
-
-            // Individual session rows below render identically regardless of which plan is
-            // currently displayed -- no badge, asterisk, "lighter" tag, tint change, icon, or
-            // reordering differentiates an adjusted row from an original one (RECOVERY-01
-            // invariant 1). The only value that ever differs between the two plans is a session's
-            // exercise `sets` count; every other field renders through the exact same code below
-            // either way.
-            ForEach(plan.sessions) { session in
-                VStack(alignment: .leading, spacing: RithamSpacing.xs) {
-                    Text("Day \(session.dayIndex): \(session.focus)")
-                        .font(RithamType.body.weight(.semibold))
-                    ForEach(session.exercises, id: \.name) { exercise in
-                        Text("\(exercise.name) -- \(exercise.sets) sets, \(exercise.repRange) reps")
-                    }
-                }
-                .font(RithamType.body)
-                .foregroundStyle(RithamColor.paper)
-            }
-
-            Text(plan.guidanceNote)
-                .font(RithamType.label)
-                .foregroundStyle(RithamColor.paper)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    @ViewBuilder
-    private func errorContent(_ error: WorkoutPlanClientError, model: RecommendationsModel) -> some View {
-        VStack(alignment: .leading, spacing: RithamSpacing.md) {
-            Text("We couldn't reach the plan service. Check your connection and try again.")
-                .font(RithamType.body)
-                .foregroundStyle(RithamColor.paper)
-                .fixedSize(horizontal: false, vertical: true)
-
-            PrimaryCTAButton(title: "Retry") {
-                request(model)
-            }
-        }
-    }
-
-    private func request(_ model: RecommendationsModel) {
-        Task {
-            await model.requestPlan(flow: flow)
         }
     }
 }
