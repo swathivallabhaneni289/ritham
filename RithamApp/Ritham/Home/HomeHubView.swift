@@ -142,51 +142,14 @@ struct HomeHubView: View {
 
     // MARK: - D-08's Momentum summary section
     //
-    // Renders this week's progress, the streak, and the shield count -- MOMENTUM-06 requires zero
-    // share/export/invite affordance anywhere on this section (no `ShareLink`,
-    // `UIActivityViewController`, or copy-link control appears here or anywhere else in this
-    // file). Deliberately no sleep-check-in state indicator, badge, dot, or "you haven't checked
-    // in" prompt of any kind: RECOVERY-01 invariant 3 requires a skipped check-in to be
-    // indistinguishable, app-wide, from a day the prompt was never shown -- do not reintroduce one
-    // here as a helpful nudge.
+    // Rendering itself now lives in `MomentumDashboardSection` (Ritham/Momentum/Components/) --
+    // see that type's own header comment for why it moved there. This member is HomeHubView's own
+    // bridging point: HomeHubView still owns and passes `momentumSummary`/`momentumLoadFailed`
+    // down as parameters (D-08/03-CONTEXT precedent -- no dashboard-specific aggregate view
+    // model), rather than the new component loading its own state a second way.
     @ViewBuilder
     private var momentumSection: some View {
-        if let summary = momentumSummary {
-            VStack(alignment: .leading, spacing: RithamSpacing.md) {
-                MomentumProgressBlocks(filled: summary.displayedCount, target: summary.weeklyTarget)
-
-                Text(MomentumView.streakLine(for: summary))
-                    .font(RithamType.heading)
-                    .modifier(RithamType.numerals())
-                    .foregroundStyle(RithamColor.paper)
-
-                ShieldRow(earned: summary.shieldCount, maximum: MomentumLedger.maxShields)
-
-                if summary.recentSessions.isEmpty {
-                    VStack(alignment: .leading, spacing: RithamSpacing.xs) {
-                        Text(MomentumCopy.Empty.noSessionsHeadline)
-                            .font(RithamType.body.weight(.semibold))
-                            .foregroundStyle(RithamColor.paper)
-                        Text(MomentumCopy.Empty.noSessionsBody)
-                            .font(RithamType.label)
-                            .foregroundStyle(RithamColor.paper)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-
-                PrimaryCTAButton(title: "Momentum") {
-                    flow.open(.momentum)
-                }
-            }
-        } else if momentumLoadFailed {
-            // WR-03: reuses `OnboardingCopy.Errors.savingFailed` verbatim, exactly as
-            // `MomentumView`/`RecommendationsView` already do for a Momentum/Recovery read
-            // failure, rather than silently rendering nothing.
-            Text(OnboardingCopy.Errors.savingFailed)
-                .font(RithamType.body)
-                .foregroundStyle(RithamColor.paper)
-                .fixedSize(horizontal: false, vertical: true)
-        }
+        MomentumDashboardSection(summary: momentumSummary, loadFailed: momentumLoadFailed, flow: flow)
     }
 }
 
