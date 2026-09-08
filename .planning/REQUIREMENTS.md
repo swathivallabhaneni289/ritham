@@ -103,8 +103,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Cross-Generational Design
 
-- [ ] **CROSSGEN-01**: Home screen shows exactly 3 things by default — today's target, current
-  streak, last session summary; everything else is one tap deeper.
+- [ ] **CROSSGEN-01** *(revised 2026-09-08)*: Home screen is a real dashboard, not a vertical
+  button list — sections for logged exercise, sleep, and workout logging are all visible on the
+  home screen itself, not one tap deeper. Diet-plan and workout-plan (recommendations) sections
+  are also home-screen sections. Supersedes the original "exactly 3 things, everything else one
+  tap deeper" rule, which is dropped. Reason: user feedback during Phase 3 sign-off — the
+  interim hub's button list was explicitly rejected as not matching the intended product
+  ("it should open a desktop... it should have all these many features"). See Phase 4's
+  `04-CONTEXT.md` for the full decision record once Phase 4 is planned.
 
 - [x] **CROSSGEN-02**: Passive-first capture (auto-detect walk/run from motion sensors) is
   available, alongside full manual session configuration for power users.

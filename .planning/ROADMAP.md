@@ -301,9 +301,18 @@ Plans:
 **Requirements**: HOUSEHOLD-01, CROSSGEN-01, CROSSGEN-04
 **Success Criteria** (what must be TRUE):
 
-  1. A user's home screen shows exactly 3 things by default — today's target, current streak,
-     last session summary — with everything else exactly one tap deeper, identically for every
-     age in the household.
+  1. A user's home screen is a real dashboard, identically for every age in the household — not
+     a vertical list of buttons. Visible sections (not one tap deeper) include: logged
+     exercise/activity, sleep check-in/logging, workout-plan recommendations, and diet-plan
+     guidance.
+
+     *Revised 2026-09-08 (see `REQUIREMENTS.md` CROSSGEN-01): supersedes this criterion's
+     original "exactly 3 things by default, everything else one tap deeper" rule. Reason: user
+     feedback during Phase 3 sign-off rejected the interim hub's button-list layout as not
+     matching the intended product ("it should open a desktop... it should have all these many
+     features"). Steps/calories tracking was also requested but has no data source wired up yet
+     (no HealthKit/pedometer integration exists) — that is new data-ingestion scope, not a layout
+     change, and needs its own decision before it is added to this criterion.*
 
   2. A user can group into a household (e.g., grandparent/parent/teen) where the only
      cross-member interaction is a fixed, non-ranked cheer ("nice work"/"keep going") — there is
