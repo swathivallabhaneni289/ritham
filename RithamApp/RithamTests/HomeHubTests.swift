@@ -152,4 +152,72 @@ struct HomeHubTests {
                 == "Log your first cardio or lift session to start your streak."
         )
     }
+
+    // MARK: - Plan 04-02: the dashboard's derivations
+
+    @Test("theDashboardNoLongerRoutesToTheRecommendationsScreen")
+    func theDashboardNoLongerRoutesToTheRecommendationsScreen() {
+        // D-04: the workout plan is now embedded inline via `RecommendationsSectionContent`, so
+        // nothing in `HomeHubView.body` calls `flow.open(.recommendations)` any more.
+        // `.recommendations` stays registered regardless -- `StepRegistry.unregisteredSteps` is
+        // asserted empty per-case, not per-reachability (04-RESEARCH.md Pitfall 4) -- this test
+        // only pins `routingSteps`' own returned list, never `StepRegistry`'s registration.
+        #expect(!HomeHubView.routingSteps(movementSnapshotOptIn: true).contains(.recommendations))
+    }
+
+    @Test("theDashboardStillRoutesToEveryTrackingDestination")
+    func theDashboardStillRoutesToEveryTrackingDestination() {
+        let steps = HomeHubView.routingSteps(movementSnapshotOptIn: true)
+        let expected: Set<OnboardingStep> = [
+            .sleepCheckIn, .cardioActivityPicker, .cardioHistory,
+            .strengthSession, .strengthHistory, .guidance, .movementSnapshot,
+        ]
+        // Membership only, not the array literal's internal sequence: the ordering constraint
+        // this phase actually carries (04-RESEARCH.md Pitfall 6) is about render order inside
+        // `body`, not about this list, so asserting the literal's exact sequence would fail on a
+        // harmless future reorder of the array itself.
+        #expect(Set(steps) == expected)
+        #expect(steps.last == .movementSnapshot)
+    }
+
+    @Test("theDashboardHeadlineIsNotPlaceholderFraming")
+    func theDashboardHeadlineIsNotPlaceholderFraming() {
+        #expect(HomeHubView.dashboardHeadline == "Home")
+        let lowercased = HomeHubView.dashboardHeadline.lowercased()
+        #expect(!lowercased.contains("interim"))
+        #expect(!lowercased.contains("temporary"))
+        #expect(!lowercased.contains("placeholder"))
+    }
+
+    @Test("theExerciseSectionRendersTheSummarysOwnSessionList")
+    func theExerciseSectionRendersTheSummarysOwnSessionList() throws {
+        // Proves the exercise card's data source is `MomentumSummaryReader`'s own
+        // already-labelled `recentSessions` list (D-02), not a second, independently-derived
+        // read -- current-week timestamps are required since `recentSessions` is built from
+        // `currentWeek` alone (`MomentumSummary.swift`'s `recentSessions(for:)`).
+        let store = try makeStore()
+        let now = Date()
+
+        try store.saveCardioSession(CardioSession(
+            activityType: .run,
+            source: .gps,
+            startedAt: now.addingTimeInterval(-3_600),
+            endedAt: now.addingTimeInterval(-1_800),
+            progress: CardioProgress(continuousDuration: 1_800, distanceMeters: 5_000)
+        ))
+        try store.saveLiftSession(LiftSession(startedAt: now.addingTimeInterval(-900), sets: []))
+
+        let reader = MomentumSummaryReader(store: store, calendar: .current)
+        let summary = try reader.summary(now: now)
+
+        #expect(!summary.recentSessions.isEmpty)
+        for session in summary.recentSessions {
+            if let label = session.verificationLabel {
+                #expect(
+                    label == MomentumCopy.Verification.sensorVerified
+                        || label == MomentumCopy.Verification.manuallyEntered
+                )
+            }
+        }
+    }
 }
