@@ -78,7 +78,7 @@ with a dated record rather than silently expanding this round's scope.
   section (do not architect them out), but does not implement them.
 
 ### Onboarding-restart bug — already fixed, not this phase's scope
-- **D-09:** The user also reported onboarding re-asking every relaunch even after completion.
+- **D-09 [informational]:** The user also reported onboarding re-asking every relaunch even after completion.
   This was a pre-existing defect unrelated to Phase 4's scope (Phase 1/2 code,
   `OnboardingRootView`/`WorkoutPreferenceRecord`) and was fixed directly, ahead of this phase,
   once confirmed as a genuine bug rather than a design question — see commit `744784d`. Not a
