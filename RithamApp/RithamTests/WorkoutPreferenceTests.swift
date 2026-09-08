@@ -62,6 +62,26 @@ struct WorkoutPreferenceTests {
         #expect(try store.loadHasCompletedPreAssessment() == true)
     }
 
+    @Test("loading the onboarding completion flag defaults to false, and marking it complete persists true")
+    func onboardingCompletionDefaultsFalseThenPersistsTrue() throws {
+        let store = try makeStore()
+        #expect(try store.loadHasCompletedOnboarding() == false)
+
+        try store.markOnboardingCompleted()
+
+        #expect(try store.loadHasCompletedOnboarding() == true)
+    }
+
+    @Test("the onboarding completion flag survives a fresh HealthDataStore instance over the same container, not just the in-memory one that set it")
+    func onboardingCompletionSurvivesReloadOverTheSameContainer() throws {
+        let container = try RithamModelContainer.make(inMemory: true)
+        let writingStore = HealthDataStore(context: ModelContext(container))
+        try writingStore.markOnboardingCompleted()
+
+        let readingStore = HealthDataStore(context: ModelContext(container))
+        #expect(try readingStore.loadHasCompletedOnboarding() == true)
+    }
+
     @Test("the route-comparison opt-in defaults to false with no stored record")
     func routeComparisonOptInDefaultsFalse() throws {
         let store = try makeStore()

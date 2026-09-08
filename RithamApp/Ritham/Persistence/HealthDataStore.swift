@@ -530,6 +530,17 @@ public final class HealthDataStore {
         try upsertWorkoutPreference { $0.hasCompletedPreAssessment = true }
     }
 
+    /// Same isolation as `loadHasCompletedPreAssessment`. Defaults to `false`: a fresh install
+    /// has not yet reached `.screeningComplete`. `OnboardingRootView` reads this once, at launch,
+    /// to decide whether the app's one navigation container should root at `.welcome` or `.home`.
+    public func loadHasCompletedOnboarding() throws -> Bool {
+        try loadWorkoutPreferenceRecord()?.hasCompletedOnboarding ?? false
+    }
+
+    public func markOnboardingCompleted() throws {
+        try upsertWorkoutPreference { $0.hasCompletedOnboarding = true }
+    }
+
     /// Defaults to `false` with no stored record, so CARDIO-03's route-comparison surface is
     /// opt-in, never default-on -- the storage-level expression of the project's permanent
     /// prohibition on any cross-user aggregate location visualization.

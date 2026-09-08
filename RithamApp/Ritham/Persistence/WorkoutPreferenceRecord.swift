@@ -17,22 +17,31 @@ import SwiftData
 /// with streak, shield or target state, and putting its preference on the Momentum row would be
 /// exactly that association. `WorkoutPreferenceRecord` has no relationship or foreign key to any
 /// Momentum record, so this column keeps that separation intact.
+///
+/// `hasCompletedOnboarding` defaults to `false`, matching `hasCompletedPreAssessment`'s own
+/// convention: a fresh install has not yet reached `.screeningComplete`. `OnboardingRootView`
+/// reads this to decide whether the app's single navigation container should root at `.welcome`
+/// or `.home` -- before this field existed there was no persisted signal at all, so every
+/// relaunch re-ran onboarding from the very first screen regardless of completion state.
 @Model
 public final class WorkoutPreferenceRecord {
     public var weeklyFrequency: Int
     public var hasCompletedPreAssessment: Bool
     public var routeComparisonOptIn: Bool
     public var movementSnapshotOptIn: Bool
+    public var hasCompletedOnboarding: Bool
 
     public init(
         weeklyFrequency: Int,
         hasCompletedPreAssessment: Bool = false,
         routeComparisonOptIn: Bool = false,
-        movementSnapshotOptIn: Bool = false
+        movementSnapshotOptIn: Bool = false,
+        hasCompletedOnboarding: Bool = false
     ) {
         self.weeklyFrequency = weeklyFrequency
         self.hasCompletedPreAssessment = hasCompletedPreAssessment
         self.routeComparisonOptIn = routeComparisonOptIn
         self.movementSnapshotOptIn = movementSnapshotOptIn
+        self.hasCompletedOnboarding = hasCompletedOnboarding
     }
 }

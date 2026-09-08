@@ -14,6 +14,11 @@ import RithamCore
 /// Kept as a brief acknowledgement, not a data-display screen: it names no condition tag,
 /// gate, or score -- that surface belongs to `HealthProfileView` (plan 01-17), reachable
 /// later from Settings.
+///
+/// This is also the one place `HealthDataStore.markOnboardingCompleted()` is ever called --
+/// reaching this screen's CTA is the definition of "onboarding is done" that
+/// `OnboardingRootView` reads back at the next launch. Marked before `flow.advance`, matching
+/// `AgeStepView`'s own persist-then-advance ordering.
 struct ScreeningCompleteStepView: View, OnboardingStepPresenting {
     static let step: OnboardingStep = .screeningComplete
 
@@ -22,6 +27,7 @@ struct ScreeningCompleteStepView: View, OnboardingStepPresenting {
     }
 
     let flow: OnboardingFlow
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         RithamScreen(
@@ -30,6 +36,8 @@ struct ScreeningCompleteStepView: View, OnboardingStepPresenting {
             bodyText: OnboardingCopy.ScreeningComplete.body
         ) {
             PrimaryCTAButton(title: OnboardingCopy.ScreeningComplete.cta) {
+                let store = HealthDataStore(context: modelContext)
+                try? store.markOnboardingCompleted()
                 flow.advance(from: .screeningComplete)
             }
         }

@@ -129,6 +129,18 @@ struct AppShellTests {
 
         #expect(flow.path.isEmpty)
     }
+
+    // MARK: - OnboardingRootView.resolvedRootStep
+
+    @Test("a fresh install with no completed onboarding roots at .welcome")
+    func rootStepIsWelcomeWhenOnboardingNotCompleted() {
+        #expect(OnboardingRootView.resolvedRootStep(hasCompletedOnboarding: false) == .welcome)
+    }
+
+    @Test("a returning user who already completed onboarding roots at .home, not .welcome")
+    func rootStepIsHomeWhenOnboardingCompleted() {
+        #expect(OnboardingRootView.resolvedRootStep(hasCompletedOnboarding: true) == .home)
+    }
 }
 
 }
