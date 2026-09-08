@@ -22,6 +22,12 @@ import RithamCore
 /// `HomeHubView` still owns and passes `summary`/`loadFailed` down as parameters (D-08's own
 /// requirement, restated in 04-CONTEXT.md's canonical refs: "not baked into a hub-specific view
 /// model") -- this type loads no state of its own.
+///
+/// Deviation from the plan 04-02 Task 1 verbatim extraction: the original `momentumSection`'s
+/// no-sessions empty-state block (shown when `summary.recentSessions.isEmpty`) moved here
+/// unchanged in Task 1's zero-behaviour-change move, then was deleted in Task 2 and relocated to
+/// `HomeHubView.exerciseSection` -- 04-UI-SPEC.md section 3 assigns that empty state to the
+/// exercise card, not this one, so it now exists in exactly one place.
 struct MomentumDashboardSection: View {
     let summary: MomentumSummary?
     let loadFailed: Bool
@@ -38,18 +44,6 @@ struct MomentumDashboardSection: View {
                     .foregroundStyle(RithamColor.paper)
 
                 ShieldRow(earned: summary.shieldCount, maximum: MomentumLedger.maxShields)
-
-                if summary.recentSessions.isEmpty {
-                    VStack(alignment: .leading, spacing: RithamSpacing.xs) {
-                        Text(MomentumCopy.Empty.noSessionsHeadline)
-                            .font(RithamType.body.weight(.semibold))
-                            .foregroundStyle(RithamColor.paper)
-                        Text(MomentumCopy.Empty.noSessionsBody)
-                            .font(RithamType.label)
-                            .foregroundStyle(RithamColor.paper)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
 
                 PrimaryCTAButton(title: "Momentum") {
                     flow.open(.momentum)
