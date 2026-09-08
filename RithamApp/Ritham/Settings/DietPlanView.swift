@@ -32,16 +32,12 @@ struct DietPlanView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @State private var dietSelection: Set<DietaryPattern>
     @State private var severitySelection: Set<YesNoUnsure>
-    @State private var allergenSelection: Set<FoodAllergen>
     @State private var showSaveError = false
 
     init(flow: OnboardingFlow) {
         self.flow = flow
-        _dietSelection = State(initialValue: [flow.answers.dietaryPattern ?? .none])
         _severitySelection = State(initialValue: flow.answers.screening.fa1SevereAllergyOrEpinephrine.map { [$0] } ?? [])
-        _allergenSelection = State(initialValue: flow.answers.allergens)
     }
 
     /// Every write through this binding re-resolves and re-saves the screening result (see this
@@ -60,14 +56,7 @@ struct DietPlanView: View {
 
     var body: some View {
         RithamScreen(surface: DecorativeSurface.flat, headline: "Diet plan") {
-            ChoiceQuestionView(
-                prompt: OnboardingCopy.Diet.headline,
-                helper: OnboardingCopy.Diet.helper,
-                options: DietaryPattern.allCases,
-                mode: .single,
-                selection: $dietSelection,
-                optionTitle: dietOptionTitle
-            )
+            DietPatternPicker(flow: flow)
 
             ChoiceQuestionView(
                 prompt: ChecklistItem.foodAllergies.displayName,
@@ -85,14 +74,7 @@ struct DietPlanView: View {
                     optionTitle: yesNoUnsureTitle
                 )
 
-                ChoiceQuestionView(
-                    prompt: OnboardingCopy.Diet.allergensHeadline,
-                    helper: OnboardingCopy.Diet.allergensHelper,
-                    options: FoodAllergen.allCases,
-                    mode: .multiple(exclusiveOption: nil),
-                    selection: $allergenSelection,
-                    optionTitle: allergenOptionTitle
-                )
+                AllergenPicker(flow: flow)
             }
 
             if showSaveError {
@@ -106,26 +88,9 @@ struct DietPlanView: View {
                 dismiss()
             }
         }
-        .onChange(of: dietSelection) { _, newValue in
-            guard let chosen = newValue.first else { return }
-            flow.answers.dietaryPattern = chosen
-            persistDiet(chosen)
-        }
         .onChange(of: severitySelection) { _, newValue in
             flow.answers.screening.fa1SevereAllergyOrEpinephrine = newValue.first
             resolveAndSaveScreening()
-        }
-        .onChange(of: allergenSelection) { _, newValue in
-            flow.answers.allergens = newValue
-            persistAllergens(newValue)
-        }
-    }
-
-    private func dietOptionTitle(_ pattern: DietaryPattern) -> String {
-        switch pattern {
-        case .none: return OnboardingCopy.Diet.optionNone
-        case .vegetarian: return OnboardingCopy.Diet.optionVegetarian
-        case .vegan: return OnboardingCopy.Diet.optionVegan
         }
     }
 
@@ -135,39 +100,6 @@ struct DietPlanView: View {
         case .no: return "No"
         case .notSure: return "Not sure"
         }
-    }
-
-    private func allergenOptionTitle(_ allergen: FoodAllergen) -> String {
-        switch allergen {
-        case .milk: return OnboardingCopy.Diet.allergenOptionMilk
-        case .eggs: return OnboardingCopy.Diet.allergenOptionEggs
-        case .fish: return OnboardingCopy.Diet.allergenOptionFish
-        case .shellfish: return OnboardingCopy.Diet.allergenOptionShellfish
-        case .treeNuts: return OnboardingCopy.Diet.allergenOptionTreeNuts
-        case .peanuts: return OnboardingCopy.Diet.allergenOptionPeanuts
-        case .wheat: return OnboardingCopy.Diet.allergenOptionWheat
-        case .soy: return OnboardingCopy.Diet.allergenOptionSoy
-        case .sesame: return OnboardingCopy.Diet.allergenOptionSesame
-        case .other: return OnboardingCopy.Diet.allergenOptionOther
-        }
-    }
-
-    /// DIET-01: no expiry, no re-screen. Never calls `GateResolution` and never invalidates a
-    /// condition tag -- a dietary preference must never loosen (or otherwise touch) a safety
-    /// gate.
-    private func persistDiet(_ pattern: DietaryPattern) {
-        let store = HealthDataStore(context: modelContext)
-        guard let existingAge = try? store.loadProfile().age else { return }
-        try? store.updateProfile(UserProfileDraft(age: existingAge, dietaryPattern: pattern))
-    }
-
-    /// Same isolation as `persistDiet` above: saved through `HealthDataStore.saveFoodAllergens`
-    /// alone, never touching `GateResolution`/condition-tag records. Unlike `persistDiet`/this,
-    /// `checklistBinding`/`severitySelection` deliberately do NOT stay isolated -- see this
-    /// type's own header comment.
-    private func persistAllergens(_ allergens: Set<FoodAllergen>) {
-        let store = HealthDataStore(context: modelContext)
-        try? store.saveFoodAllergens(allergens)
     }
 
     /// Re-resolves the complete screening result and persists it, exactly as `EditAnswerFlow`
