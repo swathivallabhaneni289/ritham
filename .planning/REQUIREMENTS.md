@@ -103,7 +103,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Cross-Generational Design
 
-- [ ] **CROSSGEN-01** *(revised 2026-09-08)*: Home screen is a real dashboard, not a vertical
+- [x] **CROSSGEN-01** *(revised 2026-09-08)*: Home screen is a real dashboard, not a vertical
   button list — sections for logged exercise, sleep, and workout logging are all visible on the
   home screen itself, not one tap deeper. Diet-plan and workout-plan (recommendations) sections
   are also home-screen sections. Supersedes the original "exactly 3 things, everything else one
@@ -384,7 +384,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOMENTUM-08 | Phase 3 | Complete |
 | RECOVERY-01 | Phase 3 | Complete |
 | HOUSEHOLD-01 | Phase 4 | Pending |
-| CROSSGEN-01 | Phase 4 | Pending |
+| CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
 | LAUNCH-01 | Phase 5 | Pending |
 | LAUNCH-02 | Phase 5 | Pending |
