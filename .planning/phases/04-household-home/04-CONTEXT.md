@@ -43,9 +43,18 @@ with a dated record rather than silently expanding this round's scope.
 - **D-04:** A workout-plan section, surfacing `RecommendationsView` (already built, currently
   reachable only via a `PrimaryCTAButton` on the interim hub) directly as a dashboard section
   rather than a button that navigates away.
-- **D-05:** A diet-plan section, surfacing `DietPlanView` (DIET-01, already built, currently
-  reachable only through Settings) directly as a dashboard section — the same re-parenting
-  treatment as D-04, not a rebuild.
+- **D-05 (narrowed 2026-09-08 per 04-RESEARCH.md Pitfall 3/Assumption A1):** A diet-plan section
+  on the dashboard, but scoped to `DietPlanView`'s DIET-01-isolated controls only — the dietary-
+  pattern picker and allergen multi-select (`persistDiet`/`persistAllergens`, which never touch
+  `GateResolution`). The food-allergy screening checkbox and its severity follow-up
+  (`checklistBinding`/`severitySelection`) stay in the Settings-presented `DietPlanView` only, and
+  are NOT duplicated onto the dashboard. Reason: that checkbox re-resolves and re-saves the full
+  screening result through `flow.answers.screening`, which is empty on every fresh app launch now
+  that `OnboardingRootView` roots straight at `.home` for a returning user (D-09) — embedding it on
+  a screen reached fresh on every relaunch would silently wipe real condition-tag data the first
+  time a returning user touched it. The user asked to see their diet plan on the dashboard, not
+  specifically for the screening checkbox to move there; this narrowing preserves the former
+  without introducing the latter's data-loss risk.
 - **D-06:** The Momentum summary section Phase 3 already built (D-08 in 03-CONTEXT.md — progress
   blocks, streak line, shield row) carries forward into the new dashboard essentially as-is. It
   is proven, tested, reconciliation-on-read code; this phase re-parents it into the new layout,
