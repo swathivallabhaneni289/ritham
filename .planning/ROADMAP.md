@@ -323,6 +323,13 @@ Plans:
      opt-in household sharing — never a binary public/private toggle, and nothing is shared by
      default until the user opts in. (The third rung, an opt-in friend-only accountability circle,
      arrives in v2 with HOUSEHOLD-02.)
+
+     *Criteria 2 and 3 (HOUSEHOLD-01, CROSSGEN-04) deferred 2026-09-08 (see
+     `04-CONTEXT.md`'s Phase Boundary): the first Phase 4 round ships only criterion 1's dashboard
+     home screen (CROSSGEN-01), triggered directly by the same 2026-09-08 user feedback that
+     revised criterion 1. Household grouping and the visibility spectrum are genuinely new
+     multi-user/social scope, unrelated to the dashboard layout itself, and are picked up in a
+     later Phase 4 round rather than blocking the dashboard on unrelated work.*
 **Plans**: TBD
 **UI hint**: yes
 
