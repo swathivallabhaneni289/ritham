@@ -151,3 +151,11 @@ Tasks 1 and 2 are fully committed and independently re-verified in this session:
 ---
 *Phase: 04-household-home*
 *Completed: 2026-09-08 (Tasks 1-2 only; Task 3 pending human action)*
+
+## Self-Check: PASSED
+
+- FOUND: `RithamApp/RithamTests/Phase4CoverageTests.swift`
+- FOUND: `.planning/phases/04-household-home/04-03-SUMMARY.md`
+- FOUND commit `300a184` (Task 1)
+- FOUND commit `080857b` (Task 2)
+- FOUND commit `849258d` (this SUMMARY)
