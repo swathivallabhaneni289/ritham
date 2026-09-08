@@ -330,7 +330,22 @@ Plans:
      revised criterion 1. Household grouping and the visibility spectrum are genuinely new
      multi-user/social scope, unrelated to the dashboard layout itself, and are picked up in a
      later Phase 4 round rather than blocking the dashboard on unrelated work.*
-**Plans**: TBD
+**Plans**: 3 plans (round 1 — criterion 1 / CROSSGEN-01 only)
+
+Plans:
+
+- [ ] 04-01-PLAN.md — Extract the embeddable Recommendations and DIET-01-isolated diet content
+  from their full-screen hosts, plus the project's first DIET-01 isolation gate (D-04/D-05)
+
+- [ ] 04-02-PLAN.md — Re-parent the Momentum summary under `Ritham/Momentum/` and rewrite
+  `HomeHubView` as the sectioned dashboard (D-01/D-02/D-03/D-06/D-07)
+
+- [ ] 04-03-PLAN.md — Phase close-out: `Phase4CoverageTests` structural gates, full-suite green,
+  Simulator verification checkpoint
+
+*Round 1 scope, 2026-09-08: these three plans deliver criterion 1 (CROSSGEN-01) only. Criteria 2*
+*and 3 (HOUSEHOLD-01, CROSSGEN-04) stay open per the dated annotation above and are planned in a*
+*later Phase 4 round — the phase checkbox stays unticked until they ship.*
 **UI hint**: yes
 
 ### Phase 5: Launch Readiness (Legal & Clinical Review)
@@ -364,7 +379,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Onboarding & Safety Intake | 14/14 | Complete    | 2026-09-03 |
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
 | 3. Momentum & Recovery | 10/10 | Complete   | 2026-09-06 |
-| 4. Household & Home | 0/0 | Not started | - |
+| 4. Household & Home | 0/3 | Planned (round 1) | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
 ## Backlog
