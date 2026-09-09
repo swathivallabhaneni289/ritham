@@ -361,13 +361,27 @@ Plans:
 **Goal:** Users can form small, invite-only friend groups (beyond household) and organize shared,
 non-comparative goal-events with a group feed and a completion certificate — structurally
 incapable of ranking, pace comparison, or precise-location exposure.
-**Requirements**: HOUSEHOLD-02, GROUPEVENTS-01, GROUPEVENTS-02, GROUPEVENTS-03, GROUPEVENTS-04, GROUPEVENTS-05
-**Depends on:** Phase 4
+**Requirements**: ACCOUNT-01, HOUSEHOLD-02, GROUPEVENTS-01, GROUPEVENTS-02, GROUPEVENTS-03, GROUPEVENTS-04, GROUPEVENTS-05
+**Depends on:** Phase 4 round 1 (the CROSSGEN-01 dashboard that hosts this phase's entry point —
+NOT full Phase 4 closure; this phase's visibility ladder does not need HOUSEHOLD-01/CROSSGEN-04,
+see criterion 1's note below)
+
+  *Qualified 2026-09-09, per `04.1-RESEARCH.md` Open Question 2: was unqualified "Depends on:
+  Phase 4," which read ambiguously as requiring Phase 4's full closure.*
 **Success Criteria** (what must be TRUE):
+
+  0. A user can create an optional, opt-in account via Sign in with Apple the first time they use
+     a social feature — never mandatory, never required for core tracking (ACCOUNT-01). Signing
+     in with the same Apple ID on a new device restores their friend graph, group memberships, and
+     certificate archive.
 
   1. A user can build a friend-level accountability circle (HOUSEHOLD-02) distinct from household —
      mutual/request-based only, never one-directional follow — via contact matching (both-sides
      opt-in, off by default), an expiring invite link/QR, or in-person/direct share.
+
+     *This phase ships a two-rung visibility ladder now (Only Me → this specific group), reserving
+     an unimplemented `.household` case for HOUSEHOLD-01 to add later with no data migration —
+     the same precedent `MomentumVisibility` set in Phase 3. See `04.1-CONTEXT.md`.*
 
   2. A user can create a small, closed, invite-only group with no public/joinable-by-anyone tier;
      any member can leave anytime with no ownership-transfer gate (GROUPEVENTS-01).
@@ -392,7 +406,9 @@ incapable of ranking, pace comparison, or precise-location exposure.
      *Reprioritized 2026-09-09 (see `PROJECT.md` Key Decisions): this whole phase was previously
      v2-scoped specifically to keep Phase 5's pre-launch GDPR/CCPA privacy review narrow. The user
      explicitly chose to pull it into v1 knowing it widens that review's surface (photo/location
-     data). `docs/group-events.md` is the full spec this phase plans against.*
+     data). `docs/group-events.md` is the full spec this phase plans against. Identity/account
+     model (ACCOUNT-01, Sign in with Apple) absorbs Phase 999.2's backlog scope — see
+     `REQUIREMENTS.md`'s "Account & Identity" section and Backlog below.*
 **Plans**: TBD
 
 Plans:
@@ -470,31 +486,16 @@ Plans:
 
 - [ ] TBD (promote with /gsd-review-backlog when ready)
 
-### Phase 999.2: Optional cross-device account/sync (email login) (BACKLOG)
+### Phase 999.2: Optional cross-device account/sync (email login) (PROMOTED 2026-09-09)
 
-**Goal:** [Captured for future planning] An optional email-based login letting a user see their
-own data (workout history, streaks, etc.) on a different device — not required to use the app,
-core tracking stays fully functional with zero login. This is the surviving half of GitHub issue
-#1 (closed 2026-08-24): its original motivation was parental-consent state surviving a device
-change, which no longer applies now that Ritham has a permanent 13+ age floor with no consent
-flow of any kind — but the general "does a user's training data survive a device change" question
-was never resolved and remains open for every user, any age. Tracked in GitHub issue #2.
+~~**Goal:** [Captured for future planning] An optional email-based login letting a user see their
+own data (workout history, streaks, etc.) on a different device...~~
 
-Aligns with PROJECT.md's existing (unlocked) Key Decision — "local-first data storage; cloud sync
-is backup, not source of truth" — implemented as an opt-in account rather than a mandatory one, so
-it doesn't collide with the "core tracking free forever, no account required" promise or Apple's
-App Store Guideline 5.1.1(v) (no account requirement for features that don't need one). Not in
-scope for Phase 1 — there is no trackable data to sync until Phase 2 (Core Tracking) and Phase 3
-(Momentum) ship; may extend Phase 4's existing "household accounts" concept rather than being a
-wholly new one. Open question, not yet decided: auth method (email+password, Sign in with Apple,
-or both).
-
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-
-- [ ] TBD (promote with /gsd-review-backlog when ready)
+**Promoted 2026-09-09 into Phase 4.1** (Group Goal-Events & Accountability Circles), as
+`ACCOUNT-01` in `REQUIREMENTS.md`'s "Account & Identity" section. Phase 4.1's need for mutual,
+cross-device friend identity forced this decision sooner than expected — resolved as **Sign in
+with Apple only**, not email+password (this backlog entry's original open question). No longer
+tracked here.
 
 ### Phase 999.3: Onboarding visual polish, round 2 (RESOLVED 2026-09-02)
 

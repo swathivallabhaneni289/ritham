@@ -292,6 +292,19 @@ Deferred to future release. Tracked but not in current roadmap.
   *Deferred reason*: a UX layer over v1's already-shipped condition-tag guidance (HEALTH-03/04),
   not new safety logic — v1 ships the underlying guidance without the dedicated weekly-grid UI.
 
+### Account & Identity
+
+*Added 2026-09-09, folded into Phase 4.1 — see `PROJECT.md` Key Decisions.*
+
+- [ ] **ACCOUNT-01**: A user can create an optional, opt-in account via Sign in with Apple —
+  never mandatory, never required for core tracking (matches CROSSGEN-03 and App Store Guideline
+  5.1.1(v)) — the first time they use a social feature. Signing in with the same Apple ID on a
+  new device restores their friend graph, group memberships, and certificate archive. No
+  email/password credential system exists or is planned; account recovery is Apple's own Apple ID
+  recovery, not a Ritham-built flow. Supersedes Phase 999.2's original open question
+  ("email+password, Sign in with Apple, or both?") — resolved as Sign in with Apple, alone.
+  Absorbs Phase 999.2's backlog scope; that entry is now closed in `ROADMAP.md`'s Backlog.
+
 ### Social & Groups
 
 *Pulled forward into v1 as Phase 4.1, 2026-09-09 — previously deferred to v2 to keep Phase 5's*
@@ -392,6 +405,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
+| ACCOUNT-01 | Phase 4.1 | Pending |
 | HOUSEHOLD-02 | Phase 4.1 | Pending |
 | GROUPEVENTS-01 | Phase 4.1 | Pending |
 | GROUPEVENTS-02 | Phase 4.1 | Pending |
