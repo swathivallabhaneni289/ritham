@@ -200,6 +200,14 @@ requirement, not just the Apple Health reference.
   permissions UX, what "calories burned" means for manually-logged sessions) before it can be
   planned. Not silently dropped — flagged here and in D-08 so a future session picks it up
   deliberately rather than rediscovering the gap.
+- **Automatic/device-based workout detection** (raised 2026-09-09, Task 3 checkpoint, sixth round
+  of dashboard feedback) — direct concern that manual cardio/strength logging requires the user to
+  "practically go and stop it" themselves, versus other apps/devices that "can actually calculate
+  the act... be more accurate about the details." Same class of new data-ingestion scope as D-08's
+  steps/calories deferral (HealthKit/CoreMotion integration, permissions UX, what device-detected
+  "automatic" logging even means alongside the existing manual `CardioSession`/`LiftSession` flows)
+  — not a layout change, and not folded into this round's visual pass. Flagged here so a future
+  session scopes it deliberately rather than rediscovering it.
 
 </deferred>
 

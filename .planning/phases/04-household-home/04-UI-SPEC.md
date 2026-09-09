@@ -140,6 +140,8 @@ seam — enough to read as a grouped region, not enough to read as a colored car
 
 **Accent reserved for:** the primary CTA fill (log/track/plan-request actions), `MomentumProgressBlocks`' filled-week blocks, and `ShieldRow`'s earned-shield glyphs. Never a section-card fill, never a section heading, never a badge/dot/status indicator anywhere on this screen.
 
+**Revised 2026-09-09 (sixth-round checkpoint feedback):** narrowly extended to also cover the workout-plan icon-strip tile's ready-state numeral (`HomeHubView.workoutPlanSummary`'s `RithamType.display` session count) — the same "coral marks something earned/achieved/real" language `MomentumProgressBlocks`/`ShieldRow` already establish, applied to the one other place on this screen a real, positive achieved-state number renders. Still never a badge/dot/status indicator (the icon-strip tiles' own icon glyphs, chevrons, and the diet/sleep tiles stay neutral `paper`) — this is one additional named exception to the reserved list, not a loosening of the prohibition itself.
+
 ---
 
 ## Layout & Section Contract
@@ -149,6 +151,18 @@ surface `HomeHubView` uses today. `.boundedHeaderOnly` sets `ringAndDot: true` (
 lime ring-and-dot ornament in the header corner); no section body may introduce a second ring, arc,
 or radial motif anywhere in the scrollable content below it, per `MomentumProgressBlocks`' own
 documented "two circular motifs in one viewport" collision rule.
+
+**Revised 2026-09-09 (sixth-round checkpoint feedback):** direct feedback that the decorative band
+header wastes vertical space real content could use ("I don't think we need to have the stripes
+for the home page... use the whole page just for these things") moved the surface from
+`.boundedHeaderOnly` to `.flat` (the existing, already-reviewed "no decorative header at all" case
+— `ScreenHeader` collapses to zero height rather than reserving its ~250pt band for nothing, the
+same mechanism that already fixes this for every other `.flat` screen). This also removes the
+ring-and-dot ornament, since `.flat` sets all four `DecorativeSurface` flags off — there is no
+existing named surface that drops only the band while keeping a small corner ring without also
+reintroducing a mostly-empty reserved header block, and inventing one was out of scope for a
+same-session visual pass. The Ring Collision rule itself is unaffected (it constrains section
+bodies regardless of which surface the header uses) and stays fully in force.
 
 **Screen headline/body copy:** delete `HomeHubView`'s existing "Your interim home" headline and
 "This is a temporary hub..." body text entirely (04-RESEARCH.md's State of the Art table marks
