@@ -23,11 +23,11 @@ var _ func(*ObjectStore, context.Context, string, StrippedImage) error = (*Objec
 // exercised fully without a running S3-compatible backend, following
 // internal/httpapi/middleware_test.go's stub-authenticator precedent (04.1-03).
 type stubObjectWriter struct {
-	putSharedCalls           int
-	putPrivateOriginalCalls  int
-	putSharedErr             error
-	lastSharedKey            string
-	lastSharedImg            StrippedImage
+	putSharedCalls          int
+	putPrivateOriginalCalls int
+	putSharedErr            error
+	lastSharedKey           string
+	lastSharedImg           StrippedImage
 }
 
 func (w *stubObjectWriter) PutPrivateOriginal(ctx context.Context, key string, raw []byte, contentType string) error {
