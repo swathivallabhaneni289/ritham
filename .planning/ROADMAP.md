@@ -322,7 +322,8 @@ Plans:
   3. For every social surface, a user picks a point on a visibility spectrum — private solo, or
      opt-in household sharing — never a binary public/private toggle, and nothing is shared by
      default until the user opts in. (The third rung, an opt-in friend-only accountability circle,
-     arrives in v2 with HOUSEHOLD-02.)
+     was v2-scoped as HOUSEHOLD-02, but is now pulled into v1 — see Phase 4.1, reprioritized
+     2026-09-09.)
 
      *Criteria 2 and 3 (HOUSEHOLD-01, CROSSGEN-04) deferred 2026-09-08 (see
      `04-CONTEXT.md`'s Phase Boundary): the first Phase 4 round ships only criterion 1's dashboard
@@ -355,10 +356,56 @@ Plans:
 *criterion 6's and Phase 3 criterion 5's existing annotation style.*
 **UI hint**: yes
 
+### Phase 04.1: Group Goal-Events & Accountability Circles (INSERTED)
+
+**Goal:** Users can form small, invite-only friend groups (beyond household) and organize shared,
+non-comparative goal-events with a group feed and a completion certificate — structurally
+incapable of ranking, pace comparison, or precise-location exposure.
+**Requirements**: HOUSEHOLD-02, GROUPEVENTS-01, GROUPEVENTS-02, GROUPEVENTS-03, GROUPEVENTS-04, GROUPEVENTS-05
+**Depends on:** Phase 4
+**Success Criteria** (what must be TRUE):
+
+  1. A user can build a friend-level accountability circle (HOUSEHOLD-02) distinct from household —
+     mutual/request-based only, never one-directional follow — via contact matching (both-sides
+     opt-in, off by default), an expiring invite link/QR, or in-person/direct share.
+
+  2. A user can create a small, closed, invite-only group with no public/joinable-by-anyone tier;
+     any member can leave anytime with no ownership-transfer gate (GROUPEVENTS-01).
+
+  3. A user can organize or join a Goal-Event — a shared, non-timed commitment with an activity
+     type and optional target/date — where each person logs completion independently, own time is
+     optional and off by default, and no ranking mechanism of any kind exists: no pooled total, no
+     contribution ranking, no leaderboard, no score, no winner (GROUPEVENTS-02).
+
+  4. Any shared photo has EXIF GPS/metadata stripped server-side unconditionally; any shared
+     location defaults to a reverse-geocoded coarse place name, never coordinates/pin/address/radius;
+     user-set Privacy Zones are generalized/suppressed everywhere (GROUPEVENTS-03).
+
+  5. A group-only shared feed exists — not public, not discoverable, no generic shareable link —
+     ordered chronologically, never showing pace, time-rank, "first to complete," a completion
+     denominator, or precise location (GROUPEVENTS-04).
+
+  6. On completion, a user can generate a digital certificate (Ritham branding, event name,
+     participant's own name/date, own time only if opted in) that never exposes another member's
+     name, photo, status, time, pace, distance, rank, or GPS/address (GROUPEVENTS-05).
+
+     *Reprioritized 2026-09-09 (see `PROJECT.md` Key Decisions): this whole phase was previously
+     v2-scoped specifically to keep Phase 5's pre-launch GDPR/CCPA privacy review narrow. The user
+     explicitly chose to pull it into v1 knowing it widens that review's surface (photo/location
+     data). `docs/group-events.md` is the full spec this phase plans against.*
+**Plans**: TBD
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 04.1 --prd docs/group-events.md to break down)
+
 ### Phase 5: Launch Readiness (Legal & Clinical Review)
 
 **Goal**: Ritham is cleared to submit publicly to the App Store — every piece of clinical/legal-sensitive content has been reviewed by the right professional, and the privacy review is complete.
-**Depends on**: Phase 4
+**Depends on**: Phase 4.1
+
+  *Revised 2026-09-09: was "Depends on: Phase 4." Phase 4.1's group-events/photo/location data now
+  widens LAUNCH-04's privacy-review surface, so the review must happen after 4.1 ships, not before.*
 **Requirements**: LAUNCH-01, LAUNCH-02, LAUNCH-03, LAUNCH-04
 **Success Criteria** (what must be TRUE):
 
@@ -379,7 +426,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 4.1 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -387,6 +434,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
 | 3. Momentum & Recovery | 10/10 | Complete   | 2026-09-06 |
 | 4. Household & Home | 3/3 | In Progress (round 1 complete) | - |
+| 4.1. Group Goal-Events & Accountability Circles | 0/0 | Not started | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
 ## Backlog
@@ -526,19 +574,10 @@ piece is genuinely new and bigger. Not yet scoped into requirements or plans.
    on whether this extends CROSSGEN-01's "exactly 3 things" rule or adds a new progressive-disclosure
    layer beneath it, not a silent expansion of what the home screen shows by default.
 
-3. **Friend/family event creation, invites, RSVP-by-availability, and event-completion badges**
-   (e.g. "create a hike to this place, ask people to join, badge on completion"). This is the
-   genuinely new, bigger piece — it goes past what's currently scoped anywhere in the roadmap.
-   Phase 4 today only has a household group with a fixed, non-ranked "nice work" cheer (its own
-   goal: "comparison and ranking structurally impossible, not just discouraged"). A real
-   invite-only friend circle was already deliberately deferred to v2 as its own item
-   (`HOUSEHOLD-02`, referenced in Phase 4's rung-3 note) — this idea should extend HOUSEHOLD-02
-   rather than sit as a disconnected parallel feature, since they're the same underlying capability
-   (a friend-level social graph beyond the household). Two locked decisions bear directly on
-   design here, not just scope: nothing in the app may become comparative ("no comparison, ever"
-   is the core value, not a guideline), and location sharing defaults to no-precision (modeled
-   against the Strava heatmap incident, per `PROJECT.md`'s privacy commitments) — an event like
-   "hike to this place" needs that design worked out before it's just a feature request.
+3. ~~Friend/family event creation, invites, RSVP-by-availability, and event-completion badges~~ —
+   **promoted 2026-09-09 to Phase 4.1** (Group Goal-Events & Accountability Circles), fully spec'd
+   as HOUSEHOLD-02 and GROUPEVENTS-01 through 05 in `REQUIREMENTS.md`, planning against
+   `docs/group-events.md`. No longer tracked here.
 
 **Requirements:** TBD
 **Plans:** 0 plans

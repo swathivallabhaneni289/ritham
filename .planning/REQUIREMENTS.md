@@ -122,6 +122,9 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   rungs — fully private solo use, or opt-in household circle sharing; a third rung, an opt-in
   friend-only accountability circle, arrives in v2 (see HOUSEHOLD-02).
 
+  *Revised 2026-09-09*: HOUSEHOLD-02 (the third rung) is no longer v2 — pulled forward into v1 as
+  Phase 4.1, alongside GROUPEVENTS-01 through 05. See "Social & Groups" below.
+
 - [x] **CROSSGEN-05**: No age gating anywhere in the product; no screen is ever labeled "senior
   mode," and there is no separate under-18 app mode or age-based navigation fork.
 
@@ -291,17 +294,20 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Social & Groups
 
-- **HOUSEHOLD-02**: Opt-in accountability-circle visibility tier, beyond household — friend-only,
+*Pulled forward into v1 as Phase 4.1, 2026-09-09 — previously deferred to v2 to keep Phase 5's*
+*pre-launch privacy review scoped. See `PROJECT.md` Key Decisions and `docs/group-events.md`.*
+
+- [ ] **HOUSEHOLD-02**: Opt-in accountability-circle visibility tier, beyond household — friend-only,
   Apple-Fitness-Competitions-style, never public.
 
-- **GROUPEVENTS-01**: Friends/groups data model — mutual/request-based friending (never
+- [ ] **GROUPEVENTS-01**: Friends/groups data model — mutual/request-based friending (never
   one-directional follow), three closed-loop connection paths (contact matching off by default
   and both-sides opt-in, invite link/QR expiring after a set window or first use, in-person/direct
   share), small closed invite-only groups (no public/joinable-by-anyone tier), any member can
   leave anytime with no ownership-transfer gate. Visibility ladder capped at Only Me → Household →
   this specific group — no "friends of friends" rung, no "Public/Everyone" rung, for any surface.
 
-- **GROUPEVENTS-02**: Goal-Event data model — a shared, non-timed commitment; organizer sets
+- [ ] **GROUPEVENTS-02**: Goal-Event data model — a shared, non-timed commitment; organizer sets
   activity type, optional target (distance/duration), and target date/window, no synchronized
   start. Each person logs their own completion independently; own time is optional, off by
   default, skippable with zero friction. Personal distance/pace/route stay in the user's private
@@ -309,7 +315,7 @@ Deferred to future release. Tracked but not in current roadmap.
   leaderboard sort, no score, no winner). Feed ordered chronologically by post time. Non-completion
   is a non-event — no denominator paired with completion count, no expiry notice.
 
-- **GROUPEVENTS-03**: Photo/location privacy — EXIF GPS/metadata stripped server-side,
+- [ ] **GROUPEVENTS-03**: Photo/location privacy — EXIF GPS/metadata stripped server-side,
   unconditionally, before any group-visible or exportable write (never relies on client-side
   stripping alone); original file retained only in the user's private library. Location sharing is
   a separate, explicit opt-in from photo sharing. Default location display (if opted in) is a
@@ -317,12 +323,12 @@ Deferred to future release. Tracked but not in current roadmap.
   User-set Privacy Zones (home, workplace) are automatically generalized/suppressed across every
   shared surface. Ritham will never build a cross-user aggregate location visualization.
 
-- **GROUPEVENTS-04**: Shared feed — visible to the group only, by default and permanently; not
+- [ ] **GROUPEVENTS-04**: Shared feed — visible to the group only, by default and permanently; not
   public, not discoverable, not indexed, no generic shareable link. Leaving/removal removes future
   feed access but past completion cards remain visible to the group. Never shows pace, time-based
   rank, "first to complete," a completion denominator, or precise location.
 
-- **GROUPEVENTS-05**: Digital certificate — auto-generated per person on completion (Ritham
+- [ ] **GROUPEVENTS-05**: Digital certificate — auto-generated per person on completion (Ritham
   branding, event name/activity type, participant's own name, completion date, own time only if
   opted in). Never includes pace, measured distance, rank, GPS/address, or any other member's
   name/photo/status/time. Default export template is a branded graphic/badge, not the user's own
@@ -386,6 +392,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
+| HOUSEHOLD-02 | Phase 4.1 | Pending |
+| GROUPEVENTS-01 | Phase 4.1 | Pending |
+| GROUPEVENTS-02 | Phase 4.1 | Pending |
+| GROUPEVENTS-03 | Phase 4.1 | Pending |
+| GROUPEVENTS-04 | Phase 4.1 | Pending |
+| GROUPEVENTS-05 | Phase 4.1 | Pending |
 | LAUNCH-01 | Phase 5 | Pending |
 | LAUNCH-02 | Phase 5 | Pending |
 | LAUNCH-03 | Phase 5 | Pending |

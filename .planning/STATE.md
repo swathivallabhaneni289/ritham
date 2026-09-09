@@ -2,19 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 3
-current_phase_name: Momentum & Recovery
-status: verifying
+current_phase: 4.1
+current_phase_name: Group Goal-Events & Accountability Circles
+status: planning
 stopped_at: "Completed 03-10-PLAN.md (Phase 3 close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06 deferral annotation, full-target suite green)"
-last_updated: "2026-09-06T13:50:09.765Z"
-last_activity: 2026-09-06
-last_activity_desc: Phase 3 execution started
+last_updated: "2026-09-09T08:59:53.745Z"
+last_activity: 2026-09-09
 progress:
-  total_phases: 5
-  completed_phases: 3
-  total_plans: 40
-  completed_plans: 40
-  percent: 60
+  total_phases: 6
+  completed_phases: 4
+  total_plans: 43
+  completed_plans: 43
+  percent: 67
 ---
 
 # Project State
@@ -26,17 +25,17 @@ See: .planning/PROJECT.md (updated 2026-08-19)
 **Core value:** Every user 13 or older, any health background — can safely track real training and
 keep a fair, forgiving consistency streak, with core tracking always free and never subject to
 comparison or ranking.
-**Current focus:** Phase 3 — Momentum & Recovery
+**Current focus:** Phase 4.1 — Group Goal-Events & Accountability Circles
 
 ## Current Position
 
-Phase: 3 (Momentum & Recovery) — EXECUTING
-Plan: 10 of 10
+Phase: 4.1 (Group Goal-Events & Accountability Circles) — NOT YET PLANNED
+Plan: none yet — run /gsd-plan-phase 4.1 --prd docs/group-events.md
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Phase complete — ready for verification
+Status: Phase 4 round 1 complete; Phase 4.1 scoped, awaiting planning
 batched verification pass runs
-Last activity: 2026-09-06 — Phase 3 execution started
+Last activity: 2026-09-09
 
 Progress: [██░░░░░░░░] 20%
 
@@ -312,5 +311,16 @@ per-step breakdown of what's done vs. still needed is in
 `.planning/phases/02-core-tracking-adjusted-guidance/02-16-SUMMARY.md`'s Checkpoint section.
 Phase 2 cannot close until a human runs those steps on a physical device and at AX3/AX5, and
 reports back.
+
+2026-09-09: Phase 4 round 1 (CROSSGEN-01 dashboard) closed after 7 rounds of checkpoint feedback
+(see `04-03-SUMMARY.md`'s Checkpoint Iteration History). User then asked to skip HOUSEHOLD-01 and
+build group goal-events instead (`docs/group-events.md`). That feature was previously v2-scoped
+specifically to keep Phase 5's pre-launch privacy review narrow; told this explicitly, the user
+chose to pull it into v1 anyway. Inserted as Phase 4.1 (`/gsd-review-backlog`-style promotion,
+`gsd-tools phase insert`) between Phase 4 and Phase 5; Phase 5's Depends-on updated to Phase 4.1
+since its review must now cover the new photo/location data. Requirements HOUSEHOLD-02 and
+GROUPEVENTS-01 through 05 (already fully drafted in `REQUIREMENTS.md`'s "Social & Groups" section
+from a prior ingest of `docs/group-events.md`) converted from backlog to active. Not yet planned —
+next step is `/gsd-plan-phase 4.1 --prd docs/group-events.md`.
 Resume file:
 None

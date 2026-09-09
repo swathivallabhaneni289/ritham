@@ -70,9 +70,6 @@ ranking.
 - Menstrual cycle tracking — deferred to v2. It's opt-in but adds special-category health data
   (consent flow, symptom logs, contraceptive-method categories) to the pre-launch privacy review
   surface; deferring keeps v1's GDPR/CCPA review scoped and v1 shippable sooner.
-- Friend/group goal-events, shared feeds, digital certificates — deferred to v2. `docs/roadmap.md`
-  already tiers the opt-in accountability-circle (beyond household) as v2, and `docs/group-events.md`
-  is that tier's SPEC.
 - Weekly rhythm timetable (editable 7-day template with Under-18/65+ baseline variants) —
   deferred to v2. v1 ships the underlying condition-tag-driven workout/nutrition guidance without
   the dedicated weekly-grid rendering; the timetable is a UX layer on top, not new safety logic.
@@ -139,6 +136,7 @@ ranking.
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Friend/group goal-events, shared feeds, digital certificates (`docs/group-events.md`) move from v2 into v1, planned as Phase 4.1 | Direct product decision (2026-09-09): the user explicitly chose to pull this forward after being told it widens Phase 5's pre-launch GDPR/CCPA privacy-review surface (photo/location data) — see `ROADMAP.md` Phase 4.1 and `REQUIREMENTS.md`'s "Social & Groups" section. Reverses this table's now-removed "deferred to v2" Out of Scope entry for the same feature | Decided |
 | Local-first data storage; cloud sync is backup, not source of truth | Keeps a user's training data available offline and under their control; matches `docs/roadmap.md`'s storage model | — Superseded (see below) |
 | Starting Phase 2, new server-side logic (beginning with workout-plan generation) runs behind a Go backend API rather than staying purely on-device; Phase 1's already-shipped Swift domain logic is not touched or ported | Direct product decision (2026-09-04): the user wants real Go experience in this project for general-software-engineering job applications, not iOS-specific roles. Go cannot build native iOS UI, so the client stays Swift; the backend is where Go fits. This revises the local-first-only design above for whichever new features route through the backend — plan-generation inputs (condition tags relevant to the plan, frequency/experience level) will leave the device, which widens the GDPR/CCPA review surface (LAUNCH-04) beyond what Phase 1 assumed. Scope, hosting, and exactly what crosses the API boundary are decided per-feature as Phase 2 is planned, not all at once here | Decided |
 | Ritham will never build a cross-user aggregate location visualization (no heatmap, no "most active area" feature) | Permanent privacy commitment from `docs/group-events.md` §3; protects users even after group features ship in v2 | — Pending |
@@ -152,7 +150,12 @@ ranking.
 | ONBOARD-01's calibration (guided walk-or-light-lift session) is no longer onboarding's first mandatory session; it moves to a triggered pre-assessment inside a later exercise-recommendation feature (provisionally Phase 2), factoring in age and the condition tags the safety screening already collects. Onboarding itself now ends after the safety screening — welcome, age floor, privacy explainer, then the full screening straight through to home. The "never a self-reported fitness-level dropdown" half of ONBOARD-01 is unchanged; only "first session" is reversed. The calibration domain and UI (`CalibrationIntroView`/`CalibrationSessionView`/`CalibrationCompleteView`, pedometer/stopwatch sources, `RadialSessionTimer`) are kept intact, router-unreachable from onboarding rather than deleted, for the future flow to reuse unmodified | Direct product feedback (2026-09-01): calibration felt better positioned as something a user opts into when they actually ask for exercise recommendations, alongside a broader vision (diet section, exercise recommendations, home summary, friend/family events) — see the new Backlog entry this same update adds. Also removes Phase 1's only remaining physical-device-dependent verification task (01-18's GPS calibration walk), since calibration is no longer part of onboarding's closure criteria | Decided |
 
 ---
-*Last updated: 2026-09-04 — added a Go backend for new Phase 2+ server-side logic (workout-plan
+*Last updated: 2026-09-09 — pulled friend/group goal-events (`docs/group-events.md`) forward from
+v2 into v1 as Phase 4.1, on explicit user decision, accepting the wider pre-launch privacy-review
+surface this adds ahead of Phase 5. See Key Decisions, `ROADMAP.md` Phase 4.1, and
+`REQUIREMENTS.md`'s "Social & Groups" section.*
+
+*Previously updated: 2026-09-04 — added a Go backend for new Phase 2+ server-side logic (workout-plan
 generation first), superseding the local-first-only storage decision for whichever features route
 through it. Phase 1's Swift domain logic is untouched. See Key Decisions and Context.*
 
