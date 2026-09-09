@@ -310,17 +310,17 @@ Deferred to future release. Tracked but not in current roadmap.
 *Pulled forward into v1 as Phase 4.1, 2026-09-09 — previously deferred to v2 to keep Phase 5's*
 *pre-launch privacy review scoped. See `PROJECT.md` Key Decisions and `docs/group-events.md`.*
 
-- [ ] **HOUSEHOLD-02**: Opt-in accountability-circle visibility tier, beyond household — friend-only,
+- [x] **HOUSEHOLD-02**: Opt-in accountability-circle visibility tier, beyond household — friend-only,
   Apple-Fitness-Competitions-style, never public.
 
-- [ ] **GROUPEVENTS-01**: Friends/groups data model — mutual/request-based friending (never
+- [x] **GROUPEVENTS-01**: Friends/groups data model — mutual/request-based friending (never
   one-directional follow), three closed-loop connection paths (contact matching off by default
   and both-sides opt-in, invite link/QR expiring after a set window or first use, in-person/direct
   share), small closed invite-only groups (no public/joinable-by-anyone tier), any member can
   leave anytime with no ownership-transfer gate. Visibility ladder capped at Only Me → Household →
   this specific group — no "friends of friends" rung, no "Public/Everyone" rung, for any surface.
 
-- [ ] **GROUPEVENTS-02**: Goal-Event data model — a shared, non-timed commitment; organizer sets
+- [x] **GROUPEVENTS-02**: Goal-Event data model — a shared, non-timed commitment; organizer sets
   activity type, optional target (distance/duration), and target date/window, no synchronized
   start. Each person logs their own completion independently; own time is optional, off by
   default, skippable with zero friction. Personal distance/pace/route stay in the user's private
@@ -336,7 +336,7 @@ Deferred to future release. Tracked but not in current roadmap.
   User-set Privacy Zones (home, workplace) are automatically generalized/suppressed across every
   shared surface. Ritham will never build a cross-user aggregate location visualization.
 
-- [ ] **GROUPEVENTS-04**: Shared feed — visible to the group only, by default and permanently; not
+- [x] **GROUPEVENTS-04**: Shared feed — visible to the group only, by default and permanently; not
   public, not discoverable, not indexed, no generic shareable link. Leaving/removal removes future
   feed access but past completion cards remain visible to the group. Never shows pace, time-based
   rank, "first to complete," a completion denominator, or precise location.
@@ -406,11 +406,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
 | ACCOUNT-01 | Phase 4.1 | Complete |
-| HOUSEHOLD-02 | Phase 4.1 | Pending |
-| GROUPEVENTS-01 | Phase 4.1 | Pending |
-| GROUPEVENTS-02 | Phase 4.1 | Pending |
+| HOUSEHOLD-02 | Phase 4.1 | Complete |
+| GROUPEVENTS-01 | Phase 4.1 | Complete |
+| GROUPEVENTS-02 | Phase 4.1 | Complete |
 | GROUPEVENTS-03 | Phase 4.1 | Pending |
-| GROUPEVENTS-04 | Phase 4.1 | Pending |
+| GROUPEVENTS-04 | Phase 4.1 | Complete |
 | GROUPEVENTS-05 | Phase 4.1 | Pending |
 | LAUNCH-01 | Phase 5 | Pending |
 | LAUNCH-02 | Phase 5 | Pending |

@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-01-PLAN.md
-last_updated: "2026-09-09T13:10:27.668Z"
+stopped_at: Completed 04.1-02-PLAN.md
+last_updated: "2026-09-09T13:23:49.060Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 44
+  completed_plans: 45
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 2 of 17
+Plan: 3 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -98,6 +98,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 03-momentum-recovery P09 | 65min | 3 tasks | 11 files |
 | Phase 03-momentum-recovery P10 | 25min | 3 tasks | 4 files |
 | Phase 04.1 P01 | 30min | 3 tasks | 9 files |
+| Phase 04.1 P02 | 20min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -215,6 +216,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-01: go mod tidy pruned google/uuid, minio-go, golang-jwt, and goexif since nothing imports them yet; all six approved, only pgx/v5 and golang-migrate/v4 landed as direct requires -- the rest re-enter go.mod when 04.1-03/04.1-04 import them, no re-approval needed
 - [Phase ?]: 04.1-01: golang-migrate's pgx/v5 driver registers under the pgx5:// URL scheme, not postgres:// -- Migrate() rewrites RITHAM_DATABASE_URL's scheme locally so one env var serves both pgxpool and the migration runner
 - [Phase ?]: 04.1-01: Docker Desktop is unavailable in this environment (Subscription Service Agreement declined) -- connected store/migration tests were verified against a native Homebrew postgresql@16 service instead; this fully proves the Postgres half, MinIO half of docker-compose.dev.yml remains container-unverified pending a working Docker install
+- [Phase ?]: 04.1-02: GroupVisibilityScope ships exactly two cases (onlyMe, group); the household rung is a doc comment only, not a Swift case -- HOUSEHOLD-01 still Pending, matching MomentumVisibility's Phase 3 precedent
+- [Phase ?]: 04.1-02: PrivateCompletionDetail stays in GoalEventModels.swift (plan's own 7-file cap) rather than a separate file; its doc comment states the never-referenced-by-network-type invariant, enforced later by plan 04.1-10's reflection-based wire-contract shape lock
 
 ### Pending Todos
 
@@ -281,8 +284,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-09T13:10:27.657Z
-Stopped at: Completed 04.1-01-PLAN.md
+Last session: 2026-09-09T13:23:49.049Z
+Stopped at: Completed 04.1-02-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
