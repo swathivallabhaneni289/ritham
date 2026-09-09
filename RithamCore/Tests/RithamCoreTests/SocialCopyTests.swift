@@ -91,7 +91,11 @@ struct SocialCopyTests {
 
     @Test("no shipped string mentions a position, a total, a fraction, or a comparison between members")
     func noShippedStringMentionsPositionTotalFractionOrComparison() {
-        let extraBannedTerms = ["position", "total", "fraction", "denominator"]
+        // "total" itself is deliberately excluded as a bare term here (covered instead as the
+        // phrase "pooled total" in bannedPhrases above) -- a bare-stem match would false-positive
+        // on the locked `Completion.ownTimePrompt` string's "Totally up to you," the same
+        // stem-vs-phrase pitfall this file's header comment already documents for "ranking."
+        let extraBannedTerms = ["position", "fraction", "denominator"]
         for entry in Self.shippedStrings {
             let lowered = entry.value.lowercased()
             for term in extraBannedTerms {
