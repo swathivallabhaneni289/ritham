@@ -409,11 +409,77 @@ see criterion 1's note below)
      data). `docs/group-events.md` is the full spec this phase plans against. Identity/account
      model (ACCOUNT-01, Sign in with Apple) absorbs Phase 999.2's backlog scope — see
      `REQUIREMENTS.md`'s "Account & Identity" section and Backlog below.*
-**Plans**: TBD
+**Plans**: 17/17 planned, 0/17 executed — verified by gsd-plan-checker 2026-09-09 (0 blockers)
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 04.1 --prd docs/group-events.md to break down)
+**Wave 1**
+
+- [ ] 04.1-01-PLAN.md — Persistence foundation: Postgres schema, `golang-migrate` setup, first real
+  `go.mod` dependencies (ACCOUNT-01)
+- [ ] 04.1-02-PLAN.md — Domain vocabulary + single-source copy catalog in `RithamCore`
+  (`GroupVisibilityScope`, `SocialCopy`) (HOUSEHOLD-02, GROUPEVENTS-01, GROUPEVENTS-02, GROUPEVENTS-04)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04.1-03-PLAN.md — Backend identity: Sign in with Apple token verification, opaque revocable
+  session tokens (ACCOUNT-01)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04.1-04-PLAN.md — Server-side EXIF-strip photo pipeline (structural negative test, HEIC
+  reject path) (GROUPEVENTS-03)
+- [ ] 04.1-05-PLAN.md — Client identity half: shared social API client, Keychain-backed sessions,
+  Sign-in-with-Apple entry point (ACCOUNT-01)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 04.1-06-PLAN.md — Mutual friend graph + three closed-loop connection paths, server-side
+  (HOUSEHOLD-02, GROUPEVENTS-01)
+- [ ] 04.1-07-PLAN.md — Privacy Zones + the on-device capture→zone-check→geocode→discard sequence
+  (GROUPEVENTS-03)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 04.1-08-PLAN.md — Small, closed, invite-only groups + membership-scoping predicate, server-side
+  (GROUPEVENTS-01, HOUSEHOLD-02)
+- [ ] 04.1-09-PLAN.md — Friend-circle client surface: friends list, incoming requests, Add Friend
+  screen (HOUSEHOLD-02, GROUPEVENTS-01)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 04.1-10-PLAN.md — Goal-Events, RSVP, and completion logging — no clock, no ranking
+  (GROUPEVENTS-02, GROUPEVENTS-01)
+- [ ] 04.1-11-PLAN.md — Group client surface: create group, invite, view membership, remove member
+  (GROUPEVENTS-01, HOUSEHOLD-02)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
+- [ ] 04.1-12-PLAN.md — Group-only feed, fixed cheer mechanic, export-consent gate, server-side
+  (GROUPEVENTS-04, GROUPEVENTS-05)
+- [ ] 04.1-13-PLAN.md — Goal-Event client surfaces (create/RSVP, separate from the completion feed)
+  (GROUPEVENTS-02, GROUPEVENTS-05)
+
+**Wave 8** *(blocked on Wave 7 completion)*
+
+- [ ] 04.1-14-PLAN.md — Completion-logging screen: binary done + optional own-time/photo/location
+  opt-ins (GROUPEVENTS-02, GROUPEVENTS-03)
+
+**Wave 9** *(blocked on Wave 8 completion)*
+
+- [ ] 04.1-15-PLAN.md — Group feed client surface: completion cards, every non-comparative rule
+  enforced visually (GROUPEVENTS-04, GROUPEVENTS-02)
+
+**Wave 10** *(blocked on Wave 9 completion)*
+
+- [ ] 04.1-16-PLAN.md — Digital finisher certificate: auto-generated, server-stripped-photo-only,
+  export consent + editable display name (GROUPEVENTS-05, GROUPEVENTS-03)
+
+**Wave 11** *(blocked on Wave 10 completion)*
+
+- [ ] 04.1-17-PLAN.md — Phase close-out: `SocialCoverageTests` structural gates (no ranking field,
+  no denominator, `.household` unreachable, certificate never references the private original),
+  full-suite green (ACCOUNT-01, HOUSEHOLD-02, GROUPEVENTS-01 through 05)
 
 ### Phase 5: Launch Readiness (Legal & Clinical Review)
 
@@ -450,7 +516,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 4.1 → 5
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
 | 3. Momentum & Recovery | 10/10 | Complete   | 2026-09-06 |
 | 4. Household & Home | 3/3 | In Progress (round 1 complete) | - |
-| 4.1. Group Goal-Events & Accountability Circles | 0/0 | Not started | - |
+| 4.1. Group Goal-Events & Accountability Circles | 0/17 | Planned, ready to execute | - |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
 ## Backlog
