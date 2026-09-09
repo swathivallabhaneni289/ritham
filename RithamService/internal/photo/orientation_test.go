@@ -1,6 +1,7 @@
 package photo
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"testing"
@@ -71,10 +72,10 @@ func TestApplyOrientation_AllEightCasesMatchDocumentedTransform(t *testing.T) {
 			continue
 		}
 		minX, minY := b.Min.X, b.Min.Y
-		sameColor(t, out.At(minX, minY), c.wantTL, "orientation %d top-left")
-		sameColor(t, out.At(minX+w-1, minY), c.wantTR, "orientation %d top-right")
-		sameColor(t, out.At(minX, minY+h-1), c.wantBL, "orientation %d bottom-left")
-		sameColor(t, out.At(minX+w-1, minY+h-1), c.wantBR, "orientation %d bottom-right")
+		sameColor(t, out.At(minX, minY), c.wantTL, fmt.Sprintf("orientation %d top-left", c.orientation))
+		sameColor(t, out.At(minX+w-1, minY), c.wantTR, fmt.Sprintf("orientation %d top-right", c.orientation))
+		sameColor(t, out.At(minX, minY+h-1), c.wantBL, fmt.Sprintf("orientation %d bottom-left", c.orientation))
+		sameColor(t, out.At(minX+w-1, minY+h-1), c.wantBR, fmt.Sprintf("orientation %d bottom-right", c.orientation))
 	}
 }
 

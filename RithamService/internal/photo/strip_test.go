@@ -104,6 +104,23 @@ func TestFixture_TextChunksContainsMarker(t *testing.T) {
 	}
 }
 
+// TestHasNonJFIFAPPSegment_DetectsAPP1OnTheInputFixture is the positive control for the scanner
+// used by TestStripAndReencode_NoMetadataSegments itself, not just for the fixtures. Go's
+// image/jpeg encoder never emits an APP0/JFIF marker, so on every StripAndReencode output the
+// walk goes SOI -> DQT -> SOF0 -> DHT -> SOS -> false: the `marker >= 0xE0 && marker <= 0xEF`
+// branch is evaluated but has never once been exercised as true by that test alone. Without this
+// separate check, a broken walker (wrong marker range, an off-by-one on the length field, an
+// early exit) would make the negative test pass silently, leaving T-04.1-16's central mitigation
+// unverified. gps-exif.jpg is SOI + a hand-built APP1 Exif segment + encoder output, so it is
+// exactly the positive input the walker must detect.
+func TestHasNonJFIFAPPSegment_DetectsAPP1OnTheInputFixture(t *testing.T) {
+	raw := loadFixture(t, fixtureGPSExif)
+	if !hasNonJFIFAPPSegment(t, raw) {
+		t.Fatal("hasNonJFIFAPPSegment failed to detect the APP1 Exif segment gps-exif.jpg is known to carry -- " +
+			"TestStripAndReencode_NoMetadataSegments's APPn assertion is vacuous until this passes")
+	}
+}
+
 func TestFixture_HEICCaptureIsGenuineHEIFContainer(t *testing.T) {
 	raw := loadFixture(t, fixtureHEICCapture)
 	if !isHEIC(raw) {
