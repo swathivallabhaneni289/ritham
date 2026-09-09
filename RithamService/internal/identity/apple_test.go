@@ -23,12 +23,12 @@ func (s stubKeySource) PublicKeys(ctx context.Context) (map[string]crypto.Public
 }
 
 const (
-	testKID              = "test-key-1"
-	testAudience         = "com.ritham.app"
-	testWrongAudience    = "com.other.app"
-	testWrongIssuer      = "https://example.com"
-	testSubject          = "001234.abcd5678.5678"
-	testNonce            = "expected-nonce-value"
+	testKID           = "test-key-1"
+	testAudience      = "com.ritham.app"
+	testWrongAudience = "com.other.app"
+	testWrongIssuer   = "https://example.com"
+	testSubject       = "001234.abcd5678.5678"
+	testNonce         = "expected-nonce-value"
 )
 
 // mintToken builds and signs an RS256 identity token whose claims mirror what Apple's own
