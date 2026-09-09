@@ -409,14 +409,15 @@ see criterion 1's note below)
      data). `docs/group-events.md` is the full spec this phase plans against. Identity/account
      model (ACCOUNT-01, Sign in with Apple) absorbs Phase 999.2's backlog scope — see
      `REQUIREMENTS.md`'s "Account & Identity" section and Backlog below.*
-**Plans**: 17/17 planned, 0/17 executed — verified by gsd-plan-checker 2026-09-09 (0 blockers)
+**Plans**: 1/17 plans executed
 
 Plans:
 
 **Wave 1**
 
-- [ ] 04.1-01-PLAN.md — Persistence foundation: Postgres schema, `golang-migrate` setup, first real
+- [x] 04.1-01-PLAN.md — Persistence foundation: Postgres schema, `golang-migrate` setup, first real
   `go.mod` dependencies (ACCOUNT-01)
+
 - [ ] 04.1-02-PLAN.md — Domain vocabulary + single-source copy catalog in `RithamCore`
   (`GroupVisibilityScope`, `SocialCopy`) (HOUSEHOLD-02, GROUPEVENTS-01, GROUPEVENTS-02, GROUPEVENTS-04)
 
@@ -429,6 +430,7 @@ Plans:
 
 - [ ] 04.1-04-PLAN.md — Server-side EXIF-strip photo pipeline (structural negative test, HEIC
   reject path) (GROUPEVENTS-03)
+
 - [ ] 04.1-05-PLAN.md — Client identity half: shared social API client, Keychain-backed sessions,
   Sign-in-with-Apple entry point (ACCOUNT-01)
 
@@ -436,6 +438,7 @@ Plans:
 
 - [ ] 04.1-06-PLAN.md — Mutual friend graph + three closed-loop connection paths, server-side
   (HOUSEHOLD-02, GROUPEVENTS-01)
+
 - [ ] 04.1-07-PLAN.md — Privacy Zones + the on-device capture→zone-check→geocode→discard sequence
   (GROUPEVENTS-03)
 
@@ -443,6 +446,7 @@ Plans:
 
 - [ ] 04.1-08-PLAN.md — Small, closed, invite-only groups + membership-scoping predicate, server-side
   (GROUPEVENTS-01, HOUSEHOLD-02)
+
 - [ ] 04.1-09-PLAN.md — Friend-circle client surface: friends list, incoming requests, Add Friend
   screen (HOUSEHOLD-02, GROUPEVENTS-01)
 
@@ -450,6 +454,7 @@ Plans:
 
 - [ ] 04.1-10-PLAN.md — Goal-Events, RSVP, and completion logging — no clock, no ranking
   (GROUPEVENTS-02, GROUPEVENTS-01)
+
 - [ ] 04.1-11-PLAN.md — Group client surface: create group, invite, view membership, remove member
   (GROUPEVENTS-01, HOUSEHOLD-02)
 
@@ -457,6 +462,7 @@ Plans:
 
 - [ ] 04.1-12-PLAN.md — Group-only feed, fixed cheer mechanic, export-consent gate, server-side
   (GROUPEVENTS-04, GROUPEVENTS-05)
+
 - [ ] 04.1-13-PLAN.md — Goal-Event client surfaces (create/RSVP, separate from the completion feed)
   (GROUPEVENTS-02, GROUPEVENTS-05)
 
@@ -516,7 +522,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 4.1 → 5
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
 | 3. Momentum & Recovery | 10/10 | Complete   | 2026-09-06 |
 | 4. Household & Home | 3/3 | In Progress (round 1 complete) | - |
-| 4.1. Group Goal-Events & Accountability Circles | 0/17 | Planned, ready to execute | - |
+| 4.1. Group Goal-Events & Accountability Circles | 1/17 | In Progress|  |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
 ## Backlog

@@ -296,7 +296,7 @@ Deferred to future release. Tracked but not in current roadmap.
 
 *Added 2026-09-09, folded into Phase 4.1 — see `PROJECT.md` Key Decisions.*
 
-- [ ] **ACCOUNT-01**: A user can create an optional, opt-in account via Sign in with Apple —
+- [x] **ACCOUNT-01**: A user can create an optional, opt-in account via Sign in with Apple —
   never mandatory, never required for core tracking (matches CROSSGEN-03 and App Store Guideline
   5.1.1(v)) — the first time they use a social feature. Signing in with the same Apple ID on a
   new device restores their friend graph, group memberships, and certificate archive. No
@@ -405,7 +405,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
-| ACCOUNT-01 | Phase 4.1 | Pending |
+| ACCOUNT-01 | Phase 4.1 | Complete |
 | HOUSEHOLD-02 | Phase 4.1 | Pending |
 | GROUPEVENTS-01 | Phase 4.1 | Pending |
 | GROUPEVENTS-02 | Phase 4.1 | Pending |

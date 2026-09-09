@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 4.1
-current_phase_name: Group Goal-Events & Accountability Circles
-status: planning
-stopped_at: Phase 4.1 UI-SPEC approved
-last_updated: "2026-09-09T12:43:52.312Z"
+current_phase: 04.1
+current_phase_name: group-goal-events-accountability-circles
+status: executing
+stopped_at: Completed 04.1-01-PLAN.md
+last_updated: "2026-09-09T13:10:27.668Z"
 last_activity: 2026-09-09
-last_activity_desc: Phase 4.1 planning complete
+last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 43
-  completed_plans: 43
+  total_plans: 60
+  completed_plans: 44
   percent: 67
 ---
 
@@ -26,18 +26,18 @@ See: .planning/PROJECT.md (updated 2026-08-19)
 **Core value:** Every user 13 or older, any health background — can safely track real training and
 keep a fair, forgiving consistency streak, with core tracking always free and never subject to
 comparison or ranking.
-**Current focus:** Phase 4.1 — Group Goal-Events & Accountability Circles
+**Current focus:** Phase 04.1 — group-goal-events-accountability-circles
 
 ## Current Position
 
-Phase: 4.1 (Group Goal-Events & Accountability Circles) — PLANNED, ready to execute
-Plan: 17 plans across 11 waves (04.1-01 through 04.1-17) — verified by gsd-plan-checker, 0 blockers
+Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
+Plan: 2 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Phase 4 round 1 complete; Phase 4.1 planned and verified, ready to execute
+Status: Ready to execute
 (run /gsd-execute-phase 4.1)
 batched verification pass runs
-Last activity: 2026-09-09 — Phase 4.1 planning complete
+Last activity: 2026-09-09 — Phase 04.1 execution started
 
 Progress: [██░░░░░░░░] 20%
 
@@ -97,6 +97,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 03-momentum-recovery P08 | 50min | 3 tasks | 8 files |
 | Phase 03-momentum-recovery P09 | 65min | 3 tasks | 11 files |
 | Phase 03-momentum-recovery P10 | 25min | 3 tasks | 4 files |
+| Phase 04.1 P01 | 30min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -211,6 +212,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 03-09: MovementSnapshotView/MovementSnapshotToggleView/MovementSnapshotRegistration live in their own MovementSnapshot/ directory (not Momentum/), so MOMENTUM-07's 'no streak, shield or target' requirement is a directory-scoped, mechanically checkable constraint rather than a per-file reading.
 - [Phase ?]: 03-10: Directory-walk source-scan (FileManager.enumerator relative to #filePath) chosen over a checked-in file-name list for the MOMENTUM-06 no-sharing structural gate, guarded by a non-zero scanned-file-count assertion so it cannot pass vacuously.
 - [Phase ?]: 03-10: ROADMAP.md's Phase 3 criterion 5 carries a dated (2026-09-06) annotation recording MOMENTUM-06's household-sharing half as scoped-deferred to Phase 4's HOUSEHOLD-01, mirroring Phase 2 criterion 6's precedent.
+- [Phase ?]: 04.1-01: go mod tidy pruned google/uuid, minio-go, golang-jwt, and goexif since nothing imports them yet; all six approved, only pgx/v5 and golang-migrate/v4 landed as direct requires -- the rest re-enter go.mod when 04.1-03/04.1-04 import them, no re-approval needed
+- [Phase ?]: 04.1-01: golang-migrate's pgx/v5 driver registers under the pgx5:// URL scheme, not postgres:// -- Migrate() rewrites RITHAM_DATABASE_URL's scheme locally so one env var serves both pgxpool and the migration runner
+- [Phase ?]: 04.1-01: Docker Desktop is unavailable in this environment (Subscription Service Agreement declined) -- connected store/migration tests were verified against a native Homebrew postgresql@16 service instead; this fully proves the Postgres half, MinIO half of docker-compose.dev.yml remains container-unverified pending a working Docker install
 
 ### Pending Todos
 
@@ -277,8 +281,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-09T09:32:36.704Z
-Stopped at: Phase 4.1 UI-SPEC approved
+Last session: 2026-09-09T13:10:27.657Z
+Stopped at: Completed 04.1-01-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
@@ -325,4 +329,4 @@ GROUPEVENTS-01 through 05 (already fully drafted in `REQUIREMENTS.md`'s "Social 
 from a prior ingest of `docs/group-events.md`) converted from backlog to active. Not yet planned —
 next step is `/gsd-plan-phase 4.1 --prd docs/group-events.md`.
 Resume file:
-.planning/phases/04.1-group-goal-events-accountability-circles/04.1-UI-SPEC.md
+None
