@@ -193,9 +193,9 @@ func TestIssueSession_PersistsOnlyAHashedDigestNeverThePlaintext(t *testing.T) {
 	}
 
 	var (
-		id, userID           uuid.UUID
-		tokenSHA256          []byte
-		issuedAt, expiresAt  time.Time
+		id, userID          uuid.UUID
+		tokenSHA256         []byte
+		issuedAt, expiresAt time.Time
 	)
 	err = h.store.Pool().QueryRow(context.Background(),
 		"SELECT id, user_id, token_sha256, issued_at, expires_at FROM sessions WHERE user_id = $1",
