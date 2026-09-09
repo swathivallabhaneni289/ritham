@@ -12,17 +12,19 @@ struct PhotoUploadResponse: Decodable, Equatable {
     }
 }
 
-// RED phase (Task 1, TDD): every method below unconditionally throws `.transport`, ignoring its
-// input entirely -- no bearer injection, no request construction, no response handling. This fails
-// `SocialIdentityTests`' bearer-header-present test (`capturedAuthHeader` stays `nil` because the
-// stubbed session is never invoked) and every error-vocabulary test that expects a case other than
-// `.transport`, while incidentally passing the no-token/no-header and transport-failure cases --
-// TDD requires the suite to fail on real, unimplemented behavior, not that literally every
-// assertion fails. GREEN commit replaces the body; the public API surface below is already final,
-// reusing `WorkoutPlanClient`'s debug-versus-release base URL structure verbatim
+/// The shared base URL, bearer injection, and typed decoding every social feature's API client
+/// builds on -- friends, groups, goal-events, feed, and certificate clients in later plans all
+/// route through this one type rather than each inventing its own request plumbing.
+///
+/// Reuses `WorkoutPlanClient`'s debug-versus-release base URL structure verbatim
 /// (`RithamApp/Ritham/Recommendations/WorkoutPlanClient.swift`) rather than inventing a second
 /// convention. The release host below is still a placeholder value because no real hosting exists
-/// yet -- an unresolved deployment prerequisite carried from `04.1-RESEARCH.md`, not an oversight.
+/// yet -- an unresolved deployment prerequisite carried from `04.1-RESEARCH.md`, not an oversight
+/// (T-04.1-25: transport security is required in production and does not exist yet either).
+///
+/// Every method maps outcomes onto `SocialAPIError`'s four cases rather than letting a raw
+/// `URLError`/`DecodingError` escape -- an unreachable service must read as an error, never as an
+/// empty or zero result (T-04.1-26).
 struct SocialAPIClient {
     private let session: URLSession
     private let baseURL: URL
@@ -38,25 +40,122 @@ struct SocialAPIClient {
     static let defaultBaseURL = URL(string: "https://api.ritham.invalid")!
     #endif
 
+    /// An explicit request timeout well below `URLSession`'s default (60s), so an unreachable
+    /// loopback service during local development fails fast and reads as `.transport` promptly
+    /// rather than hanging a screen's loading state for a minute.
+    private static let requestTimeout: TimeInterval = 15
+
     init(baseURL: URL = SocialAPIClient.defaultBaseURL, session: URLSession = .shared, sessionStore: SessionStore) {
         self.baseURL = baseURL
         self.session = session
         self.sessionStore = sessionStore
     }
 
+    /// A bearer-authenticated (when a session token is stored) GET, decoded into `Response`.
     func get<Response: Decodable>(_ path: String) async throws -> Response {
-        throw SocialAPIError.transport
+        let data = try await perform(method: "GET", path: path, bodyData: nil)
+        return try decode(data)
     }
 
+    /// A bearer-authenticated (when a session token is stored) request carrying an encoded `Body`,
+    /// decoded into `Response`.
     func send<Body: Encodable, Response: Decodable>(_ method: String, _ path: String, body: Body) async throws -> Response {
-        throw SocialAPIError.transport
+        let bodyData = try encode(body)
+        let data = try await perform(method: method, path: path, bodyData: bodyData)
+        return try decode(data)
     }
 
+    /// The no-content overload: same request construction, but the response body is never decoded
+    /// -- for routes that reply `204 No Content` (e.g. `POST /v1/identity/revoke`).
     func send<Body: Encodable>(_ method: String, _ path: String, body: Body) async throws {
-        throw SocialAPIError.transport
+        let bodyData = try encode(body)
+        _ = try await perform(method: method, path: path, bodyData: bodyData)
     }
 
+    /// A multipart upload with exactly one form part, named `fieldName`. Declared here so plan
+    /// `04.1-14`'s photo attach has one place to call, rather than a second, divergent multipart
+    /// implementation -- its response type mirrors the Go photo route's two keys
+    /// (`PhotoUploadResponse` above).
     func upload(_ path: String, fieldName: String, filename: String, contentType: String, data: Data) async throws -> PhotoUploadResponse {
-        throw SocialAPIError.transport
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var body = Data()
+        body.append("--\(boundary)\r\n".utf8Data)
+        body.append("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(filename)\"\r\n".utf8Data)
+        body.append("Content-Type: \(contentType)\r\n\r\n".utf8Data)
+        body.append(data)
+        body.append("\r\n--\(boundary)--\r\n".utf8Data)
+
+        var urlRequest = URLRequest(url: baseURL.appendingPathComponent(path))
+        urlRequest.httpMethod = "POST"
+        urlRequest.timeoutInterval = Self.requestTimeout
+        urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        if let token = await sessionStore.token {
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        urlRequest.httpBody = body
+
+        let responseData = try await execute(urlRequest)
+        return try decode(responseData)
+    }
+
+    // MARK: - Shared request plumbing
+
+    private func perform(method: String, path: String, bodyData: Data?) async throws -> Data {
+        var urlRequest = URLRequest(url: baseURL.appendingPathComponent(path))
+        urlRequest.httpMethod = method
+        urlRequest.timeoutInterval = Self.requestTimeout
+        if let token = await sessionStore.token {
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        if let bodyData {
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = bodyData
+        }
+        return try await execute(urlRequest)
+    }
+
+    /// The `URLRequest` -> typed-error pipeline shared by every request path (JSON and multipart
+    /// alike): a transport failure, a missing/malformed `HTTPURLResponse`, and a non-2xx status
+    /// each map onto their own `SocialAPIError` case before this function returns.
+    private func execute(_ urlRequest: URLRequest) async throws -> Data {
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: urlRequest)
+        } catch {
+            throw SocialAPIError.transport
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw SocialAPIError.transport
+        }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            if httpResponse.statusCode == 401 {
+                throw SocialAPIError.unauthenticated
+            }
+            throw SocialAPIError.httpStatus(httpResponse.statusCode)
+        }
+        return data
+    }
+
+    private func encode<Body: Encodable>(_ body: Body) throws -> Data {
+        guard let data = try? JSONEncoder().encode(body) else {
+            throw SocialAPIError.transport
+        }
+        return data
+    }
+
+    private func decode<Response: Decodable>(_ data: Data) throws -> Response {
+        do {
+            return try JSONDecoder().decode(Response.self, from: data)
+        } catch {
+            throw SocialAPIError.decoding
+        }
+    }
+}
+
+private extension String {
+    var utf8Data: Data {
+        Data(utf8)
     }
 }
