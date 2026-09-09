@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 4.1
 current_phase_name: Group Goal-Events & Accountability Circles
 status: planning
-stopped_at: "Completed 03-10-PLAN.md (Phase 3 close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06 deferral annotation, full-target suite green)"
-last_updated: "2026-09-09T08:59:53.745Z"
+stopped_at: Phase 4.1 UI-SPEC approved
+last_updated: "2026-09-09T09:32:36.715Z"
 last_activity: 2026-09-09
 progress:
   total_phases: 6
@@ -275,8 +275,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T13:50:09.753Z
-Stopped at: Completed 03-10-PLAN.md (Phase 3 close-out: step-coverage suite, no-sharing structural gate, MOMENTUM-06 deferral annotation, full-target suite green)
+Last session: 2026-09-09T09:32:36.704Z
+Stopped at: Phase 4.1 UI-SPEC approved
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
@@ -323,4 +323,4 @@ GROUPEVENTS-01 through 05 (already fully drafted in `REQUIREMENTS.md`'s "Social 
 from a prior ingest of `docs/group-events.md`) converted from backlog to active. Not yet planned —
 next step is `/gsd-plan-phase 4.1 --prd docs/group-events.md`.
 Resume file:
-None
+.planning/phases/04.1-group-goal-events-accountability-circles/04.1-UI-SPEC.md
