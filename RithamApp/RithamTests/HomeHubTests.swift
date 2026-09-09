@@ -170,9 +170,14 @@ struct HomeHubTests {
     @Test("theDashboardStillRoutesToEveryTrackingDestination")
     func theDashboardStillRoutesToEveryTrackingDestination() {
         let steps = HomeHubView.routingSteps(movementSnapshotOptIn: true)
+        // Plan 04.1-05 adds `.signInWithApple` to this list (default `isSignedIn: false`, matching
+        // the signed-out state every call site here already exercises) -- `socialSection`'s CTA is
+        // a new direct `flow.open(_:)` call site in `HomeHubView.body`, the same category of change
+        // `.movementSnapshot` itself represents relative to this test's own pre-04.1 baseline.
         let expected: Set<OnboardingStep> = [
             .sleepCheckIn, .cardioActivityPicker, .cardioHistory,
             .strengthSession, .strengthHistory, .guidance, .movementSnapshot,
+            .signInWithApple,
         ]
         // Membership only, not the array literal's internal sequence: the ordering constraint
         // this phase actually carries (04-RESEARCH.md Pitfall 6) is about render order inside

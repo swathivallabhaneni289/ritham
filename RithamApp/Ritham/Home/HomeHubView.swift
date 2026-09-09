@@ -106,6 +106,15 @@ struct HomeHubView: View {
     nonisolated static let workoutPlanTileLoadingStatus = "Building…"
     nonisolated static let workoutPlanTileErrorStatus = "Couldn't load"
 
+    // Phase 4.1 Plan 05's social entry point (ACCOUNT-01): the section heading and its signed-out
+    // CTA. Not `SocialCopy.SignInWithApple.headline` for the CTA label itself -- that string is a
+    // full sentence ("Sign in to connect with friends") meant as the sign-in screen's own headline,
+    // not a compact button label; this shorter action-oriented string is planner-authored purely
+    // for the button, matching this file's own stated rule that section-heading-adjacent strings
+    // here are visual-grouping copy, not verbatim-shipped-strings-table entries.
+    nonisolated static let socialSectionHeading = "Friends and groups"
+    nonisolated static let socialSignInCTA = "Sign in with Apple"
+
     let flow: OnboardingFlow
 
     @Environment(\.modelContext) private var modelContext
@@ -152,6 +161,14 @@ struct HomeHubView: View {
     // Reloaded on the quick-edit sheet's dismissal (`reloadDietaryPatternSummary` below), since
     // this view's own `onAppear` does not re-fire just because a child sheet closed.
     @State private var dietaryPatternSummary: DietaryPattern?
+
+    // Phase 4.1 Plan 05's social entry point state: whether a Sign in with Apple session exists on
+    // this device, and the display name to show when one does. `nil` means signed out -- read
+    // directly from `SessionStore` (Keychain-backed, not cached in memory by that type itself) in
+    // `reloadSocialSession()` below, the same independently-loaded-per-section pattern
+    // `dietaryPatternSummary`/`momentumSummary` above already use, never a hub-owned aggregate
+    // model (D-08's "no dashboard-specific aggregate view model" rule).
+    @State private var socialDisplayName: String?
 
     var body: some View {
         RithamScreen(
@@ -211,10 +228,18 @@ struct HomeHubView: View {
                     ) { dietPlanSummary }
                 }
 
+                // Phase 4.1 Plan 05's social entry point: a fourth full-width, shell-less section
+                // matching Momentum/Exercise's own icon+heading shape exactly (never the icon-tile
+                // trio's compact form -- this section's content differs in kind by session state,
+                // which the smaller tile shape has no room for). The dashboard gains this one entry
+                // point and loses none of its existing sections (this plan's own must_haves truth).
+                VStack(alignment: .leading, spacing: RithamSpacing.md) { socialSection }
+
                 overflowRow
             }
         }
         .onAppear {
+            reloadSocialSession()
             let store = HealthDataStore(context: modelContext)
             let reader = MomentumSummaryReader(store: store, calendar: .current)
             do {
@@ -265,6 +290,16 @@ struct HomeHubView: View {
     private func reloadDietaryPatternSummary() {
         let store = HealthDataStore(context: modelContext)
         dietaryPatternSummary = (try? store.loadProfile())?.dietaryPattern
+    }
+
+    /// Re-reads whether a Sign in with Apple session exists, and its display name. Called from
+    /// `onAppear` -- which SwiftUI re-fires when a pushed step (`.signInWithApple`) is popped back
+    /// to this screen, exactly like every other push/pop transition in this app's one
+    /// `NavigationStack` -- so a session established on that screen shows up here without a second,
+    /// bespoke refresh mechanism.
+    private func reloadSocialSession() {
+        let sessionStore = SessionStore()
+        socialDisplayName = sessionStore.isSignedIn ? sessionStore.displayName : nil
     }
 
     // MARK: - Dashboard sections
@@ -615,6 +650,38 @@ struct HomeHubView: View {
         .accessibilityLabel(accessibilityLabel)
     }
 
+    // ACCOUNT-01's opt-in social entry point. Reachable only by explicit choice, here, never during
+    // onboarding and never on the path to core tracking (T-04.1-28) -- signed-out state shows the
+    // opt-in framing and a CTA into `.signInWithApple`; signed-in state shows only the stored
+    // display name, nothing more. This section's own destinations -- the friends list and the
+    // groups list -- are not yet attached: they arrive in plans 04.1-09 and 04.1-11, at which point
+    // a signed-in tap here should route to one of them rather than doing nothing. Recorded here as
+    // an explicit forward handoff for those plans, not an unstated gap.
+    @ViewBuilder
+    private var socialSection: some View {
+        HStack(spacing: RithamSpacing.sm) {
+            SectionIconBadge(systemName: "person.2.fill")
+            Text(HomeHubView.socialSectionHeading)
+                .font(RithamType.heading)
+                .foregroundStyle(RithamColor.paper)
+        }
+
+        if let socialDisplayName {
+            Text(socialDisplayName)
+                .font(RithamType.body)
+                .foregroundStyle(RithamColor.paper)
+        } else {
+            Text(SocialCopy.SignInWithApple.body)
+                .font(RithamType.body)
+                .foregroundStyle(RithamColor.paper)
+                .fixedSize(horizontal: false, vertical: true)
+
+            PrimaryCTAButton(title: HomeHubView.socialSignInCTA) {
+                flow.open(.signInWithApple)
+            }
+        }
+    }
+
     // MARK: - D-08's Momentum summary section
     //
     // Rendering itself now lives in `MomentumDashboardSection` (Ritham/Momentum/Components/) --
@@ -652,12 +719,19 @@ extension HomeHubView {
     /// not per-reachability; 04-RESEARCH.md Pitfall 4). `.preAssessment` is reachable indirectly,
     /// through the embedded workout-plan section's own `RecommendationsModel.requestPlan`, and
     /// `.momentum` is reachable indirectly through `MomentumDashboardSection`'s own CTA -- neither
-    /// is a direct call inside this file's `body`, so neither is listed here.
-    nonisolated static func routingSteps(movementSnapshotOptIn: Bool) -> [OnboardingStep] {
+    /// is a direct call inside this file's `body`, so neither is listed here. `.signInWithApple`
+    /// (plan 04.1-05) follows `.movementSnapshot`'s own precedent: `socialSection`'s CTA only calls
+    /// `flow.open(.signInWithApple)` in the signed-out branch, so `isSignedIn` gates its presence
+    /// here the same way `movementSnapshotOptIn` gates `.movementSnapshot` above -- defaulted to
+    /// `false` so every pre-existing call site (none of which is signed in) is unaffected.
+    nonisolated static func routingSteps(movementSnapshotOptIn: Bool, isSignedIn: Bool = false) -> [OnboardingStep] {
         var steps: [OnboardingStep] = [
             .sleepCheckIn, .cardioActivityPicker, .cardioHistory,
             .strengthSession, .strengthHistory, .guidance,
         ]
+        if !isSignedIn {
+            steps.append(.signInWithApple)
+        }
         if showsMovementSnapshotEntry(optIn: movementSnapshotOptIn) {
             steps.append(.movementSnapshot)
         }

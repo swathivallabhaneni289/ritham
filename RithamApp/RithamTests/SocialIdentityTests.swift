@@ -206,4 +206,33 @@ struct SocialIdentityTests {
         #expect(second.token == "round-trip-token")
         #expect(second.isSignedIn)
     }
+
+    // MARK: - Task 3: dashboard entry point source assertion (Phase4CoverageTests style)
+
+    /// Resolves `RithamApp/Ritham/` relative to this file's own `#filePath`, the same technique
+    /// `Phase4CoverageTests.rithamDirectory` uses.
+    private var rithamDirectory: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Ritham")
+    }
+
+    @Test("HomeHubView's comment-filtered source references the social entry point and still references every Phase 4 required section")
+    func homeHubViewReferencesSocialSectionAndPhase4RequiredSections() throws {
+        let fileURL = rithamDirectory.appendingPathComponent("Home/HomeHubView.swift")
+        let source = try String(contentsOf: fileURL, encoding: .utf8)
+        let nonCommentSource = source
+            .components(separatedBy: .newlines)
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+            .joined(separator: "\n")
+
+        #expect(nonCommentSource.contains("signInWithApple"))
+        for requiredSymbol in [
+            "MomentumDashboardSection", "exerciseSection", "sleepSection",
+            "RecommendationsQuickView", "DietPlanQuickEditView",
+        ] {
+            #expect(nonCommentSource.contains(requiredSymbol), "HomeHubView.swift no longer references \(requiredSymbol)")
+        }
+    }
 }
