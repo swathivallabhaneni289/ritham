@@ -2,12 +2,16 @@ package httpapi
 
 import (
 	"bytes"
+	"context"
+	"crypto"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/plan"
 )
 
@@ -80,7 +84,7 @@ func TestHandleWorkoutPlan_ValidRequestReturns200WithPlanKey(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("got status %d, want 200; body: %s", rec.Code, rec.Body.String())
@@ -98,7 +102,7 @@ func TestHandleWorkoutPlan_InvalidJSONReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString("{not json"))
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -110,7 +114,7 @@ func TestHandleWorkoutPlan_StringFrequencyReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -122,7 +126,7 @@ func TestHandleWorkoutPlan_UnsupportedFrequencyReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -134,7 +138,7 @@ func TestHandleWorkoutPlan_UnknownExperienceLevelReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -146,7 +150,7 @@ func TestHandleWorkoutPlan_UnknownFieldReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400 for an unexpected field (D-07 boundary enforcement)", rec.Code)
@@ -157,9 +161,121 @@ func TestHandleWorkoutPlan_GETReturns405(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/workout-plan", nil)
 	rec := httptest.NewRecorder()
 
-	NewMux().ServeHTTP(rec, req)
+	NewMux(nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusMethodNotAllowed {
 		t.Errorf("got status %d, want 405", rec.Code)
 	}
+}
+
+// assertExactJSONFields is the WorkoutPlanRequest reflection-based field-count/JSON-tag pattern
+// (see TestWorkoutPlanRequest_ShapeIsExactlyThreeMinimizedFields above), generalized for reuse
+// across this task's four new request/response types.
+func assertExactJSONFields(t *testing.T, v interface{}, wantTags map[string]bool) {
+	t.Helper()
+	typ := reflect.TypeOf(v)
+	if typ.NumField() != len(wantTags) {
+		t.Fatalf("%s has %d fields, want exactly %d", typ.Name(), typ.NumField(), len(wantTags))
+	}
+	seen := make(map[string]bool, len(wantTags))
+	for i := 0; i < typ.NumField(); i++ {
+		tag := typ.Field(i).Tag.Get("json")
+		if _, ok := wantTags[tag]; !ok {
+			t.Errorf("%s: unexpected JSON tag %q on field %s", typ.Name(), tag, typ.Field(i).Name)
+			continue
+		}
+		seen[tag] = true
+	}
+	for tag := range wantTags {
+		if !seen[tag] {
+			t.Errorf("%s: expected a field tagged %q, none found", typ.Name(), tag)
+		}
+	}
+}
+
+func TestAppleSignInRequest_ShapeIsExactlyThreeMinimizedFields(t *testing.T) {
+	assertExactJSONFields(t, AppleSignInRequest{}, map[string]bool{
+		"identityToken": false,
+		"nonce":         false,
+		"displayName":   false,
+	})
+}
+
+func TestSessionResponse_ShapeIsExactlyFourFields(t *testing.T) {
+	assertExactJSONFields(t, SessionResponse{}, map[string]bool{
+		"userId":       false,
+		"displayName":  false,
+		"sessionToken": false,
+		"expiresAt":    false,
+	})
+}
+
+func TestMeResponse_ShapeIsExactlyTwoFields(t *testing.T) {
+	assertExactJSONFields(t, MeResponse{}, map[string]bool{
+		"userId":      false,
+		"displayName": false,
+	})
+}
+
+func TestDisplayNameRequest_ShapeIsExactlyOneField(t *testing.T) {
+	assertExactJSONFields(t, DisplayNameRequest{}, map[string]bool{
+		"displayName": false,
+	})
+}
+
+func TestWorkoutPlanRequest_StillHasExactlyOriginalThreeFieldsAfterIdentityRoutesAdded(t *testing.T) {
+	// 04.1-RESEARCH.md Pitfall 4 / this plan's threat T-04.1-15: identity threads through the new
+	// routes only. WorkoutPlanRequest's own reflection shape test above already pins this; this
+	// second assertion exists specifically to survive an accidental future edit to that first
+	// test's expectations without anyone noticing the boundary moved.
+	typ := reflect.TypeOf(WorkoutPlanRequest{})
+	if typ.NumField() != 3 {
+		t.Fatalf("WorkoutPlanRequest has %d fields after adding identity routes, want unchanged 3", typ.NumField())
+	}
+	for _, want := range []string{"frequencyPerWeek", "experienceLevel", "guidancePermission"} {
+		found := false
+		for i := 0; i < typ.NumField(); i++ {
+			if typ.Field(i).Tag.Get("json") == want {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("WorkoutPlanRequest lost its %q field/tag", want)
+		}
+	}
+}
+
+// noopAppleKeySource is a minimal identity.AppleKeySource stub used only to construct a
+// non-nil *identity.Service for route-registration tests -- these tests never reach a code path
+// that calls PublicKeys or touches the database.
+type noopAppleKeySource struct{}
+
+func (noopAppleKeySource) PublicKeys(ctx context.Context) (map[string]crypto.PublicKey, error) {
+	return nil, nil
+}
+
+func TestNewMux_IdentityRoutesRegisteredOnlyWhenServiceProvided(t *testing.T) {
+	t.Run("nil service leaves identity routes unregistered", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/v1/identity/me", nil)
+		rec := httptest.NewRecorder()
+
+		NewMux(nil).ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusNotFound {
+			t.Errorf("got status %d, want 404 for an unregistered route when idsvc is nil", rec.Code)
+		}
+	})
+
+	t.Run("real service registers identity routes behind RequireSession", func(t *testing.T) {
+		idsvc := identity.New(nil, noopAppleKeySource{}, "com.ritham.app", time.Now)
+		req := httptest.NewRequest(http.MethodGet, "/v1/identity/me", nil)
+		rec := httptest.NewRecorder()
+
+		NewMux(idsvc).ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf("got status %d, want 401 (route exists, no Authorization header)", rec.Code)
+		}
+	})
 }

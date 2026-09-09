@@ -164,6 +164,18 @@ func (s *Service) SetDisplayName(ctx context.Context, userID uuid.UUID, name str
 	return err
 }
 
+// User returns userID's current display name. This backs the GET /v1/identity/me route: the
+// middleware already proved userID is a valid, unexpired, unrevoked session's owner, so this is
+// a plain read with no further authorization check.
+func (s *Service) User(ctx context.Context, userID uuid.UUID) (string, error) {
+	const query = `SELECT display_name FROM users WHERE id = $1`
+	var displayName string
+	if err := s.store.Pool().QueryRow(ctx, query, userID).Scan(&displayName); err != nil {
+		return "", err
+	}
+	return displayName, nil
+}
+
 // validateDisplayName enforces displayNameMaxLen. An empty name is always valid (it means "no
 // display name supplied"); SignInWithApple and SetDisplayName both route through this so the
 // bound is enforced in exactly one place.
