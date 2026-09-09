@@ -6,14 +6,14 @@ current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
 stopped_at: Completed 04.1-03-PLAN.md
-last_updated: "2026-09-09T13:46:56.631Z"
+last_updated: "2026-09-09T14:15:18.107Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 46
+  completed_plans: 47
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 4 of 17
+Plan: 5 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -100,6 +100,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P01 | 30min | 3 tasks | 9 files |
 | Phase 04.1 P02 | 20min | 2 tasks | 9 files |
 | Phase 04.1 P03 | 65min | 3 tasks | 14 files |
+| Phase 04.1 P04 | 100min | 3 tasks | 22 files |
 
 ## Accumulated Context
 
@@ -223,6 +224,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-03: Added Service.User(ctx, userID) to session.go, outside Task 3's stated file list, since GET /v1/identity/me needs a way to read a user's current display name and no existing method provided one (Rule 3).
 - [Phase ?]: 04.1-03: NewMux(idsvc) registers the four identity routes only when idsvc is non-nil; a missing RITHAM_DATABASE_URL leaves them unregistered (404) rather than crashing the already-shipped workout-plan route -- documented in main.go's own header comment.
 - [Phase ?]: 04.1-03: RequireSession depends on a one-method authenticator interface, not the concrete *identity.Service, so middleware tests run with a stub and no database.
+- [Phase ?]: 04.1-04: iphone-capture.heic fixture is a synthetic sips-transcoded HEIF container, not a real device photo -- avoids committing an actual personal photo's real GPS/location metadata into git history
+- [Phase ?]: 04.1-04: Service and photo_handler.go depend on narrow structural interfaces (objectWriter, photoIngester, sharedURLSigner), not concrete *ObjectStore/*Service -- extends 04.1-03's authenticator-interface pattern so Ingest and every HTTP response branch are fully unit-tested without a running S3-compatible backend
+- [Phase ?]: 04.1-04: MinIO/S3 wire behavior (PutObject/PresignedGetObject against a real bucket) remains unverified -- Docker unavailable in this environment, same carried-forward gap 04.1-01 already documented, now also touching internal/photo's connected tests
 
 ### Pending Todos
 
@@ -289,7 +293,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-09T13:46:56.620Z
+Last session: 2026-09-09T14:14:36.713Z
 Stopped at: Completed 04.1-03-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new

@@ -328,7 +328,7 @@ Deferred to future release. Tracked but not in current roadmap.
   leaderboard sort, no score, no winner). Feed ordered chronologically by post time. Non-completion
   is a non-event — no denominator paired with completion count, no expiry notice.
 
-- [ ] **GROUPEVENTS-03**: Photo/location privacy — EXIF GPS/metadata stripped server-side,
+- [x] **GROUPEVENTS-03**: Photo/location privacy — EXIF GPS/metadata stripped server-side,
   unconditionally, before any group-visible or exportable write (never relies on client-side
   stripping alone); original file retained only in the user's private library. Location sharing is
   a separate, explicit opt-in from photo sharing. Default location display (if opted in) is a
@@ -409,7 +409,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOUSEHOLD-02 | Phase 4.1 | Complete |
 | GROUPEVENTS-01 | Phase 4.1 | Complete |
 | GROUPEVENTS-02 | Phase 4.1 | Complete |
-| GROUPEVENTS-03 | Phase 4.1 | Pending |
+| GROUPEVENTS-03 | Phase 4.1 | Complete |
 | GROUPEVENTS-04 | Phase 4.1 | Complete |
 | GROUPEVENTS-05 | Phase 4.1 | Pending |
 | LAUNCH-01 | Phase 5 | Pending |
