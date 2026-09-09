@@ -47,12 +47,13 @@ S3-compatible endpoint `RITHAM_OBJECT_STORE_ENDPOINT` points to.
 
 ## Environment variables
 
-This phase introduces six environment variables. None has a production value yet — see
+This phase introduces seven environment variables. None has a production value yet — see
 "Deployment prerequisites (unresolved)" below.
 
 | Variable | Purpose | Local dev value |
 |----------|---------|------------------|
 | `RITHAM_DATABASE_URL` | Postgres connection string, read by `internal/store.New` and `internal/store.Migrate` | `postgres://ritham:ritham@127.0.0.1:5432/ritham_dev?sslmode=disable` |
+| `RITHAM_APPLE_BUNDLE_ID` | Expected `aud` claim on every Apple identity token `internal/identity.VerifyIdentityToken` verifies | `com.ritham.app` (also the default when unset) |
 | `RITHAM_OBJECT_STORE_ENDPOINT` | MinIO/S3-compatible endpoint | `127.0.0.1:9000` |
 | `RITHAM_OBJECT_STORE_ACCESS_KEY` | Object store access key | `ritham` |
 | `RITHAM_OBJECT_STORE_SECRET_KEY` | Object store secret key | `ritham-dev-secret` |
@@ -61,6 +62,10 @@ This phase introduces six environment variables. None has a production value yet
 
 The object-store four are declared and documented here; they are consumed starting in plan
 04.1-04.
+
+If `RITHAM_DATABASE_URL` is unset, the service still starts and serves the workout-plan route --
+only the four identity routes (`POST /v1/identity/apple`, `POST /v1/identity/revoke`,
+`GET /v1/identity/me`, `PUT /v1/identity/display-name`) are left unregistered.
 
 ## Running migrations
 
