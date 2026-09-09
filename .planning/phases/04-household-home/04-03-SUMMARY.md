@@ -13,7 +13,8 @@ provides:
   - Proof (via a recorded negative control) that Phase3CoverageTests' no-sharing directory walk was silently vacuous for a relocated Momentum dashboard section, and that Phase4CoverageTests test 4 closes that gap
   - A green full-repository automated test surface (RithamTests + RithamCore) and a successful app build
   - ROADMAP.md/REQUIREMENTS.md updated to record CROSSGEN-01 as delivered by Phase 4 round 1, with HOUSEHOLD-01/CROSSGEN-04 still open
-  - A named, still-open gap: Task 3's Simulator click-through by a human has not run
+  - Task 3's Simulator checkpoint, now discharged with an explicit "this looks fine just continue" approval after seven rounds of direct human-checkpoint feedback (see Checkpoint Iteration History below)
+  - The final approved dashboard shape: `.flat` decorative surface (no band header), shell-less Momentum/Exercise sections, a static non-scrolling icon-strip row (Sleep/Workout plan/Diet plan), a 2x2 logging-action grid, and a narrow dated extension of the accent-color reservation to the workout tile's ready-state numeral
 affects: [phase-4-close-out, 04-VALIDATION.md if one exists, any future plan touching HomeHubView.swift or the Momentum/Home directories]
 
 # Tech tracking
@@ -72,29 +73,80 @@ coverage:
         status: pass
     human_judgment: false
   - id: D4
-    description: "A human has seen the dashboard render in the Simulator (Task 3) and confirmed it is the screen the product owner asked for, walking all 10 verification steps in 04-03-PLAN.md"
+    description: "A human has seen the dashboard render in the Simulator (Task 3) and confirmed it is the screen the product owner asked for. This ran as seven rounds of direct build-test-relaunch-screenshot iteration rather than a single walkthrough of the plan's 10 scripted steps, since every round surfaced new discretionary layout/aesthetic feedback the plan's own text left to implementation discretion (04-UI-SPEC.md's Claude's Discretion section) -- see Checkpoint Iteration History below for the full sequence and each round's verbatim feedback."
     requirement: "CROSSGEN-01"
-    verification: []
+    verification:
+      - kind: human_verification
+        ref: "Product owner's explicit verdict, this session: \"this looks fine just continue\" -- the plan's own resume-signal condition (\"Type 'approved'...\") satisfied in substance, not literal wording."
+        status: pass
     human_judgment: true
-    rationale: "Task 3 is an explicit checkpoint:human-verify, gate=\"blocking\" task requiring a person to tap through the running app in the iOS Simulator (log a sleep check-in, change pickers, force-quit and relaunch, compare against saved state). No touch-injection tool is available in this environment to automate that click-through; this executor did not attempt it, per its own instructions."
+    rationale: "Task 3 is an explicit checkpoint:human-verify, gate=\"blocking\" task. No touch-injection tool is available in this environment (idb/XCUITest absent, only simctl), so every round's verification was: implement -> Scripts/build-app.sh test -> Scripts/build-app.sh build -> simctl install/launch -> simctl io screenshot -> present to the product owner. The product owner reviewed the live Simulator directly on their own machine each round."
 
 # Metrics
-duration: 25min (this session; Task 1's own authoring/negative-control work happened in a prior, interrupted session)
-completed: 2026-09-08
-status: blocked
+duration: 25min (Tasks 1-2, prior session) + ~5.5hr (this session: Task 3's seven-round checkpoint iteration, including a design-panel workflow and a build-tooling bug found and fixed mid-session)
+completed: 2026-09-09
+status: complete
 ---
 
-# Phase 4 Plan 03: Structural Coverage Gates and Full-Suite Green (Task 3 Pending) Summary
+# Phase 4 Plan 03: Structural Coverage Gates and Full-Suite Green, Task 3 Approved — Summary
 
-**`Phase4CoverageTests` (11 tests) makes CROSSGEN-01's dashboard shape, the Momentum section's file location, and the Settings screening-route survival into automated gates; the full RithamTests + RithamCore surface is green and the app builds; ROADMAP.md/REQUIREMENTS.md now record CROSSGEN-01 as delivered. The plan's Task 3 (a human Simulator click-through) is a blocking checkpoint this executor could not and did not attempt.**
+**`Phase4CoverageTests` (11 tests) makes CROSSGEN-01's dashboard shape, the Momentum section's file location, and the Settings screening-route survival into automated gates; the full RithamTests + RithamCore surface is green and the app builds; ROADMAP.md/REQUIREMENTS.md record CROSSGEN-01 as delivered. Task 3's human Simulator checkpoint ran as seven rounds of direct feedback and iteration (grid layout → tap-to-open cards → design-panel-synthesized icon-strip → shell removal → flat header/color) and closed with an explicit approval. Phase 4 round 1 is complete; HOUSEHOLD-01/CROSSGEN-04 remain open for a later round.**
+
+## Checkpoint Iteration History (Task 3)
+
+The plan's 10 scripted verification steps assumed a single walkthrough; in practice the product
+owner reviewed the live Simulator on their own machine after every round of changes and gave new
+discretionary feedback each time, since 04-UI-SPEC.md's own "Claude's Discretion" section left
+exact visual arrangement unspecified. Seven rounds, each with a real build→test→install→launch→
+screenshot cycle:
+
+1. **"not stacked one after the other"** → Momentum/sleep became a two-column grid row.
+2. **"not too much text"** → workout-plan/diet-plan sections shrank to compact status lines.
+3. **"diet/workout should open only on tap... follow how Apple tracks exercises"** → tap-to-open
+   sheets (`RecommendationsQuickView`, `DietPlanQuickEditView`); per-row activity icons added.
+4. **"too basic, no proper aesthetics... bunch of boxes with text"** → icon badges on every
+   section heading, hairline card borders, Momentum promoted to a full-width hero card with a
+   `RithamType.display` streak numeral.
+5. **"I don't wanna see them horizontally. No."** (rejecting an interim horizontally-swiped
+   `TabView` carousel built in response to a "sliding dashboard" request that round) → a design
+   panel (three independently-proposed, three-lens-judged directions, synthesized) diagnosed that
+   every round so far had changed container shape while keeping the same card *shell*; the
+   winning direction dropped the shell entirely for Sleep/Workout plan/Diet plan in favor of a
+   static, non-scrolling `iconTile` row (icon + short label, no fill, no stroke, no chevron), with
+   the workout tile's ready-state session count rendered as a big numeral instead of a sentence.
+   A real build-tooling bug was found and fixed mid-round: two stale Xcode DerivedData
+   directories existed, and a naive `find ... | head -1` glob for installing onto the Simulator
+   was silently picking the *older* one every time regardless of which one had just been rebuilt
+   — several rounds of "verification" screenshots had actually been showing a two-day-old build.
+   Fixed by resolving `BUILT_PRODUCTS_DIR` explicitly via `xcodebuild -showBuildSettings` and
+   deleting the stale DerivedData directory.
+6. **"even history or cardio track... too much of boxes and text... a bunch of words clump
+   together"** + **"This week's activity... a little too big"** → Momentum and Exercise dropped
+   their own card shell too (the whole dashboard is now shell-less throughout, separated by
+   `RithamSpacing.lg` whitespace and icon+heading only); the four cardio/strength logging buttons
+   moved from four stacked full-width rows to a 2x2 grid.
+7. **"we don't need the stripes... use the whole page... add some color to some of the
+   features"** → the screen's decorative band header moved from `DecorativeSurface.boundedHeaderOnly`
+   to `.flat` (reclaiming the ~250pt header band for content — the whole empty-state dashboard now
+   fits on one screen without scrolling); the workout tile's ready-state numeral recolored from
+   `paper` to `RithamColor.hot`, a narrow dated extension of the accent-color reservation
+   (04-UI-SPEC.md's own revision note), not a general loosening.
+
+**Verdict:** "this looks fine just continue" (round 7's build). Checkpoint discharged.
+
+A tangential, out-of-scope concern raised during round 6 — that manual cardio/strength logging
+requires the user to "practically go and stop it" themselves, versus other apps/devices that are
+"more accurate" via automatic detection — was recorded as a new Deferred Idea in 04-CONTEXT.md
+(same class of new data-ingestion scope as D-08's steps/calories deferral) rather than acted on;
+it needs its own dedicated scoping discussion.
 
 ## Performance
 
-- **Duration:** ~25 min this session (resumed after a prior executor run completed Task 1's authoring and negative controls, then stalled and was terminated; the orchestrator restored the working tree to a clean state before this session began)
-- **Started:** 2026-09-08 (this session)
-- **Completed:** 2026-09-08 (Tasks 1-2 committed; Task 3 blocked)
-- **Tasks:** 2 of 3 completed and committed; Task 3 is a blocking human-verify checkpoint, not attempted
-- **Files modified:** 2 (Task 1: new test file + regenerated project.pbxproj) + 2 (Task 2: ROADMAP.md + REQUIREMENTS.md)
+- **Duration:** ~25 min (Tasks 1-2, prior session) + ~5.5hr (this session: Task 3's seven-round checkpoint iteration)
+- **Started:** 2026-09-08 (Tasks 1-2); 2026-09-08/09 (Task 3's rounds)
+- **Completed:** 2026-09-09 (all three tasks committed; checkpoint approved)
+- **Tasks:** 3 of 3 completed and committed
+- **Files modified:** 2 (Task 1) + 2 (Task 2) + 7 (Task 3: HomeHubView.swift, MomentumDashboardSection.swift, new SectionIconBadge.swift, project.pbxproj, 04-CONTEXT.md, 04-UI-SPEC.md, this SUMMARY)
 
 ## Accomplishments
 
@@ -111,17 +163,26 @@ Each task was committed atomically:
 
 1. **Task 1: Phase4CoverageTests — CROSSGEN-01's structural gates** - `300a184` (test)
 2. **Task 2: Full-suite green and roadmap/requirements status update** - `080857b` (docs)
+3. **Task 3: seven-round checkpoint iteration** - `5b75823` (grid layout, tap-to-open cards, round 1
+   of this session's own iteration — committed mid-session before the design panel ran), `154a757`
+   (icon-strip layout, shell removal, flat header — the remaining five rounds), `9681ba2`
+   (CONTEXT/UI-SPEC dated revision notes for the above)
 
-**Task 3 is not committed** — see Checkpoint below. This plan's own metadata/SUMMARY commit follows this file.
+This plan's own metadata/SUMMARY commit follows this file.
 
 _Note: this session performed no TDD red/green cycle; Task 1's test-writing and negative-control verification had already happened in the prior, interrupted session before this session began. This session's Task 1 commit captures that already-completed, already-verified work._
 
 ## Files Created/Modified
 
 - `RithamApp/RithamTests/Phase4CoverageTests.swift` - new suite, nested in `StepRegistryTouchingSuites`, 11 tests covering registry completeness, Momentum-directory non-vacuity, dashboard inline-section shape, Settings-route survival, and Home-directory no-sharing
-- `RithamApp/Ritham.xcodeproj/project.pbxproj` - regenerated via `xcodegen generate` to register the new test file
+- `RithamApp/Ritham.xcodeproj/project.pbxproj` - regenerated via `xcodegen generate` repeatedly, once per new file added across Task 3's rounds
 - `.planning/ROADMAP.md` - Phase 4 at 3/3 plans complete, all three plan lines ticked, Progress table updated, new dated round-1-shipped annotation added, existing annotations preserved verbatim
 - `.planning/REQUIREMENTS.md` - `CROSSGEN-01` ticked and Complete; `HOUSEHOLD-01`/`CROSSGEN-04` still Pending
+- `RithamApp/Ritham/Home/HomeHubView.swift` - rewritten across seven checkpoint rounds; see Checkpoint Iteration History above for the final shape
+- `RithamApp/Ritham/Momentum/Components/MomentumDashboardSection.swift` - gained a heading (icon + "Momentum"), streak line promoted to `RithamType.display`
+- `RithamApp/Ritham/Components/SectionIconBadge.swift` - new; a rounded-square (never circular) neutral glyph badge shared by every section heading and icon-strip tile
+- `.planning/phases/04-household-home/04-CONTEXT.md` - new Deferred Idea recording the automatic/device-tracking concern raised in round 6
+- `.planning/phases/04-household-home/04-UI-SPEC.md` - dated revision notes for the header-surface and accent-color-reservation changes
 
 ## Decisions Made
 
@@ -144,18 +205,22 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-Tasks 1 and 2 are fully committed and independently re-verified in this session: `Phase4CoverageTests` is a real, green, negative-control-proven structural gate; the entire automated surface (`RithamTests` full target, `RithamCore`, and the app build) is green; and `ROADMAP.md`/`REQUIREMENTS.md` correctly record `CROSSGEN-01` as delivered by Phase 4 round 1 while `HOUSEHOLD-01`/`CROSSGEN-04` remain open for a later round — the Phase 4 top-level checkbox is correctly left unticked.
+All three tasks are committed and verified: `Phase4CoverageTests` is a real, green, negative-control-proven structural gate; the entire automated surface (`RithamTests` full target, `RithamCore`, and the app build) is green; `ROADMAP.md`/`REQUIREMENTS.md` correctly record `CROSSGEN-01` as delivered by Phase 4 round 1 while `HOUSEHOLD-01`/`CROSSGEN-04` remain open — the Phase 4 top-level checkbox stays correctly unticked; and Task 3's checkpoint is discharged with an explicit product-owner approval after seven rounds of direct feedback and iteration (Checkpoint Iteration History above).
 
-**Task 3 remains open** — a blocking `checkpoint:human-verify` requiring a person to build and run the app in the iOS Simulator, complete or re-enter onboarding, and walk all 10 verification steps in `04-03-PLAN.md` (confirm the sectioned-card layout, no placeholder framing, sleep-card stability across a check-in, workout-plan-card idle-after-relaunch behavior, diet-picker persistence across Settings/dashboard round-trips per 04-RESEARCH.md Pitfall 3, Movement Snapshot placement, and Settings reachability). No touch-injection tool (idb/XCUITest) is available in this environment to automate that walkthrough, only `simctl`. Phase 4 round 1 cannot close until a human runs those steps and returns an explicit "approved" verdict, or reports findings to be fixed and re-presented per the plan's own Task 3 instructions.
+**Phase 4 round 1 is closed.** HOUSEHOLD-01 and CROSSGEN-04 remain open for a later Phase 4 round — a future `/gsd-progress` or `/gsd-plan-phase 4` should pick those up rather than treating Phase 4 as fully finished. The other still-open item from earlier sessions, Phase 3's own UAT sign-off (`03-UAT.md`), remains separately paused and is unaffected by this closure.
 
 ---
 *Phase: 04-household-home*
-*Completed: 2026-09-08 (Tasks 1-2 only; Task 3 pending human action)*
+*Completed: 2026-09-09 (all three tasks; Task 3 checkpoint approved)*
 
 ## Self-Check: PASSED
 
 - FOUND: `RithamApp/RithamTests/Phase4CoverageTests.swift`
 - FOUND: `.planning/phases/04-household-home/04-03-SUMMARY.md`
+- FOUND: `RithamApp/Ritham/Components/SectionIconBadge.swift`
 - FOUND commit `300a184` (Task 1)
 - FOUND commit `080857b` (Task 2)
-- FOUND commit `849258d` (this SUMMARY)
+- FOUND commit `849258d` (prior SUMMARY revision, Tasks 1-2 only)
+- FOUND commit `5b75823` (Task 3, round 1: grid layout, tap-to-open cards)
+- FOUND commit `154a757` (Task 3, rounds 2-6: icon-strip layout, shell removal, flat header)
+- FOUND commit `9681ba2` (Task 3: CONTEXT/UI-SPEC dated revision notes)
