@@ -10,14 +10,70 @@ import RithamCore
 /// **Checkpoint revision (2026-09-08):** the workout-plan and diet-plan sections moved from
 /// always-inline embeds (the original D-04/D-05) to compact tap-to-open summary cards, per direct
 /// human-checkpoint feedback during Task 3's Simulator review -- see 04-CONTEXT.md's dated
-/// revision. The Momentum and sleep sections became a two-column grid row at the same time, per
-/// the same feedback round, so the dashboard reads as an organized grid rather than one long
-/// vertical stack.
+/// revision.
 ///
-/// `.boundedHeaderOnly` fits this screen's own naming rationale (a bounded header band, used by
-/// screens that explain or introduce something without collecting, confirming, or blocking on
-/// health or age data themselves): this hub collects nothing itself -- every write happens inside
-/// an embedded section's own model/store call, unchanged from before this rewrite.
+/// **Checkpoint revision (2026-09-08, second round):** direct feedback that the result still read
+/// as "a bunch of boxes with text in it" reshaped the layout again. Momentum and Exercise are the
+/// two full-width cards with real content (progress blocks/streak/shields, and the session list).
+/// Every section heading also carries a leading `SectionIconBadge` for visual identity, and
+/// `MomentumDashboardSection`'s streak line was promoted to `RithamType.display`, making the
+/// dashboard's core mechanic its clear focal point rather than one box among equals.
+///
+/// **Checkpoint revision (2026-09-08, third round):** direct feedback that a vertical grouped list
+/// still read as "one after the other... boring," explicitly asking for "a sliding dashboard,
+/// something interesting," led to a horizontally swiped `TabView` page carousel for Sleep/Workout
+/// plan/Diet plan. **Superseded the same day (fourth round):** direct follow-up feedback rejected
+/// the swipe outright ("I don't wanna see them horizontally. No.") and restated the real, constant
+/// complaint across every round -- too much text, too boxy. The exercise section's session rows
+/// gained a cardio-vs-strength `SectionIconBadge` "doodle" per row in this same round, replacing
+/// the earlier bare checkmark glyph, and that change survived into the current layout below.
+///
+/// **Checkpoint revision (2026-09-08, fifth round):** a design panel (three independent proposals,
+/// judged on visual craft/constraint compliance/fit to the actual repeated feedback, then
+/// synthesized) diagnosed the real pattern: every prior round changed the CONTAINER shape (stack,
+/// grid, tap-card, hero card, carousel) while every container kept the identical
+/// `paper.opacity(0.06)` fill + hairline stroke + `RoundedRectangle` shell around the trio's
+/// content. Changing container shape without changing that shell was never going to stop reading
+/// as "boxes with text." Sleep, Workout plan and Diet plan now render with NO card shell at all --
+/// a static, non-scrolling row of three icon-first tiles (`iconTile`), each just a large
+/// `SectionIconBadge` over a short heading, tap affordance carried by icon+label grouping alone
+/// (the same convention as iOS's own Control Center). The workout tile additionally reuses
+/// `MomentumDashboardSection`'s own "streak as `RithamType.display` numeral" device for its
+/// session count when a plan is ready, rather than a text line -- the graft the judge panel
+/// specifically flagged as the strongest available reinforcement, adding a positive graphic device
+/// rather than relying on restraint alone.
+///
+/// **Checkpoint revision (2026-09-09, sixth round):** direct feedback praised the icon-strip's
+/// shell-less treatment specifically ("like how we used the rules to align them") and extended the
+/// same "too much boxes and text" complaint to the rest of the page ("even history or cardio
+/// track... too much of boxes and text... everything else in that page is just empty, and this is
+/// all just a bunch of words clump together"). Momentum and Exercise dropped the `sectionCard`
+/// shell that survived the fifth round unchanged -- the whole dashboard is now shell-less
+/// throughout, sections separated by whitespace (`RithamSpacing.lg` between top-level groups) and
+/// their own icon+heading, never a card boundary. The exercise section's four logging buttons also
+/// moved from four stacked full-width rows to a 2x2 grid in this same round, addressing a separate
+/// "This week's activity... a little too big" comment -- same entry points, same D-07
+/// reachability, roughly half the height. A tangential concern about manual cardio/strength
+/// logging requiring users to "practically go and stop it" themselves, versus device-automatic
+/// tracking, was raised in the same feedback round but is **out of scope for this phase** -- it is
+/// the same class of new data-ingestion scope D-08 already deferred (steps/calories: "needs its
+/// own scoping decision... before it can be planned"), not a layout change, and needs a dedicated
+/// discussion, not a guess folded into this round's visual pass.
+///
+/// **Checkpoint revision (2026-09-09, seventh round):** the decorative band header (previously
+/// `.boundedHeaderOnly`) is gone -- direct feedback that it wasted vertical space real content
+/// could use ("I don't think we need to have the stripes for the home page... use the whole page
+/// just for these things"). `RithamScreen(surface: DecorativeSurface.flat, ...)` is the same
+/// already-reviewed "no decorative header" case eight other screens already use; `ScreenHeader`
+/// collapses to zero height rather than reserving a ~250pt band for nothing, so the headline and
+/// every section below it now start right at the top margin. This also drops the small
+/// ring-and-dot corner ornament (`.flat` turns off all four `DecorativeSurface` flags together --
+/// see 04-UI-SPEC.md's dated revision for why no narrower "band off, ring on" surface exists). In
+/// the same round, "add some color to some of the features" narrowly extended the accent-color
+/// reservation to one more place: the workout icon-strip tile's ready-state session-count numeral
+/// now renders in `RithamColor.hot` rather than `paper` -- the same "coral marks something
+/// earned/real" language `MomentumProgressBlocks`/`ShieldRow` already use, not a general loosening
+/// (see `workoutPlanSummary`'s own comment, and 04-UI-SPEC.md's dated revision).
 ///
 /// Navigates to every pushed destination through `flow.open(_:)`, never a second navigation
 /// container -- CROSSGEN-05 reserves the app's one navigation container for `OnboardingRootView`.
@@ -41,6 +97,14 @@ struct HomeHubView: View {
     nonisolated static let workoutPlanLoadingStatus = "Building your plan…"
     nonisolated static let workoutPlanErrorStatus = "Couldn't load — tap to retry"
     nonisolated static let dietPlanUnsetStatus = "Not set"
+
+    // Fifth-round icon-tile copy: short, on-screen-only compressions of the three strings above.
+    // VoiceOver still speaks the full, unabbreviated strings (`recommendationsWorkoutPlanStatus`),
+    // set as the tile's own `accessibilityLabel` -- these three exist only for the glyph-sized
+    // on-screen text and must never replace the originals, which continue to feed accessibility.
+    nonisolated static let workoutPlanTileIdleStatus = "Get plan"
+    nonisolated static let workoutPlanTileLoadingStatus = "Building…"
+    nonisolated static let workoutPlanTileErrorStatus = "Couldn't load"
 
     let flow: OnboardingFlow
 
@@ -91,27 +155,62 @@ struct HomeHubView: View {
 
     var body: some View {
         RithamScreen(
-            surface: DecorativeSurface.boundedHeaderOnly,
+            surface: DecorativeSurface.flat,
             headline: HomeHubView.dashboardHeadline
         ) {
-            VStack(alignment: .leading, spacing: RithamSpacing.md) {
-                // D-08: the hub's own decorative surface (`.boundedHeaderOnly` above) stays
-                // exactly as it is -- every section below renders in the scrollable content area
-                // under the header, never inside the header region itself, so the hub's existing
-                // header ornament and any section's own progress-block strip never share one
-                // viewport (03-UI-SPEC.md Component 1's own "two circular motifs" rationale;
-                // 04-UI-SPEC.md restates this as the Ring Collision rule).
+            VStack(alignment: .leading, spacing: RithamSpacing.lg) {
+                // D-08 / Ring Collision rule (03-UI-SPEC.md Component 1, restated by 04-UI-SPEC.md):
+                // no section body below may introduce a second ring, arc, or radial motif. This
+                // rule constrains section content regardless of which header surface is in use --
+                // it stays in force even now that `.flat` (above) means there is no header ring to
+                // collide with in the first place (seventh-round revision, this file's own header
+                // comment).
                 //
-                // Checkpoint revision: Momentum and sleep sit in a two-column grid row instead of
-                // two full-width stacked cards -- the first break from a pure vertical stack, per
-                // direct feedback that everything one-after-another did not read as a dashboard.
-                HStack(alignment: .top, spacing: RithamSpacing.md) {
-                    tile { momentumSection }
-                    tile { sleepSection }
+                // Checkpoint revision (2026-09-09, sixth round): Momentum and Exercise dropped
+                // their `sectionCard` shell (fill + stroke + rounded rect) -- direct follow-up
+                // feedback praised the icon-strip's shell-less treatment specifically ("like how we
+                // used the rules to align them") and restated the boxes/text complaint against the
+                // rest of the page ("even history or cardio track... too much of boxes and text...
+                // everything else in that page is just empty, and this is all just a bunch of words
+                // clump together"). The whole dashboard is now shell-less throughout -- every
+                // section separated by whitespace and its own icon+heading, never a card boundary --
+                // which is why the outer spacing here moved from `RithamSpacing.md` to `.lg`: with
+                // no card edge doing the separating anymore, spacing has to carry that job alone.
+                VStack(alignment: .leading, spacing: RithamSpacing.md) { momentumSection }
+                VStack(alignment: .leading, spacing: RithamSpacing.md) { exerciseSection }
+
+                // Checkpoint revision (2026-09-08, fifth round): a static, non-scrolling row of
+                // three icon-first tiles -- no card shell of any kind (no fill, no stroke, no
+                // RoundedRectangle) around the row or any individual tile. Direct feedback rejected
+                // every prior container shape for this trio (stack, grid, tap-card, carousel); the
+                // design-panel synthesis this round diagnosed that the shell itself, not the
+                // container shape, was what kept reading as "boxes with text." Tap affordance comes
+                // from icon+label grouping alone (the same convention iOS's own Control Center
+                // uses), plus each tile's own `Button`/VoiceOver trait -- see `iconTile`'s own
+                // comment. No fixed height anywhere: each column sizes to its own content, so
+                // Sleep's shorter column (heading only, per RECOVERY-01 invariant 3 below) simply
+                // ends higher than its neighbors -- deliberate, honest asymmetry, not a forced
+                // empty placeholder to fake-match height.
+                HStack(alignment: .top, spacing: RithamSpacing.sm) {
+                    iconTile(
+                        icon: "moon.stars.fill",
+                        accessibilityLabel: MomentumCopy.Sleep.headline,
+                        action: { flow.open(.sleepCheckIn) }
+                    ) { sleepSection }
+
+                    iconTile(
+                        icon: workoutPlanTileIcon,
+                        accessibilityLabel: "\(HomeHubView.workoutPlanSectionHeading). \(recommendationsWorkoutPlanStatus)",
+                        action: { isPresentingWorkoutPlan = true }
+                    ) { workoutPlanSummary }
+
+                    iconTile(
+                        icon: dietPlanTileIcon,
+                        accessibilityLabel: "\(HomeHubView.dietPlanSectionHeading). \(dietPlanStatus)",
+                        action: { isPresentingDietPlan = true }
+                    ) { dietPlanSummary }
                 }
-                sectionCard { exerciseSection }
-                tapToOpenCard(action: { isPresentingWorkoutPlan = true }) { workoutPlanSummary }
-                tapToOpenCard(action: { isPresentingDietPlan = true }) { dietPlanSummary }
+
                 overflowRow
             }
         }
@@ -184,15 +283,21 @@ struct HomeHubView: View {
     // a skipped check-in is indistinguishable, app-wide, from a day the prompt was never shown.
     // 04-UI-SPEC.md's Copywriting Contract names exactly one string for this whole section, so no
     // second, distinct button label was invented for it.
+    //
+    // Checkpoint revision (2026-09-08, second round): the standalone `SecondaryCTAButton` is gone
+    // -- this content now renders inside `iconTile`, whose own `Button` is the tap target
+    // (`flow.open(.sleepCheckIn)`, unchanged) rather than a button nested inside another button.
+    // D-03's entry point is unchanged; only its container changed, the same inline-embed-to-
+    // tap-to-open evolution D-04/D-05 already went through this same checkpoint. No status line
+    // below the heading, ever -- not a design choice this round, the same absolute RECOVERY-01
+    // invariant 3 the comment above already states.
     @ViewBuilder
     private var sleepSection: some View {
         Text(MomentumCopy.Sleep.headline)
-            .font(RithamType.heading)
+            .font(RithamType.body.weight(.semibold))
             .foregroundStyle(RithamColor.paper)
-
-        SecondaryCTAButton(title: MomentumCopy.Sleep.headline) {
-            flow.open(.sleepCheckIn)
-        }
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
     }
 
     // The logged-exercise section (D-02): reads `momentumSummary?.recentSessions` -- the same
@@ -204,23 +309,30 @@ struct HomeHubView: View {
     // a carried-forward Phase 3 constraint, not a fresh layout choice.
     @ViewBuilder
     private var exerciseSection: some View {
-        Text(HomeHubView.exerciseSectionHeading)
-            .font(RithamType.heading)
-            .foregroundStyle(RithamColor.paper)
+        HStack(spacing: RithamSpacing.sm) {
+            SectionIconBadge(systemName: "figure.run")
+            Text(HomeHubView.exerciseSectionHeading)
+                .font(RithamType.heading)
+                .foregroundStyle(RithamColor.paper)
+        }
 
         if let summary = momentumSummary, !summary.recentSessions.isEmpty {
             ForEach(summary.recentSessions) { session in
-                // Checkpoint revision: a leading SF Symbol per row, matching the icon-plus-row
-                // shape of Apple Fitness's own workout history list -- the one part of "Apple's
-                // model" available here, since a data-bearing ring/arc is permanently off-limits
-                // for this screen (04-UI-SPEC.md's Ring Collision rule, carried from Phase 3).
-                // Neutral `paper` tint only, never the accent color: `RithamColor.hot` is reserved
-                // for CTA fills/progress blocks/shield glyphs and must never read as a status
-                // badge or completion indicator on this row.
+                // Checkpoint revision (2026-09-08, third round): a small `SectionIconBadge`
+                // "doodle" per row, distinguishing cardio from strength -- direct feedback asked
+                // for "a small doodle of that exercise" rather than a bare checkmark. Distinguishes
+                // by `verificationLabel != nil`, not a new field: this file's own header comment
+                // documents that a cardio entry always carries a verification label and a lift
+                // entry never does (`LiftSessionRecord` has no capture-source field at all), so this
+                // reads an existing, already-relied-upon invariant rather than adding one. Matches
+                // the icon-plus-row shape of Apple Fitness's own workout history list -- the one
+                // part of "Apple's model" available here, since a data-bearing ring/arc is
+                // permanently off-limits for this screen (04-UI-SPEC.md's Ring Collision rule).
                 HStack(alignment: .top, spacing: RithamSpacing.sm) {
-                    Image(systemName: "checkmark.circle")
-                        .foregroundStyle(RithamColor.paper.opacity(0.6))
-                        .accessibilityHidden(true)
+                    SectionIconBadge(
+                        systemName: session.verificationLabel != nil ? "figure.run" : "dumbbell.fill",
+                        diameter: 28
+                    )
 
                     VStack(alignment: .leading, spacing: RithamSpacing.xs) {
                         Text(session.title)
@@ -251,17 +363,28 @@ struct HomeHubView: View {
             }
         }
 
-        PrimaryCTAButton(title: "Track cardio") {
-            flow.open(.cardioActivityPicker)
+        // Checkpoint revision (2026-09-09, sixth round): the four logging entry points moved from
+        // four stacked full-width rows to a 2x2 grid -- direct feedback that this card felt "too
+        // big" with "a lot of context, with the words." Same four entry points, same D-07
+        // reachability, same button components/titles -- only the arrangement changed, which cuts
+        // this block's height roughly in half. Column position pairs each primary action with its
+        // own history directly beneath it (Track cardio above Cardio history, Log strength above
+        // Strength history), so the pairing reads from layout alone without new copy.
+        HStack(spacing: RithamSpacing.sm) {
+            PrimaryCTAButton(title: "Track cardio") {
+                flow.open(.cardioActivityPicker)
+            }
+            PrimaryCTAButton(title: "Log strength") {
+                flow.open(.strengthSession)
+            }
         }
-        SecondaryCTAButton(title: "Cardio history") {
-            flow.open(.cardioHistory)
-        }
-        PrimaryCTAButton(title: "Log strength") {
-            flow.open(.strengthSession)
-        }
-        SecondaryCTAButton(title: "Strength history") {
-            flow.open(.strengthHistory)
+        HStack(spacing: RithamSpacing.sm) {
+            SecondaryCTAButton(title: "Cardio history") {
+                flow.open(.cardioHistory)
+            }
+            SecondaryCTAButton(title: "Strength history") {
+                flow.open(.strengthHistory)
+            }
         }
 
         // MOMENTUM-07/D-09: the Daily Movement Snapshot's opt-in-gated entry. Deliberately placed
@@ -292,16 +415,45 @@ struct HomeHubView: View {
     @ViewBuilder
     private var workoutPlanSummary: some View {
         Text(HomeHubView.workoutPlanSectionHeading)
-            .font(RithamType.heading)
+            .font(RithamType.body.weight(.semibold))
             .foregroundStyle(RithamColor.paper)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
 
-        Text(recommendationsWorkoutPlanStatus)
-            .font(RithamType.body)
-            .foregroundStyle(RithamColor.paper)
+        // Fifth-round graft from the design panel's runner-up proposal: when a plan is ready, the
+        // session count renders as a `RithamType.display` numeral -- the exact device
+        // `MomentumDashboardSection` already established for its own streak line -- instead of a
+        // text line, so this tile carries a genuine graphic device rather than relying on icon +
+        // restraint alone. Every other state falls back to the short `workoutPlanTileStatusText`.
+        // Colored `RithamColor.hot`, not `paper`, as of the seventh-round checkpoint revision
+        // ("add some color to some of the features") -- a narrow, dated extension of the accent
+        // reservation to this one number, matching the "coral marks something earned/real"
+        // language `MomentumProgressBlocks`/`ShieldRow` already establish (04-UI-SPEC.md's own
+        // dated revision). Still never a badge/dot/status indicator: every other glyph on this
+        // tile, and on the Sleep/Diet tiles beside it, stays neutral `paper`.
+        if case .plan(let plan) = recommendationsModel?.state {
+            VStack(spacing: RithamSpacing.xs) {
+                Text("\(plan.sessions.count)")
+                    .font(RithamType.display)
+                    .modifier(RithamType.numerals())
+                    .foregroundStyle(RithamColor.hot)
+                Text(plan.sessions.count == 1 ? "session" : "sessions")
+                    .font(RithamType.label)
+                    .modifier(RithamType.fineprint())
+            }
+        } else {
+            Text(workoutPlanTileStatusText)
+                .font(RithamType.label)
+                .modifier(RithamType.fineprint())
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+        }
     }
 
     /// A one-line status derived entirely from `recommendationsModel.state` -- no new state of
-    /// its own, so it can never drift out of sync with the sheet showing the same model.
+    /// its own, so it can never drift out of sync with the sheet showing the same model. Feeds
+    /// `iconTile`'s `accessibilityLabel` directly, so VoiceOver always hears this full phrasing
+    /// even where the on-screen tile shows a shorter string or the numeral device instead.
     private var recommendationsWorkoutPlanStatus: String {
         switch recommendationsModel?.state {
         case .none, .idle:
@@ -312,6 +464,39 @@ struct HomeHubView: View {
             return "\(plan.sessions.count) session\(plan.sessions.count == 1 ? "" : "s") ready"
         case .error:
             return HomeHubView.workoutPlanErrorStatus
+        }
+    }
+
+    /// The tile's own compact on-screen text for every state except `.plan`, which
+    /// `workoutPlanSummary` renders as the numeral device above instead -- this switch stays
+    /// exhaustive (including a `.plan` case) for compiler safety, but that branch is unreachable in
+    /// practice since the `@ViewBuilder` `if case .plan` above always wins first.
+    private var workoutPlanTileStatusText: String {
+        switch recommendationsModel?.state {
+        case .none, .idle:
+            return HomeHubView.workoutPlanTileIdleStatus
+        case .loading:
+            return HomeHubView.workoutPlanTileLoadingStatus
+        case .plan:
+            return ""
+        case .error:
+            return HomeHubView.workoutPlanTileErrorStatus
+        }
+    }
+
+    /// The workout tile's icon glyph, state-derived: outline means nothing yet, filled means real
+    /// content exists -- a consistent grammar carried through to `dietPlanTileIcon` below. Legible
+    /// before any text is read, so it doubles as a second, faster status signal.
+    private var workoutPlanTileIcon: String {
+        switch recommendationsModel?.state {
+        case .none, .idle:
+            return "dumbbell"
+        case .loading:
+            return "arrow.triangle.2.circlepath"
+        case .plan:
+            return "dumbbell.fill"
+        case .error:
+            return "exclamationmark.triangle.fill"
         }
     }
 
@@ -327,12 +512,16 @@ struct HomeHubView: View {
     @ViewBuilder
     private var dietPlanSummary: some View {
         Text(HomeHubView.dietPlanSectionHeading)
-            .font(RithamType.heading)
+            .font(RithamType.body.weight(.semibold))
             .foregroundStyle(RithamColor.paper)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
 
         Text(dietPlanStatus)
-            .font(RithamType.body)
-            .foregroundStyle(RithamColor.paper)
+            .font(RithamType.label)
+            .modifier(RithamType.fineprint())
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
     }
 
     private var dietPlanStatus: String {
@@ -346,23 +535,43 @@ struct HomeHubView: View {
         }
     }
 
+    /// The diet tile's icon glyph, state-derived -- same outline/filled grammar as
+    /// `workoutPlanTileIcon`: unset is the neutral "nothing chosen yet" glyph, a saved pattern
+    /// switches to a filled or half-filled leaf depending on which pattern.
+    private var dietPlanTileIcon: String {
+        switch dietaryPatternSummary {
+        case .none, .some(.none):
+            return "fork.knife"
+        case .some(.vegetarian):
+            return "leaf"
+        case .some(.vegan):
+            return "leaf.fill"
+        }
+    }
+
     // D-07: Guidance and Settings, reduced to a single compact overflow row rather than the two
     // full-width `PrimaryCTAButton`/`SecondaryCTAButton` rows the old hub used -- a leftover
     // button stack under real sections is the same rejected pattern with extra steps
     // (04-UI-SPEC.md section 6). Not wrapped in `sectionCard`: this is an overflow affordance, not
-    // a content section.
+    // a content section. Checkpoint revision (2026-09-08, second round): a small leading SF Symbol
+    // per label, matching the icon-led language the rest of the dashboard now uses, instead of
+    // two bare text buttons floating with nothing to anchor them visually.
     private var overflowRow: some View {
-        HStack(spacing: RithamSpacing.md) {
-            Button("Guidance") {
+        HStack(spacing: RithamSpacing.lg) {
+            Button {
                 flow.open(.guidance)
+            } label: {
+                Label("Guidance", systemImage: "questionmark.circle")
             }
             .font(RithamType.body)
             .foregroundStyle(RithamColor.paper)
             .frame(minHeight: RithamSpacing.minimumTapTarget)
             .accessibilityLabel("Guidance")
 
-            Button("Settings") {
+            Button {
                 isPresentingSettings = true
+            } label: {
+                Label("Settings", systemImage: "gearshape")
             }
             .font(RithamType.body)
             .foregroundStyle(RithamColor.paper)
@@ -371,66 +580,39 @@ struct HomeHubView: View {
         }
     }
 
-    // The Dashboard Section Card treatment (04-UI-SPEC.md "Dashboard Section Card"): a low-opacity
-    // paper tint on ink, not `ReScreenBanner`'s solid-paper fill -- four-plus solid off-white slabs
-    // would invert the screen's 60/30/10 color split. Applied to every content section above;
-    // `overflowRow` deliberately does not use this helper (see its own comment).
+    // Checkpoint revision (2026-09-08, fifth round): one tile inside the Sleep/Workout-plan/
+    // Diet-plan icon-strip row -- a large `SectionIconBadge` over the tile's own content (a
+    // heading, optionally a one-line status or the workout numeral device). Deliberately NO card
+    // shell -- no fill, no stroke, no `RoundedRectangle` -- unlike every other section on this
+    // screen: the design-panel synthesis this round's feedback triggered diagnosed that shell as
+    // the actual, unchanging source of "boxes with text" across every prior container shape tried.
+    // Tap affordance is carried by icon+label grouping alone (the same convention iOS's own
+    // Control Center uses for its own icon tiles) plus the `Button`/VoiceOver trait -- no chevron,
+    // no border, no other "this is tappable" hint. `accessibilityElement(children: .combine)` +
+    // an explicit `accessibilityLabel` make VoiceOver announce the tile's full, unabbreviated
+    // status (from `recommendationsWorkoutPlanStatus`/`dietPlanStatus`) even on tiles whose
+    // on-screen text is compressed or replaced by the numeral device. No fixed frame height: each
+    // tile sizes to its own content, so Sleep's shorter content (heading only) simply ends higher
+    // than its neighbors rather than being padded to fake-match them.
     @ViewBuilder
-    private func sectionCard<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: RithamSpacing.md) {
-            content()
-        }
-        .padding(RithamSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RithamColor.paper.opacity(0.06))
-        .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
-    }
-
-    // Checkpoint revision: the same Dashboard Section Card treatment as `sectionCard`, but
-    // constrained to half the row's width for the Momentum/sleep grid row -- identical fill,
-    // radius and padding, only the width behavior differs (`maxWidth: .infinity` inside an
-    // `HStack` divides the row evenly between the two tiles rather than each claiming the full
-    // screen width).
-    @ViewBuilder
-    private func tile<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: RithamSpacing.sm) {
-            content()
-        }
-        .padding(RithamSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RithamColor.paper.opacity(0.06))
-        .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
-    }
-
-    // Checkpoint revision: the tap-to-open variant of `sectionCard` for the workout-plan and
-    // diet-plan summaries -- same fill/radius/padding, wrapped in a `Button` so the whole card is
-    // one accessible tap target (VoiceOver reads the heading and status line, then announces the
-    // button trait) rather than requiring a separate small control inside the card. A trailing
-    // chevron is the only new visual element: a plain SF Symbol glyph, not a ring/arc/radial form,
-    // so it does not trip the Ring Collision rule, and it is tinted at the same neutral
-    // `paper.opacity` as the exercise section's row icons -- never the accent color, which stays
-    // reserved for CTA fills/progress blocks/shield glyphs only.
-    @ViewBuilder
-    private func tapToOpenCard<Content: View>(
+    private func iconTile<Content: View>(
+        icon: String,
+        accessibilityLabel: String,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content
     ) -> some View {
         Button(action: action) {
-            HStack(alignment: .center, spacing: RithamSpacing.sm) {
-                VStack(alignment: .leading, spacing: RithamSpacing.md) {
-                    content()
-                }
-                Spacer(minLength: RithamSpacing.sm)
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(RithamColor.paper.opacity(0.5))
-                    .accessibilityHidden(true)
+            VStack(spacing: RithamSpacing.xs) {
+                SectionIconBadge(systemName: icon, diameter: RithamSpacing.minimumTapTarget)
+                content()
             }
-            .padding(RithamSpacing.md)
-            .frame(maxWidth: .infinity, minHeight: RithamSpacing.minimumTapTarget, alignment: .leading)
-            .background(RithamColor.paper.opacity(0.06))
-            .clipShape(RoundedRectangle(cornerRadius: RithamSpacing.sm))
+            .frame(maxWidth: .infinity, alignment: .top)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .frame(minHeight: RithamSpacing.minimumTapTarget)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     // MARK: - D-08's Momentum summary section

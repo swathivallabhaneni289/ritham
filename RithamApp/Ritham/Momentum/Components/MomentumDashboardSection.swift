@@ -28,6 +28,13 @@ import RithamCore
 /// unchanged in Task 1's zero-behaviour-change move, then was deleted in Task 2 and relocated to
 /// `HomeHubView.exerciseSection` -- 04-UI-SPEC.md section 3 assigns that empty state to the
 /// exercise card, not this one, so it now exists in exactly one place.
+///
+/// Checkpoint revision (2026-09-08): given a leading `SectionIconBadge` and its own "Momentum"
+/// heading, and the streak line promoted from `RithamType.heading` to `RithamType.display` -- the
+/// same four-role type scale, just its largest role, per direct feedback that the dashboard read
+/// as "a bunch of boxes with text in it" with no clear focal point. This is the one card built
+/// entirely from proven Phase 3 mechanics (progress blocks, streak, shields), so it is the
+/// dashboard's own hero card: full-width in `HomeHubView.body`, not a half-width grid tile.
 struct MomentumDashboardSection: View {
     let summary: MomentumSummary?
     let loadFailed: Bool
@@ -36,10 +43,17 @@ struct MomentumDashboardSection: View {
     var body: some View {
         if let summary {
             VStack(alignment: .leading, spacing: RithamSpacing.md) {
+                HStack(spacing: RithamSpacing.sm) {
+                    SectionIconBadge(systemName: "flame.fill")
+                    Text("Momentum")
+                        .font(RithamType.heading)
+                        .foregroundStyle(RithamColor.paper)
+                }
+
                 MomentumProgressBlocks(filled: summary.displayedCount, target: summary.weeklyTarget)
 
                 Text(MomentumView.streakLine(for: summary))
-                    .font(RithamType.heading)
+                    .font(RithamType.display)
                     .modifier(RithamType.numerals())
                     .foregroundStyle(RithamColor.paper)
 

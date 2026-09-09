@@ -144,6 +144,7 @@
 		ED5112BF358AF9FD675F531F /* StandingFooterDisclaimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A46068A0F7C391E80EA313C /* StandingFooterDisclaimer.swift */; };
 		EF2ED09ADF4A15478B229D65 /* MovementSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA640259F52237E5872EDF0F /* MovementSnapshotView.swift */; };
 		F03CD5A2D32F1E0BCBAA37F5 /* PedometerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56204CF43FAEB1A870F9470A /* PedometerSession.swift */; };
+		F168B403D85B12D5EAD2DB73 /* SectionIconBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930949335FB30970A2C7C789 /* SectionIconBadge.swift */; };
 		F2D92D03FE9DFF6F7CBEA792 /* DietPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE077BE439739DC0651FC91E /* DietPlanView.swift */; };
 		F33782CFAFD9821A432E1C9C /* RingAndDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226CB34F3DE1E1C5B984771E /* RingAndDot.swift */; };
 		F4C75D98191CB477E9CF26C2 /* ChoiceQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */; };
@@ -251,6 +252,7 @@
 		8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeIneligibleStepView.swift; sourceTree = "<group>"; };
 		8C5A3EBA8DB4587568FE1DDD /* GuidanceContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceContext.swift; sourceTree = "<group>"; };
 		8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPreferenceRecord.swift; sourceTree = "<group>"; };
+		930949335FB30970A2C7C789 /* SectionIconBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionIconBadge.swift; sourceTree = "<group>"; };
 		93E5D3C503846C096E9A8713 /* BandMotif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandMotif.swift; sourceTree = "<group>"; };
 		93F8EF54A5E9759B3255AF8D /* ChoiceChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceChip.swift; sourceTree = "<group>"; };
 		980B74D1594DF6375B0B13C7 /* ScreeningRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningRegistration.swift; sourceTree = "<group>"; };
@@ -580,6 +582,7 @@
 				B040926DC5083605CE450DEF /* GlossaryTerm.swift */,
 				A61BCA7352DA422760E37629 /* PrimaryCTAButton.swift */,
 				7C883614DDF1788C5EC0F4EB /* RithamScreen.swift */,
+				930949335FB30970A2C7C789 /* SectionIconBadge.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -907,6 +910,7 @@
 				949B3F05CDF426A4C9BB39E1 /* ScreeningCompleteStepView.swift in Sources */,
 				33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */,
 				3D4FC3E5BFBFC5EB757AD1FE /* ScreeningRegistration.swift in Sources */,
+				F168B403D85B12D5EAD2DB73 /* SectionIconBadge.swift in Sources */,
 				C88F5F1B84A047903C1E8F96 /* SessionEditView.swift in Sources */,
 				B79730E927043D1B94D41757 /* SettingsView.swift in Sources */,
 				36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */,
