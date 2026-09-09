@@ -29,5 +29,6 @@ enum StepBootstrap {
         OnboardingCompletionRegistration.registerAll()
         Phase2StepRegistration.registerAll()
         Phase3StepRegistration.registerAll()
+        SocialStepRegistration.registerAll()
     }
 }

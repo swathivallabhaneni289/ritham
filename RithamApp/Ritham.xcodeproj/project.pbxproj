@@ -34,6 +34,7 @@
 		33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09805A56977119359C6D3ABC /* ScreeningOpeningDisclaimerView.swift */; };
 		33C8E3553A38465CE0D88307 /* StrengthLoggingRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E936218B6545E5752A18E249 /* StrengthLoggingRegistration.swift */; };
 		35C83DA5C9755122084B0A53 /* StrengthSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D2B20330A58A12991D6AE8 /* StrengthSessionView.swift */; };
+		35D1AAC7A68334824A52128E /* SignInWithAppleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FAF0E384EA4E99E4F0B995D /* SignInWithAppleView.swift */; };
 		36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F4A3D6EF4FF31BA0587C42 /* SeverityFollowUpView.swift */; };
 		3811764FA3F43C45AA6F4DF0 /* AgeIneligibleStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE8AA5C848AABF7F1810FB5 /* AgeIneligibleStepView.swift */; };
 		3865F9CBE50B8D1EE50719A6 /* ChoiceChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F8EF54A5E9759B3255AF8D /* ChoiceChip.swift */; };
@@ -76,6 +77,7 @@
 		6F587496F24B08EC21E10C24 /* Phase4CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF987DA88052D9B310E87A /* Phase4CoverageTests.swift */; };
 		6F677F522EFE67768F00A9D7 /* CardioCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C622C40022EFD69AF8FDD26 /* CardioCaptureTests.swift */; };
 		70ECB72057040BD011E0B020 /* FoodAllergenRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFFECF3591AFEB66F20B54C /* FoodAllergenRecord.swift */; };
+		78CD8AEF412C828310B306A6 /* SocialStepRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C44BD820BB2B52FBF13B601 /* SocialStepRegistration.swift */; };
 		79F7945ED6528A347F5440E3 /* CardioHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */; };
 		7B2BA951F0485E47F735EE0F /* MomentumViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ADF8216D8BDBB06DB47AA7 /* MomentumViewTests.swift */; };
 		7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */; };
@@ -104,6 +106,7 @@
 		A1E029A8D88EC2C0042634F9 /* StrengthHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */; };
 		A2239FD2F7130F8EE7CF50AF /* WorkoutPreferenceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */; };
 		A244706B063FEFDF1921E67E /* DietSectionIsolationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF76F835361DCD132E11D5AC /* DietSectionIsolationTests.swift */; };
+		A3157FF2B7C7F3F7DDC91ACA /* SocialIdentityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACE358EA2B7DEAD3BAA242A /* SocialIdentityModel.swift */; };
 		A9C84BFFC26CFA89FC2B7AAE /* CalibrationIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89E4D8F0456F5D8ACD8674A /* CalibrationIntroView.swift */; };
 		AA56751EAFAE131DF9D59DE5 /* YearJumpDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641360D1FB8CED54DB256482 /* YearJumpDatePicker.swift */; };
 		B4937617E59E6662F5D61750 /* ConditionDisclaimerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D87CE175663250CFAE8720 /* ConditionDisclaimerTag.swift */; };
@@ -184,6 +187,7 @@
 		0B2CA3EF9D6C31149FBD93E5 /* SettingsPhase2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPhase2Tests.swift; sourceTree = "<group>"; };
 		0B4438C355A19887EE4B879F /* RithamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamApp.swift; sourceTree = "<group>"; };
 		0BAEA0958C9AB53F8DB2BF5F /* AboutYouStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutYouStepTests.swift; sourceTree = "<group>"; };
+		0FAF0E384EA4E99E4F0B995D /* SignInWithAppleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithAppleView.swift; sourceTree = "<group>"; };
 		1024D116B21BD85232045566 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumStateRecord.swift; sourceTree = "<group>"; };
 		16B066C106553C75535FFE65 /* UniversalFollowUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalFollowUpView.swift; sourceTree = "<group>"; };
@@ -209,6 +213,7 @@
 		35DDF9B0827C7ACB6CFF49C2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		384060D1603588777B8A5894 /* CalibrationSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSessionView.swift; sourceTree = "<group>"; };
 		39E85752B692056E1D76046D /* MomentumRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumRegistration.swift; sourceTree = "<group>"; };
+		3ACE358EA2B7DEAD3BAA242A /* SocialIdentityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialIdentityModel.swift; sourceTree = "<group>"; };
 		3C81838575239D10BBB4B51A /* StrengthHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthHistoryTests.swift; sourceTree = "<group>"; };
 		3CC386A79787043DBCBCDD18 /* MovementSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementSnapshotTests.swift; sourceTree = "<group>"; };
 		3F5C9E54E0109E63B29A3B03 /* MovementSnapshotViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementSnapshotViewTests.swift; sourceTree = "<group>"; };
@@ -225,6 +230,7 @@
 		552A5F0274532CE45416EB69 /* PreAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreAssessmentView.swift; sourceTree = "<group>"; };
 		56204CF43FAEB1A870F9470A /* PedometerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSession.swift; sourceTree = "<group>"; };
 		5A2AD191D9C5E690B659EBA5 /* AlwaysFreeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysFreeListView.swift; sourceTree = "<group>"; };
+		5C44BD820BB2B52FBF13B601 /* SocialStepRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialStepRegistration.swift; sourceTree = "<group>"; };
 		5F349B49CBAF0C270BDD7A46 /* MotionActivityDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityDetector.swift; sourceTree = "<group>"; };
 		5F91DCC5A09870CA83E4280F /* LiftSessionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftSessionRecord.swift; sourceTree = "<group>"; };
 		6202A72738414384DAE6A08D /* AppShellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellTests.swift; sourceTree = "<group>"; };
@@ -313,6 +319,7 @@
 		D4D87CE175663250CFAE8720 /* ConditionDisclaimerTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionDisclaimerTag.swift; sourceTree = "<group>"; };
 		D78DFBC328CACEAE0C82CB19 /* MomentumSuiteSerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumSuiteSerialization.swift; sourceTree = "<group>"; };
 		D9E042D4ECE70F89401D7D36 /* CardioViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioViewTests.swift; sourceTree = "<group>"; };
+		DCC4A183A7A8B8DC4FF634CB /* Ritham.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Ritham.entitlements; sourceTree = "<group>"; };
 		DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandGeometryTests.swift; sourceTree = "<group>"; };
 		DDCB043980443A164BCA6359 /* MomentumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumView.swift; sourceTree = "<group>"; };
 		E19602E32E53C3C028C2D45D /* DisclaimerTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclaimerTagTests.swift; sourceTree = "<group>"; };
@@ -349,6 +356,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0AAEAFCE95E054A19597E9C9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DCC4A183A7A8B8DC4FF634CB /* Ritham.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		1384AD64E0486AF846B6C3A2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -525,6 +540,7 @@
 		7753DC4B899D227541649FD3 /* Social */ = {
 			isa = PBXGroup;
 			children = (
+				5C44BD820BB2B52FBF13B601 /* SocialStepRegistration.swift */,
 				C994C74FA53A11BEBF3744C4 /* Identity */,
 			);
 			path = Social;
@@ -655,6 +671,7 @@
 				470747FA9C4D4EACF929B6BB /* Onboarding */,
 				7FD87B7935EA7FA693BA657B /* Persistence */,
 				6C435CF83E83BE3B3297D3B5 /* Recommendations */,
+				0AAEAFCE95E054A19597E9C9 /* Resources */,
 				A80F20A47F5FFD76E4C7E4EB /* Screening */,
 				9BFE11883C01D0C8492B2D92 /* Settings */,
 				7753DC4B899D227541649FD3 /* Social */,
@@ -721,8 +738,10 @@
 			children = (
 				B7A35CC3BDD7E91C4C075EAB /* IdentityClient.swift */,
 				4101B6B858D4D31DCCD2EB99 /* SessionStore.swift */,
+				0FAF0E384EA4E99E4F0B995D /* SignInWithAppleView.swift */,
 				9B74802A89CB0D388F8C85AB /* SocialAPIClient.swift */,
 				68AE6C11AA219FC4362F55D1 /* SocialAPIError.swift */,
+				3ACE358EA2B7DEAD3BAA242A /* SocialIdentityModel.swift */,
 			);
 			path = Identity;
 			sourceTree = "<group>";
@@ -948,10 +967,13 @@
 				B79730E927043D1B94D41757 /* SettingsView.swift in Sources */,
 				36947154A0BF6C7C822A16CA /* SeverityFollowUpView.swift in Sources */,
 				CA189C582F73C271693A0B54 /* ShieldRow.swift in Sources */,
+				35D1AAC7A68334824A52128E /* SignInWithAppleView.swift in Sources */,
 				CFDECDFE2EAE59916DF92C3D /* SleepCheckInRecord.swift in Sources */,
 				E4DBB83482598F8D440445BF /* SleepCheckInView.swift in Sources */,
 				2B50B4949257C01B5ECDB7F8 /* SocialAPIClient.swift in Sources */,
 				C8E8A84009B0D9790BAA3959 /* SocialAPIError.swift in Sources */,
+				A3157FF2B7C7F3F7DDC91ACA /* SocialIdentityModel.swift in Sources */,
+				78CD8AEF412C828310B306A6 /* SocialStepRegistration.swift in Sources */,
 				ED5112BF358AF9FD675F531F /* StandingFooterDisclaimer.swift in Sources */,
 				94DDA35A59D98E641168FE28 /* StepBootstrap.swift in Sources */,
 				9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */,
@@ -1153,6 +1175,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Ritham/Resources/Ritham.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Ritham/Resources/Info.plist;
@@ -1189,6 +1212,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Ritham/Resources/Ritham.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Ritham/Resources/Info.plist;

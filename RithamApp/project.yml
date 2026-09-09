@@ -28,6 +28,7 @@ targets:
         INFOPLIST_FILE: Ritham/Resources/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.ritham.app
         GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: Ritham/Resources/Ritham.entitlements
     dependencies:
       - package: RithamCore
 

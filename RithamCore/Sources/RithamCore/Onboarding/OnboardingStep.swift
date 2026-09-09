@@ -30,6 +30,14 @@
 // Like Phase 2's surfaces, they are reached by explicit user choice from the interim hub rather
 // than by `OnboardingRouter` advancing into them, which is why the router treats them as terminal
 // exactly like `.home` and Phase 2's surfaces.
+//
+// Phase 4.1's `signInWithApple` (below) is an ordinary member of this same enum for the same
+// CROSSGEN-05 reason: this phase's social surfaces are reachable by explicit user choice from the
+// dashboard, not by the router advancing into them, which is why the router treats this case as
+// terminal too. ACCOUNT-01 requires that an account is created only the first time a user touches
+// a social feature -- never mandatory, never reached during onboarding, never required for core
+// tracking -- so this case has no place anywhere in `OnboardingRouter`'s `.welcome`-to-`.home`
+// path, exactly like Phase 2 and Phase 3's own hub-reachable surfaces above.
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -60,4 +68,5 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case momentum
     case sleepCheckIn
     case movementSnapshot
+    case signInWithApple
 }
