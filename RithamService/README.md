@@ -37,6 +37,14 @@ below), so plan 04.1-04's photo pipeline has both buckets waiting for it.
 To tear the stack down (keeping data): `docker compose -f docker-compose.dev.yml stop`.
 To tear it down and delete all data: `docker compose -f docker-compose.dev.yml down -v`.
 
+**Alternative: a native Postgres install.** If Docker isn't available, `internal/store`'s
+Postgres half works unmodified against any local Postgres 16+ (for example a Homebrew
+`postgresql@16` service): `createdb ritham_dev`, then point `RITHAM_DATABASE_URL` at it (for
+example `postgres://$(whoami)@localhost:5432/ritham_dev?sslmode=disable` under peer/trust auth).
+MinIO has no equivalent native substitute here — the object-store buckets still need the
+`createbuckets` compose job, or an equivalent bucket created by hand against whatever
+S3-compatible endpoint `RITHAM_OBJECT_STORE_ENDPOINT` points to.
+
 ## Environment variables
 
 This phase introduces six environment variables. None has a production value yet — see
