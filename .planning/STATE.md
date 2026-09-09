@@ -6,14 +6,14 @@ current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
 stopped_at: Completed 04.1-03-PLAN.md
-last_updated: "2026-09-09T14:15:18.107Z"
+last_updated: "2026-09-09T14:46:25.152Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 47
+  completed_plans: 48
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 5 of 17
+Plan: 6 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -101,6 +101,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P02 | 20min | 2 tasks | 9 files |
 | Phase 04.1 P03 | 65min | 3 tasks | 14 files |
 | Phase 04.1 P04 | 100min | 3 tasks | 22 files |
+| Phase 04.1 P05 | 25min | 3 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -227,6 +228,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-04: iphone-capture.heic fixture is a synthetic sips-transcoded HEIF container, not a real device photo -- avoids committing an actual personal photo's real GPS/location metadata into git history
 - [Phase ?]: 04.1-04: Service and photo_handler.go depend on narrow structural interfaces (objectWriter, photoIngester, sharedURLSigner), not concrete *ObjectStore/*Service -- extends 04.1-03's authenticator-interface pattern so Ingest and every HTTP response branch are fully unit-tested without a running S3-compatible backend
 - [Phase ?]: 04.1-04: MinIO/S3 wire behavior (PutObject/PresignedGetObject against a real bucket) remains unverified -- Docker unavailable in this environment, same carried-forward gap 04.1-01 already documented, now also touching internal/photo's connected tests
+- [Phase ?]: 04.1-05: Corrected the plan's stated nonce flow (Rule 1) -- the SHA-256 digest, not the raw nonce, must be sent to both Apple's request.nonce and the server's AppleSignInRequest.nonce, verified directly against RithamService/internal/identity/apple_test.go before implementing.
+- [Phase ?]: 04.1-05: HomeHubView's new social section follows the dashboard's actual shell-less shape (Phase 4's sixth-round checkpoint revision), not the plan text's stale 'card shell' description written the same day.
 
 ### Pending Todos
 
@@ -283,6 +286,8 @@ Recent decisions affecting current work:
   the three affected suites, or a shared lock around `ModelContainer(for:configurations:)` in test
   helpers.
 
+- 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
+
 ## Deferred Items
 
 Items acknowledged and carried forward from previous milestone close:
@@ -293,7 +298,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-09T14:14:36.713Z
+Last session: 2026-09-09T14:45:36.774Z
 Stopped at: Completed 04.1-03-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
