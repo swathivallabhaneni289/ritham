@@ -11,6 +11,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/plan"
 )
@@ -84,7 +86,7 @@ func TestHandleWorkoutPlan_ValidRequestReturns200WithPlanKey(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("got status %d, want 200; body: %s", rec.Code, rec.Body.String())
@@ -102,7 +104,7 @@ func TestHandleWorkoutPlan_InvalidJSONReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString("{not json"))
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -114,7 +116,7 @@ func TestHandleWorkoutPlan_StringFrequencyReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -126,7 +128,7 @@ func TestHandleWorkoutPlan_UnsupportedFrequencyReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -138,7 +140,7 @@ func TestHandleWorkoutPlan_UnknownExperienceLevelReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400", rec.Code)
@@ -150,7 +152,7 @@ func TestHandleWorkoutPlan_UnknownFieldReturns400(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/v1/workout-plan", bytes.NewBufferString(body))
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("got status %d, want 400 for an unexpected field (D-07 boundary enforcement)", rec.Code)
@@ -161,7 +163,7 @@ func TestHandleWorkoutPlan_GETReturns405(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/workout-plan", nil)
 	rec := httptest.NewRecorder()
 
-	NewMux(nil).ServeHTTP(rec, req)
+	NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusMethodNotAllowed {
 		t.Errorf("got status %d, want 405", rec.Code)
@@ -260,7 +262,7 @@ func TestNewMux_IdentityRoutesRegisteredOnlyWhenServiceProvided(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/v1/identity/me", nil)
 		rec := httptest.NewRecorder()
 
-		NewMux(nil).ServeHTTP(rec, req)
+		NewMux(nil, nil, nil).ServeHTTP(rec, req)
 
 		if rec.Code != http.StatusNotFound {
 			t.Errorf("got status %d, want 404 for an unregistered route when idsvc is nil", rec.Code)
@@ -272,10 +274,25 @@ func TestNewMux_IdentityRoutesRegisteredOnlyWhenServiceProvided(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/v1/identity/me", nil)
 		rec := httptest.NewRecorder()
 
-		NewMux(idsvc).ServeHTTP(rec, req)
+		NewMux(idsvc, nil, nil).ServeHTTP(rec, req)
 
 		if rec.Code != http.StatusUnauthorized {
 			t.Errorf("got status %d, want 401 (route exists, no Authorization header)", rec.Code)
+		}
+	})
+}
+
+func TestNewMux_PhotoRoutesRegisteredOnlyWhenServiceProvided(t *testing.T) {
+	idsvc := identity.New(nil, noopAppleKeySource{}, "com.ritham.app", time.Now)
+
+	t.Run("nil photo service leaves photo routes unregistered", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/v1/photos/"+uuid.New().String(), nil)
+		rec := httptest.NewRecorder()
+
+		NewMux(idsvc, nil, nil).ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusNotFound {
+			t.Errorf("got status %d, want 404 for an unregistered route when photosvc/objectStore are nil", rec.Code)
 		}
 	})
 }

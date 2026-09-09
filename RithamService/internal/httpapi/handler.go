@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/photo"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/plan"
 )
 
@@ -20,7 +21,12 @@ const maxRequestBodyBytes = 1 << 16 // 64 KiB
 // panic on the first request -- the pre-existing workout-plan route is unaffected either way.
 // A GET (or any other unregistered method) to a registered path is rejected with 405 by the
 // router itself, via Go 1.22+'s method-and-path pattern syntax -- not by hand-written branching.
-func NewMux(idsvc *identity.Service) *http.ServeMux {
+//
+// photosvc and objectStore back the two photo routes (GROUPEVENTS-03); both must be non-nil (and
+// idsvc must also be non-nil, since these routes sit behind RequireSession) for them to be
+// registered -- otherwise they are left unregistered (404), matching the identity routes' own
+// missing-database degrade-gracefully behavior rather than wiring a nil receiver.
+func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/workout-plan", handleWorkoutPlan)
 
@@ -32,6 +38,13 @@ func NewMux(idsvc *identity.Service) *http.ServeMux {
 		mux.HandleFunc("POST /v1/identity/revoke", RequireSession(idsvc, handleRevokeSession(idsvc)))
 		mux.HandleFunc("GET /v1/identity/me", RequireSession(idsvc, handleMe(idsvc)))
 		mux.HandleFunc("PUT /v1/identity/display-name", RequireSession(idsvc, handleSetDisplayName(idsvc)))
+
+		if photosvc != nil && objectStore != nil {
+			// Both photo routes sit behind RequireSession -- there is no unauthenticated photo
+			// route, unlike sign-in above (T-04.1-13, T-04.1-19).
+			mux.HandleFunc("POST /v1/photos", RequireSession(idsvc, handleUploadPhoto(photosvc, objectStore)))
+			mux.HandleFunc("GET /v1/photos/{id}", RequireSession(idsvc, handleFetchPhoto(photosvc, objectStore)))
+		}
 	}
 
 	return mux
