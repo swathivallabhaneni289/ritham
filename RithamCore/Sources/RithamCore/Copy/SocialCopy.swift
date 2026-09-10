@@ -153,6 +153,14 @@ public enum SocialCopy {
         public static let inviteCTA = "Invite a friend"
         public static let noFriendsToInvite = "You have no friends to invite yet."
 
+        /// The leave step's two-option chip pair, quoted directly in 04.1-UI-SPEC.md's own Groups
+        /// section prose. Neither option is preselected -- see `LeaveGroupSheet.swift`'s own
+        /// header comment for why a preselected chip would be exactly the unstated default
+        /// `docs/group-events.md` §4 rules out.
+        public static let keepPastPostsOption = "Keep my past posts"
+        public static let removePastPostsOption = "Remove my past posts too"
+        public static let pastPostsPrompt = "What should happen to your past posts?"
+
         /// Plain body text, per `04.1-UI-SPEC.md`'s own instruction: "If the group's removal
         /// policy needs explaining, it is stated as plain body text on the screen, never as a
         /// marker on one person's identity."

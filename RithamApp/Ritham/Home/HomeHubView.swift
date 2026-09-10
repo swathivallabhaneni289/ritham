@@ -115,6 +115,13 @@ struct HomeHubView: View {
     nonisolated static let socialSectionHeading = "Friends and groups"
     nonisolated static let socialSignInCTA = "Sign in with Apple"
 
+    /// Plan 04.1-11's two signed-in destinations, replacing the single
+    /// `socialSectionHeading`-labeled button this section previously routed only to
+    /// `.friendsList` with -- closing the forward handoff `04.1-09-SUMMARY.md`'s own header
+    /// comment left open ("The groups list destination (plan 04.1-11) is still unattached").
+    nonisolated static let friendsCTA = "Friends"
+    nonisolated static let groupsCTA = "Groups"
+
     let flow: OnboardingFlow
 
     @Environment(\.modelContext) private var modelContext
@@ -653,9 +660,8 @@ struct HomeHubView: View {
     // ACCOUNT-01's opt-in social entry point. Reachable only by explicit choice, here, never during
     // onboarding and never on the path to core tracking (T-04.1-28) -- signed-out state shows the
     // opt-in framing and a CTA into `.signInWithApple`; signed-in state shows the stored display
-    // name plus a CTA into `.friendsList` (plan 04.1-09, closing the handoff `04.1-05-SUMMARY.md`
-    // recorded as this section's own forward-declared gap). The groups list destination (plan
-    // 04.1-11) is still unattached -- that plan's own scope, not this one's.
+    // name plus two CTAs, into `.friendsList` (plan 04.1-09) and `.groupList` (plan 04.1-11,
+    // closing the handoff `04.1-09-SUMMARY.md`'s own header comment left open).
     @ViewBuilder
     private var socialSection: some View {
         HStack(spacing: RithamSpacing.sm) {
@@ -670,8 +676,12 @@ struct HomeHubView: View {
                 .font(RithamType.body)
                 .foregroundStyle(RithamColor.paper)
 
-            SecondaryCTAButton(title: HomeHubView.socialSectionHeading) {
+            SecondaryCTAButton(title: HomeHubView.friendsCTA) {
                 flow.open(.friendsList)
+            }
+
+            SecondaryCTAButton(title: HomeHubView.groupsCTA) {
+                flow.open(.groupList)
             }
         } else {
             Text(SocialCopy.SignInWithApple.body)
@@ -727,11 +737,12 @@ extension HomeHubView {
     /// `flow.open(.signInWithApple)` in the signed-out branch, so `isSignedIn` gates its presence
     /// here the same way `movementSnapshotOptIn` gates `.movementSnapshot` above -- defaulted to
     /// `false` so every pre-existing call site (none of which is signed in) is unaffected.
-    /// `.friendsList` (plan 04.1-09) is the inverse: `socialSection`'s CTA only calls
-    /// `flow.open(.friendsList)` in the signed-in branch, so it replaces `.signInWithApple` in the
-    /// returned set rather than adding to it -- a session is never both signed out and signed in
-    /// at once. `.addFriend` is not listed here: it is reachable only from `FriendsListView`'s own
-    /// CTA, never a direct call inside this file.
+    /// `.friendsList`/`.groupList` (plans 04.1-09/04.1-11) are the inverse: `socialSection`'s two
+    /// signed-in CTAs call `flow.open(.friendsList)` and `flow.open(.groupList)`, so together they
+    /// replace `.signInWithApple` in the returned set rather than adding to it -- a session is
+    /// never both signed out and signed in at once. `.addFriend`/`.groupDetail` are not listed
+    /// here: each is reachable only from its own list screen's row/CTA, never a direct call inside
+    /// this file.
     nonisolated static func routingSteps(movementSnapshotOptIn: Bool, isSignedIn: Bool = false) -> [OnboardingStep] {
         var steps: [OnboardingStep] = [
             .sleepCheckIn, .cardioActivityPicker, .cardioHistory,
@@ -739,6 +750,7 @@ extension HomeHubView {
         ]
         if isSignedIn {
             steps.append(.friendsList)
+            steps.append(.groupList)
         } else {
             steps.append(.signInWithApple)
         }

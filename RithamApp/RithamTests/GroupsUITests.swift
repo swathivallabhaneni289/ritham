@@ -253,4 +253,58 @@ struct GroupsUITests {
             .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
             .joined(separator: "\n")
     }
+
+    @Test("GroupListView constructs no text field")
+    func groupListViewConstructsNoTextField() throws {
+        let source = try nonCommentSource(of: "Social/Groups/GroupListView.swift")
+        #expect(!source.contains("TextField"), "GroupListView.swift contains a text-field construction -- this screen has no search or browse affordance")
+    }
+
+    @Test("GroupListView and GroupDetailView construct no List or Form")
+    func groupListAndDetailConstructNoListOrForm() throws {
+        for path in ["Social/Groups/GroupListView.swift", "Social/Groups/GroupDetailView.swift"] {
+            let source = try nonCommentSource(of: path)
+            for token in ["List {", "List(", "Form {", "Form("] {
+                #expect(!source.contains(token), "\(path) contains '\(token)' -- the codebase has zero List/Form usage")
+            }
+        }
+    }
+
+    @Test("GroupDetailView renders no organizer marker on any member row")
+    func groupDetailViewRendersNoOrganizerMarker() throws {
+        let source = try nonCommentSource(of: "Social/Groups/GroupDetailView.swift")
+        for token in ["crown", "star.fill", "organizerBadge"] {
+            #expect(!source.lowercased().contains(token.lowercased()), "GroupDetailView.swift contains '\(token)' -- the organizer's row must be visually identical to every other member's row")
+        }
+    }
+
+    @Test("DestructiveCTAButton uses the reserved destructive color token")
+    func destructiveCTAButtonUsesTheDestructiveToken() throws {
+        let source = try nonCommentSource(of: "Components/DestructiveCTAButton.swift")
+        #expect(source.contains("RithamColor.destructive"), "DestructiveCTAButton.swift does not reference RithamColor.destructive")
+    }
+
+    @Test("LeaveGroupSheet's confirm action stays disabled until a disposition is chosen, and references both disposition cases")
+    func leaveGroupSheetConfirmActionRequiresAChosenDisposition() throws {
+        let source = try nonCommentSource(of: "Social/Groups/LeaveGroupSheet.swift")
+        for identifier in ["keepPastPosts", "removePastPosts"] {
+            #expect(source.contains(identifier), "LeaveGroupSheet.swift no longer references GroupLeaveDisposition.\(identifier)")
+        }
+        #expect(source.contains("disabled("), "LeaveGroupSheet.swift's confirm action must be conditionally disabled until a disposition is chosen")
+    }
+
+    @Test("LeaveGroupSheet uses no shaming or ejection language")
+    func leaveGroupSheetUsesNoShamingLanguage() throws {
+        let source = try nonCommentSource(of: "Social/Groups/LeaveGroupSheet.swift")
+        let lowercased = source.lowercased()
+        for token in ["kicked", "banned", "removed you"] {
+            #expect(!lowercased.contains(token), "LeaveGroupSheet.swift contains '\(token)'")
+        }
+    }
+
+    @Test("HomeHubView routes the signed-in social section to the group list")
+    func homeHubViewRoutesToGroupList() throws {
+        let source = try nonCommentSource(of: "Home/HomeHubView.swift")
+        #expect(source.contains("groupList"), "HomeHubView.swift no longer references .groupList")
+    }
 }
