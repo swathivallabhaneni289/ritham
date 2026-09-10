@@ -50,9 +50,16 @@ public struct GroupMembership: Sendable, Equatable, Codable {
 /// "the app should offer this explicitly at the leave step rather than leaving it as an unstated
 /// default either way." A leaving member's past posts either stay in the group's history or are
 /// removed along with the leave action; there is no silent default either way.
+///
+/// Explicit raw values (plan 04.1-11, Rule 1 fix): this type's own wire consumer,
+/// `RithamService/internal/groups/membership.go`'s `LeaveDisposition`, declares its two
+/// constants as `"keepPosts"`/`"removePosts"` -- the implicit case-name-derived raw values this
+/// enum shipped with originally (`"keepPastPosts"`/`"removePastPosts"`) would never match either
+/// entry in the server's `knownLeaveDispositions` map, and every leave call would 400. The case
+/// names stay descriptive for readers of this file; only the wire-facing raw value changed.
 public enum GroupLeaveDisposition: String, CaseIterable, Sendable, Codable {
-    case keepPastPosts
-    case removePastPosts
+    case keepPastPosts = "keepPosts"
+    case removePastPosts = "removePosts"
 }
 
 /// `docs/group-events.md` Section 1 asks for a size that biases toward "the people doing this 5K

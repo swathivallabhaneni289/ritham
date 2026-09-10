@@ -40,6 +40,17 @@ final class OnboardingFlow {
     var cardioActivityType: ActivityType = .run
     var cardioCaptureMode: CardioCaptureMode = .manual
 
+    /// The group id chosen on `GroupListView` (plan 04.1-11), read by `GroupDetailView` to know
+    /// which group to load. Deliberately NOT part of `OnboardingAnswers`, for the identical
+    /// reason `calibrationMode`/`cardioActivityType` above are not: `OnboardingRouter.nextStep`
+    /// never branches on which group is selected -- `.groupDetail` is reached only via `open(_:)`,
+    /// never `advance`, and the router treats it as terminal exactly like every other Phase 4.1
+    /// social surface -- so this is a pure in-session UI handoff between two screens this plan
+    /// owns, not the branching logic this class's own header comment forbids. Defaults to `nil`
+    /// and carries no navigation consequence of its own: setting it appends nothing to `path` by
+    /// itself, and it shares the same in-memory, in-session lifetime as `path`/`answers`.
+    var selectedGroupID: UUID?
+
     init(answers: OnboardingAnswers = OnboardingAnswers(), path: [OnboardingStep] = []) {
         self.answers = answers
         self.path = path
