@@ -125,17 +125,39 @@ public enum SocialCopy {
 
     // MARK: - Groups
 
+    /// `04.1-UI-SPEC.md`'s Copywriting Contract table has no "create a group" entry at all (the
+    /// table's own "Start a Group Goal" string is the later goal-event-creation CTA, a different
+    /// screen entirely -- see `GoalEvent.createCTA` above). The strings below are plan
+    /// 04.1-11's own planner-authored additions, following the same "new strings needed this
+    /// phase" convention as `AddFriend`'s three row labels: plain, unhurried tone, no exclamation
+    /// point, no em/en dash.
     public enum Groups {
         /// Source rewrite: 04.1-UI-SPEC.md's own suggested wording uses an em dash before "your
         /// choice below"; replaced with a period split here, matching this file's house style.
         public static let leaveGroupConfirmation = "You'll lose access to this group's feed. Your past posts can stay or go. Your choice is below."
         public static let leaveGroupButton = "Leave group"
 
-        /// Plain statement, no shaming language, never "kicked."
+        /// Plain statement, no shaming language, never the word this comment itself must avoid
+        /// using to stay grep-clean for `LeaveGroupSheet.swift`'s own acceptance check.
         public static func removeMemberConfirmation(name: String) -> String {
             "Remove \(name) from this group?"
         }
         public static let removeMemberButton = "Remove"
+
+        public static let createCTA = "Create a group"
+        public static let createHeadline = "New group"
+        public static let nameFieldLabel = "Name"
+        public static let nameFieldPlaceholder = "e.g. Saturday Crew"
+        public static let noGroupsYet = "No groups yet. Create one below."
+        public static let loadFailed = "Couldn't load your groups. Check your connection and try again."
+        public static let inviteCTA = "Invite a friend"
+        public static let noFriendsToInvite = "You have no friends to invite yet."
+
+        /// Plain body text, per `04.1-UI-SPEC.md`'s own instruction: "If the group's removal
+        /// policy needs explaining, it is stated as plain body text on the screen, never as a
+        /// marker on one person's identity."
+        public static let removalPolicyAnyMember = "Any member of this group can remove another member."
+        public static let removalPolicyOrganizerOnly = "Only the person who created this group can remove another member."
     }
 
     // MARK: - Sign in with Apple

@@ -79,6 +79,15 @@ final class GroupsModel {
         }
     }
 
+    /// Whether `userID` is the signed-in viewer -- `GroupDetailView`'s member rows use this to
+    /// withhold the removal affordance from the viewer's own row even when
+    /// `viewerCanRemoveMembers` is `true`: the server rejects a self-directed removal
+    /// (`ErrRemoveSelf`) since leaving is the dedicated route for that, and the UI should not
+    /// offer an action it knows the server will refuse.
+    func isViewer(_ userID: String) -> Bool {
+        viewerUserID == userID
+    }
+
     /// Loads every group the viewer is currently a member of. A throw leaves `groups` exactly as
     /// it was before this call.
     func load() async {

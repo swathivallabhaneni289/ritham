@@ -11,5 +11,6 @@ enum SocialStepRegistration {
         SocialIdentityRegistration.registerAll()
         PrivacyZoneRegistration.registerAll()
         FriendsRegistration.registerAll()
+        GroupsRegistration.registerAll()
     }
 }

@@ -50,6 +50,12 @@
 // explicit user choice from the dashboard's signed-in social section (`friendsList`) or from
 // that screen's own connect-a-friend entry point (`addFriend`), never by `OnboardingRouter`
 // advancing into them -- terminal exactly like `signInWithApple`.
+//
+// `groupList` and `groupDetail` (below, plan 04.1-11) are ordinary members of this same enum for
+// the identical CROSSGEN-05 reason as every other Phase 4.1 social surface: reached only by
+// explicit user choice from the dashboard's signed-in social section (`groupList`) or from that
+// screen's own group-row entry point (`groupDetail`), never by `OnboardingRouter` advancing into
+// them -- terminal exactly like `friendsList`/`addFriend`.
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -84,4 +90,6 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case privacyZones
     case friendsList
     case addFriend
+    case groupList
+    case groupDetail
 }
