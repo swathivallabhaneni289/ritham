@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 import SwiftData
 import RithamCore
@@ -898,6 +899,63 @@ public final class HealthDataStore {
         try context.save()
     }
 
+    // MARK: - Privacy Zones
+
+    /// GROUPEVENTS-03 / 04.1-RESEARCH.md Pattern 3: on-device-only zone definitions, persisted in
+    /// `PrivacyZoneRecord` (registered in `RithamModelContainer`'s schema alongside every other
+    /// model this file's accessors touch, so it shares this store's file protection). Never read
+    /// by `GateResolution`, `TagDerivation`, or `saveScreeningResult` -- the same isolation
+    /// `saveFoodAllergens`/`loadFoodAllergens` already establish for a different preference type
+    /// this store also happens to hold. Reached only through `PrivacyZoneStore`
+    /// (`Social/PrivacyZones/PrivacyZoneStore.swift`), never directly by any UI view, and never by
+    /// anything under `Social/Identity/` -- no accessor below sends a zone anywhere.
+    public func loadPrivacyZones() throws -> [PrivacyZone] {
+        try context.fetch(FetchDescriptor<PrivacyZoneRecord>()).map(\.zone)
+    }
+
+    /// Full-replace on the matching identifier -- the same "delete then reinsert" discipline
+    /// `saveCardioSession` uses -- so an edited zone can never leave a stale field behind.
+    public func savePrivacyZone(_ zone: PrivacyZone) throws {
+        if let existing = try fetchPrivacyZoneRecord(id: zone.id) {
+            context.delete(existing)
+        }
+        context.insert(PrivacyZoneRecord(
+            id: zone.id,
+            label: zone.label,
+            latitude: zone.latitude,
+            longitude: zone.longitude,
+            radiusMetres: zone.radiusMetres,
+            effectRaw: zone.effect.rawValue
+        ))
+        try context.save()
+    }
+
+    /// Renames a stored zone's own user-given label only -- never touches its centre, radius, or
+    /// effect. Throws `zoneNotFound` when no stored zone matches `id`.
+    public func renamePrivacyZone(id: UUID, to label: String) throws {
+        guard let record = try fetchPrivacyZoneRecord(id: id) else {
+            throw HealthDataStoreError.zoneNotFound
+        }
+        record.label = label
+        try context.save()
+    }
+
+    /// Throws `zoneNotFound` when no stored zone matches `id`, mirroring
+    /// `deleteCardioSession`/`deleteLiftSession`'s own "not found is an error, not a silent no-op"
+    /// discipline.
+    public func deletePrivacyZone(id: UUID) throws {
+        guard let record = try fetchPrivacyZoneRecord(id: id) else {
+            throw HealthDataStoreError.zoneNotFound
+        }
+        context.delete(record)
+        try context.save()
+    }
+
+    private func fetchPrivacyZoneRecord(id: UUID) throws -> PrivacyZoneRecord? {
+        let records = try context.fetch(FetchDescriptor<PrivacyZoneRecord>())
+        return records.first { $0.id == id }
+    }
+
     // MARK: - Private
 
     private func fetchProfile() throws -> UserProfile? {
@@ -963,4 +1021,7 @@ public enum HealthDataStoreError: Error, Equatable {
     /// Thrown by `saveMomentumTarget` when the incoming value is outside
     /// `HealthDataStore.supportedMomentumTargets` -- nothing is persisted when this throws.
     case unsupportedMomentumTarget
+    /// Thrown by `renamePrivacyZone`/`deletePrivacyZone` when no stored zone matches the given
+    /// identifier.
+    case zoneNotFound
 }

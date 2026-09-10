@@ -25,6 +25,10 @@ public enum RithamModelContainer {
         RecoveryWeekPeriodRecord.self,
         InjuryFreezePeriodRecord.self,
         SleepCheckInRecord.self,
+        // 04.1-07: GROUPEVENTS-03's Privacy Zones. On-device-only, per 04.1-RESEARCH.md
+        // Pattern 3 -- see `PrivacyZoneRecord`'s own header comment for why this container
+        // (rather than a separate one) is where it belongs.
+        PrivacyZoneRecord.self,
     ]
 
     /// Builds a `ModelContainer`. `inMemory: true` is used by tests — an in-memory store has no

@@ -91,6 +91,7 @@
 		8AE5EF7DFD295F7364E397D8 /* Phase2StepRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632509F9A89990336A60AA9 /* Phase2StepRegistration.swift */; };
 		8B3837980F3C805054099A91 /* RecommendationsRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B94745BFCB721026C5DCFE3 /* RecommendationsRegistration.swift */; };
 		8E2E6F391B9959A6EBD1A8A8 /* CardioActivityPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8973B69865744CC62FE8838E /* CardioActivityPickerView.swift */; };
+		8EEBE08C7A56D7B8B3970D57 /* PrivacyZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCA854F2DA68A7D9A364ED3 /* PrivacyZone.swift */; };
 		8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */; };
 		8F99B77E1CF5743BD01A6AA3 /* BandGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD46F7E0FD2E8EE35DF4AF6B /* BandGeometryTests.swift */; };
 		8FA438D74BA36B224DC66FDE /* MomentumStateRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */; };
@@ -103,6 +104,7 @@
 		9AA8D22A5541CC2E61B9D966 /* StepRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ED7DF2A39EE0E6909310F0 /* StepRegistry.swift */; };
 		9D432CC298F3C4869882CD38 /* MovementSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC386A79787043DBCBCDD18 /* MovementSnapshotTests.swift */; };
 		9EF4288FE7E51335250C8397 /* GuidanceRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6AD193A95EFC8C360C8DD4 /* GuidanceRegistration.swift */; };
+		A186FE1D0DFDD16252CF6CAF /* PrivacyZoneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CE1B8E44F37726B7F74AC /* PrivacyZoneTests.swift */; };
 		A1E029A8D88EC2C0042634F9 /* StrengthHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839306B638148EC72A16ED7 /* StrengthHistoryView.swift */; };
 		A2239FD2F7130F8EE7CF50AF /* WorkoutPreferenceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F33030F099078468CA90E8F /* WorkoutPreferenceRecord.swift */; };
 		A244706B063FEFDF1921E67E /* DietSectionIsolationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF76F835361DCD132E11D5AC /* DietSectionIsolationTests.swift */; };
@@ -135,6 +137,7 @@
 		D170EDC7AAE93F48DA353EC7 /* MomentumRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E85752B692056E1D76046D /* MomentumRegistration.swift */; };
 		D2FA3EAF8185088DE8F673B3 /* CalibrationBaselineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */; };
 		D305C620C93D62B73E8B0F89 /* RithamCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8F7B5BB088D21FCA90D16A3 /* RithamCore */; };
+		D4BE43035E167E90B02C8695 /* PrivacyZoneStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6718492E703392BBF57722B /* PrivacyZoneStore.swift */; };
 		D56882DC7CE1313B4A28320F /* RecommendationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F30FF2712BABA41FDE11FD /* RecommendationsView.swift */; };
 		D6719FCA341670ED1536EC60 /* RithamSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074665026698CCD2C09002E0 /* RithamSpacing.swift */; };
 		D75BD4974656ABBDDE7EE6E3 /* ExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */; };
@@ -162,6 +165,7 @@
 		F874FB2134A24BF9B64F2A05 /* LiftSessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A540323B6DBDE9C87D9AEF3A /* LiftSessionRecorder.swift */; };
 		F884E2083E9D0F087CFCC102 /* CardioViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E042D4ECE70F89401D7D36 /* CardioViewTests.swift */; };
 		FAC67EBCA7A58642957FE497 /* LiftSetRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7106F3171C2691292CD68A5 /* LiftSetRecord.swift */; };
+		FD708CB2BBC905ED1066F4A9 /* PrivacyZoneRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD3E397AD3BBF76E9E29E41 /* PrivacyZoneRecord.swift */; };
 		FE23BDF8A1831A14B0F98EB3 /* WorkoutFrequencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA2C00B50E27B822C89CC13 /* WorkoutFrequencyView.swift */; };
 /* End PBXBuildFile section */
 
@@ -195,6 +199,7 @@
 		1A200B33F244A21CCB3F7ADB /* ChoiceQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceQuestionView.swift; sourceTree = "<group>"; };
 		1CDF987DA88052D9B310E87A /* Phase4CoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase4CoverageTests.swift; sourceTree = "<group>"; };
 		1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsTests.swift; sourceTree = "<group>"; };
+		1DD3E397AD3BBF76E9E29E41 /* PrivacyZoneRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyZoneRecord.swift; sourceTree = "<group>"; };
 		226CB34F3DE1E1C5B984771E /* RingAndDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingAndDot.swift; sourceTree = "<group>"; };
 		22DFCFA1AACDDDED577DD44F /* GateSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateSectionView.swift; sourceTree = "<group>"; };
 		233F028230C2AF5F5CDE0C14 /* CardioSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioSessionView.swift; sourceTree = "<group>"; };
@@ -229,8 +234,10 @@
 		5398A0EBE3232277DF47F768 /* GuidanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceView.swift; sourceTree = "<group>"; };
 		552A5F0274532CE45416EB69 /* PreAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreAssessmentView.swift; sourceTree = "<group>"; };
 		56204CF43FAEB1A870F9470A /* PedometerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSession.swift; sourceTree = "<group>"; };
+		575CE1B8E44F37726B7F74AC /* PrivacyZoneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyZoneTests.swift; sourceTree = "<group>"; };
 		5A2AD191D9C5E690B659EBA5 /* AlwaysFreeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysFreeListView.swift; sourceTree = "<group>"; };
 		5C44BD820BB2B52FBF13B601 /* SocialStepRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialStepRegistration.swift; sourceTree = "<group>"; };
+		5CCA854F2DA68A7D9A364ED3 /* PrivacyZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyZone.swift; sourceTree = "<group>"; };
 		5F349B49CBAF0C270BDD7A46 /* MotionActivityDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionActivityDetector.swift; sourceTree = "<group>"; };
 		5F91DCC5A09870CA83E4280F /* LiftSessionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftSessionRecord.swift; sourceTree = "<group>"; };
 		6202A72738414384DAE6A08D /* AppShellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellTests.swift; sourceTree = "<group>"; };
@@ -317,6 +324,7 @@
 		D26A742A2DE889FE2E118760 /* DietPlanSectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanSectionContent.swift; sourceTree = "<group>"; };
 		D2C8DA7DC090570AF1CEB167 /* RadialSessionTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialSessionTimer.swift; sourceTree = "<group>"; };
 		D4D87CE175663250CFAE8720 /* ConditionDisclaimerTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionDisclaimerTag.swift; sourceTree = "<group>"; };
+		D6718492E703392BBF57722B /* PrivacyZoneStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyZoneStore.swift; sourceTree = "<group>"; };
 		D78DFBC328CACEAE0C82CB19 /* MomentumSuiteSerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumSuiteSerialization.swift; sourceTree = "<group>"; };
 		D9E042D4ECE70F89401D7D36 /* CardioViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioViewTests.swift; sourceTree = "<group>"; };
 		DCC4A183A7A8B8DC4FF634CB /* Ritham.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Ritham.entitlements; sourceTree = "<group>"; };
@@ -542,6 +550,7 @@
 			children = (
 				5C44BD820BB2B52FBF13B601 /* SocialStepRegistration.swift */,
 				C994C74FA53A11BEBF3744C4 /* Identity */,
+				E78ADE65F7104CDA00281008 /* PrivacyZones */,
 			);
 			path = Social;
 			sourceTree = "<group>";
@@ -566,6 +575,7 @@
 				C7106F3171C2691292CD68A5 /* LiftSetRecord.swift */,
 				A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */,
 				1121F1E008F09222F0C5A261 /* MomentumStateRecord.swift */,
+				1DD3E397AD3BBF76E9E29E41 /* PrivacyZoneRecord.swift */,
 				7E2D29F982217344F14A7BC1 /* RithamModelContainer.swift */,
 				B9BB8D7CBC56CF6B75FFB13F /* SleepCheckInRecord.swift */,
 				C01EFA883D70E06EA7DF56F5 /* UserProfile.swift */,
@@ -710,6 +720,7 @@
 				0162DA40D97FEBE020DD15DC /* Phase3CoverageTests.swift */,
 				1CDF987DA88052D9B310E87A /* Phase4CoverageTests.swift */,
 				8960C98FF99E01FE1719D449 /* PhaseCoverageTests.swift */,
+				575CE1B8E44F37726B7F74AC /* PrivacyZoneTests.swift */,
 				1D625888A2052E9A21BD9A94 /* RecommendationsTests.swift */,
 				2C432DD1332C2E26772A7F26 /* RecoveryAdjustmentTests.swift */,
 				AA016F662BDA0D3596776E62 /* ScreeningFlowTests.swift */,
@@ -770,6 +781,15 @@
 				2B6AC4D3DD46A040E00B8D08 /* WelcomeStepView.swift */,
 			);
 			path = Steps;
+			sourceTree = "<group>";
+		};
+		E78ADE65F7104CDA00281008 /* PrivacyZones */ = {
+			isa = PBXGroup;
+			children = (
+				5CCA854F2DA68A7D9A364ED3 /* PrivacyZone.swift */,
+				D6718492E703392BBF57722B /* PrivacyZoneStore.swift */,
+			);
+			path = PrivacyZones;
 			sourceTree = "<group>";
 		};
 		EBD57CC3FBDDA92445B67D7B /* Packages */ = {
@@ -942,6 +962,9 @@
 				5551D280FD237803E5CD3D47 /* PreAssessmentView.swift in Sources */,
 				9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */,
 				246E6790BDB65CFCEB25A333 /* PrivacyExplainerStepView.swift in Sources */,
+				8EEBE08C7A56D7B8B3970D57 /* PrivacyZone.swift in Sources */,
+				FD708CB2BBC905ED1066F4A9 /* PrivacyZoneRecord.swift in Sources */,
+				D4BE43035E167E90B02C8695 /* PrivacyZoneStore.swift in Sources */,
 				0356DBBFB1CD2B527E15D1E6 /* RadialSessionTimer.swift in Sources */,
 				2FFF9D0FA7BC7D8F75DF9DB2 /* ReScreenBanner.swift in Sources */,
 				3F4458E145BFF7F45ECE0D23 /* RecommendationsQuickView.swift in Sources */,
@@ -1024,6 +1047,7 @@
 				BB94CBE689862C7016F67F0D /* Phase3CoverageTests.swift in Sources */,
 				6F587496F24B08EC21E10C24 /* Phase4CoverageTests.swift in Sources */,
 				8F1ADAC9E0A802861939B863 /* PhaseCoverageTests.swift in Sources */,
+				A186FE1D0DFDD16252CF6CAF /* PrivacyZoneTests.swift in Sources */,
 				11E1EC0DDEA72DA1962A9DD5 /* RecommendationsTests.swift in Sources */,
 				4BAEECF546BF5C81897726A1 /* RecoveryAdjustmentTests.swift in Sources */,
 				4EDF881FDE663F23A30F29CE /* ScreeningFlowTests.swift in Sources */,
