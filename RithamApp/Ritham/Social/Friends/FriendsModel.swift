@@ -36,8 +36,10 @@ struct InviteToken: Equatable {
 ///
 /// `state`'s `.failed` case is load-bearing: an unreachable service must read as an error, never
 /// as an empty result. `friends`/`incoming` are left completely untouched on any `load()`
-/// failure -- an empty friends array is exactly the kind of benign-looking wrong answer this
-/// project has already ruled out for `WorkoutPlanClient` (T-04.1-26/T-04.1-54).
+/// failure -- both are populated together from one `async let` pair, so a throw on either half
+/// leaves the previous, already-assigned values in place rather than partially updating. An
+/// empty friends array is exactly the kind of benign-looking wrong answer this project has
+/// already ruled out for `WorkoutPlanClient` (T-04.1-26/T-04.1-54).
 @MainActor
 @Observable
 final class FriendsModel {
@@ -55,34 +57,113 @@ final class FriendsModel {
 
     private let client: FriendsClient
 
+    private static let dateFormatter = ISO8601DateFormatter()
+
     init(client: FriendsClient = FriendsClient(apiClient: SocialAPIClient(sessionStore: SessionStore()))) {
         self.client = client
     }
 
-    /// RED (Task 1, stub): always reports success with no data and never calls `client`, so the
-    /// transport-failure/unauthenticated-failure tests fail meaningfully before the real
-    /// implementation lands in the GREEN commit.
+    /// Loads the friends list and incoming requests together. A throw from either call leaves
+    /// both `friends` and `incoming` exactly as they were before this call -- the assignment
+    /// below only runs once both halves have succeeded.
     func load() async {
-        state = .loaded
+        state = .loading
+        do {
+            async let friendsTask = client.list()
+            async let incomingTask = client.incomingRequests()
+            let (friendResponses, requestResponses) = try await (friendsTask, incomingTask)
+            friends = friendResponses.compactMap(Self.friendship)
+            incoming = requestResponses.compactMap(Self.friendRequest)
+            state = .loaded
+        } catch {
+            state = .failed(Self.socialError(error))
+        }
     }
 
-    /// RED (Task 1, stub): a no-op.
-    func accept(_ request: FriendRequest) async {}
+    /// Accepts `request`, then reloads -- the reload is what removes the accepted request from
+    /// `incoming` and adds the now-established friend to `friends`, rather than this method
+    /// mutating either array itself, matching this plan's own "removes it from the incoming
+    /// array and adds the person to the friends array after the reload" behavior literally.
+    func accept(_ request: FriendRequest) async {
+        do {
+            _ = try await client.accept(requestID: request.id)
+            await load()
+        } catch {
+            state = .failed(Self.socialError(error))
+        }
+    }
 
-    /// RED (Task 1, stub): a no-op.
-    func decline(_ request: FriendRequest) async {}
+    /// Declines `request`. Removed from `incoming` locally on success -- declining never changes
+    /// `friends`, so a full reload is not needed to keep this model's state correct.
+    func decline(_ request: FriendRequest) async {
+        do {
+            try await client.decline(requestID: request.id)
+            incoming.removeAll { $0.id == request.id }
+        } catch {
+            state = .failed(Self.socialError(error))
+        }
+    }
 
-    /// RED (Task 1, stub): always submits whatever `digests` was passed, regardless of
-    /// `optedIn` -- deliberately wrong so the "turning the opt-in off submits no digests" test
-    /// fails meaningfully before the real implementation lands in the GREEN commit.
+    /// Sets the contact-match opt-in flag. `digests` is submitted only when `optedIn` is `true`
+    /// -- turning the opt-in off always submits an empty digest array over the wire, regardless
+    /// of what was passed in, matching this plan's own behavior list literally and
+    /// `SetContactMatchOptInRequest`'s own doc comment on what `identifierDigests` is (and is
+    /// not) for.
     func setContactMatchOptIn(_ optedIn: Bool, digests: [Data] = []) async {
-        try? await client.setContactMatchOptIn(optedIn, digests: digests)
-        contactMatchOptedIn = optedIn
+        do {
+            try await client.setContactMatchOptIn(optedIn, digests: optedIn ? digests : [])
+            contactMatchOptedIn = optedIn
+        } catch {
+            state = .failed(Self.socialError(error))
+        }
     }
 
-    /// RED (Task 1, stub): always returns `nil`.
-    func createInvite() async -> InviteToken? { nil }
+    /// Creates an invite. Returns `nil` on any failure (moving `state` to `.failed`) or when the
+    /// server's `expiresAt` string fails to parse -- never a token this screen could present
+    /// without a reliable expiry to show alongside it.
+    func createInvite() async -> InviteToken? {
+        do {
+            let response = try await client.createInvite()
+            guard let expiresAt = Self.dateFormatter.date(from: response.expiresAt) else { return nil }
+            return InviteToken(token: response.token, expiresAt: expiresAt)
+        } catch {
+            state = .failed(Self.socialError(error))
+            return nil
+        }
+    }
 
-    /// RED (Task 1, stub): a no-op.
-    func redeem(token: String) async {}
+    /// Redeems `token`, then reloads -- a successful redemption creates a new pending
+    /// `friend_requests` row addressed to this device (the issuer -> redeemer direction
+    /// `RithamService/internal/friends/invites.go`'s `RedeemInvite` always creates), which the
+    /// reload surfaces in `incoming`.
+    func redeem(token: String) async {
+        do {
+            _ = try await client.redeemInvite(token: token)
+            await load()
+        } catch {
+            state = .failed(Self.socialError(error))
+        }
+    }
+
+    // MARK: - Wire -> domain conversion
+
+    private static func friendship(_ response: FriendResponse) -> Friendship? {
+        guard let establishedAt = dateFormatter.date(from: response.establishedAt) else { return nil }
+        return Friendship(id: response.userId, displayName: response.displayName, establishedAt: establishedAt)
+    }
+
+    private static func friendRequest(_ response: FriendRequestResponse) -> FriendRequest? {
+        guard let createdAt = dateFormatter.date(from: response.createdAt) else { return nil }
+        return FriendRequest(
+            id: response.id,
+            fromUserID: response.fromUserId,
+            toUserID: response.toUserId,
+            connectionPath: response.connectionPath,
+            createdAt: createdAt
+        )
+    }
+
+    private static func socialError(_ error: Error) -> SocialAPIError {
+        (error as? SocialAPIError) ?? .transport
+    }
 }

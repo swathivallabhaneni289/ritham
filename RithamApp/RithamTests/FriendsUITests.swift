@@ -160,21 +160,27 @@ struct FriendsUITests {
     @Test("accepting a request removes it from incoming and adds the person to friends after the reload")
     func acceptingARequestRemovesItFromIncomingAndAddsToFriendsAfterReload() async throws {
         let baseURL = URL(string: "http://127.0.0.1:8080")!
-        nonisolated(unsafe) var loadCallCount = 0
+        // Separate per-endpoint counters -- `load()` fires GET /v1/friends and GET
+        // /v1/friends/requests concurrently via `async let`, so a single shared counter
+        // incremented by only one of the two branches races: whichever request happens to run
+        // first on a given round reads a counter the other branch hasn't touched yet.
+        nonisolated(unsafe) var friendsCallCount = 0
+        nonisolated(unsafe) var requestsCallCount = 0
         FriendsStubURLProtocol.requestHandler = { request in
             let path = request.url!.path
             if path.hasSuffix("/accept") {
                 return jsonResponse(request.url!, body: #"{"friendUserId":"user-2","establishedAt":"2026-01-01T00:00:00Z"}"#)
             }
             if path == "/v1/friends" {
-                loadCallCount += 1
-                if loadCallCount == 1 {
+                friendsCallCount += 1
+                if friendsCallCount == 1 {
                     return jsonResponse(request.url!, body: #"{"friends":[]}"#)
                 }
                 return jsonResponse(request.url!, body: #"{"friends":[{"userId":"user-2","displayName":"Priya","establishedAt":"2026-01-01T00:00:00Z"}]}"#)
             }
             if path == "/v1/friends/requests" {
-                if loadCallCount == 0 {
+                requestsCallCount += 1
+                if requestsCallCount == 1 {
                     return jsonResponse(request.url!, body: #"{"requests":[{"id":"req-1","fromUserId":"user-2","toUserId":"user-1","state":"pending","connectionPath":"direct_share","createdAt":"2026-01-01T00:00:00Z"}]}"#)
                 }
                 return jsonResponse(request.url!, body: #"{"requests":[]}"#)
