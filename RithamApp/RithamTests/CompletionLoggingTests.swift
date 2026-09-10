@@ -1,6 +1,9 @@
 import CoreLocation
 import Foundation
+import ImageIO
 import Testing
+import UIKit
+import UniformTypeIdentifiers
 import RithamCore
 @testable import Ritham
 
@@ -374,8 +377,139 @@ struct CompletionLoggingTests {
             #expect(!source.contains(banned), "CompletionLoggingModel.swift names the CoreLocation type '\(banned)' -- it must reach location only through LocationFixProviding")
         }
     }
+
+    // MARK: - Task 2: every transcoded output carries the JPEG magic header
+
+    @Test("a HEIC-container picked item is transcoded to JPEG before upload")
+    func heicInputTranscodesToJPEGMagicHeader() throws {
+        let heicData = try #require(CompletionTestFixtures.syntheticImageData(utType: .heic), "this host could not encode a synthetic HEIC fixture -- ImageIO HEIC encoding must be available to exercise this behavior")
+        let jpegData = try PhotoAttachment.encodableJPEG(from: heicData)
+        #expect(Array(jpegData.prefix(3)) == [0xFF, 0xD8, 0xFF], "transcoded output must carry the JPEG magic header")
+    }
+
+    @Test("an already-JPEG picked item is still normalized through the same re-encode path")
+    func alreadyJPEGInputIsStillNormalized() throws {
+        let jpegInput = try #require(CompletionTestFixtures.syntheticImageData(utType: .jpeg))
+        let jpegOutput = try PhotoAttachment.encodableJPEG(from: jpegInput)
+        #expect(Array(jpegOutput.prefix(3)) == [0xFF, 0xD8, 0xFF], "an already-JPEG input must still come out through the same normalize path -- exactly one format ever leaves the device")
+    }
+
+    @Test("a PNG-container picked item is transcoded to JPEG before upload")
+    func pngInputTranscodesToJPEGMagicHeader() throws {
+        let pngData = try #require(CompletionTestFixtures.syntheticImageData(utType: .png))
+        let jpegData = try PhotoAttachment.encodableJPEG(from: pngData)
+        #expect(Array(jpegData.prefix(3)) == [0xFF, 0xD8, 0xFF])
+    }
+
+    @Test("unreadable bytes raise PhotoAttachmentError.unreadable rather than uploading anything")
+    func unreadableBytesRaiseSentinel() {
+        let garbage = Data([0x00, 0x01, 0x02, 0x03, 0x04])
+        #expect {
+            try PhotoAttachment.encodableJPEG(from: garbage)
+        } throws: { error in
+            (error as? PhotoAttachmentError) == .unreadable
+        }
+    }
+
+    // MARK: - Task 2: the opaque asset value and its upload
+
+    @Test("a successful upload yields the opaque asset carrying the server's asset id and shared URL")
+    func successfulUploadYieldsOpaqueAsset() async throws {
+        let assetID = UUID()
+        let client = makeStubbedSocialAPIClient { request in
+            jsonResponse(request.url!, body: #"{"photoAssetId":"\#(assetID.uuidString)","sharedUrl":"https://example.com/shared/a.jpg"}"#)
+        }
+        let asset = try await PhotoAttachment.upload(Data([0xFF, 0xD8, 0xFF]), via: client)
+        #expect(asset.assetID == assetID)
+        #expect(asset.sharedURL == URL(string: "https://example.com/shared/a.jpg"))
+    }
+
+    @Test("a failed upload throws, so the caller never has an asset to attach to the draft")
+    func failedUploadThrowsAndAttachesNothing() async throws {
+        let client = makeStubbedSocialAPIClient { _ in throw URLError(.cannotConnectToHost) }
+        let model = CompletionLoggingModel(client: makeClient { _ in throw URLError(.badServerResponse) })
+
+        await #expect(throws: (any Error).self) {
+            _ = try await PhotoAttachment.upload(Data([0xFF, 0xD8, 0xFF]), via: client)
+        }
+
+        #expect(model.draft.photo == nil, "a failed upload must leave no photo attached to the draft -- attachPhoto(_:) is only ever called with a value this function actually returned")
+    }
+
+    // MARK: - Task 2: the opaque asset's only accessible initializer takes a PhotoUploadResponse
+
+    @Test("StrippedPhotoAsset's only accessible initializer takes a PhotoUploadResponse -- pinned at compile time")
+    func strippedPhotoAssetOnlyInitializerTakesUploadResponse() {
+        let _: (PhotoUploadResponse) throws -> StrippedPhotoAsset = StrippedPhotoAsset.init
+    }
+
+    @Test("StrippedPhotoAsset.swift declares no initializer taking a URL, Data, or PhotosPickerItem")
+    func strippedPhotoAssetSourceDeclaresNoDisallowedInitializer() throws {
+        let fileURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Ritham/Social/Completion/StrippedPhotoAsset.swift")
+        let source = try String(contentsOf: fileURL, encoding: .utf8)
+        // `self.init(...)` is a delegating *call*, not a declaration -- excluded here so this
+        // check only scans actual `init(` declaration signatures.
+        let initLines = source
+            .components(separatedBy: .newlines)
+            .filter { $0.contains("init(") && !$0.contains("self.init(") }
+        #expect(!initLines.isEmpty, "the scanned file must declare at least one initializer, or this check is vacuous")
+        for line in initLines {
+            let isAllowed = line.contains("assetID: UUID, sharedURL: URL") || line.contains("uploadResponse: PhotoUploadResponse")
+            #expect(isAllowed, "StrippedPhotoAsset.swift declares an unexpected initializer: \(line)")
+        }
+        for disallowed in ["init(fileURL", "init(url:", "init(data:", "init(item:", "PhotosPickerItem)"] {
+            #expect(!source.contains(disallowed), "StrippedPhotoAsset.swift must not declare an initializer taking \(disallowed)")
+        }
+    }
+
+    @Test("grep -c 'private init' on StrippedPhotoAsset.swift is at least 1")
+    func strippedPhotoAssetHasAPrivateInit() throws {
+        let fileURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Ritham/Social/Completion/StrippedPhotoAsset.swift")
+        let source = try String(contentsOf: fileURL, encoding: .utf8)
+        let count = source.components(separatedBy: "private init").count - 1
+        #expect(count >= 1)
+    }
 }
 
+}
+
+/// Test-only synthetic image fixtures, generated on the fly rather than committed as binary
+/// files -- every image is a single flat-color 8x8 pixel, fully synthetic and non-personal,
+/// matching 04.1-04-SUMMARY.md's own documented reasoning for never committing a real captured
+/// photo's bytes (even indirectly) into source control. `nil` when this host's ImageIO cannot
+/// encode the requested container (e.g. no HEIC codec available), so a test using it can report a
+/// clear "this host" reason via `#require` rather than crashing opaquely.
+enum CompletionTestFixtures {
+    static func syntheticImageData(utType: UTType) -> Data? {
+        let size = CGSize(width: 8, height: 8)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let image = renderer.image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+        }
+        guard let cgImage = image.cgImage else { return nil }
+        let mutableData = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(mutableData, utType.identifier as CFString, 1, nil) else { return nil }
+        CGImageDestinationAddImage(destination, cgImage, nil)
+        guard CGImageDestinationFinalize(destination) else { return nil }
+        return mutableData as Data
+    }
+}
+
+@MainActor
+private func makeStubbedSocialAPIClient(handler: @escaping (URLRequest) throws -> (HTTPURLResponse, Data)) -> SocialAPIClient {
+    CompletionStubURLProtocol.requestHandler = handler
+    let sessionStore = SessionStore()
+    sessionStore.store(token: "test-token", expiresAt: Date().addingTimeInterval(3600), userID: "user-1", displayName: "Alex")
+    let config = URLSessionConfiguration.ephemeral
+    config.protocolClasses = [CompletionStubURLProtocol.self]
+    return SocialAPIClient(baseURL: URL(string: "http://127.0.0.1:8080")!, session: URLSession(configuration: config), sessionStore: sessionStore)
 }
 
 private extension URLRequest {
