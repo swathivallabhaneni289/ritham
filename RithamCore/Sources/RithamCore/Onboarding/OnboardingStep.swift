@@ -56,6 +56,13 @@
 // explicit user choice from the dashboard's signed-in social section (`groupList`) or from that
 // screen's own group-row entry point (`groupDetail`), never by `OnboardingRouter` advancing into
 // them -- terminal exactly like `friendsList`/`addFriend`.
+//
+// `createGoalEvent` and `goalEventRSVP` (below, plan 04.1-13) are ordinary members of this same
+// enum for the identical CROSSGEN-05 reason as every other Phase 4.1 social surface:
+// `createGoalEvent` is reached only from `GroupDetailView`'s own "Start a Group Goal" entry point,
+// and `goalEventRSVP` only by that screen's own forward navigation once creation succeeds --
+// never by `OnboardingRouter` advancing into either -- terminal exactly like `groupList`/
+// `groupDetail`.
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -92,4 +99,6 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case addFriend
     case groupList
     case groupDetail
+    case createGoalEvent
+    case goalEventRSVP
 }

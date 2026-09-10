@@ -102,6 +102,12 @@ struct GroupDetailView: View, OnboardingStepPresenting {
             isPresentingInvite = true
         }
 
+        // Plan 04.1-13's only entry point into Goal-Event creation -- this screen is the sole
+        // route to `.createGoalEvent`, per that plan's own `key_links` boundary.
+        PrimaryCTAButton(title: SocialCopy.GoalEvent.createCTA) {
+            flow.open(.createGoalEvent)
+        }
+
         DestructiveCTAButton(title: SocialCopy.Groups.leaveGroupButton) {
             isPresentingLeave = true
         }

@@ -116,14 +116,16 @@ public enum OnboardingRouter {
              .momentum, .sleepCheckIn, .movementSnapshot,
              .signInWithApple, .privacyZones,
              .friendsList, .addFriend,
-             .groupList, .groupDetail:
+             .groupList, .groupDetail,
+             .createGoalEvent, .goalEventRSVP:
             // Phase 2's surfaces, Phase 3's `.momentum`/`.sleepCheckIn`/`.movementSnapshot` (added
             // by plans 03-06/03-08/03-09), and Phase 4.1's `.signInWithApple` (plan 04.1-05),
-            // `.privacyZones` (plan 04.1-07), `.friendsList`/`.addFriend` (plan 04.1-09), and
-            // `.groupList`/`.groupDetail` (plan 04.1-11) are entered by explicit user choice from
-            // the hub or `SettingsView`, never by this router advancing into them -- terminal
-            // exactly like `.home`, with no branching on answers, age, or any other state. See
-            // this file's header comment for the full record.
+            // `.privacyZones` (plan 04.1-07), `.friendsList`/`.addFriend` (plan 04.1-09),
+            // `.groupList`/`.groupDetail` (plan 04.1-11), and `.createGoalEvent`/`.goalEventRSVP`
+            // (plan 04.1-13) are entered by explicit user choice from the hub or `SettingsView`,
+            // never by this router advancing into them -- terminal exactly like `.home`, with no
+            // branching on answers, age, or any other state. See this file's header comment for
+            // the full record.
             return nil
         }
     }

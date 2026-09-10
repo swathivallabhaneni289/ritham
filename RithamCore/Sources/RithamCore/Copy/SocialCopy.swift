@@ -39,11 +39,35 @@ public enum SocialCopy {
         /// replaced with a comma here, preserving the sentence's meaning without the excluded
         /// punctuation mark.
         public static let description = "Everyone does this together, on their own time. There's no clock and no ranking, so log it whenever it works for you."
+
+        /// Plan 04.1-13's own planner-authored additions for the Create Goal-Event screen --
+        /// `04.1-UI-SPEC.md`'s Copywriting Contract table has no dedicated rows for a form's field
+        /// labels, only the locked CTA/description strings above. Plain, unhurried tone, no
+        /// exclamation point, no em/en dash, matching every other "new strings needed this phase"
+        /// entry in this file.
+        public static let createHeadline = "New group goal"
+        public static let nameFieldLabel = "Name"
+        public static let nameFieldPlaceholder = "e.g. Saturday 5K Walk"
+        public static let activityPrompt = "Activity type"
+        public static let targetPrompt = "Add a target?"
+        public static let targetHelper = "Optional. Everyone still logs their own time on their own schedule."
+        public static let targetNoneOption = "No target"
+        public static let targetDistanceOption = "Distance"
+        public static let targetDurationOption = "Duration"
+        public static let distanceFieldLabel = "Distance (km)"
+        public static let durationFieldLabel = "Duration (minutes)"
+        public static let startsLabel = "Starts"
+        public static let endsLabel = "Ends"
     }
 
     // MARK: - RSVP
 
     public enum RSVP {
+        /// The RSVP screen's own primary CTA label, quoted directly in `04.1-UI-SPEC.md`'s Layout
+        /// & Screen Contract section -- distinct from `confirmation(eventName:)` below, which is
+        /// the feedback shown once the viewer has responded, not the button itself.
+        public static let cta = "I'm in"
+
         public static func confirmation(eventName: String) -> String {
             "You're in for the \(eventName)."
         }
