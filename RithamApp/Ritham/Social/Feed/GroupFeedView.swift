@@ -58,7 +58,12 @@ struct GroupFeedView: View, OnboardingStepPresenting {
     @ViewBuilder
     private var content: some View {
         if let model {
-            switch model.renderDecision {
+            // Bound once, not re-read inside the switch's own arm -- SwiftUI evaluates `body`
+            // synchronously so the two reads agree today, but binding once makes that invariant
+            // structural rather than incidental to a future edit (e.g. moving the banner into a
+            // child view, or inserting an `await` somewhere in between).
+            let decision = model.renderDecision
+            switch decision {
             case .nothing:
                 EmptyView()
             case .emptyMessage:
@@ -72,7 +77,7 @@ struct GroupFeedView: View, OnboardingStepPresenting {
                     .fixedSize(horizontal: false, vertical: true)
             case .cards, .cardsWithFailureBanner:
                 VStack(spacing: RithamSpacing.sm) {
-                    if model.renderDecision == .cardsWithFailureBanner {
+                    if decision == .cardsWithFailureBanner {
                         Text("Couldn't refresh the feed. Showing what was last loaded.")
                             .font(RithamType.body)
                             .foregroundStyle(RithamColor.paper)

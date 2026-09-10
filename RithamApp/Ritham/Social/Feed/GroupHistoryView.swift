@@ -54,7 +54,10 @@ struct GroupHistoryView: View, OnboardingStepPresenting {
     @ViewBuilder
     private var content: some View {
         if let model {
-            switch model.renderDecision {
+            // Bound once -- see `GroupFeedView.swift`'s identical comment on why this must not be
+            // re-read inside the switch's own arm.
+            let decision = model.renderDecision
+            switch decision {
             case .nothing:
                 EmptyView()
             case .emptyMessage:
@@ -68,7 +71,7 @@ struct GroupHistoryView: View, OnboardingStepPresenting {
                     .fixedSize(horizontal: false, vertical: true)
             case .cards, .cardsWithFailureBanner:
                 VStack(spacing: RithamSpacing.sm) {
-                    if model.renderDecision == .cardsWithFailureBanner {
+                    if decision == .cardsWithFailureBanner {
                         Text("Couldn't refresh this history. Showing what was last loaded.")
                             .font(RithamType.body)
                             .foregroundStyle(RithamColor.paper)

@@ -123,6 +123,18 @@ final class GroupFeedModel {
         self.pollInterval = pollInterval
     }
 
+    // T-04.1-99 ("polling never outlives the screen that started it") is currently satisfied
+    // entirely by `GroupFeedView`'s own `onDisappear { model?.stopPolling() }` -- both of this
+    // plan's entry points to `.groupFeed` are navigation leaves (nothing is ever pushed on top of
+    // the feed screen today), so `onDisappear` reliably fires when the screen goes away. A
+    // `deinit`-based belt-and-braces cancel was considered (in case a future push-on-top screen
+    // ever makes `NavigationStack`'s `onDisappear` unreliable the way it is for a covered, not
+    // popped, view) but `pollTask` is `@MainActor`-isolated and `deinit` cannot be actor-isolated,
+    // so reading it there is a compile-time error under this project's strict concurrency setting
+    // -- not merely a style question. Marking `pollTask` `nonisolated(unsafe)` to work around that
+    // would weaken real actor-isolation protection for a case this app's navigation graph does not
+    // yet exercise; left undone rather than trading a real guarantee for a hypothetical one.
+
     /// The one load path pull-to-refresh and the poll timer both call (see this type's own header
     /// comment). Replaces `items` and `nextCursor` wholesale, and only once the fetch has fully
     /// succeeded -- a throw leaves both exactly as they were.
