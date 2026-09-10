@@ -63,6 +63,18 @@ final class OnboardingFlow {
     /// as `path`/`answers`.
     var selectedGoalEventID: UUID?
 
+    /// The Goal-Event id a completion is being logged against, set before opening
+    /// `.completionLogging` (plan 04.1-14), read by `CompletionLoggingView` to know which event to
+    /// submit its completion to. Deliberately NOT part of `OnboardingAnswers`, for the identical
+    /// reason `selectedGoalEventID` above is not: `OnboardingRouter.nextStep` never branches on
+    /// which event a completion is being logged against -- `.completionLogging` is reached only
+    /// via `open(_:)`, never `advance`, and the router treats it as terminal exactly like every
+    /// other Phase 4.1 social surface -- so this is a pure in-session UI handoff, not the branching
+    /// logic this class's own header comment forbids. Defaults to `nil` and carries no navigation
+    /// consequence of its own: setting it appends nothing to `path` by itself, and it shares the
+    /// same in-memory, in-session lifetime as `path`/`answers`.
+    var selectedCompletionEventID: UUID?
+
     init(answers: OnboardingAnswers = OnboardingAnswers(), path: [OnboardingStep] = []) {
         self.answers = answers
         self.path = path
