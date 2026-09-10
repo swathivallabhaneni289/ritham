@@ -91,6 +91,44 @@ public enum SocialCopy {
         /// (04.1-UI-SPEC.md Spacing Scale's equal-prominence-pair rule) -- that layout constraint
         /// belongs to the view layer, not this copy catalog.
         public static let ownTimePrompt = "Want to add your time? Totally up to you."
+
+        /// Plan 04.1-14's own planner-authored additions for the completion-logging screen --
+        /// `04.1-UI-SPEC.md`'s Copywriting Contract has no dedicated rows for this screen's own
+        /// button labels or field prompts beyond the two locked strings above. Plain, unhurried
+        /// tone, no exclamation point beyond `confirmation(eventName:)`'s own locked one, no
+        /// em/en dash, matching every other "new strings needed this phase" entry in this file.
+        public static let logCTA = "Log completion"
+        public static let addTimeCTA = "Add time"
+        public static let skipCTA = "Skip"
+
+        /// Backing out of the inline duration field specifically -- distinct from `skipCTA`
+        /// above (which submits the completion with no own time at all), matching the plan's own
+        /// "Skip/Never mind still reachable to back out" wording.
+        public static let neverMindCTA = "Never mind"
+        public static let saveTimeCTA = "Save"
+        public static let durationFieldLabel = "Time (minutes)"
+
+        public static let photoPrompt = "Attach a photo?"
+        public static let photoOnOption = "Attach a photo"
+        public static let photoOffOption = "No photo"
+        public static let choosePhotoCTA = "Choose photo"
+        public static let photoAttachedConfirmation = "Photo attached"
+        public static let photoUploadFailed = "Couldn't attach that photo. Try a different one."
+
+        public static let locationPrompt = "Share the general location?"
+        public static let locationOnOption = "Share location"
+        public static let locationOffOption = "Don't share"
+
+        public static let noteFieldLabel = "Add a note (optional)"
+
+        /// Source rewrite: `04.1-UI-SPEC.md`'s own suggested heading uses an em dash ("Just for
+        /// you -- private"); replaced with a period split here, matching this file's house style.
+        public static let privateSectionHeading = "Just for you. Private."
+        public static let privateDistanceFieldLabel = "Distance (km)"
+        public static let privateDurationFieldLabel = "Duration (minutes)"
+
+        public static let logFailed = "Couldn't log this completion. Check your connection and try again."
+        public static let retryCTA = "Try again"
     }
 
     // MARK: - Feed

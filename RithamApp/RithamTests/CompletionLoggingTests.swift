@@ -475,6 +475,45 @@ struct CompletionLoggingTests {
         let count = source.components(separatedBy: "private init").count - 1
         #expect(count >= 1)
     }
+
+    // MARK: - Task 3: two distinct chip controls for the two attach opt-ins
+
+    private func completionLoggingViewSource() throws -> String {
+        let fileURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Ritham/Social/Completion/CompletionLoggingView.swift")
+        return try String(contentsOf: fileURL, encoding: .utf8)
+    }
+
+    @Test("CompletionLoggingView references two distinct ChoiceQuestionView chip controls, one per attach opt-in")
+    func viewReferencesTwoDistinctChipControls() throws {
+        let source = try completionLoggingViewSource()
+        let chipControlCount = source.components(separatedBy: "ChoiceQuestionView(").count - 1
+        #expect(chipControlCount >= 2, "expected at least two ChoiceQuestionView chip controls -- one for photo attach, one for location attach")
+        #expect(source.contains("SocialCopy.Completion.photoPrompt"), "the photo attach chip must be present")
+        #expect(source.contains("SocialCopy.Completion.locationPrompt"), "the location attach chip must be present, and distinct from the photo chip")
+    }
+
+    @Test("CompletionLoggingView.swift contains zero platform switch constructions")
+    func viewContainsNoToggleConstruction() throws {
+        let source = try completionLoggingViewSource()
+        #expect(!source.contains("Toggle"), "CompletionLoggingView.swift must use the two-option chip control, never SwiftUI's native switch")
+    }
+
+    @Test("CompletionLoggingView.swift renders at least two SecondaryCTAButtons, matching the equal-prominence pair")
+    func viewRendersAtLeastTwoSecondaryCTAButtons() throws {
+        let source = try completionLoggingViewSource()
+        let count = source.components(separatedBy: "SecondaryCTAButton").count - 1
+        #expect(count >= 2)
+    }
+
+    @Test("CompletionLoggingView.swift never types the caption field or footnote role")
+    func viewNeverTypesCaptionOrFootnote() throws {
+        let source = try completionLoggingViewSource()
+        #expect(!source.contains(".caption"))
+        #expect(!source.contains(".footnote"))
+    }
 }
 
 }

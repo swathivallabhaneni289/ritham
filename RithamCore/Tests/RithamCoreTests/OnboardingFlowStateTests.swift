@@ -215,7 +215,7 @@ struct OnboardingFlowStateTests {
         // case, +2 for plan 04.1-09's `.friendsList`/`.addFriend` cases, +2 for plan 04.1-11's
         // `.groupList`/`.groupDetail` cases, +2 for plan 04.1-13's `.createGoalEvent`/
         // `.goalEventRSVP` cases.
-        #expect(OnboardingStep.allCases.count == 35)
+        #expect(OnboardingStep.allCases.count == 36)
     }
 
     @Test("every new Phase 2 case is terminal: OnboardingRouter.nextStep returns nil for each")

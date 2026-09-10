@@ -99,6 +99,7 @@
 		6F677F522EFE67768F00A9D7 /* CardioCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C622C40022EFD69AF8FDD26 /* CardioCaptureTests.swift */; };
 		70ECB72057040BD011E0B020 /* FoodAllergenRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFFECF3591AFEB66F20B54C /* FoodAllergenRecord.swift */; };
 		78CD8AEF412C828310B306A6 /* SocialStepRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C44BD820BB2B52FBF13B601 /* SocialStepRegistration.swift */; };
+		794EB15523BC6C33D8270010 /* CompletionRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BEE89415806B8725442552 /* CompletionRegistration.swift */; };
 		79F7945ED6528A347F5440E3 /* CardioHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */; };
 		7B2BA951F0485E47F735EE0F /* MomentumViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ADF8216D8BDBB06DB47AA7 /* MomentumViewTests.swift */; };
 		7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */; };
@@ -147,6 +148,7 @@
 		BB94CBE689862C7016F67F0D /* Phase3CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0162DA40D97FEBE020DD15DC /* Phase3CoverageTests.swift */; };
 		BD8D88E3BBF3AA074CB3E533 /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */; };
 		BEAD3466EE45B0FFE621F497 /* ConditionChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA23ECBA18DC2F9130B96E /* ConditionChecklistView.swift */; };
+		BF21C8BAF3D55C6D3339A463 /* CompletionLoggingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13C470AFC140ECE9416AB9E /* CompletionLoggingView.swift */; };
 		BF441CA8CFFC7BFE0A7FA83D /* HomeHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB60B6780E7077E5D21BF8DE /* HomeHubTests.swift */; };
 		C1AF2ADF5B66142103586431 /* PlateCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A93EED8C397CC80EE1BD8A5 /* PlateCalculatorView.swift */; };
 		C3715F9621625BE1BD3A0D03 /* GroupsRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0EB304A99E21B93A277F398 /* GroupsRegistration.swift */; };
@@ -354,8 +356,10 @@
 		ADFFBFA5F220C3A206E70F8E /* CalibrationSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationSourceTests.swift; sourceTree = "<group>"; };
 		AF76F835361DCD132E11D5AC /* DietSectionIsolationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietSectionIsolationTests.swift; sourceTree = "<group>"; };
 		B040926DC5083605CE450DEF /* GlossaryTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTerm.swift; sourceTree = "<group>"; };
+		B13C470AFC140ECE9416AB9E /* CompletionLoggingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionLoggingView.swift; sourceTree = "<group>"; };
 		B1CABE7DA96965CE1CD4D85C /* GroupListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupListView.swift; sourceTree = "<group>"; };
 		B1ED692B282873FCA9DB4020 /* RouteComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteComparisonView.swift; sourceTree = "<group>"; };
+		B2BEE89415806B8725442552 /* CompletionRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionRegistration.swift; sourceTree = "<group>"; };
 		B3B8B78315E265C9CEE285C0 /* ClearanceInterstitialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearanceInterstitialView.swift; sourceTree = "<group>"; };
 		B443AE9D907345CDB04583F2 /* LocationFixProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFixProviding.swift; sourceTree = "<group>"; };
 		B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardioHistoryView.swift; sourceTree = "<group>"; };
@@ -622,6 +626,8 @@
 				0ECACB5EE194069E87C44F67 /* CompletionClient.swift */,
 				030EB76E6F19D5CEF0DB6779 /* CompletionDraft.swift */,
 				1D3501D9978BF99703911A55 /* CompletionLoggingModel.swift */,
+				B13C470AFC140ECE9416AB9E /* CompletionLoggingView.swift */,
+				B2BEE89415806B8725442552 /* CompletionRegistration.swift */,
 				B443AE9D907345CDB04583F2 /* LocationFixProviding.swift */,
 				A1C85DCF89B9C9909807C5A0 /* PhotoAttachment.swift */,
 				4AE17862544B3831EFCD8F26 /* StrippedPhotoAsset.swift */,
@@ -1063,6 +1069,8 @@
 				EA65B7E90AC03963C9EB04A9 /* CompletionClient.swift in Sources */,
 				9666BD7B79CFB368FD400EEE /* CompletionDraft.swift in Sources */,
 				8EF33ACBEE9F50D189EC45F0 /* CompletionLoggingModel.swift in Sources */,
+				BF21C8BAF3D55C6D3339A463 /* CompletionLoggingView.swift in Sources */,
+				794EB15523BC6C33D8270010 /* CompletionRegistration.swift in Sources */,
 				BEAD3466EE45B0FFE621F497 /* ConditionChecklistView.swift in Sources */,
 				B4937617E59E6662F5D61750 /* ConditionDisclaimerTag.swift in Sources */,
 				5436D81AC3EA8702C3F6C439 /* ConditionTagRecord.swift in Sources */,

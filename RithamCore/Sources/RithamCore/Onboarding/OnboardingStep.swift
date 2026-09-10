@@ -63,6 +63,21 @@
 // and `goalEventRSVP` only by that screen's own forward navigation once creation succeeds --
 // never by `OnboardingRouter` advancing into either -- terminal exactly like `groupList`/
 // `groupDetail`.
+//
+// `completionLogging` (below, plan 04.1-14) is an ordinary member of this same enum for the
+// identical CROSSGEN-05 reason as every other Phase 4.1 social surface -- terminal, never reached
+// by `OnboardingRouter` advancing into it. It is registered (so `StepRegistry.unregisteredSteps`
+// stays empty, matching `signInWithApple`/`privacyZones`'s own precedent for a step reached by a
+// path other than the router) but has no reachable entry point in this plan: the one screen that
+// could plausibly link to it, `GoalEventRSVPView` (plan 04.1-13), is structurally forbidden from
+// referencing anything completion-facing by its own committed test
+// (`GoalEventsUITests.goalEventRSVPViewReferencesNoCompletionFacingSurface`), per
+// `docs/group-events.md` §2's requirement that the pre-event RSVP screen never be reachable from,
+// or link toward, anything completion-facing. No Goal-Events list/detail screen exists yet either
+// (04.1-13-SUMMARY.md's own documented scope gap) to serve as an alternative entry point. A future
+// plan building that list/detail screen is expected to add the real `flow.open(.completionLogging)`
+// call site.
+
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -101,4 +116,5 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case groupDetail
     case createGoalEvent
     case goalEventRSVP
+    case completionLogging
 }
