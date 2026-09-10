@@ -48,34 +48,42 @@ struct GroupHistoryView: View, OnboardingStepPresenting {
         }
     }
 
+    /// Branches on `GroupFeedModel.RenderDecision`, never on `model.state` alone -- see that
+    /// type's own header comment for why a naive `state`-only switch would discard already-loaded
+    /// cards on a failed refresh.
     @ViewBuilder
     private var content: some View {
         if let model {
-            switch model.state {
-            case .idle, .loading:
+            switch model.renderDecision {
+            case .nothing:
                 EmptyView()
-            case .failed:
+            case .emptyMessage:
+                Text("No completions to show yet.")
+                    .font(RithamType.body)
+                    .foregroundStyle(RithamColor.paper)
+            case .failureMessage:
                 Text("Couldn't load this history. Check your connection and try again.")
                     .font(RithamType.body)
                     .foregroundStyle(RithamColor.paper)
                     .fixedSize(horizontal: false, vertical: true)
-            case .loaded:
-                if model.isEmpty {
-                    Text("No completions to show yet.")
-                        .font(RithamType.body)
-                        .foregroundStyle(RithamColor.paper)
-                } else {
-                    VStack(spacing: RithamSpacing.sm) {
-                        ForEach(model.items) { item in
-                            CompletionCard(item: item) { cheer in
-                                Task {
-                                    await model.toggleCheer(cheer, for: item, on: !currentlySent(cheer, on: item))
-                                }
+            case .cards, .cardsWithFailureBanner:
+                VStack(spacing: RithamSpacing.sm) {
+                    if model.renderDecision == .cardsWithFailureBanner {
+                        Text("Couldn't refresh this history. Showing what was last loaded.")
+                            .font(RithamType.body)
+                            .foregroundStyle(RithamColor.paper)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    ForEach(model.items) { item in
+                        CompletionCard(item: item) { cheer in
+                            Task {
+                                await model.toggleCheer(cheer, for: item, on: !currentlySent(cheer, on: item))
                             }
-                            .onAppear {
-                                if item.id == model.items.last?.id {
-                                    Task { await model.loadNextPage() }
-                                }
+                        }
+                        .onAppear {
+                            if item.id == model.items.last?.id {
+                                Task { await model.loadNextPage() }
                             }
                         }
                     }

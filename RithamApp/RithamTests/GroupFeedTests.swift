@@ -274,6 +274,78 @@ struct GroupFeedTests {
         #expect(model.items.isEmpty)
     }
 
+    // MARK: - Task 1: renderDecision never discards cards on screen for a failure (advisor review)
+
+    @Test("renderDecision keeps rendering cards, with a failure banner alongside them, when a refresh fails after a successful load")
+    func renderDecisionKeepsCardsAlongsideAFailureBanner() async throws {
+        nonisolated(unsafe) var call = 0
+        let client = makeClient { request in
+            call += 1
+            if call == 1 {
+                return jsonResponse(request.url!, body: self.pageJSON(items: [self.itemJSON(completionID: "c-1", postedAt: "2026-09-12T10:00:01Z")]))
+            }
+            throw URLError(.cannotConnectToHost)
+        }
+        let model = GroupFeedModel(source: .group(UUID()), client: client)
+
+        await model.loadFirstPage()
+        #expect(model.renderDecision == .cards)
+
+        await model.refresh()
+
+        #expect(model.state == .failed(.transport))
+        #expect(!model.items.isEmpty, "the refresh failure must not have cleared items")
+        #expect(model.renderDecision == .cardsWithFailureBanner, "a naive state-only branch would render the bare failure text here and discard the cards -- this is exactly what a poll-timer failure or a failed cheer tap must never do")
+    }
+
+    @Test("RenderDecision.decide covers every (state, hasItems) combination this model can reach")
+    func renderDecisionCoversEveryStateCombination() {
+        #expect(GroupFeedModel.RenderDecision.decide(state: .idle, hasItems: false) == .nothing)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .loading, hasItems: false) == .nothing)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .idle, hasItems: true) == .cards)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .loading, hasItems: true) == .cards)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .loaded, hasItems: true) == .cards)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .loaded, hasItems: false) == .emptyMessage)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .failed(.transport), hasItems: true) == .cardsWithFailureBanner)
+        #expect(GroupFeedModel.RenderDecision.decide(state: .failed(.transport), hasItems: false) == .failureMessage)
+    }
+
+    // MARK: - Task 1: loadNextPage() guards against a duplicate concurrent call
+
+    @Test("two concurrent loadNextPage() calls with the same cursor append the page only once")
+    func concurrentLoadNextPageCallsAppendOnlyOnce() async throws {
+        nonisolated(unsafe) var nextPageCallCount = 0
+        let client = makeClient { request in
+            if request.url?.query?.contains("cursor=") == true {
+                nextPageCallCount += 1
+                return jsonResponse(request.url!, body: self.pageJSON(items: [self.itemJSON(completionID: "c-2", postedAt: "2026-09-12T09:00:02Z")]))
+            }
+            return jsonResponse(request.url!, body: self.pageJSON(items: [self.itemJSON(completionID: "c-1", postedAt: "2026-09-12T10:00:01Z")], nextCursor: "cursor-1"))
+        }
+        let model = GroupFeedModel(source: .group(UUID()), client: client)
+        await model.loadFirstPage()
+
+        // isLoadingNextPage's guard is checked synchronously (before any `await`) inside
+        // loadNextPage() itself, so correctness here does not depend on network timing -- whichever
+        // of these two child tasks the MainActor executor runs first completes that synchronous
+        // guard-and-flag-set atomically before the other gets a turn, so the second call always
+        // observes the flag already set and returns as a no-op, regardless of scheduling order.
+        async let first = model.loadNextPage()
+        async let second = model.loadNextPage()
+        _ = await (first, second)
+
+        #expect(nextPageCallCount == 1, "a concurrent second call must be a no-op while the first is still in flight")
+        #expect(model.items.map(\.completionID) == ["c-1", "c-2"], "the next page must appear exactly once, not duplicated")
+    }
+
+    // MARK: - Task 2: completedAt/postedAt parsing tolerates a fractional-seconds timestamp
+
+    @Test("CompletionCard.parseTimestamp accepts both a whole-second and a fractional-seconds RFC3339 timestamp")
+    func parseTimestampAcceptsBothTimestampShapes() {
+        #expect(CompletionCard.parseTimestamp("2026-09-12T10:00:00Z") != nil, "a whole-second timestamp (this file's own fixtures) must still parse")
+        #expect(CompletionCard.parseTimestamp("2026-09-12T10:00:00.123456Z") != nil, "a real Postgres timestamptz round-tripped through Go's RFC3339Nano marshaling commonly carries fractional seconds -- a bare ISO8601DateFormatter alone rejects this shape and would silently render no date at all")
+    }
+
     // MARK: - Task 1: toggling a cheer updates only that item's own flag
 
     @Test("toggleCheer updates only the target item's own cheer flag, and no other item, and no other flag on that item")

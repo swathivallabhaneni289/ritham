@@ -48,6 +48,48 @@ final class GroupFeedModel {
         case failed(SocialAPIError)
     }
 
+    /// What a presenting view should render for a given `(state, hasItems)` pair -- a pure,
+    /// `nonisolated` decision function (matching `MomentumProgressBlocks.blockStates`'s own
+    /// precedent for view-adjacent-but-testable-without-rendering logic) so `GroupFeedView`/
+    /// `GroupHistoryView` never re-derive this switch themselves and risk diverging.
+    ///
+    /// **The one rule this exists to enforce: a failure must never discard cards already on
+    /// screen.** The poll timer calls `loadFirstPage()` every `pollInterval` seconds, and
+    /// `loadFirstPage()` sets `state = .loading` on entry -- a naive view that branches on `state`
+    /// alone would blank the entire feed to nothing on every single poll tick, and again to a bare
+    /// error line on any poll failure or failed cheer tap. `hasItems` is checked first for exactly
+    /// this reason: existing items always render (T-04.1-98's own mitigation, "a failure never
+    /// clears loaded items," is a rendering guarantee, not only a model-state guarantee).
+    enum RenderDecision: Equatable {
+        /// Nothing has loaded yet and nothing has failed -- render nothing (a first paint or an
+        /// in-flight first load with no prior items).
+        case nothing
+        /// Items exist and there is no active failure -- render the card stack alone.
+        case cards
+        /// Items exist, but the most recent load/action failed -- render the cards, plus the
+        /// failure text alongside them, never in place of them.
+        case cardsWithFailureBanner
+        /// No items exist, and the load succeeded -- render the empty-state text.
+        case emptyMessage
+        /// No items exist, and the load failed -- render the failure text.
+        case failureMessage
+
+        static func decide(state: LoadState, hasItems: Bool) -> RenderDecision {
+            switch (state, hasItems) {
+            case (.idle, false), (.loading, false):
+                return .nothing
+            case (.idle, true), (.loading, true), (.loaded, true):
+                return .cards
+            case (.failed, true):
+                return .cardsWithFailureBanner
+            case (.loaded, false):
+                return .emptyMessage
+            case (.failed, false):
+                return .failureMessage
+            }
+        }
+    }
+
     /// The production poll cadence. Tests inject a much shorter interval through this type's own
     /// initializer so start/stop behavior is provable without a real 30-second wait.
     static let pollInterval: TimeInterval = 30
@@ -60,8 +102,16 @@ final class GroupFeedModel {
     private let client: FeedClient
     private let pollInterval: TimeInterval
     private var pollTask: Task<Void, Never>?
+    /// Guards `loadNextPage()` against a duplicate concurrent call -- `.onAppear` on the last
+    /// visible card can fire more than once before the first request returns, and two overlapping
+    /// calls with the same cursor would otherwise append the same page twice.
+    private var isLoadingNextPage = false
 
     var isEmpty: Bool { items.isEmpty }
+
+    var renderDecision: RenderDecision {
+        RenderDecision.decide(state: state, hasItems: !items.isEmpty)
+    }
 
     init(
         source: FeedSource,
@@ -97,9 +147,13 @@ final class GroupFeedModel {
     /// Appends the next page after `items`, in the order received -- never sorted, reversed, or
     /// re-keyed (see this type's own header comment). A `nil` or already-exhausted cursor makes
     /// this a no-op, matching `feed.Service`'s own "`NextCursor` empty once the caller has reached
-    /// the end" contract.
+    /// the end" contract. Also a no-op while a previous call is still in flight, so a view calling
+    /// this from `.onAppear` on the last visible card (which can fire more than once before the
+    /// first request returns) can never append the same page twice.
     func loadNextPage() async {
-        guard let cursor = nextCursor, !cursor.isEmpty else { return }
+        guard let cursor = nextCursor, !cursor.isEmpty, !isLoadingNextPage else { return }
+        isLoadingNextPage = true
+        defer { isLoadingNextPage = false }
         do {
             let page = try await fetchPage(cursor: cursor)
             items.append(contentsOf: page.items)

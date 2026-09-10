@@ -21,14 +21,29 @@ struct CompletionCard: View {
     let item: FeedItem
     let onToggleCheer: (Cheer) -> Void
 
-    private static let dateFormatter = ISO8601DateFormatter()
+    /// Go's `time.Time` marshals as RFC3339Nano, and Postgres `timestamptz` rows commonly carry
+    /// fractional seconds -- a real `completedAt`/`postedAt` value is often
+    /// `"2026-09-12T10:00:00.123456Z"`, not the whole-second `"...T10:00:00Z"` shape a bare
+    /// `ISO8601DateFormatter()` alone accepts. Tries the fractional-seconds format first, then
+    /// falls back to the whole-second format, so this card never silently renders no date at all
+    /// for a normal, real-world server timestamp -- verified directly against Foundation before
+    /// this fallback was added; a bare formatter parses the first shape but returns `nil` for the
+    /// second, and vice versa for a fractional-only formatter.
+    nonisolated static func parseTimestamp(_ raw: String) -> Date? {
+        let withFractionalSeconds = ISO8601DateFormatter()
+        withFractionalSeconds.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = withFractionalSeconds.date(from: raw) {
+            return date
+        }
+        return ISO8601DateFormatter().date(from: raw)
+    }
 
     private var activityType: ActivityType {
         ActivityType(rawValue: item.activityType)
     }
 
     private var completedDate: Date? {
-        Self.dateFormatter.date(from: item.completedAt)
+        Self.parseTimestamp(item.completedAt)
     }
 
     /// The card's one body sentence, composed only through `SocialCopy.Feed`'s two overloads --
