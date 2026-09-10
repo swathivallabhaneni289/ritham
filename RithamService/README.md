@@ -59,13 +59,23 @@ This phase introduces seven environment variables. None has a production value y
 | `RITHAM_OBJECT_STORE_SECRET_KEY` | Object store secret key | `ritham-dev-secret` |
 | `RITHAM_OBJECT_STORE_BUCKET_PRIVATE` | Bucket for original, EXIF-intact photos (private tier) | `ritham-photos-private` |
 | `RITHAM_OBJECT_STORE_BUCKET_SHARED` | Bucket for stripped, group-visible photos (shared tier) | `ritham-photos-shared` |
+| `RITHAM_CONTACT_MATCH_SALT` | Fixed, server-side application salt HMAC-applied to every contact-match digest before it is stored or queried (`internal/friends.ContactMatchSaltFromEnv`, read once at startup) | `ritham-dev-contact-match-salt-DO-NOT-USE-IN-PRODUCTION` (also the default when unset -- **changing this in a real deployment invalidates every previously stored digest**, since a digest salted under the old value can never match one salted under the new value again) |
 
 The object-store four are declared and documented here; they are consumed starting in plan
 04.1-04.
 
 If `RITHAM_DATABASE_URL` is unset, the service still starts and serves the workout-plan route --
 only the four identity routes (`POST /v1/identity/apple`, `POST /v1/identity/revoke`,
-`GET /v1/identity/me`, `PUT /v1/identity/display-name`) are left unregistered.
+`GET /v1/identity/me`, `PUT /v1/identity/display-name`), the two photo routes, and the ten friends
+routes are left unregistered.
+
+The ten friends routes (`internal/friends`, HOUSEHOLD-02/GROUPEVENTS-01 -- the mutual friend
+graph, invite links, and contact matching) all sit behind `RequireSession`, matching the identity
+and photo routes' degrade-gracefully precedent when `RITHAM_DATABASE_URL` is unset:
+`POST /v1/friends/requests`, `POST /v1/friends/requests/{id}/accept`,
+`POST /v1/friends/requests/{id}/decline`, `GET /v1/friends`, `GET /v1/friends/requests`,
+`DELETE /v1/friends/{userId}`, `POST /v1/invites`, `POST /v1/invites/redeem`,
+`PUT /v1/friends/contact-match`, `POST /v1/friends/contact-match/query`.
 
 ## Running migrations
 

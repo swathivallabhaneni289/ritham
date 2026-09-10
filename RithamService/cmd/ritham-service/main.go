@@ -21,6 +21,12 @@
 // from the RITHAM_OBJECT_STORE_* env vars (README.md); either being unavailable leaves the photo
 // routes unregistered (404) rather than crashing the process, matching the identity routes'
 // degrade-gracefully precedent.
+//
+// Ten friends routes now exist too (HOUSEHOLD-02, GROUPEVENTS-01): the mutual friend graph,
+// invite links, and contact matching. They depend on the same database as identity; contact
+// matching additionally reads RITHAM_CONTACT_MATCH_SALT (README.md) once at startup. A missing
+// database leaves the friends routes unregistered (404), matching every other route group's
+// degrade-gracefully precedent.
 package main
 
 import (
@@ -30,6 +36,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/httpapi"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/photo"
@@ -61,10 +68,11 @@ func main() {
 	st := buildStore()
 	idsvc := buildIdentityService(st)
 	photosvc, objectStore := buildPhotoService(st)
+	friendssvc := buildFriendsService(st)
 
 	server := &http.Server{
 		Addr:         addr,
-		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore),
+		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc),
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,
@@ -137,4 +145,16 @@ func buildPhotoService(st *store.Store) (*photo.Service, *photo.ObjectStore) {
 	}
 
 	return photo.New(st, objectStore, time.Now), objectStore
+}
+
+// buildFriendsService constructs the friends.Service backing the ten friends routes, or returns
+// nil when st is nil (no database configured at startup), matching buildIdentityService's and
+// buildPhotoService's degrade-gracefully precedent. The contact-match salt is read from
+// RITHAM_CONTACT_MATCH_SALT exactly once here, not per request (friends.New's own doc comment).
+func buildFriendsService(st *store.Store) *friends.Service {
+	if st == nil {
+		return nil
+	}
+
+	return friends.New(st, time.Now, friends.ContactMatchSaltFromEnv())
 }

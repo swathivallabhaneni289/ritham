@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/photo"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/plan"
@@ -26,7 +27,14 @@ const maxRequestBodyBytes = 1 << 16 // 64 KiB
 // idsvc must also be non-nil, since these routes sit behind RequireSession) for them to be
 // registered -- otherwise they are left unregistered (404), matching the identity routes' own
 // missing-database degrade-gracefully behavior rather than wiring a nil receiver.
-func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore) *http.ServeMux {
+//
+// friendssvc backs the ten friends routes (HOUSEHOLD-02, GROUPEVENTS-01): the mutual friend
+// graph, invite links, and contact matching. It must be non-nil (and idsvc must also be non-nil)
+// for these routes to be registered, matching the identity and photo routes' own
+// degrade-gracefully behavior -- not in Task 3's own stated file list for this plan, but required
+// by NewMux's own signature once friends_handler.go's ten routes need wiring (Rule 3, direct
+// precedent: 04.1-03's NewMux gaining idsvc).
+func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/workout-plan", handleWorkoutPlan)
 
@@ -44,6 +52,22 @@ func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo
 			// route, unlike sign-in above (T-04.1-13, T-04.1-19).
 			mux.HandleFunc("POST /v1/photos", RequireSession(idsvc, handleUploadPhoto(photosvc, objectStore)))
 			mux.HandleFunc("GET /v1/photos/{id}", RequireSession(idsvc, handleFetchPhoto(photosvc, objectStore)))
+		}
+
+		if friendssvc != nil {
+			// All ten friends routes sit behind RequireSession -- there is no unauthenticated
+			// friends route; authorization for every mutating call comes from the session's own
+			// user id, never a request body field (T-04.1-35).
+			mux.HandleFunc("POST /v1/friends/requests", RequireSession(idsvc, handleSendFriendRequest(friendssvc)))
+			mux.HandleFunc("POST /v1/friends/requests/{id}/accept", RequireSession(idsvc, handleAcceptFriendRequest(friendssvc)))
+			mux.HandleFunc("POST /v1/friends/requests/{id}/decline", RequireSession(idsvc, handleDeclineFriendRequest(friendssvc)))
+			mux.HandleFunc("GET /v1/friends", RequireSession(idsvc, handleListFriends(friendssvc)))
+			mux.HandleFunc("GET /v1/friends/requests", RequireSession(idsvc, handleIncomingFriendRequests(friendssvc)))
+			mux.HandleFunc("DELETE /v1/friends/{userId}", RequireSession(idsvc, handleUnfriend(friendssvc)))
+			mux.HandleFunc("POST /v1/invites", RequireSession(idsvc, handleCreateInvite(friendssvc)))
+			mux.HandleFunc("POST /v1/invites/redeem", RequireSession(idsvc, handleRedeemInvite(friendssvc)))
+			mux.HandleFunc("PUT /v1/friends/contact-match", RequireSession(idsvc, handleSetContactMatchOptIn(friendssvc)))
+			mux.HandleFunc("POST /v1/friends/contact-match/query", RequireSession(idsvc, handleMatchContacts(friendssvc)))
 		}
 	}
 

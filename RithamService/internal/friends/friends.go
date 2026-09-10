@@ -25,8 +25,8 @@ type ConnectionPath string
 
 const (
 	PathContactMatch ConnectionPath = "contact_match"
-	PathInviteLink    ConnectionPath = "invite_link"
-	PathDirectShare   ConnectionPath = "direct_share"
+	PathInviteLink   ConnectionPath = "invite_link"
+	PathDirectShare  ConnectionPath = "direct_share"
 )
 
 // requestState is the closed set of states a friend_requests row can hold. Unexported: callers
