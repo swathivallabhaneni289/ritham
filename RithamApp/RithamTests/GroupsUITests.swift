@@ -53,13 +53,27 @@ private func jsonResponse(_ url: URL, status: Int = 200, body: String) -> (HTTPU
     return (response, body.data(using: .utf8)!)
 }
 
+// Nested inside `KeychainTouchingSuites` (`KeychainTouchingSuites.swift`) because this suite
+// writes to the real, process-shared Keychain via `SessionStore` -- it must be ordered relative
+// to every other Keychain-touching suite, not only internally. See that file's header comment.
+extension KeychainTouchingSuites {
+
 @MainActor
 @Suite("GroupsUITests", .serialized)
 struct GroupsUITests {
 
+    /// Deliberately does NOT call `SessionStore().clear()` here (unlike `FriendsUITests.init()`'s
+    /// own precedent). `SessionStore` is backed by the real Keychain, shared process-wide, not
+    /// test-isolated -- a `clear()` here is a destructive write that can land between another
+    /// concurrently-running suite's own store-then-assert pair (Swift Testing runs unrelated
+    /// suites concurrently by default; `.serialized` only orders tests *within* this suite). Every
+    /// test in this file that needs a session gets one through `makeClientAndSession`, which
+    /// stores its own token immediately before use -- no test here depends on the Keychain
+    /// starting empty, so the clear was redundant and only added to this suite's own share of a
+    /// real cross-suite race (observed against `SocialIdentityTests` during this plan's own
+    /// full-target verification).
     init() {
         GroupsStubURLProtocol.reset()
-        SessionStore().clear()
     }
 
     private func makeClientAndSession(handler: @escaping (URLRequest) throws -> (HTTPURLResponse, Data)) -> (GroupsClient, SessionStore) {
@@ -307,4 +321,6 @@ struct GroupsUITests {
         let source = try nonCommentSource(of: "Home/HomeHubView.swift")
         #expect(source.contains("groupList"), "HomeHubView.swift no longer references .groupList")
     }
+}
+
 }

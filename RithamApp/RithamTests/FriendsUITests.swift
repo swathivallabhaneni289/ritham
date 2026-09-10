@@ -52,6 +52,14 @@ private func jsonResponse(_ url: URL, status: Int = 200, body: String) -> (HTTPU
     return (response, body.data(using: .utf8)!)
 }
 
+// Nested inside `KeychainTouchingSuites` (`KeychainTouchingSuites.swift`, plan 04.1-11 -- Rule 3
+// blocking fix): this suite writes to the real, process-shared Keychain via `SessionStore`
+// (`init()`'s `SessionStore().clear()` and every test's own `sessionStore.store(...)`), which
+// raced against `SocialIdentityTests` during plan 04.1-11's full-target verification. Must be
+// ordered relative to every other Keychain-touching suite, not only internally -- see that file's
+// header comment for the full mechanism.
+extension KeychainTouchingSuites {
+
 @MainActor
 @Suite("FriendsUITests", .serialized)
 struct FriendsUITests {
@@ -286,6 +294,8 @@ struct FriendsUITests {
         #expect(!source.contains("TextField"), "AddFriendView.swift contains a text-field construction -- this screen has no field for typing a person's name")
         #expect(!source.contains("Toggle"), "AddFriendView.swift contains a platform switch construction -- this app's binary preferences use the two-option chip control, never SwiftUI's native switch")
     }
+}
+
 }
 
 private extension URLRequest {

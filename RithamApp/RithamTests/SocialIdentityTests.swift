@@ -47,6 +47,16 @@ private func makeStubbedSession() -> URLSession {
     return URLSession(configuration: config)
 }
 
+// Nested inside `KeychainTouchingSuites` (`KeychainTouchingSuites.swift`, plan 04.1-11 -- Rule 3
+// blocking fix): this suite writes to the real, process-shared Keychain via `SessionStore`
+// (`init()`'s `SessionStore().clear()` and several tests' own `sessionStore.store(...)`), which
+// raced against this suite's own bearer-header assertion during plan 04.1-11's full-target
+// verification (`requestCarriesBearerHeaderWhenTokenStored()` failed nondeterministically in the
+// full-target run while passing every scoped run). Must be ordered relative to every other
+// Keychain-touching suite, not only internally -- see that file's header comment for the full
+// mechanism.
+extension KeychainTouchingSuites {
+
 @MainActor
 @Suite("SocialIdentityTests", .serialized)
 struct SocialIdentityTests {
@@ -235,4 +245,6 @@ struct SocialIdentityTests {
             #expect(nonCommentSource.contains(requiredSymbol), "HomeHubView.swift no longer references \(requiredSymbol)")
         }
     }
+}
+
 }
