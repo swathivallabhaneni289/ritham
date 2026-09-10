@@ -279,6 +279,32 @@ struct GoalEventsUITests {
             .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
             .joined(separator: "\n")
     }
+
+    // MARK: - Task 3: the RSVP screen carries no ring/arc, and no completion-facing cross-reference
+
+    @Test("GoalEventRSVPView's comment-filtered source constructs no ring, trim-based arc, or Arc shape")
+    func goalEventRSVPViewConstructsNoRingOrArc() throws {
+        let source = try nonCommentSource(of: "Social/GoalEvents/GoalEventRSVPView.swift")
+        #expect(!source.contains("Circle()"), "GoalEventRSVPView.swift constructs a Circle() -- no ring/arc form is permitted on this screen")
+        #expect(!source.contains(".trim(from"), "GoalEventRSVPView.swift constructs a trim-based arc -- no ring/arc form is permitted on this screen")
+        #expect(!source.contains("Arc("), "GoalEventRSVPView.swift constructs an Arc(...) shape -- no ring/arc form is permitted on this screen")
+    }
+
+    /// **Verifies only the RSVP side of this plan's own cross-reference requirement.** No
+    /// completion-facing screen exists anywhere in this codebase's client yet (plan 04.1-12
+    /// shipped only the Go-side feed routes) -- there is nothing on the other side of this
+    /// cross-reference to assert against yet. The reciprocal half (a future completion-facing
+    /// screen never referencing `.goalEventRSVP` or `GoalEventRSVPView`) must be added once that
+    /// screen is built; this test's own header comment documents the gap so a future editor does
+    /// not read this as both halves already proven.
+    @Test("GoalEventRSVPView's source references no completion-facing step or type")
+    func goalEventRSVPViewReferencesNoCompletionFacingSurface() throws {
+        let source = try nonCommentSource(of: "Social/GoalEvents/GoalEventRSVPView.swift")
+        let lowercased = source.lowercased()
+        for token in ["completion", "completions"] {
+            #expect(!lowercased.contains(token), "GoalEventRSVPView.swift references '\(token)' -- this screen must never route to or mention a completion-facing surface")
+        }
+    }
 }
 
 }
