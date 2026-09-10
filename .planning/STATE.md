@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-09-PLAN.md
-last_updated: "2026-09-10T14:37:51.144Z"
+stopped_at: Completed 04.1-10-PLAN.md
+last_updated: "2026-09-10T15:21:38.300Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 52
+  completed_plans: 53
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 10 of 17
+Plan: 11 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -106,6 +106,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P07 | 25min | 3 tasks | 16 files |
 | Phase 04.1 P08 | 45min | 3 tasks | 11 files |
 | Phase 04.1 P09 | 40min | 3 tasks | 16 files |
+| Phase 04.1 P10 | 65min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -243,6 +244,9 @@ Recent decisions affecting current work:
 - [Phase 04.1-09]: Backend fix (Rule 3): Incoming's query joins users so FriendRequestResponse carries the requester's display name -- neither Request nor the wire type had one, blocking the plan's own must_haves truth that an incoming request shows a name.
 - [Phase 04.1-09]: Contact-matching opt-in records the flag only and submits no digests (Rule 1 correction of the plan's own text): verified against contactmatch.go that MatchContacts searches contact_match_digests, written only by a user's own identifier submission -- this app has no source for one yet, so requesting Contacts access and submitting address-book digests would misuse the field for a query guaranteed to return zero matches.
 - [Phase 04.1-09]: AddFriendView's 'Invite link or QR code' and 'Share directly' rows both create an invite via FriendsModel.createInvite() and present InviteQRView, differing only in whether the system share sheet auto-presents -- FriendConnectionPath.directShare stays unwired since a genuine in-person mechanism needs URL-scheme/universal-link handling this app doesn't have.
+- [Phase ?]: 04.1-10: Exported groups.DBTX (a true type alias for the pre-existing unexported dbtx), verified against the compiler first, so internal/events can implement groups.CompletionVisibility from outside package groups
+- [Phase ?]: 04.1-10: PhotoOwnershipChecker fails closed (every unverified photo reference rejected) by default, unlike groups.CompletionVisibility's fail-open no-op precedent
+- [Phase ?]: 04.1-10: Added ErrPlaceNameTooLong, ErrInvalidTarget, and ErrInvalidEventWindow sentinels beyond the plan's own must_haves list to close real validation gaps the plan's behavior list implied but didn't name
 
 ### Pending Todos
 
@@ -311,8 +315,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T14:37:51.139Z
-Stopped at: Completed 04.1-09-PLAN.md
+Last session: 2026-09-10T15:21:38.294Z
+Stopped at: Completed 04.1-10-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
