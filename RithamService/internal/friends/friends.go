@@ -96,13 +96,21 @@ type dbtx interface {
 
 // Service is the friends domain's single entry point.
 type Service struct {
-	store *store.Store
-	now   func() time.Time
+	store            *store.Store
+	now              func() time.Time
+	contactMatchSalt []byte
 }
 
-// New constructs a Service.
-func New(st *store.Store, now func() time.Time) *Service {
-	return &Service{store: st, now: now}
+// New constructs a Service. contactMatchSalt is the fixed, server-side application salt
+// contactmatch.go applies to every submitted contact digest before it is stored or matched
+// (docs/group-events.md §1: "not a plain dictionary of hashed identifiers") -- read once here at
+// construction, not per call, so a salt misconfiguration fails loudly at startup rather than
+// silently changing what matches mid-run, and so tests stay hermetic. This parameter is not in
+// this plan's <artifacts_produced> signature for New; it is structurally required by Task 2's own
+// salting requirement, mirroring 04.1-03's identity.New gaining an audience parameter for the
+// same reason (Rule 3).
+func New(st *store.Store, now func() time.Time, contactMatchSalt []byte) *Service {
+	return &Service{store: st, now: now, contactMatchSalt: contactMatchSalt}
 }
 
 // SendRequest creates a pending friend request from fromUserID to toUserID. It creates no

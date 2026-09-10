@@ -49,7 +49,7 @@ func newTestHarness(t *testing.T) *testHarness {
 	t.Cleanup(st.Close)
 
 	h := &testHarness{store: st, clock: time.Date(2026, 9, 9, 12, 0, 0, 0, time.UTC)}
-	h.svc = New(st, h.now)
+	h.svc = New(st, h.now, []byte("test-salt-fixed-across-this-test-binary"))
 	return h
 }
 
