@@ -251,6 +251,41 @@ struct FriendsUITests {
 
         #expect(capturedDigestCount == 0)
     }
+
+    // MARK: - Task 3: AddFriendView source-level assertions (Phase4CoverageTests style)
+
+    /// Resolves `RithamApp/Ritham/` relative to this file's own `#filePath`, the same technique
+    /// `SocialIdentityTests.rithamDirectory`/`Phase4CoverageTests.rithamDirectory` use.
+    private var rithamDirectory: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Ritham")
+    }
+
+    private func nonCommentSource(of relativePath: String) throws -> String {
+        let fileURL = rithamDirectory.appendingPathComponent(relativePath)
+        let source = try String(contentsOf: fileURL, encoding: .utf8)
+        return source
+            .components(separatedBy: .newlines)
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+            .joined(separator: "\n")
+    }
+
+    @Test("AddFriendView references all three SocialCopy.AddFriend connection-path identifiers, never re-authored copy")
+    func addFriendViewReferencesAllThreeConnectionPathCopyIdentifiers() throws {
+        let source = try nonCommentSource(of: "Social/Friends/AddFriendView.swift")
+        for identifier in ["SocialCopy.AddFriend.contactMatchingRow", "SocialCopy.AddFriend.inviteLinkRow", "SocialCopy.AddFriend.inPersonRow"] {
+            #expect(source.contains(identifier), "AddFriendView.swift no longer references \(identifier)")
+        }
+    }
+
+    @Test("AddFriendView constructs no text-field and no platform switch control")
+    func addFriendViewConstructsNoTextFieldOrPlatformSwitch() throws {
+        let source = try nonCommentSource(of: "Social/Friends/AddFriendView.swift")
+        #expect(!source.contains("TextField"), "AddFriendView.swift contains a text-field construction -- this screen has no field for typing a person's name")
+        #expect(!source.contains("Toggle"), "AddFriendView.swift contains a platform switch construction -- this app's binary preferences use the two-option chip control, never SwiftUI's native switch")
+    }
 }
 
 private extension URLRequest {

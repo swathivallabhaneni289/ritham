@@ -22,6 +22,8 @@
 	<string>Ritham uses motion data to measure your movement during a workout you start, and to detect when you begin walking or running so it can offer to log it. Nothing is logged automatically -- you always confirm first.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location is used to measure your pace, distance, elevation, and splits during a workout you start, and only while that workout is running. Declining it leaves manual timing fully available.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Ritham can use your contacts to help you find friends who have also chosen to be found this way. Nothing about your contacts ever leaves your device unless you turn this on.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

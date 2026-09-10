@@ -652,11 +652,10 @@ struct HomeHubView: View {
 
     // ACCOUNT-01's opt-in social entry point. Reachable only by explicit choice, here, never during
     // onboarding and never on the path to core tracking (T-04.1-28) -- signed-out state shows the
-    // opt-in framing and a CTA into `.signInWithApple`; signed-in state shows only the stored
-    // display name, nothing more. This section's own destinations -- the friends list and the
-    // groups list -- are not yet attached: they arrive in plans 04.1-09 and 04.1-11, at which point
-    // a signed-in tap here should route to one of them rather than doing nothing. Recorded here as
-    // an explicit forward handoff for those plans, not an unstated gap.
+    // opt-in framing and a CTA into `.signInWithApple`; signed-in state shows the stored display
+    // name plus a CTA into `.friendsList` (plan 04.1-09, closing the handoff `04.1-05-SUMMARY.md`
+    // recorded as this section's own forward-declared gap). The groups list destination (plan
+    // 04.1-11) is still unattached -- that plan's own scope, not this one's.
     @ViewBuilder
     private var socialSection: some View {
         HStack(spacing: RithamSpacing.sm) {
@@ -670,6 +669,10 @@ struct HomeHubView: View {
             Text(socialDisplayName)
                 .font(RithamType.body)
                 .foregroundStyle(RithamColor.paper)
+
+            SecondaryCTAButton(title: HomeHubView.socialSectionHeading) {
+                flow.open(.friendsList)
+            }
         } else {
             Text(SocialCopy.SignInWithApple.body)
                 .font(RithamType.body)
@@ -724,12 +727,19 @@ extension HomeHubView {
     /// `flow.open(.signInWithApple)` in the signed-out branch, so `isSignedIn` gates its presence
     /// here the same way `movementSnapshotOptIn` gates `.movementSnapshot` above -- defaulted to
     /// `false` so every pre-existing call site (none of which is signed in) is unaffected.
+    /// `.friendsList` (plan 04.1-09) is the inverse: `socialSection`'s CTA only calls
+    /// `flow.open(.friendsList)` in the signed-in branch, so it replaces `.signInWithApple` in the
+    /// returned set rather than adding to it -- a session is never both signed out and signed in
+    /// at once. `.addFriend` is not listed here: it is reachable only from `FriendsListView`'s own
+    /// CTA, never a direct call inside this file.
     nonisolated static func routingSteps(movementSnapshotOptIn: Bool, isSignedIn: Bool = false) -> [OnboardingStep] {
         var steps: [OnboardingStep] = [
             .sleepCheckIn, .cardioActivityPicker, .cardioHistory,
             .strengthSession, .strengthHistory, .guidance,
         ]
-        if !isSignedIn {
+        if isSignedIn {
+            steps.append(.friendsList)
+        } else {
             steps.append(.signInWithApple)
         }
         if showsMovementSnapshotEntry(optIn: movementSnapshotOptIn) {

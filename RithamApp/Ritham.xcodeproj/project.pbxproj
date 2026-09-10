@@ -36,6 +36,7 @@
 		2E06F0E6556BBFE8231F5DA2 /* FriendsRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B726CF385EC5DC71A1F95E1 /* FriendsRegistration.swift */; };
 		2E093B3D5F52D25A10E92A81 /* StepRegistrySerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0DB918D6F79ADB63C045BA /* StepRegistrySerialization.swift */; };
 		2E8A24FD4F574B15EFA3B753 /* DisclaimerTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19602E32E53C3C028C2D45D /* DisclaimerTagTests.swift */; };
+		2F08DB3F01754753BD655495 /* InviteQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E6CAABA66B22549CF4AD721 /* InviteQRView.swift */; };
 		2FFF9D0FA7BC7D8F75DF9DB2 /* ReScreenBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B9B71125480D87A8BF2F5 /* ReScreenBanner.swift */; };
 		33A9D29811C7B621CE86D04F /* ScreeningOpeningDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09805A56977119359C6D3ABC /* ScreeningOpeningDisclaimerView.swift */; };
 		33C8E3553A38465CE0D88307 /* StrengthLoggingRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E936218B6545E5752A18E249 /* StrengthLoggingRegistration.swift */; };
@@ -244,6 +245,7 @@
 		44DB5B1B4DC03693A7EC213B /* ExercisePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePickerView.swift; sourceTree = "<group>"; };
 		479FF24BCF57EE3DDA99352F /* GlossaryTermTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryTermTests.swift; sourceTree = "<group>"; };
 		48BF8DBF43953B6B81EEC52C /* MomentumProgressBlocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumProgressBlocks.swift; sourceTree = "<group>"; };
+		4E6CAABA66B22549CF4AD721 /* InviteQRView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteQRView.swift; sourceTree = "<group>"; };
 		4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataStore.swift; sourceTree = "<group>"; };
 		4FFC7B214A715271F098A892 /* EditAnswerFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAnswerFlow.swift; sourceTree = "<group>"; };
 		5398A0EBE3232277DF47F768 /* GuidanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceView.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				EEF89C8BCD4DC9616DCEAD01 /* FriendsListView.swift */,
 				DEE89B5286EA9F954F78CCB9 /* FriendsModel.swift */,
 				7B726CF385EC5DC71A1F95E1 /* FriendsRegistration.swift */,
+				4E6CAABA66B22549CF4AD721 /* InviteQRView.swift */,
 			);
 			path = Friends;
 			sourceTree = "<group>";
@@ -986,6 +989,7 @@
 				E1FB7E5F23927CD2367FF429 /* HomeHubView.swift in Sources */,
 				C94BE80B05E101C50F2E2F52 /* HomeStepView.swift in Sources */,
 				3F09E8DFFFCF270F1A58B035 /* IdentityClient.swift in Sources */,
+				2F08DB3F01754753BD655495 /* InviteQRView.swift in Sources */,
 				BAF3872DA6BA426A08D9255F /* LiftSessionRecord.swift in Sources */,
 				F874FB2134A24BF9B64F2A05 /* LiftSessionRecorder.swift in Sources */,
 				FAC67EBCA7A58642957FE497 /* LiftSetRecord.swift in Sources */,
