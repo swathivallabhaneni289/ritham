@@ -187,6 +187,123 @@ struct PrivacyZoneTests {
         }
         #expect(!sawForbiddenField, "PrivacyZoneRecord must belong to the device, never to a user/event/group/completion")
     }
+
+    // MARK: - Task 2: capture, zone-check, geocode, discard ordering
+
+    @Test("with no fix available, the outcome is no location and the resolver is never called")
+    func noFixYieldsNoneWithoutCallingResolver() async {
+        let spy = SpyPlaceNameResolver()
+        let outcome = await LocationAttachment.resolveSharedPlaceName(fix: nil, zones: [], geocoder: spy)
+        #expect(outcome == .none)
+        let callCount = await spy.callCount
+        #expect(callCount == 0)
+    }
+
+    @Test("a fix inside a suppressing zone suppresses the outcome and never calls the resolver")
+    func fixInsideSuppressingZoneNeverCallsResolver() async {
+        let centre = CLLocationCoordinate2D(latitude: 10, longitude: 10)
+        let zone = PrivacyZone(label: "Home", centre: centre, radiusMetres: 100, effect: .suppress)
+        let spy = SpyPlaceNameResolver(result: "Should never be returned")
+
+        let outcome = await LocationAttachment.resolveSharedPlaceName(fix: centre, zones: [zone], geocoder: spy)
+
+        #expect(outcome == .suppressedByZone)
+        let callCount = await spy.callCount
+        #expect(callCount == 0, "the resolver must never be constructed or called for a suppress-zone match")
+    }
+
+    @Test("a fix inside a generalizing zone carries the zone's own label and never calls the resolver")
+    func fixInsideGeneralizingZoneCarriesZoneLabelWithoutCallingResolver() async {
+        let centre = CLLocationCoordinate2D(latitude: 20, longitude: 20)
+        let zone = PrivacyZone(label: "Workplace", centre: centre, radiusMetres: 100, effect: .generalize)
+        let spy = SpyPlaceNameResolver(result: "Should never be returned")
+
+        let outcome = await LocationAttachment.resolveSharedPlaceName(fix: centre, zones: [zone], geocoder: spy)
+
+        #expect(outcome == .generalizedByZone("Workplace"))
+        let callCount = await spy.callCount
+        #expect(callCount == 0, "the resolver must never be constructed or called for a generalize-zone match")
+    }
+
+    @Test("a fix outside every zone calls the resolver exactly once and carries its returned name")
+    func fixOutsideEveryZoneCallsResolverExactlyOnce() async {
+        let zoneCentre = CLLocationCoordinate2D(latitude: 30, longitude: 30)
+        let zone = PrivacyZone(label: "Home", centre: zoneCentre, radiusMetres: 50, effect: .suppress)
+        let farFix = CLLocationCoordinate2D(latitude: 40, longitude: 40)
+        let spy = SpyPlaceNameResolver(result: "Griffith Park")
+
+        let outcome = await LocationAttachment.resolveSharedPlaceName(fix: farFix, zones: [zone], geocoder: spy)
+
+        #expect(outcome == .place("Griffith Park"))
+        let callCount = await spy.callCount
+        #expect(callCount == 1)
+    }
+
+    @Test("when the resolver returns nil, the outcome is no location, never a coordinate")
+    func resolverReturningNilYieldsNone() async {
+        let farFix = CLLocationCoordinate2D(latitude: 40, longitude: 40)
+        let spy = SpyPlaceNameResolver(result: nil)
+
+        let outcome = await LocationAttachment.resolveSharedPlaceName(fix: farFix, zones: [], geocoder: spy)
+
+        #expect(outcome == .none)
+    }
+
+    @Test("overlapping zones resolve to the more protective effect: any suppressing zone wins")
+    func overlappingZonesResolveToSuppress() async {
+        let sharedCentre = CLLocationCoordinate2D(latitude: 50, longitude: 50)
+        let generalizingZone = PrivacyZone(label: "Neighborhood", centre: sharedCentre, radiusMetres: 500, effect: .generalize)
+        let suppressingZone = PrivacyZone(label: "Home", centre: sharedCentre, radiusMetres: 50, effect: .suppress)
+        let spy = SpyPlaceNameResolver(result: "Should never be returned")
+
+        // The generalizing (less protective) zone is listed FIRST -- proving the fold is a scan
+        // over every containing zone for the strictest effect, not "whichever zone the caller
+        // happened to list first" (`zones.first(where:)` would fail this test).
+        let outcome = await LocationAttachment.resolveSharedPlaceName(
+            fix: sharedCentre, zones: [generalizingZone, suppressingZone], geocoder: spy
+        )
+
+        #expect(outcome == .suppressedByZone)
+        let callCount = await spy.callCount
+        #expect(callCount == 0)
+    }
+
+    @Test("SharedLocationOutcome has no case capable of carrying a coordinate, radius, or distance value")
+    func outcomeHasNoNumericPositionCase() {
+        // Exhaustive switch (no `default:`) -- if a future case adds an associated numeric
+        // position value, this switch fails to compile, catching the regression at build time
+        // rather than relying on review to notice.
+        func describe(_ outcome: SharedLocationOutcome) -> String {
+            switch outcome {
+            case .none: return "none"
+            case .suppressedByZone: return "suppressedByZone"
+            case .generalizedByZone(let label): return "generalizedByZone(\(label))"
+            case .place(let name): return "place(\(name))"
+            }
+        }
+        #expect(describe(.none) == "none")
+        #expect(describe(.suppressedByZone) == "suppressedByZone")
+        #expect(describe(.generalizedByZone("Home")) == "generalizedByZone(Home)")
+        #expect(describe(.place("Griffith Park")) == "place(Griffith Park)")
+    }
 }
 
+}
+
+/// Records its own invocation count so `PrivacyZoneTests` can prove -- not merely assume -- that
+/// the zone check runs before the geocoder: an `actor` rather than a plain class, so the call
+/// count is safe to read from `async` test code without a data race, matching `PlaceNameResolving`'s
+/// own `Sendable` requirement.
+private actor SpyPlaceNameResolver: PlaceNameResolving {
+    private(set) var callCount = 0
+    private let result: String?
+
+    init(result: String? = nil) {
+        self.result = result
+    }
+
+    func placeName(for coordinate: CLLocationCoordinate2D) async -> String? {
+        callCount += 1
+        return result
+    }
 }
