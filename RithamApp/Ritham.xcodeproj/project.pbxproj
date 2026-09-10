@@ -182,6 +182,7 @@
 		E4751475E2E7AFCF451AC978 /* GroupListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CABE7DA96965CE1CD4D85C /* GroupListView.swift */; };
 		E4DBB83482598F8D440445BF /* SleepCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E8473A4F8E58949381D619 /* SleepCheckInView.swift */; };
 		E5E333DD01C01FA70A4750C7 /* MomentumDashboardSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCB8652F9ABDE7156DA0645 /* MomentumDashboardSection.swift */; };
+		E85F6F068D6F31D8FC0A77AE /* PhotoAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C85DCF89B9C9909807C5A0 /* PhotoAttachment.swift */; };
 		E978F74B6D596BE15B578FFC /* MovementSnapshotToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69FADCF6CC13DE0CBE3951E3 /* MovementSnapshotToggleView.swift */; };
 		E9B451301BBB32186D650E4F /* StopwatchSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899994571E54AFD8D9247EEA /* StopwatchSession.swift */; };
 		EA65B7E90AC03963C9EB04A9 /* CompletionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ECACB5EE194069E87C44F67 /* CompletionClient.swift */; };
@@ -334,6 +335,7 @@
 		9CA2C00B50E27B822C89CC13 /* WorkoutFrequencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFrequencyView.swift; sourceTree = "<group>"; };
 		A0D27E5CC506A76F6125AB94 /* CreateGroupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupSheet.swift; sourceTree = "<group>"; };
 		A155C9CC6D2006280F3FC52C /* AddFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendView.swift; sourceTree = "<group>"; };
+		A1C85DCF89B9C9909807C5A0 /* PhotoAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAttachment.swift; sourceTree = "<group>"; };
 		A44001C3031F6F768DC27C2F /* ContactMatchDigest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactMatchDigest.swift; sourceTree = "<group>"; };
 		A473869A6F75190202A5A937 /* MomentumLedgerRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumLedgerRecords.swift; sourceTree = "<group>"; };
 		A49AD7002CE2D97EA29E3FB4 /* LocationEnrichment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEnrichment.swift; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 				030EB76E6F19D5CEF0DB6779 /* CompletionDraft.swift */,
 				1D3501D9978BF99703911A55 /* CompletionLoggingModel.swift */,
 				B443AE9D907345CDB04583F2 /* LocationFixProviding.swift */,
+				A1C85DCF89B9C9909807C5A0 /* PhotoAttachment.swift */,
 				4AE17862544B3831EFCD8F26 /* StrippedPhotoAsset.swift */,
 			);
 			path = Completion;
@@ -1126,6 +1129,7 @@
 				F03CD5A2D32F1E0BCBAA37F5 /* PedometerSession.swift in Sources */,
 				8AE5EF7DFD295F7364E397D8 /* Phase2StepRegistration.swift in Sources */,
 				5ABFC1E89FE1EB5F93728CE6 /* Phase3StepRegistration.swift in Sources */,
+				E85F6F068D6F31D8FC0A77AE /* PhotoAttachment.swift in Sources */,
 				C1AF2ADF5B66142103586431 /* PlateCalculatorView.swift in Sources */,
 				5551D280FD237803E5CD3D47 /* PreAssessmentView.swift in Sources */,
 				9656A07CC9AFFAD5C9F337D5 /* PrimaryCTAButton.swift in Sources */,
