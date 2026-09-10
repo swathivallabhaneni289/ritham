@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-10-PLAN.md
-last_updated: "2026-09-10T15:21:38.300Z"
+stopped_at: Completed 04.1-11-PLAN.md
+last_updated: "2026-09-10T15:45:23.390Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 53
+  completed_plans: 54
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 11 of 17
+Plan: 12 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -107,6 +107,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P08 | 45min | 3 tasks | 11 files |
 | Phase 04.1 P09 | 40min | 3 tasks | 16 files |
 | Phase 04.1 P10 | 65min | 3 tasks | 15 files |
+| Phase 04.1 P11 | 40min | 3 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -247,6 +248,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-10: Exported groups.DBTX (a true type alias for the pre-existing unexported dbtx), verified against the compiler first, so internal/events can implement groups.CompletionVisibility from outside package groups
 - [Phase ?]: 04.1-10: PhotoOwnershipChecker fails closed (every unverified photo reference rejected) by default, unlike groups.CompletionVisibility's fail-open no-op precedent
 - [Phase ?]: 04.1-10: Added ErrPlaceNameTooLong, ErrInvalidTarget, and ErrInvalidEventWindow sentinels beyond the plan's own must_haves list to close real validation gaps the plan's behavior list implied but didn't name
+- [Phase 04.1-11]: Fixed RithamCore.GroupLeaveDisposition raw values (keepPosts/removePosts) to match membership.go's wire contract -- the implicit case-name-derived values would have 400'd every leave call — Verified against groups_handler.go's knownLeaveDispositions map before implementing GroupsModel.leave
+- [Phase 04.1-11]: Omitted declineInvitation and any pending-invitations list -- groups_handler.go exposes exactly nine routes with no route or service method to list a user's own pending invitations — Rendering an Invitations section that can never populate would be a hardcoded-empty-value stub; documented as a Known Stub for a future plan
+- [Phase 04.1-11]: Built CreateGroupSheet.swift (not in the plan's stated file list) as its own sheet, following AddPrivacyZoneView.swift's precedent — GroupListView's own no-TextField acceptance gate forbids collecting the group name inline on the list screen
 
 ### Pending Todos
 
@@ -304,6 +308,7 @@ Recent decisions affecting current work:
   helpers.
 
 - 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
+- Pre-existing cross-suite test flake (not blocking, not caused by 04.1-11's own logic): a full-target xcodebuild test run can fail SocialIdentityTests.requestCarriesBearerHeaderWhenTokenStored() nondeterministically -- SessionStore is backed by the real Keychain, not test-isolated, and SocialIdentityTests/FriendsUITests/GroupsUITests each write/clear it from their own init()/test bodies with only per-suite (not cross-suite) .serialized ordering. GroupsUITests is a third such suite, raising collision odds but not the root cause. Fix needs mocking SessionStore's Keychain access for tests, or nesting all three suites under a shared .serialized parent (StepRegistryTouchingSuites' own precedent) -- out of 04.1-11's file scope. See 04.1-11-SUMMARY.md's Issues Encountered.
 
 ## Deferred Items
 
@@ -315,8 +320,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T15:21:38.294Z
-Stopped at: Completed 04.1-10-PLAN.md
+Last session: 2026-09-10T15:45:23.384Z
+Stopped at: Completed 04.1-11-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
