@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/events"
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/feed"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/groups"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
@@ -49,7 +50,14 @@ const maxRequestBodyBytes = 1 << 16 // 64 KiB
 // other route group's degrade-gracefully precedent -- not in plan 04.1-10's own stated file list,
 // but required by NewMux's own signature once events_handler.go's eight routes need wiring
 // (Rule 3, same precedent as friendssvc/groupssvc above).
-func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service, groupssvc *groups.Service, eventssvc *events.Service) *http.ServeMux {
+//
+// feedsvc backs the seven feed/cheer/export-consent routes (GROUPEVENTS-04): the group-only,
+// chronological, membership-scoped feed, the fixed count-free cheer mechanic, and the
+// per-visible-person export-consent gate. It must be non-nil (and idsvc must also be non-nil) for
+// these routes to be registered, matching every other route group's degrade-gracefully precedent
+// -- not in plan 04.1-10's own stated file list, but required by NewMux's own signature once
+// feed_handler.go's seven routes need wiring (Rule 3, same precedent as eventssvc above).
+func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service, groupssvc *groups.Service, eventssvc *events.Service, feedsvc *feed.Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/workout-plan", handleWorkoutPlan)
 
@@ -114,6 +122,20 @@ func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo
 			mux.HandleFunc("GET /v1/events/{id}/rsvp", RequireSession(idsvc, handleGetRSVPState(eventssvc)))
 			mux.HandleFunc("POST /v1/events/{id}/completions", RequireSession(idsvc, handleLogCompletion(eventssvc)))
 			mux.HandleFunc("GET /v1/events/{id}/completions", RequireSession(idsvc, handleListCompletions(eventssvc)))
+		}
+
+		if feedsvc != nil {
+			// All seven feed/cheer/export-consent routes sit behind RequireSession -- there is no
+			// unauthenticated feed route; every read is membership-scoped by feed.Service itself,
+			// never a bare fetch by id (T-04.1-57), and every mutating call's acting user id comes
+			// from the session, never a request body field (T-04.1-35).
+			mux.HandleFunc("GET /v1/groups/{id}/feed", RequireSession(idsvc, handleGroupFeed(feedsvc)))
+			mux.HandleFunc("GET /v1/events/{id}/feed", RequireSession(idsvc, handleEventFeed(feedsvc)))
+			mux.HandleFunc("POST /v1/completions/{id}/cheers", RequireSession(idsvc, handleSendCheer(feedsvc)))
+			mux.HandleFunc("DELETE /v1/completions/{id}/cheers", RequireSession(idsvc, handleWithdrawCheer(feedsvc)))
+			mux.HandleFunc("POST /v1/photos/{id}/export-consent/request", RequireSession(idsvc, handleRequestExportConsent(feedsvc)))
+			mux.HandleFunc("POST /v1/photos/{id}/export-consent/grant", RequireSession(idsvc, handleGrantExportConsent(feedsvc)))
+			mux.HandleFunc("GET /v1/photos/{id}/export-consent", RequireSession(idsvc, handleGetExportConsent(feedsvc)))
 		}
 	}
 

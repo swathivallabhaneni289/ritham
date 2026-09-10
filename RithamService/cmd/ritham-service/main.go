@@ -40,6 +40,14 @@
 // degrade-gracefully precedent. buildGroupsService also wires the events package's real
 // CompletionVisibility implementation into groupssvc here, replacing 04.1-08's placeholder no-op
 // (groups.Service defaults to one at construction) now that event_completions exists.
+//
+// Seven feed/cheer/export-consent routes now exist too (GROUPEVENTS-04): the group-only,
+// chronological, membership-scoped feed with no aggregate field anywhere in its response, the
+// fixed count-free cheer mechanic, and the per-visible-person export-consent gate that decides
+// whether a photo with other people in it may leave Ritham. They depend on the same database as
+// identity and on the object store's own SharedURL method (photo URL resolution); a missing
+// database or object store leaves them unregistered (404), matching every other route group's
+// degrade-gracefully precedent.
 package main
 
 import (
@@ -50,6 +58,7 @@ import (
 	"time"
 
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/events"
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/feed"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/groups"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/httpapi"
@@ -86,10 +95,11 @@ func main() {
 	friendssvc := buildFriendsService(st)
 	groupssvc := buildGroupsService(st, friendssvc)
 	eventssvc := buildEventsService(st, groupssvc, photosvc)
+	feedsvc := buildFeedService(st, objectStore)
 
 	server := &http.Server{
 		Addr:         addr,
-		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc, groupssvc, eventssvc),
+		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc, groupssvc, eventssvc, feedsvc),
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,
@@ -214,4 +224,19 @@ func buildEventsService(st *store.Store, groupssvc *groups.Service, photosvc *ph
 		svc.SetPhotoOwnershipChecker(photosvc)
 	}
 	return svc
+}
+
+// buildFeedService constructs the feed.Service backing the seven feed/cheer/export-consent
+// routes, or returns nil when st or objectStore is nil (no database configured at startup, or the
+// object store itself failed to build), matching every other service builder's
+// degrade-gracefully precedent. objectStore satisfies feed.PhotoURLSource directly (its SharedURL
+// method's signature is identical) -- the feed's own SQL resolves a completion's photo to its
+// shared_object_key directly against photo_assets (never through photo.Service.Asset, which is
+// scoped to the requesting user's own uploads and would reject every other group member's photo).
+func buildFeedService(st *store.Store, objectStore *photo.ObjectStore) *feed.Service {
+	if st == nil || objectStore == nil {
+		return nil
+	}
+
+	return feed.New(st, objectStore, time.Now)
 }
