@@ -49,6 +49,7 @@ struct SettingsView: View {
     @State private var isEditingWorkoutFrequency = false
     @State private var isEditingMomentumTarget = false
     @State private var isEditingMovementSnapshot = false
+    @State private var isEditingPrivacyZones = false
     @State private var isReScreenDue = false
 
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
@@ -100,6 +101,14 @@ struct SettingsView: View {
                 isEditingMovementSnapshot = true
             }
 
+            // GROUPEVENTS-03: the on-device-only Privacy Zones a shared location is checked
+            // against before it is ever geocoded (`Social/PrivacyZones/LocationAttachment.swift`).
+            // A preference entry only, exactly like the two rows above it -- this row shows no
+            // zone state of its own; `PrivacyZonesView` owns that list.
+            SecondaryCTAButton(title: "Privacy Zones") {
+                isEditingPrivacyZones = true
+            }
+
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
                 Text("Screening answers")
                     .font(RithamType.heading)
@@ -130,6 +139,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $isEditingMovementSnapshot) {
             MovementSnapshotToggleView(initialOptIn: currentMovementSnapshotOptIn())
+        }
+        .sheet(isPresented: $isEditingPrivacyZones) {
+            PrivacyZonesView()
         }
     }
 

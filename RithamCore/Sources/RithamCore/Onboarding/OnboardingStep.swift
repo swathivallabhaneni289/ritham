@@ -38,6 +38,12 @@
 // a social feature -- never mandatory, never reached during onboarding, never required for core
 // tracking -- so this case has no place anywhere in `OnboardingRouter`'s `.welcome`-to-`.home`
 // path, exactly like Phase 2 and Phase 3's own hub-reachable surfaces above.
+//
+// `privacyZones` (below, plan 04.1-07) is reached only from `SettingsView`'s own sheet
+// presentation, never from `OnboardingRouter` or `OnboardingFlow.open(_:)` -- it exists as a step
+// case solely so `StepRegistry` has a registry key to hang `PrivacyZonesView`'s registration on
+// (`StepRegistry.unregisteredSteps` requires one for every case), the identical "registered for
+// the registry, reached by a different path" shape `signInWithApple` above already established.
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -69,4 +75,5 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case sleepCheckIn
     case movementSnapshot
     case signInWithApple
+    case privacyZones
 }

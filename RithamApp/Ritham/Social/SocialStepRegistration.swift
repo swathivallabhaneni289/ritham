@@ -9,5 +9,6 @@ import Foundation
 enum SocialStepRegistration {
     static func registerAll() {
         SocialIdentityRegistration.registerAll()
+        PrivacyZoneRegistration.registerAll()
     }
 }
