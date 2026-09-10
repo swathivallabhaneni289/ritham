@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-06-PLAN.md
-last_updated: "2026-09-10T13:40:27.411Z"
+stopped_at: Completed 04.1-08-PLAN.md
+last_updated: "2026-09-10T14:03:14.370Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 50
+  completed_plans: 51
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 8 of 17
+Plan: 9 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -104,6 +104,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P05 | 25min | 3 tasks | 17 files |
 | Phase 04.1 P06 | 70min | 3 tasks | 15 files |
 | Phase 04.1 P07 | 25min | 3 tasks | 16 files |
+| Phase 04.1 P08 | 45min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -236,6 +237,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-07: PrivacyZoneRecord registered in RithamModelContainer.swift (schema list), not HealthDataStore.swift as the plan's files_modified literally named -- HealthDataStore.swift got the CRUD accessors instead, matching every other model's registration pattern in the container.
 - [Phase ?]: 04.1-07: PrivacyZonesView conforms to OnboardingStepPresenting and registers under .privacyZones purely to satisfy StepRegistry.unregisteredSteps, while being reached only from SettingsView's sheet -- reusing SignInWithAppleView's registered-but-not-routed precedent.
 - [Phase ?]: 04.1-07: Delete in Privacy Zones uses a native confirmationDialog with a role: .destructive action plus a RithamColor.destructive-outlined row button -- the first live activation of that reserved-since-Phase-1 color token.
+- [Phase ?]: 04.1-08: Invite requires the inviter to already be a member of the group (not just friends with the invitee) -- Rule 2 fix closing a door-opening gap the plan's behavior list didn't explicitly cover
+- [Phase ?]: 04.1-08: CompletionVisibility is wired via a SetCompletionVisibility setter, not a New() parameter, so groups.New's plan-locked signature stays exactly as documented while plan 04.1-10 gets a clean seam to wire a real implementation into
 
 ### Pending Todos
 
@@ -304,8 +307,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T13:39:00.783Z
-Stopped at: Completed 04.1-06-PLAN.md
+Last session: 2026-09-10T14:03:14.364Z
+Stopped at: Completed 04.1-08-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
