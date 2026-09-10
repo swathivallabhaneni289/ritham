@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-11-PLAN.md
-last_updated: "2026-09-10T16:39:03.391Z"
+stopped_at: Completed 04.1-14-PLAN.md
+last_updated: "2026-09-10T17:28:22.188Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 56
+  completed_plans: 57
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 14 of 17
+Plan: 15 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -110,6 +110,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P11 | 45min | 3 tasks | 23 files |
 | Phase 04.1 P12 | 55min | 3 tasks | 14 files |
 | Phase 04.1 P13 | 25min | 3 tasks | 15 files |
+| Phase 04.1 P14 | 90min | 3 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -260,6 +261,10 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-12: GROUPEVENTS-05 (digital certificate) is NOT marked complete -- this plan built only the export-consent gate the certificate feature will depend on, per 04.1-10-SUMMARY.md's own scope note
 - [Phase ?]: 04.1-13: domainTarget's bare .none resolved to Optional.none (nil), not GoalEventTarget.none -- fixed by spelling the case out fully qualified; every event was silently vanishing from compactMap until caught by this plan's own test suite before commit.
 - [Phase ?]: 04.1-13: No Goal-Events list screen built in this plan -- CreateGoalEventView routes forward to .goalEventRSVP on success so both this plan's screens stay reachable; a future plan builds the list on top of GoalEventsModel.upcoming.
+- [Phase ?]: 04.1-14: internal/events exposes exactly one write route for a completion and no update route, so logDone() is a local-only stage transition -- the single network call fires only once skipTime/addTime finalizes the own-time decision, resolved against the actual server contract rather than the PRD copy table's narrative event order
+- [Phase ?]: 04.1-14: LocationFixProviding declared in its own file (not LocationAttachment.swift) so CompletionLoggingModel.swift can call 04.1-07's resolveSharedPlaceName while itself naming zero CoreLocation types -- the coordinate type is spelled in the seam's file only
+- [Phase ?]: 04.1-14: StrippedPhotoAsset.swift built in Task 1 (not Task 2 as the plan's file list states) since CompletionDraft's own photo field requires the type to exist first -- same forward-dependency-break precedent as plan 02-03's SupersetGroupID
+- [Phase ?]: 04.1-14: CompletionLoggingView is registered under .completionLogging but not routed from any screen -- GoalEventRSVPView is structurally forbidden by its own committed test from referencing anything completion-facing, and no Goal-Events list/detail screen exists yet; a future plan building that screen adds the real entry point
 
 ### Pending Todos
 
@@ -328,8 +333,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T16:38:37.988Z
-Stopped at: Completed 04.1-11-PLAN.md
+Last session: 2026-09-10T17:28:22.177Z
+Stopped at: Completed 04.1-14-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
@@ -376,4 +381,3 @@ GROUPEVENTS-01 through 05 (already fully drafted in `REQUIREMENTS.md`'s "Social 
 from a prior ingest of `docs/group-events.md`) converted from backlog to active. Not yet planned —
 next step is `/gsd-plan-phase 4.1 --prd docs/group-events.md`.
 Resume file:
-None
