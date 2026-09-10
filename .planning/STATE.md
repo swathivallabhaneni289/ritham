@@ -6,14 +6,14 @@ current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
 stopped_at: Completed 04.1-11-PLAN.md
-last_updated: "2026-09-10T16:16:19.967Z"
+last_updated: "2026-09-10T16:39:03.391Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 55
+  completed_plans: 56
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 13 of 17
+Plan: 14 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -109,6 +109,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P10 | 65min | 3 tasks | 15 files |
 | Phase 04.1 P11 | 45min | 3 tasks | 23 files |
 | Phase 04.1 P12 | 55min | 3 tasks | 14 files |
+| Phase 04.1 P13 | 25min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -257,6 +258,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-12: Feed queries run query-first, gate-on-zero-rows -- the membership JOIN stays the load-bearing, directly-testable authorization boundary rather than dead code behind a preceding gate call
 - [Phase ?]: 04.1-12: Photo URL resolution reads shared_object_key via a direct LEFT JOIN in the feed SQL, never through photo.Service.Asset (owner-scoped, would reject other members' photos) -- feed.Service is wired from the object store, not the photo service
 - [Phase ?]: 04.1-12: GROUPEVENTS-05 (digital certificate) is NOT marked complete -- this plan built only the export-consent gate the certificate feature will depend on, per 04.1-10-SUMMARY.md's own scope note
+- [Phase ?]: 04.1-13: domainTarget's bare .none resolved to Optional.none (nil), not GoalEventTarget.none -- fixed by spelling the case out fully qualified; every event was silently vanishing from compactMap until caught by this plan's own test suite before commit.
+- [Phase ?]: 04.1-13: No Goal-Events list screen built in this plan -- CreateGoalEventView routes forward to .goalEventRSVP on success so both this plan's screens stay reachable; a future plan builds the list on top of GoalEventsModel.upcoming.
 
 ### Pending Todos
 
@@ -325,7 +328,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T16:15:57.658Z
+Last session: 2026-09-10T16:38:37.988Z
 Stopped at: Completed 04.1-11-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
