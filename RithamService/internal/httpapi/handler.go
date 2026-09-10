@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/events"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/groups"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
@@ -41,7 +42,14 @@ const maxRequestBodyBytes = 1 << 16 // 64 KiB
 // registered, matching every other route group's degrade-gracefully precedent -- not in plan
 // 04.1-08's own stated file list, but required by NewMux's own signature once
 // groups_handler.go's nine routes need wiring (Rule 3, same precedent as friendssvc above).
-func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service, groupssvc *groups.Service) *http.ServeMux {
+//
+// eventssvc backs the eight Goal-Event/RSVP/completion routes (GROUPEVENTS-01, GROUPEVENTS-02):
+// Goal-Events, RSVP, and binary completion logging with no ranking mechanism anywhere. It must be
+// non-nil (and idsvc must also be non-nil) for these routes to be registered, matching every
+// other route group's degrade-gracefully precedent -- not in plan 04.1-10's own stated file list,
+// but required by NewMux's own signature once events_handler.go's eight routes need wiring
+// (Rule 3, same precedent as friendssvc/groupssvc above).
+func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service, groupssvc *groups.Service, eventssvc *events.Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/workout-plan", handleWorkoutPlan)
 
@@ -91,6 +99,21 @@ func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo
 			mux.HandleFunc("POST /v1/groups/{id}/leave", RequireSession(idsvc, handleLeaveGroup(groupssvc)))
 			mux.HandleFunc("DELETE /v1/groups/{id}/members/{userId}", RequireSession(idsvc, handleRemoveGroupMember(groupssvc)))
 			mux.HandleFunc("PUT /v1/groups/{id}/removal-policy", RequireSession(idsvc, handleSetGroupRemovalPolicy(groupssvc)))
+		}
+
+		if eventssvc != nil {
+			// All eight event routes sit behind RequireSession -- there is no unauthenticated
+			// event route; authorization for every read or write comes from the session's own
+			// user id via events.Service's own injected membership gate, never a request body
+			// field (T-04.1-35, T-04.1-57).
+			mux.HandleFunc("POST /v1/groups/{id}/events", RequireSession(idsvc, handleCreateEvent(eventssvc)))
+			mux.HandleFunc("GET /v1/groups/{id}/events", RequireSession(idsvc, handleListEvents(eventssvc)))
+			mux.HandleFunc("GET /v1/events/{id}", RequireSession(idsvc, handleGetEvent(eventssvc)))
+			mux.HandleFunc("POST /v1/events/{id}/rsvp", RequireSession(idsvc, handleRSVP(eventssvc)))
+			mux.HandleFunc("DELETE /v1/events/{id}/rsvp", RequireSession(idsvc, handleWithdrawRSVP(eventssvc)))
+			mux.HandleFunc("GET /v1/events/{id}/rsvp", RequireSession(idsvc, handleGetRSVPState(eventssvc)))
+			mux.HandleFunc("POST /v1/events/{id}/completions", RequireSession(idsvc, handleLogCompletion(eventssvc)))
+			mux.HandleFunc("GET /v1/events/{id}/completions", RequireSession(idsvc, handleListCompletions(eventssvc)))
 		}
 	}
 

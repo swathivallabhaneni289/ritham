@@ -32,6 +32,14 @@
 // groups built on the friends graph above. They depend on the same database as identity; a
 // missing database leaves the group routes unregistered (404), matching every other route
 // group's degrade-gracefully precedent.
+//
+// Eight Goal-Event/RSVP/completion routes now exist too (GROUPEVENTS-01, GROUPEVENTS-02): a
+// shared, non-timed commitment with binary completion logging and no ranking mechanism anywhere.
+// They depend on the same database as identity and on groupssvc's own RequireMember gate; a
+// missing database leaves them unregistered (404), matching every other route group's
+// degrade-gracefully precedent. buildGroupsService also wires the events package's real
+// CompletionVisibility implementation into groupssvc here, replacing 04.1-08's placeholder no-op
+// (groups.Service defaults to one at construction) now that event_completions exists.
 package main
 
 import (
@@ -41,6 +49,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/events"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/groups"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/httpapi"
@@ -76,10 +85,11 @@ func main() {
 	photosvc, objectStore := buildPhotoService(st)
 	friendssvc := buildFriendsService(st)
 	groupssvc := buildGroupsService(st, friendssvc)
+	eventssvc := buildEventsService(st, groupssvc, photosvc)
 
 	server := &http.Server{
 		Addr:         addr,
-		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc, groupssvc),
+		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc, groupssvc, eventssvc),
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,
@@ -176,5 +186,32 @@ func buildGroupsService(st *store.Store, friendssvc *friends.Service) *groups.Se
 		return nil
 	}
 
-	return groups.New(st, friendssvc, time.Now)
+	svc := groups.New(st, friendssvc, time.Now)
+	// Replace 04.1-08's placeholder no-op CompletionVisibility with the real implementation now
+	// that event_completions exists (see this file's header comment and
+	// internal/events.NewCompletionVisibility's own doc comment).
+	svc.SetCompletionVisibility(events.NewCompletionVisibility())
+	return svc
+}
+
+// buildEventsService constructs the events.Service backing the eight Goal-Event/RSVP/completion
+// routes, or returns nil when st or groupssvc is nil (no database configured at startup, or the
+// groups service itself failed to build for the same reason), matching every other service
+// builder's degrade-gracefully precedent. groupssvc satisfies events.MembershipGate directly --
+// every events.Service method calls groupssvc's own RequireMember, never a restated membership
+// query (T-04.1-57). photosvc satisfies events.PhotoOwnershipChecker directly (its Asset method's
+// signature is identical); when photosvc is nil (object store unavailable), the photo-ownership
+// check stays at its fail-closed default (events.noopPhotoOwnershipChecker) -- a completion may
+// still be logged, just never with a photo reference, rather than the whole events surface going
+// unregistered over an unrelated dependency.
+func buildEventsService(st *store.Store, groupssvc *groups.Service, photosvc *photo.Service) *events.Service {
+	if st == nil || groupssvc == nil {
+		return nil
+	}
+
+	svc := events.New(st, groupssvc, time.Now)
+	if photosvc != nil {
+		svc.SetPhotoOwnershipChecker(photosvc)
+	}
+	return svc
 }
