@@ -77,6 +77,10 @@ struct AddPrivacyZoneView: View {
             PrimaryCTAButton(title: "Save zone") {
                 save()
             }
+
+            SecondaryCTAButton(title: "Cancel") {
+                dismiss()
+            }
         }
     }
 

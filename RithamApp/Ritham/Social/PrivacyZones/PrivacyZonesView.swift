@@ -26,6 +26,7 @@ struct PrivacyZonesView: View, OnboardingStepPresenting {
     }
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
 
     @State private var zoneStore: PrivacyZoneStore?
     @State private var isAddingZone = false
@@ -56,6 +57,14 @@ struct PrivacyZonesView: View, OnboardingStepPresenting {
 
             PrimaryCTAButton(title: "Add Privacy Zone") {
                 isAddingZone = true
+            }
+
+            // Every sibling Settings sub-screen (WorkoutFrequencyView, MomentumTargetView,
+            // MovementSnapshotToggleView) ends with an explicit Done action rather than relying on
+            // swipe-to-dismiss alone -- the cross-generational "identical controls" mandate this
+            // codebase holds throughout.
+            SecondaryCTAButton(title: "Done") {
+                dismiss()
             }
         }
         .onAppear(perform: ensureLoaded)
