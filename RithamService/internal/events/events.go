@@ -86,15 +86,18 @@ type MembershipGate interface {
 
 // Service is Goal-Events, RSVP, and completion logging's single entry point.
 type Service struct {
-	store *store.Store
-	gate  MembershipGate
-	now   func() time.Time
+	store        *store.Store
+	gate         MembershipGate
+	now          func() time.Time
+	photoChecker PhotoOwnershipChecker
 }
 
 // New constructs a Service. gate is called before every event-, RSVP-, or completion-scoped read
-// or write this package performs.
+// or write this package performs. photoChecker defaults to noopPhotoOwnershipChecker (see
+// SetPhotoOwnershipChecker in completions.go) -- call SetPhotoOwnershipChecker once a real
+// *photo.Service is available.
 func New(st *store.Store, gate MembershipGate, now func() time.Time) *Service {
-	return &Service{store: st, gate: gate, now: now}
+	return &Service{store: st, gate: gate, now: now, photoChecker: noopPhotoOwnershipChecker{}}
 }
 
 // NewGoalEvent is the input to Create.

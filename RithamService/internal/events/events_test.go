@@ -130,6 +130,23 @@ func addMember(t *testing.T, h *testHarness, groupID, organizer, member uuid.UUI
 	}
 }
 
+// createPhotoAsset inserts a photo_assets row directly (event_completions.photo_asset_id carries
+// a real foreign key to it) and cleans it up when the test ends.
+func createPhotoAsset(t *testing.T, st *store.Store, ownerUserID uuid.UUID) uuid.UUID {
+	t.Helper()
+	id := uuid.New()
+	_, err := st.Pool().Exec(context.Background(),
+		"INSERT INTO photo_assets (id, owner_user_id, shared_object_key, content_type) VALUES ($1, $2, $3, $4)",
+		id, ownerUserID, id.String(), "image/jpeg")
+	if err != nil {
+		t.Fatalf("creating test photo asset: %v", err)
+	}
+	t.Cleanup(func() {
+		_, _ = st.Pool().Exec(context.Background(), "DELETE FROM photo_assets WHERE id = $1", id)
+	})
+	return id
+}
+
 // createEvent creates a valid event in groupID, organized by organizer.
 func createEvent(t *testing.T, h *testHarness, groupID, organizer uuid.UUID) uuid.UUID {
 	t.Helper()
@@ -138,6 +155,13 @@ func createEvent(t *testing.T, h *testHarness, groupID, organizer uuid.UUID) uui
 		t.Fatalf("Create: unexpected error: %v", err)
 	}
 	return e.ID
+}
+
+// validCompletionTime is a timestamp within validEvent()'s own window (a single day,
+// 2026-09-12), for tests that need a valid CompletedAt but aren't exercising window-boundary
+// behavior themselves.
+func validCompletionTime() time.Time {
+	return time.Date(2026, 9, 12, 12, 0, 0, 0, time.UTC)
 }
 
 func validEvent() NewGoalEvent {

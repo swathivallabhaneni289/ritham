@@ -106,6 +106,18 @@ type dbtx interface {
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
 }
 
+// DBTX is a true type alias for dbtx -- the exact type CompletionVisibility.HideGroupCompletions'
+// tx parameter requires. dbtx itself stays unexported (every other symbol in this file uses the
+// lowercase name), but Go's structural interface satisfaction requires an exact parameter-type
+// match, not just an equivalent method set: an external package's own locally-declared interface
+// with an identical Exec/Query/QueryRow method set does NOT satisfy dbtx by signature identity
+// (verified directly against the compiler before this alias was added -- see 04.1-10-SUMMARY.md).
+// This one-line alias is the smallest fix: plan 04.1-10's events package can now declare
+// HideGroupCompletions(ctx, tx DBTX, groupID, userID uuid.UUID) error and implement
+// CompletionVisibility from outside this package, with no other symbol here touched and no
+// existing call site changed.
+type DBTX = dbtx
+
 // Service is the groups domain's single entry point.
 type Service struct {
 	store                *store.Store
