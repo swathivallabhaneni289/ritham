@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/groups"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/photo"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/plan"
@@ -34,7 +35,13 @@ const maxRequestBodyBytes = 1 << 16 // 64 KiB
 // degrade-gracefully behavior -- not in Task 3's own stated file list for this plan, but required
 // by NewMux's own signature once friends_handler.go's ten routes need wiring (Rule 3, direct
 // precedent: 04.1-03's NewMux gaining idsvc).
-func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service) *http.ServeMux {
+//
+// groupssvc backs the nine group routes (GROUPEVENTS-01, HOUSEHOLD-02): small, closed,
+// invite-only groups. It must be non-nil (and idsvc must also be non-nil) for these routes to be
+// registered, matching every other route group's degrade-gracefully precedent -- not in plan
+// 04.1-08's own stated file list, but required by NewMux's own signature once
+// groups_handler.go's nine routes need wiring (Rule 3, same precedent as friendssvc above).
+func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo.ObjectStore, friendssvc *friends.Service, groupssvc *groups.Service) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/workout-plan", handleWorkoutPlan)
 
@@ -68,6 +75,22 @@ func NewMux(idsvc *identity.Service, photosvc *photo.Service, objectStore *photo
 			mux.HandleFunc("POST /v1/invites/redeem", RequireSession(idsvc, handleRedeemInvite(friendssvc)))
 			mux.HandleFunc("PUT /v1/friends/contact-match", RequireSession(idsvc, handleSetContactMatchOptIn(friendssvc)))
 			mux.HandleFunc("POST /v1/friends/contact-match/query", RequireSession(idsvc, handleMatchContacts(friendssvc)))
+		}
+
+		if groupssvc != nil {
+			// All nine group routes sit behind RequireSession -- there is no unauthenticated
+			// group route; authorization for every mutating call comes from the session's own
+			// user id, never a request body field (T-04.1-35), and every read is
+			// membership-scoped by groups.Service itself, never a bare fetch by id.
+			mux.HandleFunc("POST /v1/groups", RequireSession(idsvc, handleCreateGroup(groupssvc)))
+			mux.HandleFunc("GET /v1/groups", RequireSession(idsvc, handleListGroups(groupssvc)))
+			mux.HandleFunc("GET /v1/groups/{id}", RequireSession(idsvc, handleGetGroup(groupssvc)))
+			mux.HandleFunc("GET /v1/groups/{id}/members", RequireSession(idsvc, handleListGroupMembers(groupssvc)))
+			mux.HandleFunc("POST /v1/groups/{id}/invitations", RequireSession(idsvc, handleInviteToGroup(groupssvc)))
+			mux.HandleFunc("POST /v1/groups/{id}/join", RequireSession(idsvc, handleJoinGroup(groupssvc)))
+			mux.HandleFunc("POST /v1/groups/{id}/leave", RequireSession(idsvc, handleLeaveGroup(groupssvc)))
+			mux.HandleFunc("DELETE /v1/groups/{id}/members/{userId}", RequireSession(idsvc, handleRemoveGroupMember(groupssvc)))
+			mux.HandleFunc("PUT /v1/groups/{id}/removal-policy", RequireSession(idsvc, handleSetGroupRemovalPolicy(groupssvc)))
 		}
 	}
 

@@ -27,6 +27,11 @@
 // matching additionally reads RITHAM_CONTACT_MATCH_SALT (README.md) once at startup. A missing
 // database leaves the friends routes unregistered (404), matching every other route group's
 // degrade-gracefully precedent.
+//
+// Nine group routes now exist too (GROUPEVENTS-01, HOUSEHOLD-02): small, closed, invite-only
+// groups built on the friends graph above. They depend on the same database as identity; a
+// missing database leaves the group routes unregistered (404), matching every other route
+// group's degrade-gracefully precedent.
 package main
 
 import (
@@ -37,6 +42,7 @@ import (
 	"time"
 
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/friends"
+	"github.com/swathivallabhaneni289/ritham/RithamService/internal/groups"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/httpapi"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/identity"
 	"github.com/swathivallabhaneni289/ritham/RithamService/internal/photo"
@@ -69,10 +75,11 @@ func main() {
 	idsvc := buildIdentityService(st)
 	photosvc, objectStore := buildPhotoService(st)
 	friendssvc := buildFriendsService(st)
+	groupssvc := buildGroupsService(st, friendssvc)
 
 	server := &http.Server{
 		Addr:         addr,
-		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc),
+		Handler:      httpapi.NewMux(idsvc, photosvc, objectStore, friendssvc, groupssvc),
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 		IdleTimeout:  idleTimeout,
@@ -157,4 +164,17 @@ func buildFriendsService(st *store.Store) *friends.Service {
 	}
 
 	return friends.New(st, time.Now, friends.ContactMatchSaltFromEnv())
+}
+
+// buildGroupsService constructs the groups.Service backing the nine group routes, or returns nil
+// when st or friendssvc is nil (no database configured at startup, or the friends service itself
+// failed to build for the same reason), matching every other service builder's degrade-gracefully
+// precedent. friendssvc satisfies groups.FriendPredicate directly -- Invite consults the friends
+// package's own AreFriends method, never a second copy of the friendship query (T-04.1-46).
+func buildGroupsService(st *store.Store, friendssvc *friends.Service) *groups.Service {
+	if st == nil || friendssvc == nil {
+		return nil
+	}
+
+	return groups.New(st, friendssvc, time.Now)
 }
