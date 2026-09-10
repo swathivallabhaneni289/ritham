@@ -105,7 +105,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P06 | 70min | 3 tasks | 15 files |
 | Phase 04.1 P07 | 25min | 3 tasks | 16 files |
 | Phase 04.1 P08 | 45min | 3 tasks | 11 files |
-| Phase 04.1 P09 | 95min | 3 tasks | 16 files |
+| Phase 04.1 P09 | 40min | 3 tasks | 16 files |
 
 ## Accumulated Context
 
