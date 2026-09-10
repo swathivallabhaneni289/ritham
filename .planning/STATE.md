@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-03-PLAN.md
-last_updated: "2026-09-09T14:46:25.152Z"
+stopped_at: Completed 04.1-06-PLAN.md
+last_updated: "2026-09-10T09:21:59.209Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 48
+  completed_plans: 49
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 6 of 17
+Plan: 7 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -102,6 +102,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P03 | 65min | 3 tasks | 14 files |
 | Phase 04.1 P04 | 100min | 3 tasks | 22 files |
 | Phase 04.1 P05 | 25min | 3 tasks | 17 files |
+| Phase 04.1 P06 | 70min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -230,6 +231,7 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-04: MinIO/S3 wire behavior (PutObject/PresignedGetObject against a real bucket) remains unverified -- Docker unavailable in this environment, same carried-forward gap 04.1-01 already documented, now also touching internal/photo's connected tests
 - [Phase ?]: 04.1-05: Corrected the plan's stated nonce flow (Rule 1) -- the SHA-256 digest, not the raw nonce, must be sent to both Apple's request.nonce and the server's AppleSignInRequest.nonce, verified directly against RithamService/internal/identity/apple_test.go before implementing.
 - [Phase ?]: 04.1-05: HomeHubView's new social section follows the dashboard's actual shell-less shape (Phase 4's sixth-round checkpoint revision), not the plan text's stale 'card shell' description written the same day.
+- [Phase ?]: 04.1-06: friends.New gained a contactMatchSalt parameter (read once at construction) since per-call env reads would be non-hermetic and could silently and partially change matching mid-run
 
 ### Pending Todos
 
@@ -298,8 +300,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-09T14:45:36.774Z
-Stopped at: Completed 04.1-03-PLAN.md
+Last session: 2026-09-10T09:21:59.197Z
+Stopped at: Completed 04.1-06-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification

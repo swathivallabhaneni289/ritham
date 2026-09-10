@@ -409,7 +409,7 @@ see criterion 1's note below)
      data). `docs/group-events.md` is the full spec this phase plans against. Identity/account
      model (ACCOUNT-01, Sign in with Apple) absorbs Phase 999.2's backlog scope — see
      `REQUIREMENTS.md`'s "Account & Identity" section and Backlog below.*
-**Plans**: 5/17 plans executed
+**Plans**: 6/17 plans executed
 
 Plans:
 
@@ -436,7 +436,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 04.1-06-PLAN.md — Mutual friend graph + three closed-loop connection paths, server-side
+- [x] 04.1-06-PLAN.md — Mutual friend graph + three closed-loop connection paths, server-side
   (HOUSEHOLD-02, GROUPEVENTS-01)
 
 - [ ] 04.1-07-PLAN.md — Privacy Zones + the on-device capture→zone-check→geocode→discard sequence
@@ -522,7 +522,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 4.1 → 5
 | 2. Core Tracking & Adjusted Guidance | 15/16 | In Progress|  |
 | 3. Momentum & Recovery | 10/10 | Complete   | 2026-09-06 |
 | 4. Household & Home | 3/3 | In Progress (round 1 complete) | - |
-| 4.1. Group Goal-Events & Accountability Circles | 5/17 | In Progress|  |
+| 4.1. Group Goal-Events & Accountability Circles | 6/17 | In Progress|  |
 | 5. Launch Readiness (Legal & Clinical Review) | 0/0 | Not started | - |
 
 ## Backlog
