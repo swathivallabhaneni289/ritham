@@ -77,6 +77,11 @@
 // (04.1-13-SUMMARY.md's own documented scope gap) to serve as an alternative entry point. A future
 // plan building that list/detail screen is expected to add the real `flow.open(.completionLogging)`
 // call site.
+//
+// `groupFeed` and `groupHistory` (below, plan 04.1-15) are ordinary members of this same enum for
+// the identical CROSSGEN-05 reason as every other Phase 4.1 social surface: reached only by
+// explicit user choice from `GroupDetailView`'s own "Feed"/"History" entry points -- never by
+// `OnboardingRouter` advancing into either -- terminal exactly like `groupList`/`groupDetail`.
 
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
@@ -117,4 +122,6 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case createGoalEvent
     case goalEventRSVP
     case completionLogging
+    case groupFeed
+    case groupHistory
 }

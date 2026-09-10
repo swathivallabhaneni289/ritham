@@ -108,6 +108,19 @@ struct GroupDetailView: View, OnboardingStepPresenting {
             flow.open(.createGoalEvent)
         }
 
+        // Plan 04.1-15's two entry points into the group's completion surfaces -- this screen is
+        // the sole route to both `.groupFeed` and `.groupHistory`. Neither is a primary action
+        // (04.1-UI-SPEC.md's Color section reserves `hot` for a named short list that does not
+        // include either), so both are `SecondaryCTAButton`s, matching this screen's own "Back"
+        // button precedent.
+        SecondaryCTAButton(title: "Feed") {
+            flow.open(.groupFeed)
+        }
+
+        SecondaryCTAButton(title: "History") {
+            flow.open(.groupHistory)
+        }
+
         DestructiveCTAButton(title: SocialCopy.Groups.leaveGroupButton) {
             isPresentingLeave = true
         }

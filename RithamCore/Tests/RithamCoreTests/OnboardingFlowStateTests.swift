@@ -214,8 +214,9 @@ struct OnboardingFlowStateTests {
         // Phase 4.1 plan 04.1-05's `.signInWithApple` case, +1 for plan 04.1-07's `.privacyZones`
         // case, +2 for plan 04.1-09's `.friendsList`/`.addFriend` cases, +2 for plan 04.1-11's
         // `.groupList`/`.groupDetail` cases, +2 for plan 04.1-13's `.createGoalEvent`/
-        // `.goalEventRSVP` cases.
-        #expect(OnboardingStep.allCases.count == 36)
+        // `.goalEventRSVP` cases, +1 for plan 04.1-14's `.completionLogging` case, +2 for plan
+        // 04.1-15's `.groupFeed`/`.groupHistory` cases.
+        #expect(OnboardingStep.allCases.count == 38)
     }
 
     @Test("every new Phase 2 case is terminal: OnboardingRouter.nextStep returns nil for each")
