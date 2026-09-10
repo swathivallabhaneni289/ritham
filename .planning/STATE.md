@@ -6,7 +6,7 @@ current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
 stopped_at: Completed 04.1-11-PLAN.md
-last_updated: "2026-09-10T15:45:23.390Z"
+last_updated: "2026-09-10T15:52:46.592Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
@@ -251,6 +251,7 @@ Recent decisions affecting current work:
 - [Phase 04.1-11]: Fixed RithamCore.GroupLeaveDisposition raw values (keepPosts/removePosts) to match membership.go's wire contract -- the implicit case-name-derived values would have 400'd every leave call — Verified against groups_handler.go's knownLeaveDispositions map before implementing GroupsModel.leave
 - [Phase 04.1-11]: Omitted declineInvitation and any pending-invitations list -- groups_handler.go exposes exactly nine routes with no route or service method to list a user's own pending invitations — Rendering an Invitations section that can never populate would be a hardcoded-empty-value stub; documented as a Known Stub for a future plan
 - [Phase 04.1-11]: Built CreateGroupSheet.swift (not in the plan's stated file list) as its own sheet, following AddPrivacyZoneView.swift's precedent — GroupListView's own no-TextField acceptance gate forbids collecting the group name inline on the list screen
+- [Phase 04.1-11]: Fixed a real, previously-latent cross-suite Keychain test race (GroupsUITests added as a third Keychain-writing suite tipped SocialIdentityTests' bearer-header test into deterministic full-target failure) by nesting GroupsUITests/FriendsUITests/SocialIdentityTests under one shared .serialized KeychainTouchingSuites parent, mirroring StepRegistrySerialization.swift's own precedent — The plan's own <verification> requires full-target green; verified via two consecutive green full-target runs (472 tests, 56 suites) after the fix
 
 ### Pending Todos
 
@@ -308,7 +309,6 @@ Recent decisions affecting current work:
   helpers.
 
 - 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
-- Pre-existing cross-suite test flake (not blocking, not caused by 04.1-11's own logic): a full-target xcodebuild test run can fail SocialIdentityTests.requestCarriesBearerHeaderWhenTokenStored() nondeterministically -- SessionStore is backed by the real Keychain, not test-isolated, and SocialIdentityTests/FriendsUITests/GroupsUITests each write/clear it from their own init()/test bodies with only per-suite (not cross-suite) .serialized ordering. GroupsUITests is a third such suite, raising collision odds but not the root cause. Fix needs mocking SessionStore's Keychain access for tests, or nesting all three suites under a shared .serialized parent (StepRegistryTouchingSuites' own precedent) -- out of 04.1-11's file scope. See 04.1-11-SUMMARY.md's Issues Encountered.
 
 ## Deferred Items
 
