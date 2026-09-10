@@ -6,14 +6,14 @@ current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
 stopped_at: Completed 04.1-06-PLAN.md
-last_updated: "2026-09-10T09:21:59.209Z"
+last_updated: "2026-09-10T13:40:27.411Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 49
+  completed_plans: 50
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 7 of 17
+Plan: 8 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -103,6 +103,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P04 | 100min | 3 tasks | 22 files |
 | Phase 04.1 P05 | 25min | 3 tasks | 17 files |
 | Phase 04.1 P06 | 70min | 3 tasks | 15 files |
+| Phase 04.1 P07 | 25min | 3 tasks | 16 files |
 
 ## Accumulated Context
 
@@ -232,6 +233,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-05: Corrected the plan's stated nonce flow (Rule 1) -- the SHA-256 digest, not the raw nonce, must be sent to both Apple's request.nonce and the server's AppleSignInRequest.nonce, verified directly against RithamService/internal/identity/apple_test.go before implementing.
 - [Phase ?]: 04.1-05: HomeHubView's new social section follows the dashboard's actual shell-less shape (Phase 4's sixth-round checkpoint revision), not the plan text's stale 'card shell' description written the same day.
 - [Phase ?]: 04.1-06: friends.New gained a contactMatchSalt parameter (read once at construction) since per-call env reads would be non-hermetic and could silently and partially change matching mid-run
+- [Phase ?]: 04.1-07: PrivacyZoneRecord registered in RithamModelContainer.swift (schema list), not HealthDataStore.swift as the plan's files_modified literally named -- HealthDataStore.swift got the CRUD accessors instead, matching every other model's registration pattern in the container.
+- [Phase ?]: 04.1-07: PrivacyZonesView conforms to OnboardingStepPresenting and registers under .privacyZones purely to satisfy StepRegistry.unregisteredSteps, while being reached only from SettingsView's sheet -- reusing SignInWithAppleView's registered-but-not-routed precedent.
+- [Phase ?]: 04.1-07: Delete in Privacy Zones uses a native confirmationDialog with a role: .destructive action plus a RithamColor.destructive-outlined row button -- the first live activation of that reserved-since-Phase-1 color token.
 
 ### Pending Todos
 
@@ -300,7 +304,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T09:21:59.197Z
+Last session: 2026-09-10T13:39:00.783Z
 Stopped at: Completed 04.1-06-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
