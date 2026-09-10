@@ -44,6 +44,12 @@
 // case solely so `StepRegistry` has a registry key to hang `PrivacyZonesView`'s registration on
 // (`StepRegistry.unregisteredSteps` requires one for every case), the identical "registered for
 // the registry, reached by a different path" shape `signInWithApple` above already established.
+//
+// `friendsList` and `addFriend` (below, plan 04.1-09) are ordinary members of this same enum for
+// the identical CROSSGEN-05 reason as every other Phase 4.1 social surface: reached only by
+// explicit user choice from the dashboard's signed-in social section (`friendsList`) or from
+// that screen's own connect-a-friend entry point (`addFriend`), never by `OnboardingRouter`
+// advancing into them -- terminal exactly like `signInWithApple`.
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
 public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
@@ -76,4 +82,6 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case movementSnapshot
     case signInWithApple
     case privacyZones
+    case friendsList
+    case addFriend
 }

@@ -18,6 +18,7 @@ struct Friendship: Identifiable, Equatable {
 struct FriendRequest: Identifiable, Equatable {
     let id: String
     let fromUserID: String
+    let fromDisplayName: String
     let toUserID: String
     let connectionPath: String
     let createdAt: Date
@@ -104,6 +105,20 @@ final class FriendsModel {
         }
     }
 
+    /// Unfriends `friend`. Not in this plan's own stated method list for `FriendsModel`, but
+    /// added because Task 2's own action text ("Rows offer unfriend behind a confirmation") is
+    /// otherwise unbuildable -- `FriendsClient.unfriend(userID:)` already exists (Task 1), this is
+    /// the model-level wrapper `FriendsListView` calls (Rule 2). Removed from `friends` locally on
+    /// success, matching `decline(_:)`'s own no-reload-needed reasoning.
+    func unfriend(_ friend: Friendship) async {
+        do {
+            try await client.unfriend(userID: friend.id)
+            friends.removeAll { $0.id == friend.id }
+        } catch {
+            state = .failed(Self.socialError(error))
+        }
+    }
+
     /// Sets the contact-match opt-in flag. `digests` is submitted only when `optedIn` is `true`
     /// -- turning the opt-in off always submits an empty digest array over the wire, regardless
     /// of what was passed in, matching this plan's own behavior list literally and
@@ -157,6 +172,7 @@ final class FriendsModel {
         return FriendRequest(
             id: response.id,
             fromUserID: response.fromUserId,
+            fromDisplayName: response.fromDisplayName,
             toUserID: response.toUserId,
             connectionPath: response.connectionPath,
             createdAt: createdAt

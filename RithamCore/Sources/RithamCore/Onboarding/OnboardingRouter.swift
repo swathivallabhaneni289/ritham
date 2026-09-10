@@ -114,13 +114,15 @@ public enum OnboardingRouter {
              .strengthSession, .strengthHistory,
              .guidance, .recommendations, .preAssessment,
              .momentum, .sleepCheckIn, .movementSnapshot,
-             .signInWithApple, .privacyZones:
+             .signInWithApple, .privacyZones,
+             .friendsList, .addFriend:
             // Phase 2's surfaces, Phase 3's `.momentum`/`.sleepCheckIn`/`.movementSnapshot` (added
-            // by plans 03-06/03-08/03-09), and Phase 4.1's `.signInWithApple` (plan 04.1-05) and
-            // `.privacyZones` (plan 04.1-07) are entered by explicit user choice from the hub or
-            // `SettingsView`, never by this router advancing into them -- terminal exactly like
-            // `.home`, with no branching on answers, age, or any other state. See this file's
-            // header comment for the full record.
+            // by plans 03-06/03-08/03-09), and Phase 4.1's `.signInWithApple` (plan 04.1-05),
+            // `.privacyZones` (plan 04.1-07), and `.friendsList`/`.addFriend` (plan 04.1-09) are
+            // entered by explicit user choice from the hub or `SettingsView`, never by this
+            // router advancing into them -- terminal exactly like `.home`, with no branching on
+            // answers, age, or any other state. See this file's header comment for the full
+            // record.
             return nil
         }
     }

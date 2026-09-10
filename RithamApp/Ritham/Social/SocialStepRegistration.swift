@@ -10,5 +10,6 @@ enum SocialStepRegistration {
     static func registerAll() {
         SocialIdentityRegistration.registerAll()
         PrivacyZoneRegistration.registerAll()
+        FriendsRegistration.registerAll()
     }
 }

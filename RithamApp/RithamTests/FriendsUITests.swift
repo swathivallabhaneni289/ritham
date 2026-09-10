@@ -181,7 +181,7 @@ struct FriendsUITests {
             if path == "/v1/friends/requests" {
                 requestsCallCount += 1
                 if requestsCallCount == 1 {
-                    return jsonResponse(request.url!, body: #"{"requests":[{"id":"req-1","fromUserId":"user-2","toUserId":"user-1","state":"pending","connectionPath":"direct_share","createdAt":"2026-01-01T00:00:00Z"}]}"#)
+                    return jsonResponse(request.url!, body: #"{"requests":[{"id":"req-1","fromUserId":"user-2","fromDisplayName":"Priya","toUserId":"user-1","state":"pending","connectionPath":"direct_share","createdAt":"2026-01-01T00:00:00Z"}]}"#)
                 }
                 return jsonResponse(request.url!, body: #"{"requests":[]}"#)
             }

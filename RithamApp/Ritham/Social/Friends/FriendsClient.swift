@@ -29,9 +29,14 @@ struct SendFriendRequestRequest: Encodable, Equatable {
 /// Describes one `friend_requests` row -- returned by send, redeem-invite, and the incoming list,
 /// so its shape can never drift between those three call sites (mirrors
 /// `friendRequestResponse(_:)`'s single Go-side conversion function for the identical reason).
+/// `fromDisplayName` is populated only by the incoming-requests list (the Go handler's own
+/// `Incoming` query joins against `users`; `send`/`redeem-invite`'s responses leave it empty,
+/// since neither has a caller that needs to render the requester's own name for a request the
+/// caller themselves just created).
 struct FriendRequestResponse: Decodable, Equatable, Identifiable {
     let id: String
     let fromUserId: String
+    let fromDisplayName: String
     let toUserId: String
     let state: String
     let connectionPath: String
