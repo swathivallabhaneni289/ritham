@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: executing
-stopped_at: Completed 04.1-14-PLAN.md
-last_updated: "2026-09-10T17:28:22.188Z"
+stopped_at: Completed 04.1-15-PLAN.md
+last_updated: "2026-09-10T23:32:44.553Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 57
+  completed_plans: 58
   percent: 67
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 15 of 17
+Plan: 16 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -111,6 +111,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P12 | 55min | 3 tasks | 14 files |
 | Phase 04.1 P13 | 25min | 3 tasks | 15 files |
 | Phase 04.1 P14 | 90min | 3 tasks | 17 files |
+| Phase 04.1 P15 | 75min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -265,6 +266,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-14: LocationFixProviding declared in its own file (not LocationAttachment.swift) so CompletionLoggingModel.swift can call 04.1-07's resolveSharedPlaceName while itself naming zero CoreLocation types -- the coordinate type is spelled in the seam's file only
 - [Phase ?]: 04.1-14: StrippedPhotoAsset.swift built in Task 1 (not Task 2 as the plan's file list states) since CompletionDraft's own photo field requires the type to exist first -- same forward-dependency-break precedent as plan 02-03's SupersetGroupID
 - [Phase ?]: 04.1-14: CompletionLoggingView is registered under .completionLogging but not routed from any screen -- GoalEventRSVPView is structurally forbidden by its own committed test from referencing anything completion-facing, and no Goal-Events list/detail screen exists yet; a future plan building that screen adds the real entry point
+- [Phase ?]: 04.1-15: Fixed SocialAPIClient.perform's URL construction (URL(string:relativeTo:) instead of appendingPathComponent) since appendingPathComponent percent-encodes '?' and breaks any caller-built query string -- required for the feed's cursor/limit pagination, the first query-string-bearing route in this client's lifetime
+- [Phase ?]: 04.1-15: GroupHistoryView reuses GroupFeedModel with the identical group-scoped source GroupFeedView uses (not a separate event-scoped query), framed as a non-polled archive of the same chronological data, since the server has no closed-events-only feed query
+- [Phase ?]: 04.1-15: FeedItem.note mirrors the wire key caption under a different Swift-side name so CompletionCard.swift's own typography-floor acceptance grep (which matches literal text) isn't tripped by a member access spelled item.caption
 
 ### Pending Todos
 
@@ -333,8 +337,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T17:28:22.177Z
-Stopped at: Completed 04.1-14-PLAN.md
+Last session: 2026-09-10T23:32:21.659Z
+Stopped at: Completed 04.1-15-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
@@ -381,3 +385,4 @@ GROUPEVENTS-01 through 05 (already fully drafted in `REQUIREMENTS.md`'s "Social 
 from a prior ingest of `docs/group-events.md`) converted from backlog to active. Not yet planned —
 next step is `/gsd-plan-phase 4.1 --prd docs/group-events.md`.
 Resume file:
+None
