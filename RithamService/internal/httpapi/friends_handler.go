@@ -54,14 +54,20 @@ type SendFriendRequestRequest struct {
 	ConnectionPath string `json:"connectionPath"`
 }
 
-// FriendRequestResponse describes one friend_requests row.
+// FriendRequestResponse describes one friend_requests row. FromDisplayName is populated only for
+// GET /v1/friends/requests (Incoming's own JOIN) -- empty for the send/redeem responses, which
+// have no consumer needing the requester's own name rendered. Not in this plan's original wire
+// shape; added alongside friends.Request.FromDisplayName (Rule 3) since plan 04.1-09's own
+// must_haves truth ("a friend row shows a name") has no other source for an incoming request's
+// requester name.
 type FriendRequestResponse struct {
-	ID             string `json:"id"`
-	FromUserID     string `json:"fromUserId"`
-	ToUserID       string `json:"toUserId"`
-	State          string `json:"state"`
-	ConnectionPath string `json:"connectionPath"`
-	CreatedAt      string `json:"createdAt"`
+	ID              string `json:"id"`
+	FromUserID      string `json:"fromUserId"`
+	FromDisplayName string `json:"fromDisplayName"`
+	ToUserID        string `json:"toUserId"`
+	State           string `json:"state"`
+	ConnectionPath  string `json:"connectionPath"`
+	CreatedAt       string `json:"createdAt"`
 }
 
 // IncomingRequestsResponse is returned by GET /v1/friends/requests.
@@ -401,12 +407,13 @@ func handleMatchContacts(svc friendsService) http.HandlerFunc {
 // drift between call sites.
 func friendRequestResponse(req friends.Request) FriendRequestResponse {
 	return FriendRequestResponse{
-		ID:             req.ID.String(),
-		FromUserID:     req.FromUserID.String(),
-		ToUserID:       req.ToUserID.String(),
-		State:          req.State,
-		ConnectionPath: string(req.ConnectionPath),
-		CreatedAt:      req.CreatedAt.UTC().Format(time.RFC3339),
+		ID:              req.ID.String(),
+		FromUserID:      req.FromUserID.String(),
+		FromDisplayName: req.FromDisplayName,
+		ToUserID:        req.ToUserID.String(),
+		State:           req.State,
+		ConnectionPath:  string(req.ConnectionPath),
+		CreatedAt:       req.CreatedAt.UTC().Format(time.RFC3339),
 	}
 }
 

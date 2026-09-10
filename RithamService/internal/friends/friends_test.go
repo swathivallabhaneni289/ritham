@@ -96,6 +96,31 @@ func TestFriendGraph_SendingRequestCreatesNoFriendshipAndEmptyListsForBothUsers(
 	}
 }
 
+// TestFriendGraph_IncomingCarriesTheRequesterDisplayName closes the gap plan 04.1-09 found: the
+// client's own friends list screen needs a name to render for an incoming request before it is
+// accepted, and neither Request nor FriendRequestResponse carried one until this plan's own
+// Rule 3 addition (friends.go's Incoming JOIN against users, mirroring List's existing JOIN).
+func TestFriendGraph_IncomingCarriesTheRequesterDisplayName(t *testing.T) {
+	h := newTestHarness(t)
+	a := createUser(t, h.store, "Alice")
+	b := createUser(t, h.store, "Bob")
+
+	if _, err := h.svc.SendRequest(context.Background(), a, b, PathDirectShare); err != nil {
+		t.Fatalf("SendRequest: unexpected error: %v", err)
+	}
+
+	incoming, err := h.svc.Incoming(context.Background(), b)
+	if err != nil {
+		t.Fatalf("Incoming(b): unexpected error: %v", err)
+	}
+	if len(incoming) != 1 {
+		t.Fatalf("Incoming(b) = %d requests, want 1", len(incoming))
+	}
+	if incoming[0].FromDisplayName != "Alice" {
+		t.Errorf("Incoming(b)[0].FromDisplayName = %q, want %q", incoming[0].FromDisplayName, "Alice")
+	}
+}
+
 func TestFriendGraph_AcceptingCreatesExactlyOneFriendshipRowRegardlessOfDirection(t *testing.T) {
 	for _, reversed := range []bool{false, true} {
 		reversed := reversed

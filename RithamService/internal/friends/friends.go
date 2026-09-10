@@ -57,15 +57,24 @@ var (
 	ErrNotFriends = errors.New("friends: users are not friends")
 )
 
-// Request is a friend_requests row.
+// Request is a friend_requests row. FromDisplayName is populated only by Incoming (a JOIN
+// against users, the same JOIN List already performs for established friends) -- SendRequest and
+// RedeemInvite's own insertFriendRequest path leave it as the empty string, since neither has a
+// caller that needs to render the requester's name for a request the caller themselves just
+// created. Not in this plan's original <artifacts_produced> shape for this struct -- added
+// because plan 04.1-09's own must_haves truth ("a friend row shows a name") has no other source
+// for an incoming request's requester name, and FriendRequestResponse carried none either
+// (Rule 3, mirrors 04.1-06's own precedent for adding a field a later plan's stated behavior
+// structurally requires).
 type Request struct {
-	ID             uuid.UUID
-	FromUserID     uuid.UUID
-	ToUserID       uuid.UUID
-	State          string
-	ConnectionPath ConnectionPath
-	CreatedAt      time.Time
-	ResolvedAt     *time.Time
+	ID              uuid.UUID
+	FromUserID      uuid.UUID
+	FromDisplayName string
+	ToUserID        uuid.UUID
+	State           string
+	ConnectionPath  ConnectionPath
+	CreatedAt       time.Time
+	ResolvedAt      *time.Time
 }
 
 // Friendship is a friendships row: an established, mutual connection stored once as an unordered
@@ -240,13 +249,18 @@ func (s *Service) Decline(ctx context.Context, userID, requestID uuid.UUID) erro
 	return nil
 }
 
-// Incoming lists the pending requests addressed to userID, oldest first.
+// Incoming lists the pending requests addressed to userID, oldest first. JOINs users on
+// from_user_id so each Request carries the requester's own current display name (see Request's
+// own comment on FromDisplayName) -- the identical users JOIN List already performs for
+// established friends, applied here so an incoming request row has a name to show before it is
+// ever accepted.
 func (s *Service) Incoming(ctx context.Context, userID uuid.UUID) ([]Request, error) {
 	const query = `
-		SELECT id, from_user_id, to_user_id, state, connection_path, created_at, resolved_at
-		FROM friend_requests
-		WHERE to_user_id = $1 AND state = $2
-		ORDER BY created_at
+		SELECT fr.id, fr.from_user_id, u.display_name, fr.to_user_id, fr.state, fr.connection_path, fr.created_at, fr.resolved_at
+		FROM friend_requests fr
+		JOIN users u ON u.id = fr.from_user_id
+		WHERE fr.to_user_id = $1 AND fr.state = $2
+		ORDER BY fr.created_at
 	`
 	rows, err := s.store.Pool().Query(ctx, query, userID, string(statePending))
 	if err != nil {
@@ -262,7 +276,7 @@ func (s *Service) Incoming(ctx context.Context, userID uuid.UUID) ([]Request, er
 			state      string
 			resolvedAt *time.Time
 		)
-		if err := rows.Scan(&r.ID, &r.FromUserID, &r.ToUserID, &state, &path, &r.CreatedAt, &resolvedAt); err != nil {
+		if err := rows.Scan(&r.ID, &r.FromUserID, &r.FromDisplayName, &r.ToUserID, &state, &path, &r.CreatedAt, &resolvedAt); err != nil {
 			return nil, err
 		}
 		r.State = state
