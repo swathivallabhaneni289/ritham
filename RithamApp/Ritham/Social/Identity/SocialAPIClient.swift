@@ -100,8 +100,22 @@ struct SocialAPIClient {
 
     // MARK: - Shared request plumbing
 
+    /// Resolves `path` against `baseURL` with `URL(string:relativeTo:)`, never
+    /// `appendingPathComponent(_:)`. `appendingPathComponent` treats its entire argument as one
+    /// literal path segment and percent-encodes `?` into `%3F` -- verified directly against
+    /// Foundation before this fix landed -- so a caller-built query string (plan 04.1-15's
+    /// `cursor`/`limit` feed pagination params, the first query-string-bearing route in this
+    /// client's lifetime) would never reach the server as a real query at all, landing instead as
+    /// literal escaped text inside the URL path and 404ing against the router's exact-path match.
+    /// `URL(string:relativeTo:)` correctly splits `path` into path and query components at the
+    /// first unescaped `?`, and produces a byte-identical URL to the old construction for every
+    /// existing plain (query-free) path this client already calls -- verified against all of this
+    /// file's own real call sites before this change landed.
     private func perform(method: String, path: String, bodyData: Data?) async throws -> Data {
-        var urlRequest = URLRequest(url: baseURL.appendingPathComponent(path))
+        guard let resolvedURL = URL(string: path, relativeTo: baseURL) else {
+            throw SocialAPIError.transport
+        }
+        var urlRequest = URLRequest(url: resolvedURL)
         urlRequest.httpMethod = method
         urlRequest.timeoutInterval = Self.requestTimeout
         if let token = await sessionStore.token {
