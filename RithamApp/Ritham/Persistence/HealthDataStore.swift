@@ -956,6 +956,43 @@ public final class HealthDataStore {
         return records.first { $0.id == id }
     }
 
+    // MARK: - Certificates
+
+    /// GROUPEVENTS-05: writes one `CertificateRecord` per completion. Never called more than once
+    /// per completion -- `CompletionLoggingView` calls this exactly once, on the completion
+    /// model's `.logged` transition, which itself fires at most once per completion (`internal/events`
+    /// exposes no update route, so there is no second "logged" moment to double-write from).
+    public func saveCertificate(
+        completionID: UUID,
+        eventName: String,
+        activityType: ActivityType,
+        participantName: String,
+        completionDate: Date,
+        ownTimeSeconds: Int?,
+        photoAssetID: UUID?
+    ) throws {
+        context.insert(CertificateRecord(
+            completionID: completionID,
+            eventName: eventName,
+            activityTypeRaw: activityType.rawValue,
+            participantName: participantName,
+            completionDate: completionDate,
+            ownTimeSeconds: ownTimeSeconds,
+            photoAssetID: photoAssetID
+        ))
+        try context.save()
+    }
+
+    /// Every certificate this device holds, in the person's own order of accumulation (oldest
+    /// first). `CertificateArchiveView` renders this list directly, with no re-sort, no rank, and
+    /// no count shown anywhere on it; `CertificateRevealView` reads its own `.last` for the
+    /// certificate a completion just generated.
+    public func loadCertificates() throws -> [CertificateRecord] {
+        try context.fetch(FetchDescriptor<CertificateRecord>(
+            sortBy: [SortDescriptor(\.completionDate, order: .forward)]
+        ))
+    }
+
     // MARK: - Private
 
     private func fetchProfile() throws -> UserProfile? {

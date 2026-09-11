@@ -102,6 +102,10 @@ struct CompletionLoggingView: View, OnboardingStepPresenting {
         .onChange(of: privateDurationText) { _, newValue in
             completionModel.setPrivateDuration(seconds: Double(newValue).map { Int($0 * 60) })
         }
+        .onChange(of: completionModel.stage) { _, newStage in
+            guard newStage == .logged else { return }
+            Task { await generateCertificateAndReveal() }
+        }
     }
 
     // MARK: - Headline
@@ -346,6 +350,36 @@ struct CompletionLoggingView: View, OnboardingStepPresenting {
     private func retry() async {
         guard let eventID = flow.selectedCompletionEventID else { return }
         await completionModel.retry(eventID: eventID)
+    }
+
+    /// GROUPEVENTS-05: completing the event is what generates and posts the certificate -- there
+    /// is no separate send step. Fires exactly once, on the completion model's own `.logged`
+    /// transition (which itself fires at most once per completion, since `internal/events` exposes
+    /// no update route). Reads only this screen's own already-server-confirmed values
+    /// (`completionModel.lastCompletion`) -- never any other member's data, since this screen never
+    /// held any to begin with. A write failure here must never hide or block the completion's own
+    /// already-rendered success confirmation, so it is swallowed rather than surfaced as a second
+    /// error state layered onto `.logged`.
+    private func generateCertificateAndReveal() async {
+        guard let response = completionModel.lastCompletion, let event else { return }
+        let store = HealthDataStore(context: modelContext)
+        let completionID = UUID(uuidString: response.id) ?? UUID()
+        let completionDate = CompletionCard.parseTimestamp(response.completedAt) ?? completionModel.draft.completedAt
+        do {
+            try store.saveCertificate(
+                completionID: completionID,
+                eventName: event.name,
+                activityType: event.activityType,
+                participantName: response.displayName,
+                completionDate: completionDate,
+                ownTimeSeconds: response.ownTimeSeconds ?? completionModel.draft.ownTimeSeconds,
+                photoAssetID: completionModel.draft.photo?.assetID
+            )
+            flow.open(.certificate)
+        } catch {
+            // See this function's own header comment: a certificate write failure must never
+            // block or hide the completion's own already-confirmed success.
+        }
     }
 
     private func handlePhotoPick(_ item: PhotosPickerItem) async {

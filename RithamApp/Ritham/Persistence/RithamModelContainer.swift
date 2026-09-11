@@ -29,6 +29,9 @@ public enum RithamModelContainer {
         // Pattern 3 -- see `PrivacyZoneRecord`'s own header comment for why this container
         // (rather than a separate one) is where it belongs.
         PrivacyZoneRecord.self,
+        // 04.1-16: GROUPEVENTS-05's digital finisher certificate archive. Holds no other
+        // member's data and no image bytes -- see `CertificateRecord`'s own header comment.
+        CertificateRecord.self,
     ]
 
     /// Builds a `ModelContainer`. `inMemory: true` is used by tests — an in-memory store has no

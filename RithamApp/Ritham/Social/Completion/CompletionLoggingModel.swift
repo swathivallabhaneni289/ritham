@@ -47,6 +47,13 @@ final class CompletionLoggingModel {
     private(set) var stage: Stage = .ready
     private(set) var draft: CompletionDraft
 
+    /// The server's own response to the one `POST` this screen ever sends, kept only so a
+    /// `.logged`-stage observer (plan 04.1-16's certificate auto-generation) can read the
+    /// server-confirmed completion id and display name without a second network round trip or a
+    /// second, duplicate submit path. `nil` until the first successful submit; never read by
+    /// `submit(eventID:)` itself.
+    private(set) var lastCompletion: CompletionResponse?
+
     /// Two independent, uncoupled opt-ins (GROUPEVENTS-03) -- enabling one never enables or
     /// disables the other, in either direction. `CompletionLoggingTests` asserts both directions
     /// explicitly, since a single-direction check would miss the bundling this rule exists to
@@ -158,7 +165,8 @@ final class CompletionLoggingModel {
     private func submit(eventID: UUID) async {
         stage = .logging
         do {
-            _ = try await client.log(eventID: eventID.uuidString, draft.outgoingRequest())
+            let response = try await client.log(eventID: eventID.uuidString, draft.outgoingRequest())
+            lastCompletion = response
             stage = .logged
         } catch {
             stage = .failed(Self.socialError(error))

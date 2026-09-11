@@ -82,6 +82,13 @@
 // the identical CROSSGEN-05 reason as every other Phase 4.1 social surface: reached only by
 // explicit user choice from `GroupDetailView`'s own "Feed"/"History" entry points -- never by
 // `OnboardingRouter` advancing into either -- terminal exactly like `groupList`/`groupDetail`.
+//
+// `certificate` and `certificateArchive` (below, plan 04.1-16) are ordinary members of this same
+// enum for the identical CROSSGEN-05 reason as every other Phase 4.1 social surface:
+// `certificate` (the reveal screen) is reached only from `CompletionLoggingView`'s own
+// successful-log stage, and `certificateArchive` only by explicit user choice from wherever a
+// person's own past certificates are surfaced -- never by `OnboardingRouter` advancing into
+// either -- terminal exactly like `groupFeed`/`groupHistory`.
 
 
 /// The single shared step vocabulary every onboarding user's flow is built from.
@@ -124,4 +131,6 @@ public enum OnboardingStep: String, CaseIterable, Sendable, Hashable, Codable {
     case completionLogging
     case groupFeed
     case groupHistory
+    case certificate
+    case certificateArchive
 }

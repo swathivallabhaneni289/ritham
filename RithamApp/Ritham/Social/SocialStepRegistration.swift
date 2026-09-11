@@ -15,5 +15,6 @@ enum SocialStepRegistration {
         GoalEventsRegistration.registerAll()
         CompletionRegistration.registerAll()
         FeedRegistration.registerAll()
+        CertificateRegistration.registerAll()
     }
 }

@@ -119,13 +119,15 @@ public enum OnboardingRouter {
              .groupList, .groupDetail,
              .createGoalEvent, .goalEventRSVP,
              .completionLogging,
-             .groupFeed, .groupHistory:
+             .groupFeed, .groupHistory,
+             .certificate, .certificateArchive:
             // Phase 2's surfaces, Phase 3's `.momentum`/`.sleepCheckIn`/`.movementSnapshot` (added
             // by plans 03-06/03-08/03-09), and Phase 4.1's `.signInWithApple` (plan 04.1-05),
             // `.privacyZones` (plan 04.1-07), `.friendsList`/`.addFriend` (plan 04.1-09),
             // `.groupList`/`.groupDetail` (plan 04.1-11), `.createGoalEvent`/`.goalEventRSVP`
-            // (plan 04.1-13), `.completionLogging` (plan 04.1-14), and `.groupFeed`/
-            // `.groupHistory` (plan 04.1-15) are entered by explicit user choice from the hub or
+            // (plan 04.1-13), `.completionLogging` (plan 04.1-14), `.groupFeed`/
+            // `.groupHistory` (plan 04.1-15), and `.certificate`/`.certificateArchive`
+            // (plan 04.1-16) are entered by explicit user choice from the hub or
             // `SettingsView`, never by this router advancing into them -- terminal exactly like
             // `.home`, with no branching on answers, age, or any other state. See this file's
             // header comment for the full record.
