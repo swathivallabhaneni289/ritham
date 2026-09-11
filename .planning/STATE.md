@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: verifying
-stopped_at: Completed 04.1-16-PLAN.md
-last_updated: "2026-09-11T07:15:30.294Z"
+stopped_at: Completed 04.1-17-PLAN.md Tasks 1-3 (structural gates, server gate, full-suite green + REQUIREMENTS.md sanity check); Task 4 (end-to-end human walkthrough) deferred to the project's batched end-of-project physical-device verification pass, matching 02-16/04.1-05 precedent. Phase 04.1 is code-complete, pending that one deferred checkpoint.
+last_updated: "2026-09-11T07:38:24.313Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 60
-  completed_plans: 59
-  percent: 67
+  completed_plans: 60
+  percent: 83
 ---
 
 # Project State
@@ -113,6 +113,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P14 | 90min | 3 tasks | 17 files |
 | Phase 04.1 P15 | 95min | 3 tasks | 16 files |
 | Phase 04.1 P16 | 35min | 3 tasks | 16 files |
+| Phase 04.1 P17 | 50min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -273,6 +274,10 @@ Recent decisions affecting current work:
 - [Phase ?]: CertificateComposer's only photo-shaped input is the opaque, server-backed StrippedPhotoAsset -- no file URL, Data, UIImage, or PhotosPickerItem overload exists, closing 04.1-RESEARCH.md's Pattern 4/Pitfall 5 bypass structurally
 - [Phase ?]: The default certificate export template is the branded graphic, not the person's photo, needing zero export-consent queries; a failed consent query fails closed
 - [Phase ?]: Renaming the export display name only changes the locally-composed CertificateContent copy -- never sent to the server, never touches the group's own event name
+- [Phase 04.1-17]: Social directory has exactly 8 subdirectories, not the plan-stated 9 (RithamCore's flat Social/ is a different module); SocialCoverageTests asserts the real eight by name
+- [Phase 04.1-17]: Annotated ACCOUNT-01 in REQUIREMENTS.md: certificate-archive restoration on a new device is not actually built (CertificateRecord is SwiftData-local only); friend-graph/group-membership restoration is real. Checkbox stays checked; tracked as a Phase 5/backlog decision
+- [Phase 04.1-17]: Confirmed GROUPEVENTS-05's checkbox is no longer premature -- plan 04.1-16 shipped the real certificate feature 04.1-12-SUMMARY.md flagged as still-missing
+- [Phase 04.1-17]: Made no ROADMAP.md edit -- its Phase 4.1 entry already satisfied Task 3's acceptance criteria (two-rung annotation, seventeen plans listed); 04.1-17's own checklist mark stays unchecked pending Task 4's deferred human-verify checkpoint, matching 02-16's precedent
 
 ### Pending Todos
 
@@ -330,6 +335,7 @@ Recent decisions affecting current work:
   helpers.
 
 - 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
+- 04.1-17: ACCOUNT-01's requirement text claims signing in on a new device restores the certificate archive -- CertificateRecord (plan 04.1-16) is SwiftData-local only, no server table, no sync route. Friend graph and group memberships DO restore correctly. Annotated in REQUIREMENTS.md; needs a Phase 5/backlog decision (build certificate sync, or correct the requirement text) -- not a phase-close blocker.
 
 ## Deferred Items
 
@@ -341,8 +347,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-11T07:15:30.288Z
-Stopped at: Completed 04.1-16-PLAN.md
+Last session: 2026-09-11T07:38:24.306Z
+Stopped at: Completed 04.1-17-PLAN.md Tasks 1-3 (structural gates, server gate, full-suite green + REQUIREMENTS.md sanity check); Task 4 (end-to-end human walkthrough) deferred to the project's batched end-of-project physical-device verification pass, matching 02-16/04.1-05 precedent. Phase 04.1 is code-complete, pending that one deferred checkpoint.
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
