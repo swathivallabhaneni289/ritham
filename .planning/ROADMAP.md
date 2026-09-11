@@ -388,11 +388,18 @@ produced the permanent 13+ age floor decision, GitHub issue #1, closed).
 **Plans:** 5 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 04.2-01-PLAN.md — KidContentCatalog: 27 verbatim USDA/CDC ideas with per-item citations
 - [ ] 04.2-02-PLAN.md — KidContentCopy: locked screen strings, disclaimer, child-entry copy
 - [ ] 04.2-03-PLAN.md — ChildEntryRecord + per-entry child CRUD on HealthDataStore
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 04.2-04-PLAN.md — KidIdeasView, ChildEntryStore, and the Settings entry point
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 04.2-05-PLAN.md — Structural gates, full-suite verification, human-verify checkpoint
 
 ### Phase 04.1: Group Goal-Events & Accountability Circles (INSERTED)
