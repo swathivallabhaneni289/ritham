@@ -121,6 +121,45 @@ func TestExportAllowed_FullGrantsOpenGate(t *testing.T) {
 	}
 }
 
+// TestExportAllowed_BystanderDenied asserts CR-01's fix: a caller who is neither the photo's
+// owner nor one of its recorded subjects -- including a group member who can see the photo's
+// completion but has no stake in the photo itself, and a former group member who has since left
+// -- cannot learn the export-consent status (in particular, cannot enumerate which specific users
+// have not yet granted consent). Both get ErrNotPhotoOwner, matching every other non-owner path in
+// this file, mapped to 403 by statusForFeedError -- never the actual consent data.
+func TestExportAllowed_BystanderDenied(t *testing.T) {
+	h := newTestHarness(t)
+	owner := createUser(t, h.store, "Owner")
+	subject := createUser(t, h.store, "Subject")
+	bystander := createUser(t, h.store, "Bystander")
+	formerSubject := createUser(t, h.store, "FormerSubject")
+	photoID := createPhotoAsset(t, h.store, owner)
+
+	if err := h.svc.RequestExportConsent(context.Background(), owner, photoID, []uuid.UUID{subject}); err != nil {
+		t.Fatalf("RequestExportConsent: unexpected error: %v", err)
+	}
+
+	if _, err := h.svc.ExportAllowed(context.Background(), bystander, photoID); !errors.Is(err, ErrNotPhotoOwner) {
+		t.Fatalf("ExportAllowed(bystander): got error %v, want ErrNotPhotoOwner", err)
+	}
+
+	// A user who was never recorded as owner or subject at all -- standing in for a departed group
+	// member reachable via events.Completions -- is denied identically, with no membership check
+	// of any kind involved (there is nothing for one to gate on: recorded-subject status is the
+	// only durable grant this file makes).
+	if _, err := h.svc.ExportAllowed(context.Background(), formerSubject, photoID); !errors.Is(err, ErrNotPhotoOwner) {
+		t.Fatalf("ExportAllowed(never-recorded caller): got error %v, want ErrNotPhotoOwner", err)
+	}
+
+	// Sanity: the real subject and owner are still let through, unaffected by the new check.
+	if _, err := h.svc.ExportAllowed(context.Background(), subject, photoID); err != nil {
+		t.Fatalf("ExportAllowed(recorded subject): unexpected error: %v", err)
+	}
+	if _, err := h.svc.ExportAllowed(context.Background(), owner, photoID); err != nil {
+		t.Fatalf("ExportAllowed(owner): unexpected error: %v", err)
+	}
+}
+
 // TestExportAllowed_NoSubjectsRecordedIsAllowedImmediately asserts a photo with no recorded
 // subjects (the default badge template case, or a solo shot) is allowed immediately -- no request
 // was ever made.

@@ -87,11 +87,29 @@ func (s *Service) GrantExportConsent(ctx context.Context, subjectUserID, photoAs
 // recorded subject has granted (no photo_export_consents row with granted_at IS NULL remains for
 // this asset), and allowed immediately when no subject was ever recorded at all -- the default
 // badge template case, or a solo shot with nobody else in it.
+//
+// Only the photo's owner or one of its recorded subjects may ask this question -- a bystander has
+// no legitimate reason to learn which specific users have not yet granted export consent for a
+// photo (see this file's header comment on the group-feed-vs-public-internet boundary), and this
+// check must hold regardless of the caller's current group membership: revocation (leaving or
+// being removed from the group) is enforced everywhere else in this phase by the caller simply no
+// longer being a recorded subject or owner, never by a separate membership lookup here. A caller
+// who is neither the owner nor a recorded subject gets ErrNotPhotoOwner, mapped to 403 by
+// statusForFeedError, same as every other non-owner path in this file.
 func (s *Service) ExportAllowed(ctx context.Context, exporterUserID, photoAssetID uuid.UUID) (ExportGate, error) {
-	_ = exporterUserID // not yet used to restrict who may check -- any authenticated caller may
-	// ask a photo's export status; the handler layer still requires a valid session for every
-	// route (T-04.1-13). Kept as a parameter to match this plan's own artifact signature and to
-	// leave room for a future caller-scoped restriction without an API break.
+	isOwner, err := s.isPhotoOwner(ctx, exporterUserID, photoAssetID)
+	if err != nil {
+		return ExportGate{}, err
+	}
+	if !isOwner {
+		isSubject, err := s.isRecordedSubject(ctx, exporterUserID, photoAssetID)
+		if err != nil {
+			return ExportGate{}, err
+		}
+		if !isSubject {
+			return ExportGate{}, ErrNotPhotoOwner
+		}
+	}
 
 	const query = `
 		SELECT subject_user_id FROM photo_export_consents
@@ -123,6 +141,18 @@ func (s *Service) isPhotoOwner(ctx context.Context, userID, photoAssetID uuid.UU
 	var exists bool
 	err := s.store.Pool().QueryRow(ctx,
 		`SELECT EXISTS(SELECT 1 FROM photo_assets WHERE id = $1 AND owner_user_id = $2)`,
+		photoAssetID, userID,
+	).Scan(&exists)
+	return exists, err
+}
+
+// isRecordedSubject reports whether userID has a photo_export_consents row for photoAssetID at
+// all (pending or already granted) -- true for anyone the owner named in RequestExportConsent,
+// regardless of that person's current group membership.
+func (s *Service) isRecordedSubject(ctx context.Context, userID, photoAssetID uuid.UUID) (bool, error) {
+	var exists bool
+	err := s.store.Pool().QueryRow(ctx,
+		`SELECT EXISTS(SELECT 1 FROM photo_export_consents WHERE photo_asset_id = $1 AND subject_user_id = $2)`,
 		photoAssetID, userID,
 	).Scan(&exists)
 	return exists, err
