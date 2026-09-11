@@ -341,7 +341,7 @@ Deferred to future release. Tracked but not in current roadmap.
   feed access but past completion cards remain visible to the group. Never shows pace, time-based
   rank, "first to complete," a completion denominator, or precise location.
 
-- [ ] **GROUPEVENTS-05**: Digital certificate — auto-generated per person on completion (Ritham
+- [x] **GROUPEVENTS-05**: Digital certificate — auto-generated per person on completion (Ritham
   branding, event name/activity type, participant's own name, completion date, own time only if
   opted in). Never includes pace, measured distance, rank, GPS/address, or any other member's
   name/photo/status/time. Default export template is a branded graphic/badge, not the user's own
@@ -411,7 +411,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GROUPEVENTS-02 | Phase 4.1 | Complete |
 | GROUPEVENTS-03 | Phase 4.1 | Complete |
 | GROUPEVENTS-04 | Phase 4.1 | Complete |
-| GROUPEVENTS-05 | Phase 4.1 | Pending |
+| GROUPEVENTS-05 | Phase 4.1 | Complete |
 | LAUNCH-01 | Phase 5 | Pending |
 | LAUNCH-02 | Phase 5 | Pending |
 | LAUNCH-03 | Phase 5 | Pending |

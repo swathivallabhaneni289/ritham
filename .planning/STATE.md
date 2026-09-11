@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
-status: executing
-stopped_at: Completed 04.1-15-PLAN.md
-last_updated: "2026-09-10T23:46:57.545Z"
+status: verifying
+stopped_at: Completed 04.1-16-PLAN.md
+last_updated: "2026-09-11T07:15:30.294Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 58
+  completed_plans: 59
   percent: 67
 ---
 
@@ -31,10 +31,10 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.1 (group-goal-events-accountability-circles) — EXECUTING
-Plan: 16 of 17
+Plan: 17 of 17
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Ready to execute
+Status: Phase complete — ready for verification
 (run /gsd-execute-phase 4.1)
 batched verification pass runs
 Last activity: 2026-09-09 — Phase 04.1 execution started
@@ -112,6 +112,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P13 | 25min | 3 tasks | 15 files |
 | Phase 04.1 P14 | 90min | 3 tasks | 17 files |
 | Phase 04.1 P15 | 95min | 3 tasks | 16 files |
+| Phase 04.1 P16 | 35min | 3 tasks | 16 files |
 
 ## Accumulated Context
 
@@ -269,6 +270,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-15: Fixed SocialAPIClient.perform's URL construction (URL(string:relativeTo:) instead of appendingPathComponent) since appendingPathComponent percent-encodes '?' and breaks any caller-built query string -- required for the feed's cursor/limit pagination, the first query-string-bearing route in this client's lifetime
 - [Phase ?]: 04.1-15: GroupHistoryView reuses GroupFeedModel with the identical group-scoped source GroupFeedView uses (not a separate event-scoped query), framed as a non-polled archive of the same chronological data, since the server has no closed-events-only feed query
 - [Phase ?]: 04.1-15: FeedItem.note mirrors the wire key caption under a different Swift-side name so CompletionCard.swift's own typography-floor acceptance grep (which matches literal text) isn't tripped by a member access spelled item.caption
+- [Phase ?]: CertificateComposer's only photo-shaped input is the opaque, server-backed StrippedPhotoAsset -- no file URL, Data, UIImage, or PhotosPickerItem overload exists, closing 04.1-RESEARCH.md's Pattern 4/Pitfall 5 bypass structurally
+- [Phase ?]: The default certificate export template is the branded graphic, not the person's photo, needing zero export-consent queries; a failed consent query fails closed
+- [Phase ?]: Renaming the export display name only changes the locally-composed CertificateContent copy -- never sent to the server, never touches the group's own event name
 
 ### Pending Todos
 
@@ -337,8 +341,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-10T23:32:21.659Z
-Stopped at: Completed 04.1-15-PLAN.md
+Last session: 2026-09-11T07:15:30.288Z
+Stopped at: Completed 04.1-16-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
