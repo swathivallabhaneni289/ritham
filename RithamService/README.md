@@ -123,6 +123,47 @@ fallback exists for any of these three):
 
 `cmd/ritham-service/main.go` stays bound to `127.0.0.1` until those three items are decided.
 
+Two more surfaced by Phase 4.1 (plan 04.1-17, this phase's close-out):
+
+4. **No transport security (TLS) is configured anywhere in this stack.** Every client/server
+   round trip so far has been loopback-only (Simulator sharing the host Mac's network), so this
+   has never been exercised. Real two-device use — required to actually test friends, groups,
+   goal-events, and the shared feed with a second live person — is not possible until hosting
+   (item 3) and transport security are decided together; neither is safe to stand up alone.
+5. **Account deletion is unbuilt.** Apple's App Store Review Guidelines require an in-app account
+   deletion path for any app offering account creation (Guideline 5.1.1(v)), and this phase's
+   Sign in with Apple flow (`internal/identity`) is exactly that kind of account creation. No
+   deletion route, service method, or UI exists yet. Phase 5 must decide and build this before
+   public App Store submission — it is a submission blocker, not a nice-to-have.
+
+## Phase 5 privacy-review handoff (LAUNCH-04)
+
+Recorded here, plainly and specifically, so LAUNCH-04's reviewer does not have to reconstruct
+what this phase actually collects and stores from planning documents. Eight categories:
+
+1. **Apple's stable subject identifier and an opaque Ritham user id.** No password or credential
+   of Ritham's own exists or is planned — see `internal/identity`.
+2. **Session tokens, stored only as digests, revocable.** The raw token is never persisted;
+   `internal/identity`'s revoke route invalidates a session by digest.
+3. **Salted digests of contact identifiers, only while a user is opted in, deleted on opt-out.**
+   `internal/friends`'s contact-matching feature (`RITHAM_CONTACT_MATCH_SALT`) stores only an
+   HMAC digest of a contact identifier, never the raw phone number or email, and only for the
+   duration of the opt-in.
+4. **The friend graph, group memberships, goal events, RSVPs, and completions.** The core social
+   data model this phase adds (`internal/friends`, `internal/groups`, `internal/events`).
+5. **Photos, stored in a group-visible tier only after unconditional server-side metadata
+   stripping** (`internal/photo`, `StripAndReencode`, `TestSharedTierRequiresPipeline` above); the
+   metadata-intact original never leaves the owner's own device.
+6. **Coarse place-name strings only.** No coordinate is ever stored anywhere on this server, and
+   Privacy Zone definitions never leave the client device (`RithamApp/Ritham/Social/PrivacyZones`).
+7. **A third-party geocoding processor disclosure.** The client's platform geocoder
+   (`LocationAttachment.swift`'s `SystemGeocoder`) sends a transient coordinate to Apple's own
+   geocoding servers to resolve a coarse place name. This is Apple acting as a data processor of
+   that value, even though Ritham's own backend never receives the coordinate — flagged explicitly
+   by 04.1-07-SUMMARY.md and repeated here because "on-device" does not cover this call by itself.
+8. **Per-photo export-consent grants.** `internal/feed`'s `exportconsent.go` gates a certificate
+   export that includes another member's photo behind that member's own consent.
+
 ## Scope note
 
 No framework or router library is used (Go 1.22+'s `net/http` method-and-path pattern syntax
