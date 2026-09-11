@@ -378,7 +378,12 @@ youth-movement category and would need the same dietitian/clinical sign-off disc
 Promoted 2026-09-11 from backlog Phase 999.1 (originated the 2026-08-24/25 session that also
 produced the permanent 13+ age floor decision, GitHub issue #1, closed).
 
-**Requirements**: TBD (run /gsd-discuss-phase or /gsd-plan-phase 04.2 to break down)
+*Narrowed 2026-09-11 (discuss-phase): scope is preteens only (~ages 10-12), not the full under-13*
+*range this goal text above still describes generically — toddler/preschool/school-age content is*
+*out of scope for this phase. A parent may record more than one child, each as a preteen-scoped*
+*entry. See `04.2-CONTEXT.md` D-06/D-07 for the full decision record.*
+
+**Requirements**: KIDCONTENT-01, KIDCONTENT-02
 **Depends on:** Phase 2 (nutrition-guidance system), Phase 4 (household/cross-generational surface)
 **Plans:** 0 plans
 

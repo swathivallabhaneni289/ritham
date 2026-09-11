@@ -215,6 +215,29 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
   with the only cross-member interaction being a fixed, non-ranked cheer set ("nice work"/"keep
   going") — no shared leaderboard, no visible pace/weight comparison between members.
 
+### Parent-Facing Kid Content
+
+*Promoted 2026-09-11 from backlog Phase 999.1 into Phase 04.2. Narrowed during discuss-phase to
+preteens only (~ages 10-12) — see `04.2-CONTEXT.md` D-06. No formal REQ-IDs existed for this
+backlog entry before promotion; these are new.*
+
+- [ ] **KIDCONTENT-01**: A read-only, browsable library of food and movement ideas for a parent's
+  own preteen (~ages 10-12) child, reached as a nested sub-screen (Settings or the Diet Plan
+  screen) — never a new top-level dashboard section. Every item is transcribed verbatim from a
+  citable public health source (e.g. USDA MyPlate for Kids, AAP, CDC/HHS youth physical activity
+  guidance), never originally authored — same discipline as `NutritionGuidanceCatalog`. No
+  weight-loss framing, no calorie/macro/portion target, no BMI, no weight-management content of
+  any kind — extends `HEALTH-04`'s `Under 18 (Minor)` prohibition in spirit to the actual
+  under-13 child. Ships pending Phase 5's clinical/dietitian sign-off, same posture as
+  `NutritionGuidanceCatalog`/`WorkoutGuidanceCatalog`.
+
+- [ ] **KIDCONTENT-02**: A parent may optionally record more than one child, each as a simple
+  preteen-scoped entry, persisted as a Settings-level preference. No child weight, growth,
+  activity/session history, or name is stored — nothing about a specific child is tracked over
+  time. This is parent-provided data about their own child on their own account, not a child
+  interacting with the service directly — does not reopen Ritham's permanent 13+ age floor
+  (`MINOR-01`) or raise a COPPA concern.
+
 ### Launch Readiness (Legal & Clinical Review)
 
 - [ ] **LAUNCH-01**: PAR-Q+-style gate-question wording has been reviewed by counsel before
@@ -421,6 +444,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
+| KIDCONTENT-01 | Phase 04.2 | Pending |
+| KIDCONTENT-02 | Phase 04.2 | Pending |
 | ACCOUNT-01 | Phase 4.1 | Complete |
 | HOUSEHOLD-02 | Phase 4.1 | Complete |
 | GROUPEVENTS-01 | Phase 4.1 | Complete |
@@ -435,8 +460,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 **Coverage:**
 
-- v1 requirements: 40 total
-- Mapped to phases: 40
+- v1 requirements: 42 total
+- Mapped to phases: 42
 - Unmapped: 0 ✓
 
 ---
