@@ -409,7 +409,12 @@ see criterion 1's note below)
      data). `docs/group-events.md` is the full spec this phase plans against. Identity/account
      model (ACCOUNT-01, Sign in with Apple) absorbs Phase 999.2's backlog scope — see
      `REQUIREMENTS.md`'s "Account & Identity" section and Backlog below.*
-**Plans**: 17/17 plans complete
+**Plans**: 17/17 plans executed, code-reviewed (1 blocker + 2 warnings found and fixed), and
+goal-verified 8/8 must-haves — `04.1-VERIFICATION.md` status is `human_needed`, not `passed`:
+4 items (real Sign-in-with-Apple device round trip, the full UI walkthrough, the MinIO/S3 wire
+round trip, and an independent full-suite re-run) are deferred to this project's standing
+2026-09-06 batched end-of-project verification pass, per `PROJECT.md` Key Decisions — tracked in
+`04.1-UAT.md`, same pattern as Phase 2's 02-16 checkpoint. Not phase-specific failures.
 
 Plans:
 

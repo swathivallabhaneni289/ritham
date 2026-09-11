@@ -5,7 +5,7 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: verifying
-stopped_at: Completed 04.1-17-PLAN.md Tasks 1-3 (structural gates, server gate, full-suite green + REQUIREMENTS.md sanity check); Task 4 (end-to-end human walkthrough) deferred to the project's batched end-of-project physical-device verification pass, matching 02-16/04.1-05 precedent. Phase 04.1 is code-complete, pending that one deferred checkpoint.
+stopped_at: Phase 04.1 fully executed (17/17 plans), code-reviewed (1 blocker + 2 warnings found and fixed, verified via full suites), and goal-verified (8/8 must-haves, VERIFICATION.md status human_needed). 4 items deferred to the project's batched end-of-project physical-device/infrastructure pass (real Sign-in-with-Apple round trip, full UI walkthrough, MinIO/S3 wire round trip, independent full-suite re-run) — tracked in 04.1-UAT.md, matching 02-16 precedent. Not phase-specific failures.
 last_updated: "2026-09-11T07:38:24.313Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
