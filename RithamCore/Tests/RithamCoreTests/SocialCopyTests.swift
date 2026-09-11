@@ -80,6 +80,8 @@ struct SocialCopyTests {
         ("Certificate.creationTimeNudge", SocialCopy.Certificate.creationTimeNudge),
         ("Certificate.exportPreviewLabel", SocialCopy.Certificate.exportPreviewLabel),
         ("Certificate.multiPersonExportBlock", SocialCopy.Certificate.multiPersonExportBlock),
+        ("Certificate.exportGateCheckFailed", SocialCopy.Certificate.exportGateCheckFailed),
+        ("Certificate.retryExportGateCheckCTA", SocialCopy.Certificate.retryExportGateCheckCTA),
         ("PrivacyZone.suppressedNote", SocialCopy.PrivacyZone.suppressedNote),
         ("AddFriend.contactMatchingRow", SocialCopy.AddFriend.contactMatchingRow),
         ("AddFriend.inviteLinkRow", SocialCopy.AddFriend.inviteLinkRow),
