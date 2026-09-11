@@ -91,6 +91,31 @@ private final class NoOpCLLocationManager: CLLocationManager {
     override func requestLocation() {}
 }
 
+/// A plain, lock-guarded counter -- not an `actor`, deliberately, because it must be readable and
+/// incrementable from `SystemLocationFixProvider`'s synchronous, non-`async` `makeLocationManager`
+/// factory closure. Used only to make the WR-02 overlapping-call regression test's ordering
+/// deterministic: `SystemLocationFixProvider.currentFix()` calls `makeLocationManager()` only
+/// after `pendingContinuation`/`activeManager` are already assigned under its own lock, so
+/// observing a manager-creation count of N is proof the Nth `currentFix()` call has already
+/// completed that assignment -- a stronger guarantee than a bare `Task.yield()`, which only hints
+/// at scheduling order without proving it.
+private final class LockedCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = 0
+
+    func increment() {
+        lock.lock()
+        value += 1
+        lock.unlock()
+    }
+
+    func read() -> Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return value
+    }
+}
+
 /// A call-counting `PlaceNameResolving` stub, matching `PrivacyZoneTests.swift`'s own
 /// `SpyPlaceNameResolver` in shape (an `actor`, same two members) but declared under its own,
 /// `Completion`-prefixed name in this plan's own file, so this type never collides with that
@@ -528,15 +553,25 @@ struct CompletionLoggingTests {
 
     @Test("SystemLocationFixProvider resumes a superseded prior currentFix() call with nil, rather than leaking its continuation or misattributing the next fix to it")
     func systemLocationFixProviderResumesSupersededCallWithNil() async throws {
-        let provider = SystemLocationFixProvider(makeLocationManager: { NoOpCLLocationManager() })
+        let managerCreations = LockedCounter()
+        let provider = SystemLocationFixProvider(makeLocationManager: {
+            managerCreations.increment()
+            return NoOpCLLocationManager()
+        })
 
         // Two overlapping calls, reproducing CompletionLoggingView's quick toggle-off/toggle-on
         // reachability path (WR-02's Issue section): the first call is still in flight (no
-        // delegate callback has fired yet) when the second one starts.
+        // delegate callback has fired yet) when the second one starts. Ordering is proven, not
+        // merely hinted at by a bare Task.yield(): currentFix() only calls makeLocationManager()
+        // after pendingContinuation/activeManager are already assigned under its own lock, so
+        // waiting for managerCreations to reach 1 (then 2) guarantees each call's setup has fully
+        // run before the next step proceeds -- eliminating the scheduling race a plain yield would
+        // leave in place.
         let firstTask = Task { await provider.currentFix() }
-        await Task.yield()
+        while managerCreations.read() < 1 { await Task.yield() }
+
         let secondTask = Task { await provider.currentFix() }
-        await Task.yield()
+        while managerCreations.read() < 2 { await Task.yield() }
 
         // The superseded first call must resolve to nil promptly -- never hang (a leaked
         // continuation) and never receive a real fix meant for the second call.
