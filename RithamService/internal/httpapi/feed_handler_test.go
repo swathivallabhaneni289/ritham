@@ -205,6 +205,43 @@ func TestHandleGetExportConsent_OutstandingConsentsReturnsPendingSubjectsAndClos
 	}
 }
 
+// TestHandleGetExportConsent_BystanderDenied is CR-01's handler-layer regression test: asserts a
+// caller feed.ExportAllowed rejects (a bystander or departed group member, neither the photo's
+// owner nor a recorded subject) gets 403 through this exact route -- not photo consent data of any
+// kind. Covers both halves of the review's own stated proof obligation: the status code, and that
+// the response body carries no ExportConsentResponse JSON (in particular, no awaitingSubjectIds
+// key, which is precisely the information this route was leaking before the fix).
+func TestHandleGetExportConsent_BystanderDenied(t *testing.T) {
+	svc := &stubFeedsService{
+		exportAllowedFunc: func(ctx context.Context, exporterUserID, photoAssetID uuid.UUID) (feed.ExportGate, error) {
+			return feed.ExportGate{}, feed.ErrNotPhotoOwner
+		},
+	}
+	auth := stubAuthenticator{userID: uuid.New()}
+	handler := RequireSession(auth, handleGetExportConsent(svc))
+
+	photoID := uuid.New()
+	req := httptest.NewRequest(http.MethodGet, "/v1/photos/"+photoID.String()+"/export-consent", nil)
+	req.SetPathValue("id", photoID.String())
+	req.Header.Set("Authorization", "Bearer test-token")
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("got status %d, want 403 for a bystander/departed-member export-consent status check", rec.Code)
+	}
+
+	var resp ExportConsentResponse
+	if err := json.Unmarshal(rec.Body.Bytes(), &resp); err == nil {
+		if resp.Allowed || len(resp.AwaitingSubjectIDs) != 0 {
+			t.Fatalf("403 response body decoded as non-empty ExportConsentResponse %+v -- the denied caller must never see consent data", resp)
+		}
+	}
+	if bytes.Contains(rec.Body.Bytes(), []byte("awaitingSubjectIds")) {
+		t.Fatalf("403 response body contains awaitingSubjectIds -- must never leak which subjects are outstanding to a denied caller: %s", rec.Body.String())
+	}
+}
+
 // TestHandleRequestExportConsent_NotOwnerReturns403 asserts feed.ErrNotPhotoOwner maps to 403 --
 // this plan's own explicit instruction, a deliberate divergence from statusForEventsError's
 // photo-not-owned-is-404 precedent (recorded in 04.1-12-SUMMARY.md's Threat Flags).
