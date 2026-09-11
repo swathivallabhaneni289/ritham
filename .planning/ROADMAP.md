@@ -356,6 +356,36 @@ Plans:
 *criterion 6's and Phase 3 criterion 5's existing annotation style.*
 **UI hint**: yes
 
+### Phase 04.2: Parent-facing kid ideas (food and movement content) (INSERTED)
+
+**Goal:** A section within the existing adult/parent Ritham account offering general,
+non-personalized food and movement ideas suitable for their own under-13 child. The child never
+has a Ritham profile, login, or tracked data of their own — the parent may optionally note an
+approximate child age to sharpen suggestions, but nothing about a specific child is stored or
+tracked over time (no child weight, no growth curve, no session history). This is parent-driven
+personalization on the parent's own account, not a child user of the service, so it does not
+reopen Ritham's permanent 13+ age floor (see PROJECT.md Key Decisions and `01-CONTEXT.md`
+D-14/D-15) or any COPPA concern — COPPA regulates collecting information from a child interacting
+with the service, not information an adult voluntarily provides about their own child for their
+own account's content.
+
+Needs its own clinical review before shipping: current HEALTH-04 only covers guidance for the
+app's own 13-17 user (general food-variety education, no weight-loss framing, per AAP guidance) —
+content aimed at actual young children is a distinct, more sensitive pediatric nutrition/
+youth-movement category and would need the same dietitian/clinical sign-off discipline
+(LAUNCH-02/03) as SCOFF and the existing nutrition rule tables, not casually authored tips.
+
+Promoted 2026-09-11 from backlog Phase 999.1 (originated the 2026-08-24/25 session that also
+produced the permanent 13+ age floor decision, GitHub issue #1, closed).
+
+**Requirements**: TBD (run /gsd-discuss-phase or /gsd-plan-phase 04.2 to break down)
+**Depends on:** Phase 2 (nutrition-guidance system), Phase 4 (household/cross-generational surface)
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 04.2 to break down)
+
 ### Phase 04.1: Group Goal-Events & Accountability Circles (INSERTED)
 
 **Goal:** Users can form small, invite-only friend groups (beyond household) and organize shared,
@@ -532,32 +562,19 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 4.1 → 5
 
 ## Backlog
 
-### Phase 999.1: Parent-facing kid ideas (food + movement content) (BACKLOG)
+### Phase 999.1: Parent-facing kid ideas (food + movement content) (PROMOTED 2026-09-11)
 
-**Goal:** [Captured for future planning] A section within the existing adult/parent Ritham
+~~**Goal:** [Captured for future planning] A section within the existing adult/parent Ritham
 account offering general, non-personalized food and movement ideas suitable for their own
-under-13 child. The child never has a Ritham profile, login, or tracked data of their own — the
-parent may optionally note an approximate child age to sharpen suggestions, but nothing about a
-specific child is stored or tracked over time (no child weight, no growth curve, no session
-history). This is parent-driven personalization on the parent's own account, not a child user of
-the service, so it does not reopen Ritham's permanent 13+ age floor (see PROJECT.md Key Decisions
-and `01-CONTEXT.md` D-14/D-15) or any COPPA concern — COPPA regulates collecting information from
-a child interacting with the service, not information an adult voluntarily provides about their
-own child for their own account's content.
+under-13 child...~~
 
-Not in scope for Phase 1 (onboarding/safety intake) — depends on the nutrition-guidance system
-that ships in Phase 2, and likely fits alongside Phase 4's household/cross-generational features.
-Needs its own clinical review before shipping: current HEALTH-04 only covers guidance for the
-app's own 13-17 user (general food-variety education, no weight-loss framing, per AAP guidance) —
-content aimed at actual young children is a distinct, more sensitive pediatric nutrition/
-youth-movement category and would need the same dietitian/clinical sign-off discipline
-(LAUNCH-02/03) as SCOFF and the existing nutrition rule tables, not casually authored tips.
+**Promoted 2026-09-11 into Phase 04.2** (Parent-facing kid ideas: food and movement content),
+inserted after Phase 4 per this entry's own note that it "likely fits alongside Phase 4's
+household/cross-generational features." Needs its own clinical review before shipping (see
+Phase 04.2 for the carried-forward COPPA/clinical-review notes). No longer tracked here.
 
-Originated from the 2026-08-24/25 session that also produced the permanent 13+ age floor decision
-(GitHub issue #1, closed) and a still-open, not-yet-captured device-continuity/account-sync idea.
-
-**Requirements:** TBD
-**Plans:** 14/14 plans complete
+**Requirements:** N/A — see Phase 04.2
+**Plans:** 0 plans
 
 Plans:
 

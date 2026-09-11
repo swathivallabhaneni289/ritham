@@ -6,15 +6,15 @@ current_phase: 04.1
 current_phase_name: group-goal-events-accountability-circles
 status: verifying
 stopped_at: Phase 04.1 fully executed (17/17 plans), code-reviewed (1 blocker + 2 warnings found and fixed, verified via full suites), and goal-verified (8/8 must-haves, VERIFICATION.md status human_needed). 4 items deferred to the project's batched end-of-project physical-device/infrastructure pass (real Sign-in-with-Apple round trip, full UI walkthrough, MinIO/S3 wire round trip, independent full-suite re-run) — tracked in 04.1-UAT.md, matching 02-16 precedent. Not phase-specific failures.
-last_updated: "2026-09-11T07:38:24.313Z"
+last_updated: "2026-09-11T08:43:52.918Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 04.1 execution started
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 5
   total_plans: 60
   completed_plans: 60
-  percent: 83
+  percent: 71
 ---
 
 # Project State
@@ -336,6 +336,10 @@ Recent decisions affecting current work:
 
 - 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
 - 04.1-17: ACCOUNT-01's requirement text claims signing in on a new device restores the certificate archive -- CertificateRecord (plan 04.1-16) is SwiftData-local only, no server table, no sync route. Friend graph and group memberships DO restore correctly. Annotated in REQUIREMENTS.md; needs a Phase 5/backlog decision (build certificate sync, or correct the requirement text) -- not a phase-close blocker.
+
+### Roadmap Evolution
+
+- Phase 04.2 inserted after Phase 4: Promoted from backlog 999.1 (parent-facing kid ideas: food + movement content)
 
 ## Deferred Items
 
