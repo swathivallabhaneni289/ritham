@@ -182,6 +182,18 @@ public enum SocialCopy {
         /// template, which needs no one else's consent at all (this file's own Certificate section
         /// header comment on why the default template closes the leak path structurally).
         public static let useDefaultTemplateCTA = "Use the default template instead"
+
+        /// Shown when the export-consent check itself failed to complete (a transport failure --
+        /// `SocialAPIError.transport` or similar) rather than when it completed and found consent
+        /// genuinely outstanding. Distinct from `multiPersonExportBlock` on purpose: that string
+        /// makes a specific claim about other people's consent state, which was never actually
+        /// established here -- the real cause is that the check itself never finished. WR-01 fix.
+        public static let exportGateCheckFailed = "Couldn't check whether this photo is ready to export. Check your connection and try again."
+
+        /// The retry action paired with `exportGateCheckFailed` -- re-runs the same gate check
+        /// rather than leaving the exporter stuck with no way forward but dismissing and reopening
+        /// the whole export sheet. WR-01 fix.
+        public static let retryExportGateCheckCTA = "Try again"
     }
 
     // MARK: - Privacy Zone

@@ -106,10 +106,18 @@ struct CertificateExportView: View {
         case .checking:
             ProgressView()
         case .failed:
-            Text(SocialCopy.Certificate.multiPersonExportBlock)
+            Text(SocialCopy.Certificate.exportGateCheckFailed)
                 .font(RithamType.label)
                 .foregroundStyle(RithamColor.hot)
                 .fixedSize(horizontal: false, vertical: true)
+
+            SecondaryCTAButton(title: SocialCopy.Certificate.retryExportGateCheckCTA) {
+                Task { await model.checkExportGate(for: useDefaultTemplate ? nil : content.photo) }
+            }
+
+            SecondaryCTAButton(title: SocialCopy.Certificate.useDefaultTemplateCTA) {
+                useDefaultTemplate = true
+            }
         case .notNeeded, .allowed:
             EmptyView()
         }
