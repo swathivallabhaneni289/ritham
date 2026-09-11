@@ -82,6 +82,15 @@ actor CompletionSpyLocationFixProvider: LocationFixProviding {
     }
 }
 
+/// A `CLLocationManager` subclass that never touches real location hardware -- both authorization
+/// and location requests are no-ops -- so `SystemLocationFixProvider`'s own continuation-handling
+/// logic (WR-02) can be exercised deterministically, without depending on the Simulator's absent
+/// location hardware or on any authorization prompt.
+private final class NoOpCLLocationManager: CLLocationManager {
+    override func requestWhenInUseAuthorization() {}
+    override func requestLocation() {}
+}
+
 /// A call-counting `PlaceNameResolving` stub, matching `PrivacyZoneTests.swift`'s own
 /// `SpyPlaceNameResolver` in shape (an `actor`, same two members) but declared under its own,
 /// `Completion`-prefixed name in this plan's own file, so this type never collides with that
@@ -513,6 +522,35 @@ struct CompletionLoggingTests {
         let source = try completionLoggingViewSource()
         #expect(!source.contains(".caption"))
         #expect(!source.contains(".footnote"))
+    }
+
+    // MARK: - WR-02: SystemLocationFixProvider does not leak or misattribute an overlapping continuation
+
+    @Test("SystemLocationFixProvider resumes a superseded prior currentFix() call with nil, rather than leaking its continuation or misattributing the next fix to it")
+    func systemLocationFixProviderResumesSupersededCallWithNil() async throws {
+        let provider = SystemLocationFixProvider(makeLocationManager: { NoOpCLLocationManager() })
+
+        // Two overlapping calls, reproducing CompletionLoggingView's quick toggle-off/toggle-on
+        // reachability path (WR-02's Issue section): the first call is still in flight (no
+        // delegate callback has fired yet) when the second one starts.
+        let firstTask = Task { await provider.currentFix() }
+        await Task.yield()
+        let secondTask = Task { await provider.currentFix() }
+        await Task.yield()
+
+        // The superseded first call must resolve to nil promptly -- never hang (a leaked
+        // continuation) and never receive a real fix meant for the second call.
+        let firstResult = await firstTask.value
+        #expect(firstResult == nil, "a superseded prior currentFix() call must resolve to nil, not leak its continuation or hang forever")
+
+        // The still-active second call is unaffected, and receives exactly the fix its own
+        // manager's delegate callback reports.
+        let coordinate = CLLocationCoordinate2D(latitude: 12.5, longitude: 45.5)
+        provider.locationManager(NoOpCLLocationManager(), didUpdateLocations: [CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)])
+
+        let secondResult = try #require(await secondTask.value)
+        #expect(secondResult.latitude == coordinate.latitude)
+        #expect(secondResult.longitude == coordinate.longitude)
     }
 }
 

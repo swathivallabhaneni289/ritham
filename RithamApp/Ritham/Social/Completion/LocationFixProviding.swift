@@ -49,11 +49,25 @@ final class SystemLocationFixProvider: NSObject, LocationFixProviding, CLLocatio
     func currentFix() async -> CLLocationCoordinate2D? {
         await withCheckedContinuation { continuation in
             lock.lock()
+            // WR-02 fix: a still-in-flight prior call's continuation and manager must never simply
+            // be overwritten here -- that would either leak the prior CheckedContinuation (never
+            // resumed -- a runtime trap in debug builds, a silent hang in release) or, if the prior
+            // manager's delegate callback fires after this point, misattribute the prior call's
+            // result to this new call. Detaching the prior manager's delegate first means its
+            // callback can never reach `resume(with:)` at all once superseded; resuming the prior
+            // continuation with `nil` immediately after means the prior caller sees a clean "no
+            // fix" rather than hanging forever.
+            let previousContinuation = pendingContinuation
+            let previousManager = activeManager
             pendingContinuation = continuation
             let manager = makeLocationManager()
             manager.delegate = self
             activeManager = manager
             lock.unlock()
+
+            previousManager?.delegate = nil
+            previousContinuation?.resume(returning: nil)
+
             manager.requestWhenInUseAuthorization()
             manager.requestLocation()
         }
