@@ -198,6 +198,23 @@ struct CheerRequest: Encodable, Equatable {
     let cheer: String
 }
 
+/// Mirrors `internal/httpapi.ExportConsentResponse` -- returned by `GET
+/// /v1/photos/{id}/export-consent` (plan 04.1-12's export-consent gate, `internal/feed/exportconsent.go`).
+/// `04.1-16`'s certificate export flow is this route's first client-side caller ("`04.1-14`'s
+/// eventual consumer" that `PhotoUploadResponse`'s own header comment already anticipated for the
+/// sibling `GET /v1/photos/{id}` route). Deliberately carries no field beyond these two -- a count
+/// of who has granted so far would itself be exactly the kind of denominator this phase's
+/// non-comparative rules forbid, and the server's own `ExportGate` type never produces one.
+struct ExportConsentResponse: Decodable, Equatable {
+    let allowed: Bool
+    let awaitingSubjectIDs: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case allowed
+        case awaitingSubjectIDs = "awaitingSubjectIds"
+    }
+}
+
 /// The five feed/cheer operations this plan's screens need -- a thin wrapper over
 /// `SocialAPIClient`, matching `GroupsClient`/`GoalEventsClient`/`CompletionClient`'s per-domain-
 /// client-over-shared-client shape. No networking of its own.
@@ -234,6 +251,14 @@ struct FeedClient {
     /// matching cheer row exists -- never an error.
     func withdrawCheer(completionID: String, cheer: Cheer) async throws {
         try await apiClient.send("DELETE", "v1/completions/\(completionID)/cheers", body: CheerRequest(cheer: cheer.rawValue))
+    }
+
+    /// `GET /v1/photos/{id}/export-consent`, behind `RequireSession`. Reports whether `photoAssetID`
+    /// may currently leave Ritham, and exactly which subjects are still outstanding when it may
+    /// not (04.1-16's certificate export gate). Allowed immediately for a photo with no recorded
+    /// subjects -- the default badge template case, or a solo shot with nobody else in it.
+    func exportConsentStatus(photoAssetID: String) async throws -> ExportConsentResponse {
+        try await apiClient.get("v1/photos/\(photoAssetID)/export-consent")
     }
 
     /// Builds `base` plus an optional `?cursor=...&limit=...` query string via `URLComponents`, so

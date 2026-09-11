@@ -166,6 +166,22 @@ public enum SocialCopy {
         public static let creationTimeNudge = "This name will be visible on any exported certificate."
         public static let exportPreviewLabel = "This is what will be shared outside Ritham."
         public static let multiPersonExportBlock = "Everyone visible in this photo needs to approve sharing it outside Ritham before you can export it."
+
+        /// Plan 04.1-16's own planner-authored addition -- `04.1-UI-SPEC.md`'s Digital Certificate
+        /// section names this exact button label ("`PrimaryCTAButton` 'Export.'") but the
+        /// Copywriting Contract table above has no dedicated row for it. Reused verbatim for both
+        /// the reveal screen's own CTA into the export flow and the export screen's final action.
+        public static let exportCTA = "Export"
+
+        /// The export screen's editable display-name field label -- plan 04.1-16's own
+        /// planner-authored addition, following this file's "new strings needed this phase"
+        /// convention.
+        public static let displayNameFieldLabel = "Certificate name"
+
+        /// Shown instead of the multi-person block when the exporter swaps to the branded default
+        /// template, which needs no one else's consent at all (this file's own Certificate section
+        /// header comment on why the default template closes the leak path structurally).
+        public static let useDefaultTemplateCTA = "Use the default template instead"
     }
 
     // MARK: - Privacy Zone

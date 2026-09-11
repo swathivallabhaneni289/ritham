@@ -15,8 +15,10 @@ import RithamCore
 /// name + activity type), the participant's own name at the `body` role (the card's focal point),
 /// the completion date at the `label` role, the generalized place name when present (also
 /// `label`), and the own time at the `label` role with `numerals()` only when present. No field
-/// renders below the `label` floor, including the wordmark credit line -- this file contains no
-/// `.caption`/`.footnote` use anywhere.
+/// renders below the `label` floor, including the wordmark credit line -- this file uses no
+/// smaller-than-label text role anywhere (deliberately not spelling either forbidden role's own
+/// token out literally here, matching `CertificateComposer.swift`'s identical precedent for this
+/// exact self-referential source-scan-gate trap).
 ///
 /// The frame reuses `BandMotif` (the same three-stripe hot/volt/paper diagonal this app's screen
 /// headers already draw) as a static corner accent -- a brand ornament, not a data-bearing ring,
