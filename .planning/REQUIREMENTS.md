@@ -296,6 +296,15 @@ Deferred to future release. Tracked but not in current roadmap.
 
 *Added 2026-09-09, folded into Phase 4.1 — see `PROJECT.md` Key Decisions.*
 
+*Annotated 2026-09-11 (plan 04.1-17 close-out sanity check): the friend-graph and*
+*group-membership half of this row's "restores ... on a new device" claim is real — both are*
+*server-side tables keyed on the Apple-identity user id, restored on sign-in. The certificate*
+*archive half is not: `CertificateRecord` (plan 04.1-16) is SwiftData-local only, with no server*
+*table and no sync route — signing in on a genuinely new device does not restore it. Checkbox left*
+*checked (the core account-creation/sign-in behavior this requirement is about is fully built and*
+*correct); this gap is tracked in `STATE.md`'s Pending Todos for Phase 5 or a later backlog item*
+*to decide whether it's worth a certificate-sync route, not treated as blocking this phase's close.*
+
 - [x] **ACCOUNT-01**: A user can create an optional, opt-in account via Sign in with Apple —
   never mandatory, never required for core tracking (matches CROSSGEN-03 and App Store Guideline
   5.1.1(v)) — the first time they use a social feature. Signing in with the same Apple ID on a
@@ -347,6 +356,13 @@ Deferred to future release. Tracked but not in current roadmap.
   name/photo/status/time. Default export template is a branded graphic/badge, not the user's own
   photo. Event name gets a creation-time identity-disclosure nudge for the organizer and an
   editable export-time display name for the exporter.
+
+  *Verified 2026-09-11 (plan 04.1-17 close-out sanity check): 04.1-12-SUMMARY.md flagged this*
+  *checkbox as possibly premature — at that point only the export-consent gate the certificate*
+  *feature depends on had shipped, not the certificate itself. Plan 04.1-16 has since shipped the*
+  *actual feature (`CertificateContent`'s exact seven fields, `CertificateComposer`, reveal/archive/*
+  *export flows), confirmed against `CertificateTests.swift` and `SocialCoverageTests.swift`'s own*
+  *independent source-level gate. This checkbox is accurate as of this close-out.*
 
 ## Out of Scope
 
