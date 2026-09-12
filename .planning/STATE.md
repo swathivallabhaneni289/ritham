@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 04.2
 current_phase_name: parent-facing-kid-ideas-food-and-movement-content
 status: executing
-stopped_at: Completed 04.2-02-PLAN.md
-last_updated: "2026-09-12T05:09:15.905Z"
+stopped_at: Completed 04.2-03-PLAN.md
+last_updated: "2026-09-12T05:12:02.156Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 04.2 execution started
 progress:
@@ -287,6 +287,7 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.2-03: saveChildEntry takes value parameters (id/nickname/createdAt), not a ChildEntryRecord instance, so a caller never constructs a @Model object outside a ModelContext (deviation from 04.2-RESEARCH.md Pattern 2's literal signature)
 - [Phase ?]: 04.2-03: Ordinal position (Child 1, Child 2) is always recomputed at read time from createdAt sort order, never stored -- deleting an earlier entry renumbers later ones
 - [Phase ?]: 04.2-03: ChildEntryTests lives in its own file, not extending HealthDataStoreTests, since that suite's makeStore() hand-picked schema omits ChildEntryRecord (deviation from 04.2-VALIDATION.md TBD-04)
+- [Phase ?]: 04.2-03: plan-stated verification destination 'iPhone 15' is unavailable in this environment's Simulator set (iOS 26.5); substituted 'iPhone 17'. Applies to every remaining 04.2 plan's xcodebuild commands.
 
 ### Pending Todos
 
@@ -360,8 +361,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-12T05:08:07.880Z
-Stopped at: Completed 04.2-02-PLAN.md
+Last session: 2026-09-12T05:12:02.099Z
+Stopped at: Completed 04.2-03-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification
