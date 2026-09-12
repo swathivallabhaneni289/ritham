@@ -221,7 +221,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 preteens only (~ages 10-12) — see `04.2-CONTEXT.md` D-06. No formal REQ-IDs existed for this
 backlog entry before promotion; these are new.*
 
-- [ ] **KIDCONTENT-01**: A read-only, browsable library of food and movement ideas for a parent's
+- [x] **KIDCONTENT-01**: A read-only, browsable library of food and movement ideas for a parent's
   own preteen (~ages 10-12) child, reached as a nested sub-screen (Settings or the Diet Plan
   screen) — never a new top-level dashboard section. Every item is transcribed verbatim from a
   citable public health source (e.g. USDA MyPlate for Kids, AAP, CDC/HHS youth physical activity
@@ -444,7 +444,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOUSEHOLD-01 | Phase 4 | Pending |
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
-| KIDCONTENT-01 | Phase 04.2 | Pending |
+| KIDCONTENT-01 | Phase 04.2 | Complete |
 | KIDCONTENT-02 | Phase 04.2 | Pending |
 | ACCOUNT-01 | Phase 4.1 | Complete |
 | HOUSEHOLD-02 | Phase 4.1 | Complete |

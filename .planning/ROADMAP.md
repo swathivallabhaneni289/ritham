@@ -385,12 +385,12 @@ produced the permanent 13+ age floor decision, GitHub issue #1, closed).
 
 **Requirements**: KIDCONTENT-01, KIDCONTENT-02
 **Depends on:** Phase 2 (nutrition-guidance system), Phase 4 (household/cross-generational surface)
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 04.2-01-PLAN.md — KidContentCatalog: 27 verbatim USDA/CDC ideas with per-item citations
+- [x] 04.2-01-PLAN.md — KidContentCatalog: 27 verbatim USDA/CDC ideas with per-item citations
 - [ ] 04.2-02-PLAN.md — KidContentCopy: locked screen strings, disclaimer, child-entry copy
 - [ ] 04.2-03-PLAN.md — ChildEntryRecord + per-entry child CRUD on HealthDataStore
 
