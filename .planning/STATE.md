@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 04.2
 current_phase_name: parent-facing-kid-ideas-food-and-movement-content
-status: executing
-stopped_at: Completed 04.2-04-PLAN.md
-last_updated: "2026-09-12T05:22:40.920Z"
-last_activity: 2026-09-11
-last_activity_desc: Phase 04.2 execution started
+status: blocked
+stopped_at: 04.2-05-PLAN.md Tasks 1-2 complete; Task 3 blocked on Kid Ideas screen human-verification checkpoint
+last_updated: "2026-09-12T05:40:00.000Z"
+last_activity: 2026-09-12
+last_activity_desc: Phase 04.2 plan 05 Tasks 1-2 (Phase42CoverageTests, two consecutive green full-target runs) complete; checkpoint pending for Task 3
 progress:
   total_phases: 7
   completed_phases: 5
@@ -30,14 +30,10 @@ comparison or ranking.
 
 ## Current Position
 
-Phase: 04.2 (parent-facing-kid-ideas-food-and-movement-content) — EXECUTING
-Plan: 5 of 5
-see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
-user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
-Status: Ready to execute
-(run /gsd-execute-phase 4.1)
-batched verification pass runs
-Last activity: 2026-09-11 — Phase 04.2 execution started
+Phase: 04.2 (parent-facing-kid-ideas-food-and-movement-content) — BLOCKED
+Plan: 5 of 5 — Tasks 1-2 complete, Task 3 blocked on a human-verification checkpoint
+Status: Awaiting human verification (see 04.2-05-SUMMARY.md's Checkpoint section)
+Last activity: 2026-09-12 — 04.2-05 Tasks 1-2 (Phase42CoverageTests' ten structural gates, two consecutive green full-target runs) committed and verified
 
 Progress: [██░░░░░░░░] 20%
 
@@ -351,6 +347,8 @@ Recent decisions affecting current work:
 - 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
 - 04.1-17: ACCOUNT-01's requirement text claims signing in on a new device restores the certificate archive -- CertificateRecord (plan 04.1-16) is SwiftData-local only, no server table, no sync route. Friend graph and group memberships DO restore correctly. Annotated in REQUIREMENTS.md; needs a Phase 5/backlog decision (build certificate sync, or correct the requirement text) -- not a phase-close blocker.
 
+- 04.2-05 Task 3 (interactive/visual/AX3-AX5 verification of the Kid Ideas screen, KIDCONTENT-01/02) is blocked on a single combined checkpoint: no touch-injection tool (no idb, no XCUITest driver) and no attached physical device exist in this environment, matching the exact constraint plans 02-16 and 04.1-17 already recorded. Tasks 1-2 of the same plan (Phase42CoverageTests' ten structural gates, plus two consecutive green full-target runs at 606 tests/64 suites) are fully committed and independently verified -- only the human-facing visual/interactive check remains open. Per this project's own standing policy (PROJECT.md Key Decisions, 2026-09-06), the expected resolution is a recorded deferral to the batched end-of-project pass, but that decision was left to the human rather than resolved by this execution. Full per-step breakdown is in `.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-05-SUMMARY.md`'s Checkpoint section.
+
 ### Roadmap Evolution
 
 - Phase 04.2 inserted after Phase 4: Promoted from backlog 999.1 (parent-facing kid ideas: food + movement content)
@@ -412,5 +410,18 @@ since its review must now cover the new photo/location data. Requirements HOUSEH
 GROUPEVENTS-01 through 05 (already fully drafted in `REQUIREMENTS.md`'s "Social & Groups" section
 from a prior ingest of `docs/group-events.md`) converted from backlog to active. Not yet planned —
 next step is `/gsd-plan-phase 4.1 --prd docs/group-events.md`.
+
+2026-09-12 (plan 04.2-05): Phase 04.2's final plan. Task 1 (`Phase42CoverageTests`, ten structural
+gates locking D-01/D-04/D-05/D-08/D-09) and Task 2 (two consecutive green full-target
+`xcodebuild test` runs, 606 tests/64 suites each, plus a green full `RithamCore swift test` run,
+458 tests/34 suites) are complete and committed. Gates 3 and 4 were proven non-vacuous by
+deliberate breakage and revert (`git diff` confirms a clean revert on both files touched). Task 3
+(interactive/visual/AX3-AX5 verification of the Kid Ideas screen) is blocked -- see
+Blockers/Concerns above -- on the same no-touch-injection-tool/no-physical-device constraint
+plans 02-16 and 04.1-17 already recorded. Full per-step breakdown of what's automated vs. still
+needed is in `.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-05-SUMMARY.md`'s
+Checkpoint section. Phase 04.2 cannot close until a human runs those eight steps (or explicitly
+defers them to the batched end-of-project pass, this project's own standing policy's expected
+outcome) and reports back.
 Resume file:
-None
+.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-05-SUMMARY.md
