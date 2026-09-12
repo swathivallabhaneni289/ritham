@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 04.2
 current_phase_name: parent-facing-kid-ideas-food-and-movement-content
-status: blocked
-stopped_at: 04.2-05-PLAN.md Tasks 1-2 complete; Task 3 blocked on Kid Ideas screen human-verification checkpoint
-last_updated: "2026-09-12T05:40:00.000Z"
+status: ready_for_verification
+stopped_at: 04.2-05-PLAN.md complete (5/5 plans); Task 3's Kid Ideas human-verification checkpoint deferred by developer to the batched end-of-project pass, tracked in 04.2-UAT.md
+last_updated: "2026-09-12T06:10:00.000Z"
 last_activity: 2026-09-12
-last_activity_desc: Phase 04.2 plan 05 Tasks 1-2 (Phase42CoverageTests, two consecutive green full-target runs) complete; checkpoint pending for Task 3
+last_activity_desc: Phase 04.2 fully executed (5/5 plans) — plan 05's checkpoint deferred per developer response ("defer"); recorded in 04.2-05-SUMMARY.md and 04.2-UAT.md
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 65
-  completed_plans: 64
+  completed_plans: 65
   percent: 71
 ---
 
@@ -30,10 +30,10 @@ comparison or ranking.
 
 ## Current Position
 
-Phase: 04.2 (parent-facing-kid-ideas-food-and-movement-content) — BLOCKED
-Plan: 5 of 5 — Tasks 1-2 complete, Task 3 blocked on a human-verification checkpoint
-Status: Awaiting human verification (see 04.2-05-SUMMARY.md's Checkpoint section)
-Last activity: 2026-09-12 — 04.2-05 Tasks 1-2 (Phase42CoverageTests' ten structural gates, two consecutive green full-target runs) committed and verified
+Phase: 04.2 (parent-facing-kid-ideas-food-and-movement-content) — fully executed, 5/5 plans
+Plan: 5 of 5 — all tasks resolved; Task 3's human-verification checkpoint deferred by developer decision
+Status: Phase 04.2 execution complete. One UAT item (Kid Ideas screen visual/interactive/AX3-AX5 check) deferred to the batched end-of-project pass — see 04.2-05-SUMMARY.md's Checkpoint Resolution section and 04.2-UAT.md
+Last activity: 2026-09-12 — 04.2-05 Tasks 1-2 (Phase42CoverageTests' ten structural gates, two consecutive green full-target runs) committed and verified; Task 3 checkpoint deferred per developer response
 
 Progress: [██░░░░░░░░] 20%
 
@@ -114,6 +114,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.2 P02 | 15min | 2 tasks | 2 files |
 | Phase 04.2 P03 | 25min | 3 tasks | 5 files |
 | Phase 04.2 P04 | 30min | 3 tasks | 5 files |
+| Phase 04.2 P05 | 45min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -347,7 +348,7 @@ Recent decisions affecting current work:
 - 04.1-05 Task 4 (real Sign in with Apple round trip on a physical Apple ID) deferred to the batched end-of-project physical-device verification pass -- Docker unavailable in this environment and no touch-injection tool exists to drive the Apple ID sheet on Simulator. See 04.1-05-SUMMARY.md.
 - 04.1-17: ACCOUNT-01's requirement text claims signing in on a new device restores the certificate archive -- CertificateRecord (plan 04.1-16) is SwiftData-local only, no server table, no sync route. Friend graph and group memberships DO restore correctly. Annotated in REQUIREMENTS.md; needs a Phase 5/backlog decision (build certificate sync, or correct the requirement text) -- not a phase-close blocker.
 
-- 04.2-05 Task 3 (interactive/visual/AX3-AX5 verification of the Kid Ideas screen, KIDCONTENT-01/02) is blocked on a single combined checkpoint: no touch-injection tool (no idb, no XCUITest driver) and no attached physical device exist in this environment, matching the exact constraint plans 02-16 and 04.1-17 already recorded. Tasks 1-2 of the same plan (Phase42CoverageTests' ten structural gates, plus two consecutive green full-target runs at 606 tests/64 suites) are fully committed and independently verified -- only the human-facing visual/interactive check remains open. Per this project's own standing policy (PROJECT.md Key Decisions, 2026-09-06), the expected resolution is a recorded deferral to the batched end-of-project pass, but that decision was left to the human rather than resolved by this execution. Full per-step breakdown is in `.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-05-SUMMARY.md`'s Checkpoint section.
+- 04.2-05 Task 3 (interactive/visual/AX3-AX5 verification of the Kid Ideas screen, KIDCONTENT-01/02) was deferred 2026-09-12 by explicit developer response ("defer") to this project's standing 2026-09-06 batched end-of-project verification pass -- no touch-injection tool (no idb, no XCUITest driver) and no attached physical device exist in this environment, matching the exact constraint plans 02-16 and 04.1-17 already recorded. Tasks 1-2 of the same plan (Phase42CoverageTests' ten structural gates, plus two consecutive green full-target runs at 606 tests/64 suites) are fully committed and independently verified. The eight-step checklist is tracked in `.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-UAT.md` (same pattern as `04.1-UAT.md`); full detail is also in `04.2-05-SUMMARY.md`'s Checkpoint Resolution section. Phase 04.2 is fully executed (5/5 plans) with this one item pending the batched pass, same posture as Phase 4.1's close-out.
 
 ### Roadmap Evolution
 
@@ -416,12 +417,12 @@ gates locking D-01/D-04/D-05/D-08/D-09) and Task 2 (two consecutive green full-t
 `xcodebuild test` runs, 606 tests/64 suites each, plus a green full `RithamCore swift test` run,
 458 tests/34 suites) are complete and committed. Gates 3 and 4 were proven non-vacuous by
 deliberate breakage and revert (`git diff` confirms a clean revert on both files touched). Task 3
-(interactive/visual/AX3-AX5 verification of the Kid Ideas screen) is blocked -- see
-Blockers/Concerns above -- on the same no-touch-injection-tool/no-physical-device constraint
-plans 02-16 and 04.1-17 already recorded. Full per-step breakdown of what's automated vs. still
-needed is in `.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-05-SUMMARY.md`'s
-Checkpoint section. Phase 04.2 cannot close until a human runs those eight steps (or explicitly
-defers them to the batched end-of-project pass, this project's own standing policy's expected
-outcome) and reports back.
+(interactive/visual/AX3-AX5 verification of the Kid Ideas screen) was presented to the developer,
+who responded "defer" -- routing it to this project's standing 2026-09-06 batched end-of-project
+verification pass, per PROJECT.md Key Decisions, matching the precedent plans 02-16 and 04.1-17
+already set. The eight-step checklist is now tracked in the new
+`.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-UAT.md` (same format
+as `04.1-UAT.md`); full detail is also in `04.2-05-SUMMARY.md`'s Checkpoint Resolution section.
+Phase 04.2 is now fully executed (5/5 plans) with this one UAT item pending the batched pass.
 Resume file:
-.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-05-SUMMARY.md
+.planning/phases/04.2-parent-facing-kid-ideas-food-and-movement-content/04.2-UAT.md

@@ -385,7 +385,11 @@ produced the permanent 13+ age floor decision, GitHub issue #1, closed).
 
 **Requirements**: KIDCONTENT-01, KIDCONTENT-02
 **Depends on:** Phase 2 (nutrition-guidance system), Phase 4 (household/cross-generational surface)
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans executed, code-reviewed via `Phase42CoverageTests`' ten structural gates and
+two consecutive green full-target runs (606 tests, 64 suites) — 1 item (the Kid Ideas screen's
+visual/interactive/AX3-AX5 human-verification checkpoint) deferred by explicit developer decision
+to this project's standing 2026-09-06 batched end-of-project verification pass, tracked in
+`04.2-UAT.md`, same pattern as Phase 4.1's `04.1-UAT.md`. Not a phase-specific failure.
 
 Plans:
 **Wave 1**
@@ -400,7 +404,8 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04.2-05-PLAN.md — Structural gates, full-suite verification, human-verify checkpoint
+- [x] 04.2-05-PLAN.md — Structural gates, full-suite verification, human-verify checkpoint
+  (checkpoint deferred 2026-09-12 by developer response — see `04.2-UAT.md`)
 
 ### Phase 04.1: Group Goal-Events & Accountability Circles (INSERTED)
 
