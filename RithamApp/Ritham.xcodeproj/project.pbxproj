@@ -110,6 +110,7 @@
 		794EB15523BC6C33D8270010 /* CompletionRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BEE89415806B8725442552 /* CompletionRegistration.swift */; };
 		79F7945ED6528A347F5440E3 /* CardioHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64137884DDEDF2A6FB9998F /* CardioHistoryView.swift */; };
 		7B2BA951F0485E47F735EE0F /* MomentumViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ADF8216D8BDBB06DB47AA7 /* MomentumViewTests.swift */; };
+		7B7499C7CDCE7EED87DF7BD2 /* ChildEntryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE49F74D0F4444875EEDE72 /* ChildEntryRecord.swift */; };
 		7C0742E7BC85ACF4DE176637 /* CertificateComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721385CA81A7FDD980086B61 /* CertificateComposer.swift */; };
 		7F9B978D6AB3A5377FCF1CA0 /* EatingPatternFollowUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086DA8C170194688F001E40 /* EatingPatternFollowUpView.swift */; };
 		80DF3FAF0E057DE5BA3571F4 /* MovementSnapshotRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA061414A594799FF479A19 /* MovementSnapshotRegistration.swift */; };
@@ -252,6 +253,7 @@
 		0B4438C355A19887EE4B879F /* RithamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RithamApp.swift; sourceTree = "<group>"; };
 		0BAEA0958C9AB53F8DB2BF5F /* AboutYouStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutYouStepTests.swift; sourceTree = "<group>"; };
 		0D92AB005D33E1F21459F914 /* AddPrivacyZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPrivacyZoneView.swift; sourceTree = "<group>"; };
+		0DE49F74D0F4444875EEDE72 /* ChildEntryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildEntryRecord.swift; sourceTree = "<group>"; };
 		0ECACB5EE194069E87C44F67 /* CompletionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionClient.swift; sourceTree = "<group>"; };
 		0FAF0E384EA4E99E4F0B995D /* SignInWithAppleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithAppleView.swift; sourceTree = "<group>"; };
 		1024D116B21BD85232045566 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
@@ -746,6 +748,7 @@
 				C0B8E0CF48AA273CF27D31F6 /* CalibrationBaselineRecord.swift */,
 				AD5D3C5BA15E31E8760C0741 /* CardioSessionRecord.swift */,
 				BF1A22495862FD7541945E18 /* CertificateRecord.swift */,
+				0DE49F74D0F4444875EEDE72 /* ChildEntryRecord.swift */,
 				2D7D475288D596A167095155 /* ConditionTagRecord.swift */,
 				BDFFECF3591AFEB66F20B54C /* FoodAllergenRecord.swift */,
 				4F35BFA152CCF80AA7D32001 /* HealthDataStore.swift */,
@@ -1142,6 +1145,7 @@
 				3771FE481EAADB578762EEAE /* CertificateRegistration.swift in Sources */,
 				ACE2F74C07FA842267D8A99E /* CertificateRevealView.swift in Sources */,
 				34FE77A530C547B51284DC8A /* CheerReactionRow.swift in Sources */,
+				7B7499C7CDCE7EED87DF7BD2 /* ChildEntryRecord.swift in Sources */,
 				3865F9CBE50B8D1EE50719A6 /* ChoiceChip.swift in Sources */,
 				F4C75D98191CB477E9CF26C2 /* ChoiceQuestionView.swift in Sources */,
 				3CFEE13062513FD003A5496B /* ClearanceInterstitialView.swift in Sources */,

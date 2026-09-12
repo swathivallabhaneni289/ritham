@@ -32,6 +32,10 @@ public enum RithamModelContainer {
         // 04.1-16: GROUPEVENTS-05's digital finisher certificate archive. Holds no other
         // member's data and no image bytes -- see `CertificateRecord`'s own header comment.
         CertificateRecord.self,
+        // 04.2-03: KIDCONTENT-02's minimal preteen-entry marker. On-device-only preference data,
+        // never gate-resolution input -- see `ChildEntryRecord`'s own header comment for why this
+        // container (rather than a second store) is where it belongs.
+        ChildEntryRecord.self,
     ]
 
     /// Builds a `ModelContainer`. `inMemory: true` is used by tests — an in-memory store has no
