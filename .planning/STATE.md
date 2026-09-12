@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.2
 current_phase_name: parent-facing-kid-ideas-food-and-movement-content
 status: executing
-stopped_at: Completed 04.2-03-PLAN.md
-last_updated: "2026-09-12T05:12:02.156Z"
+stopped_at: Completed 04.2-04-PLAN.md
+last_updated: "2026-09-12T05:22:40.920Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 04.2 execution started
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 65
-  completed_plans: 63
+  completed_plans: 64
   percent: 71
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.2 (parent-facing-kid-ideas-food-and-movement-content) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -117,6 +117,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.2 P01 | 20min | 3 tasks | 2 files |
 | Phase 04.2 P02 | 15min | 2 tasks | 2 files |
 | Phase 04.2 P03 | 25min | 3 tasks | 5 files |
+| Phase 04.2 P04 | 30min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -288,6 +289,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.2-03: Ordinal position (Child 1, Child 2) is always recomputed at read time from createdAt sort order, never stored -- deleting an earlier entry renumbers later ones
 - [Phase ?]: 04.2-03: ChildEntryTests lives in its own file, not extending HealthDataStoreTests, since that suite's makeStore() hand-picked schema omits ChildEntryRecord (deviation from 04.2-VALIDATION.md TBD-04)
 - [Phase ?]: 04.2-03: plan-stated verification destination 'iPhone 15' is unavailable in this environment's Simulator set (iOS 26.5); substituted 'iPhone 17'. Applies to every remaining 04.2 plan's xcodebuild commands.
+- [Phase 04.2]: 04.2-04: KidIdeasView takes no OnboardingFlow and does not conform to OnboardingStepPresenting; reached only via a new Settings row/sheet, matching PrivacyZonesView's own 'registered elsewhere, reached by sheet' precedent
+- [Phase 04.2]: 04.2-04: ChildEntryStore mirrors PrivacyZoneStore's deferred-load @Observable facade shape exactly; displayLabel(nickname:position:) is nonisolated static so tests call it without a main-actor hop
+- [Phase 04.2]: 04.2-04: left DecorativeSurface.flat's nine-screen enumerated doc comment unedited for KidIdeasView, matching the precedent already set by AlwaysFreeListView/DietPlanView/PrivacyZonesView (also .flat, also not listed) -- that list is scoped to the original health/consent-data Decorative Surface Inventory, not every .flat consumer
 
 ### Pending Todos
 
@@ -361,8 +365,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-12T05:12:02.099Z
-Stopped at: Completed 04.2-03-PLAN.md
+Last session: 2026-09-12T05:22:40.914Z
+Stopped at: Completed 04.2-04-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
 Phase 2 criterion 8 (provisional). This resolved 01-18's physical-device GPS-walk verification

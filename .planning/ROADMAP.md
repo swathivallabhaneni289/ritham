@@ -385,7 +385,7 @@ produced the permanent 13+ age floor decision, GitHub issue #1, closed).
 
 **Requirements**: KIDCONTENT-01, KIDCONTENT-02
 **Depends on:** Phase 2 (nutrition-guidance system), Phase 4 (household/cross-generational surface)
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 **Wave 1**
@@ -396,7 +396,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04.2-04-PLAN.md — KidIdeasView, ChildEntryStore, and the Settings entry point
+- [x] 04.2-04-PLAN.md — KidIdeasView, ChildEntryStore, and the Settings entry point
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
