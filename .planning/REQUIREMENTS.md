@@ -231,7 +231,7 @@ backlog entry before promotion; these are new.*
   under-13 child. Ships pending Phase 5's clinical/dietitian sign-off, same posture as
   `NutritionGuidanceCatalog`/`WorkoutGuidanceCatalog`.
 
-- [ ] **KIDCONTENT-02**: A parent may optionally record more than one child, each as a simple
+- [x] **KIDCONTENT-02**: A parent may optionally record more than one child, each as a simple
   preteen-scoped entry, persisted as a Settings-level preference. No child weight, growth,
   activity/session history, or name is stored — nothing about a specific child is tracked over
   time. This is parent-provided data about their own child on their own account, not a child
@@ -445,7 +445,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CROSSGEN-01 | Phase 4 | Complete |
 | CROSSGEN-04 | Phase 4 | Pending |
 | KIDCONTENT-01 | Phase 04.2 | Complete |
-| KIDCONTENT-02 | Phase 04.2 | Pending |
+| KIDCONTENT-02 | Phase 04.2 | Complete |
 | ACCOUNT-01 | Phase 4.1 | Complete |
 | HOUSEHOLD-02 | Phase 4.1 | Complete |
 | GROUPEVENTS-01 | Phase 4.1 | Complete |

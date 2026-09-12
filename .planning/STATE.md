@@ -6,14 +6,14 @@ current_phase: 04.2
 current_phase_name: parent-facing-kid-ideas-food-and-movement-content
 status: executing
 stopped_at: Completed 04.2-02-PLAN.md
-last_updated: "2026-09-12T04:59:34.391Z"
+last_updated: "2026-09-12T05:09:15.905Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 04.2 execution started
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 65
-  completed_plans: 62
+  completed_plans: 63
   percent: 71
 ---
 
@@ -31,7 +31,7 @@ comparison or ranking.
 ## Current Position
 
 Phase: 04.2 (parent-facing-kid-ideas-food-and-movement-content) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 see 02-16-SUMMARY.md) intentionally deferred to a single end-of-project testing pass, per the
 user's 2026-09-06 decision (see PROJECT.md Key Decisions). Not a blocker on further phases.
 Status: Ready to execute
@@ -116,6 +116,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 04.1 P17 | 50min | 3 tasks | 5 files |
 | Phase 04.2 P01 | 20min | 3 tasks | 2 files |
 | Phase 04.2 P02 | 15min | 2 tasks | 2 files |
+| Phase 04.2 P03 | 25min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -283,6 +284,9 @@ Recent decisions affecting current work:
 - [Phase 04.2]: 04.2-01: Reworded KidContentCatalog.swift's header prose to avoid naming gating symbols (GuidanceCatalog.contentPermission, ConditionTag, sibling catalog type names) as literal contiguous substrings, resolving a direct contradiction between the plan's action text (require naming them) and its own acceptance-criteria grep (require zero occurrences, comments included).
 - [Phase ?]: 04.2-02: KidContentCopy's Screen.disclaimer transcribes docs/kid-content.md section 6 verbatim minus the LAUNCH-02/LAUNCH-03 parenthetical, since an internal requirement ID must never reach a user-facing string
 - [Phase ?]: 04.2-02: Children.ordinalLabel/nicknameFieldLabel implement ordinal child-entry slots with an explicitly optional nickname, never a required name, per 04.2-CONTEXT.md's multi-child labelling discretion
+- [Phase ?]: 04.2-03: saveChildEntry takes value parameters (id/nickname/createdAt), not a ChildEntryRecord instance, so a caller never constructs a @Model object outside a ModelContext (deviation from 04.2-RESEARCH.md Pattern 2's literal signature)
+- [Phase ?]: 04.2-03: Ordinal position (Child 1, Child 2) is always recomputed at read time from createdAt sort order, never stored -- deleting an earlier entry renumbers later ones
+- [Phase ?]: 04.2-03: ChildEntryTests lives in its own file, not extending HealthDataStoreTests, since that suite's makeStore() hand-picked schema omits ChildEntryRecord (deviation from 04.2-VALIDATION.md TBD-04)
 
 ### Pending Todos
 
@@ -356,7 +360,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-12T04:59:34.385Z
+Last session: 2026-09-12T05:08:07.880Z
 Stopped at: Completed 04.2-02-PLAN.md
 (ONBOARD-01) moved out of onboarding entirely this session -- see `PROJECT.md` Key Decisions,
 `REQUIREMENTS.md`'s rewritten ONBOARD-01, and `ROADMAP.md`'s revised Phase 1 criterion 1 and new
