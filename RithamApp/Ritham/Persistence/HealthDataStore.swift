@@ -993,6 +993,89 @@ public final class HealthDataStore {
         ))
     }
 
+    // MARK: - Child entries
+
+    /// KIDCONTENT-02's per-entry accessors. Deliberately isolated from gate resolution, matching
+    /// the same isolation the Privacy Zones and Food allergens sections above establish for their
+    /// own parent-provided preferences: nothing here is read by `GateResolution`, `TagDerivation`,
+    /// or `saveScreeningResult`, and no child entry is ever sent anywhere.
+    ///
+    /// This is `PrivacyZoneRecord`'s per-identifier CRUD shape, not `FoodAllergenRecord`'s
+    /// delete-every-row-then-reinsert-the-whole-set shape -- because a parent can record MORE than
+    /// one child and edit each independently, a full-set-replace here would silently destroy every
+    /// other child entry on any single edit.
+
+    /// Sorted oldest-first so the view layer's ordinal labels ("Child 1", "Child 2") stay stable
+    /// across relaunches. Returns records directly, following `loadCertificates()`'s precedent --
+    /// this phase introduces no separate domain value type for a child entry.
+    public func loadChildEntries() throws -> [ChildEntryRecord] {
+        try context.fetch(FetchDescriptor<ChildEntryRecord>(
+            sortBy: [SortDescriptor(\.createdAt, order: .forward)]
+        ))
+    }
+
+    /// Full-replace on the matching identifier -- the same "delete then reinsert" discipline
+    /// `savePrivacyZone` uses -- so a re-save can never leave a stale field behind. Takes value
+    /// parameters rather than a `ChildEntryRecord` instance (a documented deviation from
+    /// 04.2-RESEARCH.md Pattern 2's literal signature) so a caller never has to construct a
+    /// `@Model` object outside a `ModelContext`; the method name and its per-identifier semantics
+    /// are unchanged from the research recommendation.
+    public func saveChildEntry(id: UUID, nickname: String?, createdAt: Date) throws {
+        if let existing = try fetchChildEntryRecord(id: id) {
+            context.delete(existing)
+        }
+        context.insert(ChildEntryRecord(
+            id: id,
+            nickname: Self.normalizedNickname(nickname),
+            createdAt: createdAt
+        ))
+        try context.save()
+    }
+
+    /// Mints a fresh identifier and creation timestamp, then delegates to `saveChildEntry`.
+    /// Mirrors `PrivacyZoneStore.add`'s "caller supplies values, store owns identity" split.
+    public func addChildEntry(nickname: String? = nil) throws -> UUID {
+        let id = UUID()
+        try saveChildEntry(id: id, nickname: nickname, createdAt: Date())
+        return id
+    }
+
+    /// Renames a stored entry's own nickname only -- never touches `createdAt`, which anchors the
+    /// entry's ordinal position. Throws `childEntryNotFound` when no stored entry matches `id`.
+    /// Mirrors `renamePrivacyZone` exactly.
+    public func renameChildEntry(id: UUID, to nickname: String?) throws {
+        guard let record = try fetchChildEntryRecord(id: id) else {
+            throw HealthDataStoreError.childEntryNotFound
+        }
+        record.nickname = Self.normalizedNickname(nickname)
+        try context.save()
+    }
+
+    /// Throws `childEntryNotFound` when no stored entry matches `id`, mirroring
+    /// `deletePrivacyZone`/`deleteCardioSession`'s own "not found is an error, not a silent
+    /// no-op" discipline.
+    public func deleteChildEntry(id: UUID) throws {
+        guard let record = try fetchChildEntryRecord(id: id) else {
+            throw HealthDataStoreError.childEntryNotFound
+        }
+        context.delete(record)
+        try context.save()
+    }
+
+    private func fetchChildEntryRecord(id: UUID) throws -> ChildEntryRecord? {
+        let records = try context.fetch(FetchDescriptor<ChildEntryRecord>())
+        return records.first { $0.id == id }
+    }
+
+    /// Trims whitespace and newlines; returns `nil` when the input is `nil` or trims to empty.
+    /// This is what keeps an empty text field from persisting an empty string that would then
+    /// render as a blank row instead of falling back to its ordinal label.
+    private static func normalizedNickname(_ raw: String?) -> String? {
+        guard let raw else { return nil }
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
     // MARK: - Private
 
     private func fetchProfile() throws -> UserProfile? {
@@ -1061,4 +1144,7 @@ public enum HealthDataStoreError: Error, Equatable {
     /// Thrown by `renamePrivacyZone`/`deletePrivacyZone` when no stored zone matches the given
     /// identifier.
     case zoneNotFound
+    /// Thrown by `renameChildEntry`/`deleteChildEntry` when no stored child entry matches the
+    /// given identifier.
+    case childEntryNotFound
 }
