@@ -50,6 +50,7 @@ struct SettingsView: View {
     @State private var isEditingMomentumTarget = false
     @State private var isEditingMovementSnapshot = false
     @State private var isEditingPrivacyZones = false
+    @State private var isShowingKidIdeas = false
     @State private var isReScreenDue = false
 
     init(flow: OnboardingFlow, onOpenHealthProfile: @escaping () -> Void = {}) {
@@ -109,6 +110,16 @@ struct SettingsView: View {
                 isEditingPrivacyZones = true
             }
 
+            // KIDCONTENT-01/KIDCONTENT-02: a sibling Settings row rather than a link nested
+            // inside `DietPlanView` -- D-04's placement decision, chosen because this feature
+            // spans both food and movement rather than diet alone (04.2-CONTEXT.md's Claude's
+            // Discretion paragraph and 04.2-RESEARCH.md Open Question 3 both land on this).
+            // `KidIdeasView()` takes no `flow`, unlike the `DietPlanView(flow:)` row above it --
+            // this preference is not a screening answer, so it sits outside that group below.
+            SecondaryCTAButton(title: Self.kidIdeasRowTitle) {
+                isShowingKidIdeas = true
+            }
+
             VStack(alignment: .leading, spacing: RithamSpacing.sm) {
                 Text("Screening answers")
                     .font(RithamType.heading)
@@ -143,6 +154,9 @@ struct SettingsView: View {
         .sheet(isPresented: $isEditingPrivacyZones) {
             PrivacyZonesView()
         }
+        .sheet(isPresented: $isShowingKidIdeas) {
+            KidIdeasView()
+        }
     }
 
     /// The Momentum-target row's label, extracted as a single source of truth so
@@ -152,6 +166,10 @@ struct SettingsView: View {
     /// The Movement Snapshot row's label, extracted the same way `momentumTargetRowTitle` is so
     /// `MovementSnapshotViewTests` can pin it without rendering this view.
     static let movementSnapshotRowTitle = "Daily Movement Snapshot"
+
+    /// The Kid Ideas row's label, extracted the same way `momentumTargetRowTitle`/
+    /// `movementSnapshotRowTitle` are so `KidIdeasTests` can pin it without rendering this view.
+    static let kidIdeasRowTitle = KidContentCopy.Screen.headline
 
     private func sectionEntryPoint(_ section: EditableSection, title: String) -> some View {
         SecondaryCTAButton(title: title) {

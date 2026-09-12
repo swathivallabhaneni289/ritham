@@ -120,6 +120,18 @@ struct KidIdeasTests {
         childStore.load()
         #expect(childStore.add())
     }
+
+    // MARK: - Task 3: Settings entry point
+
+    @Test("the Kid Ideas row title equals the screen's own headline")
+    func kidIdeasRowTitleMatchesScreenHeadline() {
+        #expect(SettingsView.kidIdeasRowTitle == KidContentCopy.Screen.headline)
+    }
+
+    @Test("the Kid Ideas row title is exactly 'Kid Ideas'")
+    func kidIdeasRowTitleIsExactlyKidIdeas() {
+        #expect(SettingsView.kidIdeasRowTitle == "Kid Ideas")
+    }
 }
 
 }
